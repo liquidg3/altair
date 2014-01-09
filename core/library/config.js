@@ -1,19 +1,30 @@
-define("altair/config", null, function (dojo) {
+define("altair/config", function (dojo) {
     return {
         load: function(id, require, load){
-           console.log('load: ', id);
+
+            return require.nodeRequire(id);
         },
         normalize: function(id, toAbsMid){
 
-            var path = id.split('.json')[0];
+            //@TODO: find the dojo proper way to do this.  It SHOULD? exist?
+            var pathElements = id.split('/');
 
-            console.log(dojo);
+            var packageName = pathElements.shift();
+            var packagePath = pathElements.join('/');
 
-            return '';
+            for( var i = 0; i < dojoConfig.packages.length; i++ ){
+                var thisPackage = dojoConfig.packages[i];
 
+                if( thisPackage.name == packageName ){
+                    packagePath = dojo.baseUrl + thisPackage.location + '/'+packagePath;
+                    break;
+                }
+            }
 
-            return 'poop';
-            console.log('normalize', arguments);
-            return id;
+            //@TODO: We're returning something that isnt very helpful here if the package requested isnt defined.
+            return packagePath;
+            //return require( packagePath );
+//            console.log('normalize', arguments);
+//            return id;
         }};
 });
