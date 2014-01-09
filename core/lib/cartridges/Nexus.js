@@ -1,26 +1,6 @@
-define(['dojo/_base/declare', 'dojo/_base/lang'], function (declare, lang) {
+define(['dojo/_base/declare', 'dojo/_base/lang', 'altair/Base'], function (declare, lang, Base) {
 
-    return declare('altair/cartridges/Nexus', {
-
-        _cartridges: [],
-        startup: function (config) {
-
-            console.log(config);
-
-            return this;
-        },
-
-        teardown: function () {
-
-            this._cartridges.forEach(lang.hitch(this, function (cartridge) {
-                cartridge.teardown();
-            }));
-
-
-            this._cartridges = [];
-
-            return this;
-        }
+    return declare([Base], {
 
 
     });

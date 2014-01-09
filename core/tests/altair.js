@@ -1,4 +1,4 @@
-define(['doh/runner', 'altair/Altair', 'dojo/_base/declare'], function (doh, Altair, declare) {
+define(['doh/runner', 'altair/Altair'], function (doh, Altair) {
 
     /**
      * Make sure we can construct an Altair instance
@@ -26,6 +26,7 @@ define(['doh/runner', 'altair/Altair', 'dojo/_base/declare'], function (doh, Alt
                     startup: function () {
                         setupCalled = true;
                     },
+
                     teardown: function () {
                         teardownCalled = true;
                     }
@@ -42,8 +43,5 @@ define(['doh/runner', 'altair/Altair', 'dojo/_base/declare'], function (doh, Alt
 
         });
 
-    //run tests, logging everything to console
-    doh.debug = console.log;
-    doh.run();
 
 });

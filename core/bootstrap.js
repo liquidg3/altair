@@ -4,8 +4,22 @@
 require(['altair/Altair','dojo/_base/lang', 'altair/config!core/config/altair.json'], function(Altair, lang, config){
     //start a single Altair instance to start @TODO load this from a config
     var altair = new Altair();
-    console.log(config);
 
-    altair.startup(config).go().then(lang.hitch(altair, 'teardown'));
+    altair.startup(config).then(function () {
+
+
+        altair.go();
+
+//
+//        altair.go().then(function () {
+//
+//
+//            altair.teardown();
+//
+//            console.log('teardown done');
+//
+//        });
+
+    });
 
 });

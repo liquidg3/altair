@@ -32,7 +32,7 @@ dojoConfig = {
 };
 
 if(process.argv[2] == '-test') {
-    dojoConfig.deps = [process.argv[3]];
+    dojoConfig.deps = ['core/bootstrap-test'];
 }
 
 // Now load the Dojo loader
