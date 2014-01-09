@@ -3,7 +3,7 @@ define(['dojo/_base/declare','dojo/Deferred'], function (declare, Deferred) {
     return declare(null, {
 
         deferred: null,
-        startup: function () {},
+        startup: function (config) {},
         go: function () {
 
             this.deferred = new Deferred();
