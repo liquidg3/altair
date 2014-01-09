@@ -11,15 +11,19 @@ dojoConfig = {
     packages: [
         {
             name: "dojo",
-            location: "core/library/dojo"
+            location: "core/lib/dojo"
         },
         {
             name: "altair",
-            location: "core/library"
+            location: "core/lib"
         },
         {
             name: "core",
             location: "core"
+        },
+        {
+            name: "doh",
+            location: "core/lib/doh"
         }
     ],
     deps: [
@@ -27,5 +31,9 @@ dojoConfig = {
     ]
 };
 
+if(process.argv[2] == '-test') {
+    dojoConfig.deps = [process.argv[3]];
+}
+
 // Now load the Dojo loader
-require("./core/library/dojo/dojo.js");
+require("./core/lib/dojo/dojo.js");

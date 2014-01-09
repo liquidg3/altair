@@ -1,7 +1,6 @@
 define("altair/config", function (dojo) {
     return {
         load: function(id, require, load){
-
             return require.nodeRequire(id);
         },
         normalize: function(id, toAbsMid){

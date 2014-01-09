@@ -1,16 +1,49 @@
-require('../bootstrap-test.js');
-console.log(require.nodeRequire);
+define(['doh/runner', 'altair/Altair', 'dojo/_base/declare'], function (doh, Altair, declare) {
 
-exports.startupAndTeardown = function () {
+    /**
+     * Make sure we can construct an Altair instance
+     */
+    doh.register('altair-construct',
+        function () {
 
-    require('altair/Altair', function (Altair) {
+            var a = new Altair();
 
-        var altair = new Altair();
-        console.log(altair);
+            doh.assertTrue(!!a, 'Altair instantiation failed');
 
-//        altair.startup().go().then(lang.hitch(altair, 'teardown'));
+        }
+    );
 
-    });
-//
+    /**
+     * Make sure cartridges are setup and torn down properly
+     */
+    doh.register('altair-cartridge',
+        function () {
 
-};
+            var setupCalled = false,
+                teardownCalled = false,
+                cartridge = {
+
+                    startup: function () {
+                        setupCalled = true;
+                    },
+                    teardown: function () {
+                        teardownCalled = true;
+                    }
+
+                },
+                a = new Altair();
+
+            a.startup();
+            a.addCartridge('dummy', cartridge);
+
+            doh.assertTrue(setupCalled, 'setup not called on cartridge');
+            doh.assertTrue(teardownCalled, 'teardown not called on cartridge');
+
+
+        });
+
+    //run tests, logging everything to console
+    doh.debug = console.log;
+    doh.run();
+
+});
