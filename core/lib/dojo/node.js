@@ -1,42 +1,67 @@
-/*
- Copyright (c) 2004-2011, The Dojo Foundation All Rights Reserved.
- Available via Academic Free License >= 2.1 OR the modified BSD license.
- see: http://dojotoolkit.org/license for details
- */
-
-//>>built
-define("dojo/node", ["./has"], function (_1) {
-    if (!0) {
-//throw new Error("node plugin failed to load because environment is not Node.js");
+define(["./has"], function(has){
+    if(!has("host-node")){
+        throw new Error("node plugin failed to load because environment is not Node.js");
     }
-    var _2;
-    if (require.nodeRequire) {
-        _2 = require.nodeRequire("path");
-    } else {
+
+    var pathUtil;
+    if(require.nodeRequire){
+        pathUtil = require.nodeRequire("path");
+    }else{
         throw new Error("node plugin failed to load because it cannot find the original Node.js require");
     }
-    return {load: function (id, _3, _4) {
-        if (!_3.nodeRequire) {
-            throw new Error("Cannot find native require function");
-        }
-        _4((function (id, _5) {
-            var _6 = define, _7;
-            define = undefined;
-            try {
-                _7 = _5(id);
+
+    return {
+        // summary:
+        //		This AMD plugin module allows native Node.js modules to be loaded by AMD modules using the Dojo
+        //		loader. Note that this plugin will not work with AMD loaders other than the Dojo loader.
+        // example:
+        //	|	require(["dojo/node!fs"], function(fs){
+        //	|		var fileData = fs.readFileSync("foo.txt", "utf-8");
+        //	|	});
+
+        load: function(/*string*/ id, /*Function*/ require, /*Function*/ load){
+            // summary:
+            //		Standard AMD plugin interface. See https://github.com/amdjs/amdjs-api/wiki/Loader-Plugins
+            //		for information.
+
+            if(!require.nodeRequire){
+                throw new Error("Cannot find native require function");
             }
-            finally {
-                define = _6;
+
+            load((function(id, require){
+                var oldDefine = define,
+                    result;
+
+                // Some modules may attempt to detect an AMD loader via define and define.amd.  This can cause issues
+                // when other CommonJS modules attempt to load them via the standard node require().  If define is
+                // temporarily moved into another variable, it will prevent modules from detecting AMD in this fashion.
+                define = undefined;
+
+                try{
+                    result = require(id);
+                }finally{
+                    define = oldDefine;
+                }
+                return result;
+            })(id, require.nodeRequire));
+        },
+
+        normalize: function (/**string*/ id, /*Function*/ normalize){
+            // summary:
+            //		Produces a normalized id to be used by node.  Relative ids are resolved relative to the requesting
+            //		module's location in the file system and will return an id with path separators appropriate for the
+            //		local file system.
+
+            if(id.charAt(0) === "."){
+                // dirname of the reference module - normalized to match the local file system
+                var referenceModuleDirname = require.toUrl(normalize(".")).replace("/", pathUtil.sep),
+                    segments = id.split("/");
+                segments.unshift(referenceModuleDirname);
+                // this will produce an absolute path normalized to the semantics of the underlying file system.
+                id = pathUtil.join.apply(pathUtil, segments);
             }
-            return _7;
-        })(id, _3.nodeRequire));
-    }, normalize: function (id, _8) {
-        if (id.charAt(0) === ".") {
-            var _9 = require.toUrl(_8(".")).replace("/", _2.sep), _a = id.split("/");
-            _a.unshift(_9);
-            id = _2.join.apply(_2, _a);
+
+            return id;
         }
-        console.log('id', id);
-        return id;
-    }};
+    };
 });

@@ -35,10 +35,10 @@ define(['doh/runner', 'altair/Altair', 'dojo/_base/declare'], function (doh, Alt
 
             a.startup();
             a.addCartridge('dummy', cartridge);
+            a.teardown();
 
             doh.assertTrue(setupCalled, 'setup not called on cartridge');
             doh.assertTrue(teardownCalled, 'teardown not called on cartridge');
-
 
         });
 

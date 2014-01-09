@@ -1,11 +1,10 @@
-define(['dojo/_base/declare', 'dojo/Deferred'], function (declare, Deferred) {
+define(['dojo/_base/declare', 'dojo/Deferred', 'dojo/_base/lang'], function (declare, Deferred, lang) {
 
     return declare(null, {
 
         deferred: null,
         _cartridges: {},
         startup: function (config) {
-            console.log(config);
             return this;
         },
         go: function () {
@@ -18,7 +17,11 @@ define(['dojo/_base/declare', 'dojo/Deferred'], function (declare, Deferred) {
 
         teardown: function () {
 
-            console.log('shutdown');
+            Object.keys(this._cartridges).forEach(lang.hitch(this,function (key) {
+                this.removeCartride(key);
+            }));
+
+            return this;
 
         },
 
