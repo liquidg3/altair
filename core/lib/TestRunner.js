@@ -1,7 +1,14 @@
 /**
  * Runs any tests passed in options.
  */
-define(['dojo/_base/declare', 'altair/Base', 'dojo/_base/lang', 'dojo/Deferred', 'dojo/node!fs'], function (declare, Base, lang, Deferred, fs) {
+define(['dojo/_base/declare',
+        'altair/Base',
+        'dojo/_base/lang',
+        'dojo/DeferredList',
+        'dojo/Deferred',
+        'dojo/node!fs',
+        'dojo/node!path'],
+function (declare, Base, lang, DeferredList, Deferred, fs, path) {
 
     return declare([Base], {
 
@@ -15,16 +22,39 @@ define(['dojo/_base/declare', 'altair/Base', 'dojo/_base/lang', 'dojo/Deferred',
 
             this.deferred = new Deferred;
 
-            //loop through all folders in options.paths
-//                this.includeTest(path);
 
-            return this.inherited(arguments);
+            var _defers = [];
+
+            for( var i = 0; i < options.paths.length; i++ ){
+                var thisPath = path.resolve( options.paths[i] );
+
+                if( fs.lstatSync( thisPath ).isDirectory() ){
+                    var files = fs.readdirSync(thisPath);
+
+                    for( var i = 0; i < files.length; i++ ){
+                        var thisFilePath = files[i];
+
+                        if( fs.existsSync( thisFilePath ) && thisFilePath.slice(-3) == '.js' ){
+                            _defers.push( this.includeTest( thisFilePath ) );
+                        }
+
+                    }
+
+                }
+
+            }
+
+
+            var includeFiles = new DeferredList( _defers );
+                includeFiles.then(lang.hitch(this, function() {
+                    this.deferred.resolve(this);
+                }));
+
 
         },
 
 
         includeTest: function (path) {
-
             var deferred = new Deferred();
 
             require(path, function (t) {
