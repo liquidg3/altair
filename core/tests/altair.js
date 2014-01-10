@@ -34,9 +34,8 @@ define(['doh/runner', 'altair/Altair'], function (doh, Altair) {
                 },
                 a = new Altair();
 
-            a.startup();
-            a.addCartridge('dummy', cartridge);
-            a.teardown();
+            a.execute();
+            a.addCartridge(cartridge);
 
             doh.assertTrue(setupCalled, 'setup not called on cartridge');
             doh.assertTrue(teardownCalled, 'teardown not called on cartridge');

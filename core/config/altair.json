@@ -1,5 +1,9 @@
 {
     "cartridges": [
-
+        {
+            "name": "Nexus",
+            "key": "nexus",
+            "path": "altair/cartridges/Nexus"
+        }
     ]
 }

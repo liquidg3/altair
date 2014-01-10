@@ -1,32 +1,42 @@
 /**
- * Well, this is it... Altair in its entirety. The whole application is simply a cartridge loader. These cartridges are
- * responsible for enhancing the environment in various ways. It should be really easy to augment the platform at a very
- * low level this way. Chances are that if you need to add new functionality into the platform you should be doing it
- * as a module. The only things that should be cartridges are components that need to exist before the module system
- * is ready. Currently, this is things like Nexus, Cache, Database, and a few others. See core/config/altair.json to see
- * the current config.
+ * This simple cartridge factory helps us create cartridges. It's every basic, but it gets the job done.
  */
 define(['dojo/_base/declare',
         'dojo/_base/lang',
-        'altair/Base'], function (declare, lang, Base) {
+        'dojo/DeferredList',
+        'dojo/Deferred'], function (declare, lang, DeferredList, Deferred) {
 
-    return declare([Base], {
+    return declare(null, {
 
         /**
-         * Send me an array of cartridge options
+         * Send me an array of cartridge options.
          *
          * @param options
          */
         build: function (options) {
 
+            var list     = [];
+
             options.forEach(lang.hitch(this, function (_options) {
-                this.buildOne(_options);
+                list.push(this.buildOne(_options));
             }));
+
+            var deferred = new DeferredList(list);
+
+            return deferred;
+
 
         },
 
         buildOne: function (options) {
-            console.log('buildingOne', options);
+
+            var def = new Deferred();
+
+            require([options.path], function (Cartridge) {
+                def.resolve(new Cartridge(options.options));
+            });
+
+            return def;
         }
 
     });

@@ -1,24 +1,32 @@
 /**
- * Bootstrap Altair contexts based on a config
+ * Bootstrap Altair instances based on a config
  */
-require(['altair/Altair','dojo/_base/lang', 'altair/config!core/config/altair.json'], function(Altair, lang, config){
-    //start a single Altair instance to start @TODO load this from a config
-    var altair = new Altair();
-
-    altair.startup(config).then(function () {
+require(['altair/Altair',
+         'altair/CartridgeFactory',
+         'altair/config!core/config/altair.json'], function(Altair, CartridgeFactory, config){
 
 
-        altair.go();
+    /**
+     * Startup the cartridge factory and create the cartridges, then add
+     * them to altair.
+     *
+     * @type {altair.CartridgeFactory}
+     */
+    var factory = new CartridgeFactory(),
+        altair  = new Altair();
 
-//
-//        altair.go().then(function () {
-//
-//
-//            altair.teardown();
-//
-//            console.log('teardown done');
-//
-//        });
+    console.log('Loading CartridgeFactory. Found ', config.cartridges.length, ' cartridges.');
+
+    factory.build(config.cartridges).then(function (cartridges) {
+
+        /**
+         * Add cartridges
+         */
+        altair.addCartridges(cartridges).then(function () {
+
+            console.log('Altair is ready');
+
+        });
 
     });
 

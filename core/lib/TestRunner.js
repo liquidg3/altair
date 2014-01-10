@@ -22,34 +22,48 @@ function (declare, Base, lang, DeferredList, Deferred, fs, path) {
 
             this.deferred = new Deferred;
 
-
             var _defers = [];
 
             for( var i = 0; i < options.paths.length; i++ ){
+
                 var thisPath = path.resolve( options.paths[i] );
 
-                if( fs.lstatSync( thisPath ).isDirectory() ){
-                    var files = fs.readdirSync(thisPath);
+                fs.lstat(thisPath, lang.hitch(this, function (err, stats) {
 
-                    for( var i = 0; i < files.length; i++ ){
-                        var thisFilePath = files[i];
+                    //if the path is really a directory?
+                    if((stats.isDirectory())) {
 
-                        if( fs.existsSync( thisFilePath ) && thisFilePath.slice(-3) == '.js' ){
-                            _defers.push( this.includeTest( thisFilePath ) );
-                        }
+                        //read all files in the directory (we assume they are all test files)
+                        fs.readdir(thisPath, lang.hitch(this, function (err, files) {
+
+                            files.forEach(lang.hitch(this, function (name) {
+
+                                //include the test
+                                _defers.push( this.includeTest( path.join(thisPath, name ) ));
+
+                            }));
+
+                        }));
+
 
                     }
 
-                }
-
+                }));
             }
 
 
             var includeFiles = new DeferredList( _defers );
                 includeFiles.then(lang.hitch(this, function() {
+
+                    doh.debug = console.log;
+                    doh.run();
+
                     this.deferred.resolve(this);
+
                 }));
 
+
+            return this.inherited(arguments);
 
         },
 
@@ -57,7 +71,7 @@ function (declare, Base, lang, DeferredList, Deferred, fs, path) {
         includeTest: function (path) {
             var deferred = new Deferred();
 
-            require(path, function (t) {
+            require([path], function (t) {
                 deferred.resolve(t);
             });
 

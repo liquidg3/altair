@@ -1,9 +1,9 @@
 /**
  * TEST CARTRIDGE ONLY ** DO NOT USE BECAUSE IT IS REALLY BORING **
  */
-define(['dojo/_base/declare', 'altair/Base'], function (declare, Base) {
+define(['dojo/_base/declare', 'altair/Lifecyle'], function (declare, Lifecyle) {
 
-    return declare([Base], {
+    return declare([Lifecyle], {
 
         startedUp: false,
         tornDown: false,
@@ -11,6 +11,10 @@ define(['dojo/_base/declare', 'altair/Base'], function (declare, Base) {
         startup: function (options) {
             this.startedUp = true;
             return this.inherited(arguments);
+        },
+
+        execute: function(){
+
         },
 
         teardown: function () {

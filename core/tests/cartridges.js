@@ -1,22 +1,56 @@
-define(['doh/runner', 'altair/CartridgeFactory', 'dojo/_base/declare'], function (doh, CartridgeFactory, declare) {
+define(['doh/runner', 'altair/CartridgeFactory', 'dojo/_base/lang'], function (runner, CartridgeFactory, lang) {
 
     /**
-     * Dummy Cartridges
+     * Dependencies
      */
-//    var cart
+    var options   = {
+            cartridges: [
+                {
+                    "name": "Mock",
+                    "path": "altair/cartridges/Mock",
+                    "options": {
+                        foo: "bar"
+                    }
+                }
+            ]
+        };
 
     /**
      * Make sure we can construct a CartridgeFactory instance
      */
-    doh.register('cartridge-construct',
+    runner.register('cartridge-construct',
         function () {
 
             var factory = new CartridgeFactory();
-            doh.assertTrue(!!factory);
+            runner.assertTrue(!!factory);
 
         }
     );
 
+    /**
+     * Build some cartridges and test to make sure they are started up
+     */
+    runner.register('cartridge-factory',
+        function () {
+
+            var factory = new CartridgeFactory();
+
+            factory.build(options).then(lang.hitch(this, function (cartridges) {
+
+                var mock = cartridges[0];
+
+                runner.assertEqual(1, cartridges.count, 'Wrong number of cartridges created.');
+                runner.assertEqual('bar', mock.options.foo, 'Options were not passed through to cartridge');
+                runner.assertTrue(mock.startedUp, 'Cartridge was not started up.');
+
+
+            }));
+
+
+            runner.assertTrue(!!factory);
+
+        }
+    );
 
 
 });

@@ -9,90 +9,80 @@
 define(['dojo/_base/declare',
         'dojo/Deferred',
         'dojo/DeferredList',
-        'dojo/_base/lang',
-        'altair/Base',
-        'altair/cartridgeFactory'
-            ], function (declare, Deferred, DeferredList, lang, Base, CartridgeFactory) {
+        'dojo/_base/lang'
+            ], function (declare, Deferred, DeferredList, lang) {
 
 
 
-    return declare([Base], {
+    return declare(null, {
 
         _cartridges:    {},
-        _cartridgeFactory: null,
 
-        startup: function (options) {
+        /**
+         * Add an un-started cartridge and I'll add it to the system and start it up.
+         *
+         * @param cartidge
+         * @returns dojo/Deferred
+         */
+        addCartridge: function (cartidge) {
 
+            this._cartridges[cartidge.key] = cartidge;
 
-            /**
-             * Create any cartridges passed via the config.
-             */
-            if(options && options.cartridges) {
-
-                if(!options.cartridgeFactory) {
-                    options.cartridgeFactory = new CartridgeFactory();
-                }
-
-                options.cartridgeFactory.build(options.cartridges);
-            }
-
-            this.deferred = new Deferred();
-
-            var list,
-                deferreds = [];
-
-            Object.keys(this._cartridges).forEach(lang.hitch(this, function (key) {
-                deferreds.push(this._cartridges[key].startup(this.config[key] || {}));
-            }));
-
-            //fire after all deferred's have run
-            list = new DeferredList(deferreds);
-            list.then(lang.hitch(this, function() {
-                this.deferred.resolve(this);
-            }));
-
-            return this.deferred;
+            return cartidge.startup();
 
         },
 
-        go: function () {
-            this.deferred = new Deferred();
-
-
-
-            return this.deferred;
-        },
-
-        teardown: function () {
-
-            Object.keys(this._cartridges).forEach(lang.hitch(this, function (key) {
-                this.removeCartridge(key);
-            }));
-
-            return this.inherited(arguments);
-
-        },
-
-        addCartridge: function (key, cartidge, options) {
-
-            this._cartridges[key] = cartidge;
-
-            return this;
-
-        },
-
+        /**
+         * Removes a cartridge, but tears it down irst
+         *
+         * @param key
+         * @returns dojo/Deferred
+         */
         removeCartridge: function (key) {
 
-            this.cartridge(key).teardown();
+            var def = this.cartridge(key).teardown();
 
             delete this._cartridges[key];
 
-            return this;
+            return def;
 
         },
 
+        /**
+         * Get a cartridge by it's key
+         *
+         * @param key
+         * @returns {*|null}
+         */
         cartridge: function (key) {
             return this._cartridges[key] || null;
+        },
+
+        /**
+         * Add an array of cartridges. Each next cartridge will wa
+         *
+         * @param cartridges
+         * @returns dojo/Deferred
+         */
+        addCartridges: function (cartridges) {
+
+            var deferred = new DeferredList();
+
+            var load = lang.hitch(this, function () {
+
+                var cartridge = cartridges.pop();
+
+                if(cartridge) {
+                    this.addCartridge(cartridge).then(load);
+                } else {
+                    deferred.resolve(this);
+                }
+            });
+
+            load();
+
+            return deferred;
+
         }
 
     });
