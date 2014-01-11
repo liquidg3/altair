@@ -33,21 +33,24 @@ define(['doh/runner', 'altair/CartridgeFactory', 'dojo/_base/lang'], function (r
     runner.register('cartridge-factory',
         function () {
 
-            var factory = new CartridgeFactory();
+            var factory = new CartridgeFactory(),
+                deferred = new doh.Deferred();
 
-            factory.build(options).then(lang.hitch(this, function (cartridges) {
+            factory.build(options.cartridges).then(deferred.getTestCallback(lang.hitch(this, function (cartridges) {
 
                 var mock = cartridges[0];
 
-                runner.assertEqual(1, cartridges.count, 'Wrong number of cartridges created.');
+                runner.assertEqual(1, cartridges.length, 'Wrong number of cartridges created.');
                 runner.assertEqual('bar', mock.options.foo, 'Options were not passed through to cartridge');
-                runner.assertTrue(mock.startedUp, 'Cartridge was not started up.');
+                runner.assertFalse(mock.startedUp, 'Cartridge should not be started up.');
 
 
-            }));
+            })));
 
 
             runner.assertTrue(!!factory);
+
+            return deferred;
 
         }
     );

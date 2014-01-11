@@ -65,10 +65,15 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/Deferred'], function (dec
                 this.deferred.resolve(this);
             }
 
+            //track current deferred to check if we should clear it later
+            var cd = this.deferred;
+
             //remove the deferred after it's been resolved
             this.deferred.then(lang.hitch(this, function () {
                 setTimeout(lang.hitch(this, function() {
-                    this.deferred = null;
+                    if(cd == this.deferred) {
+                        this.deferred = null;
+                    }
                 }), 0);
             }));
 
@@ -83,17 +88,20 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/Deferred'], function (dec
          */
         execute: function () {
 
-            this.options   = null;
-
             if(!this.deferred) {
                 this.deferred = new Deferred;
                 this.deferred.resolve(this);
             }
 
+            //track current deferred to check if we should clear it later
+            var cd = this.deferred;
+
             //remove the deferred after it's been resolved
             this.deferred.then(lang.hitch(this, function () {
                 setTimeout(lang.hitch(this, function() {
-                    this.deferred = null;
+                    if(cd == this.deferred) {
+                        this.deferred = null;
+                    }
                 }), 0);
             }));
 
@@ -110,17 +118,20 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/Deferred'], function (dec
          */
         teardown: function () {
 
-            this.options   = null;
-
             if(!this.deferred) {
                 this.deferred = new Deferred;
                 this.deferred.resolve(this);
             }
 
+            //track current deferred to check if we should clear it later
+            var cd = this.deferred;
+
             //remove the deferred after it's been resolved
             this.deferred.then(lang.hitch(this, function () {
                 setTimeout(lang.hitch(this, function() {
-                    this.deferred = null;
+                    if(cd == this.deferred) {
+                        this.deferred = null;
+                    }
                 }), 0);
             }));
 

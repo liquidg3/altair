@@ -2,15 +2,16 @@
  * Runs any tests passed in options.
  */
 define(['dojo/_base/declare',
-        'altair/Base',
+        'altair/Lifecycle',
         'dojo/_base/lang',
         'dojo/DeferredList',
         'dojo/Deferred',
         'dojo/node!fs',
-        'dojo/node!path'],
-function (declare, Base, lang, DeferredList, Deferred, fs, path) {
+        'dojo/node!path',
+        'doh/runner'],
+function (declare, Lifecycle, lang, DeferredList, Deferred, fs, path, doh) {
 
-    return declare([Base], {
+    return declare([Lifecycle], {
 
         /**
          * @param options
@@ -20,13 +21,13 @@ function (declare, Base, lang, DeferredList, Deferred, fs, path) {
          */
         startup: function (options) {
 
-            this.deferred = new Deferred;
+            this.deferred = new Deferred();
 
-            var _defers = [];
+            var _defers = [],
+                readDeferred = new Deferred();
 
-            for( var i = 0; i < options.paths.length; i++ ){
 
-                var thisPath = path.resolve( options.paths[i] );
+            options.paths.forEach(lang.hitch(this, function (thisPath, i) {
 
                 fs.lstat(thisPath, lang.hitch(this, function (err, stats) {
 
@@ -41,6 +42,11 @@ function (declare, Base, lang, DeferredList, Deferred, fs, path) {
                                 //include the test
                                 _defers.push( this.includeTest( path.join(thisPath, name ) ));
 
+                                //we have read and included all files
+                                if(i == options.paths.length -1) {
+                                    readDeferred.resolve();
+                                }
+
                             }));
 
                         }));
@@ -49,22 +55,41 @@ function (declare, Base, lang, DeferredList, Deferred, fs, path) {
                     }
 
                 }));
-            }
 
 
-            var includeFiles = new DeferredList( _defers );
-                includeFiles.then(lang.hitch(this, function() {
+            }));
 
-                    doh.debug = console.log;
-                    doh.run();
 
-                    this.deferred.resolve(this);
+            doh.debug = console.log;
+            doh.error = function (type, message) {
+                console.error(type, message);
+            };
+            readDeferred.then(lang.hitch(this, function () {
 
-                }));
+                var includeFiles = new DeferredList( _defers );
+                    includeFiles.then(lang.hitch(this, function() {
+
+                        this.deferred.resolve(this);
+
+                    }));
+            }));
 
 
             return this.inherited(arguments);
 
+        },
+
+        execute: function () {
+
+            this.deferred = new Deferred();
+
+            doh._onEnd = lang.hitch(this, function () {
+                this.deferred.resolve();
+            });
+
+            doh.run();
+
+            return this.inherited(arguments);
         },
 
 

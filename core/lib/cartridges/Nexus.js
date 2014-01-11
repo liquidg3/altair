@@ -3,9 +3,9 @@
  * implementation that gives any Altair dev the ability to get what they need, when they need it, while explosing
  * an extremely simple API
  */
-define(['dojo/_base/declare', 'dojo/_base/lang', 'altair/Lifecyle'], function (declare, lang, Lifecyle) {
+define(['dojo/_base/declare', 'dojo/_base/lang', 'altair/Lifecycle'], function (declare, lang, Lifecycle) {
 
-    return declare([Lifecyle], {
+    return declare([Lifecycle], {
 
         startup: function(options){}
 

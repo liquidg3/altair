@@ -21,7 +21,22 @@ define(['dojo/_base/declare',
                 list.push(this.buildOne(_options));
             }));
 
-            var deferred = new DeferredList(list);
+            var deferredList = new DeferredList(list),
+                deferred     = new Deferred();
+
+            deferredList.then(lang.hitch(this, function (results) {
+
+                var cartridges = [];
+
+                results.forEach(lang.hitch(this, function (item) {
+                    if(item[0]) {
+                       cartridges.push(item[1]);
+                    }
+                }));
+
+                deferred.resolve(cartridges);
+
+            }));
 
             return deferred;
 

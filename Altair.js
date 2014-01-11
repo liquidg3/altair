@@ -31,7 +31,7 @@ dojoConfig = {
     ]
 };
 
-if(false || process.argv[2] == '-test') {
+if(true || process.argv[2] == '-test') {
     dojoConfig.deps = ['core/bootstrap-test'];
 }
 

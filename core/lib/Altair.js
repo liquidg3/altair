@@ -8,9 +8,8 @@
  */
 define(['dojo/_base/declare',
         'dojo/Deferred',
-        'dojo/DeferredList',
         'dojo/_base/lang'
-            ], function (declare, Deferred, DeferredList, lang) {
+            ], function (declare, Deferred, lang) {
 
 
 
@@ -66,7 +65,7 @@ define(['dojo/_base/declare',
          */
         addCartridges: function (cartridges) {
 
-            var deferred = new DeferredList();
+            var deferred = new Deferred();
 
             var load = lang.hitch(this, function () {
 

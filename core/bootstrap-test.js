@@ -8,7 +8,13 @@ require(['altair/TestRunner',
     var runner = new TestRunner();
 
     runner.startup(config).then(function () {
-        console.log('-- TESTS COMPLETE --');
+
+        console.log('-- Tests Loaded--');
+
+        runner.execute().then(function () {
+            console.log('-- Tests Finished--');
+        });
+
     });
 
 

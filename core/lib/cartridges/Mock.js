@@ -1,9 +1,9 @@
 /**
  * TEST CARTRIDGE ONLY ** DO NOT USE BECAUSE IT IS REALLY BORING **
  */
-define(['dojo/_base/declare', 'altair/Lifecyle'], function (declare, Lifecyle) {
+define(['dojo/_base/declare', 'altair/Lifecycle'], function (declare, Lifecycle) {
 
-    return declare([Lifecyle], {
+    return declare([Lifecycle], {
 
         startedUp: false,
         tornDown: false,

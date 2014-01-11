@@ -1,4 +1,4 @@
-define(['doh/runner', 'altair/Lifecycle', 'dojo/_base/lang'], function (runner, Lifecycle, lang) {
+define(['doh/runner', 'altair/Lifecycle', 'dojo/_base/lang'], function (doh, Lifecycle, lang) {
 
     /**
      * Dependencies
@@ -12,21 +12,21 @@ define(['doh/runner', 'altair/Lifecycle', 'dojo/_base/lang'], function (runner, 
     /**
      * Make sure we can construct a CartridgeFactory instance
      */
-    runner.register('lifecycle-construct',
+    doh.register('lifecycle-construct',
         function () {
 
             var life = new Lifecycle();
-            runner.assertTrue(!!life);
+            doh.assertTrue(!!life);
 
         }
     );
 
-    runner.register('lifecycle-deferreds',
+    doh.register('lifecycle-deferreds',
         function () {
 
             var life = new Lifecycle(options);
 
-            this.assertEqual(options.foo, life.foo, 'options failed to pass through to lifecycle');
+            doh.assertEqual(options.foo, life.options.foo, 'options failed to pass through to lifecycle');
 
 
 
