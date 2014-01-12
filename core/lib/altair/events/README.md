@@ -6,7 +6,7 @@ is backed by [underscore-query](https://github.com/davidgtonge/underscore-query)
 the ability to trigger event listeners selectively.
 
     /**
-     * Altair has 2 ways to set listeners, the fun way is .on(eventName, query).then(...
+     * Altair has 2 ways to set listeners, the chain'able way is .on(eventName, query).then(...
      */
     this.nexus('Altair:Jarvis').on('DID_GESTURE', { 'gesture.type': 'the-force' }).then(function (e) {
 
