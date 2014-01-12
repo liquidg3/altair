@@ -46,6 +46,12 @@ define(['dojo/_base/declare',
                 this._listeners[event] = [];
             }
 
+            //if they passed a query as the 2nd argument
+            if(typeof callback == 'object') {
+                query = callback;
+                callback = undefined;
+            }
+
             //create deferred & listener
             var deferred = new Deferred(),
                 listener = {
@@ -76,7 +82,12 @@ define(['dojo/_base/declare',
 
                     if(_agent.matches(event, listener.query)) {
 
-                        listener.callback(event);
+                        if(listener.callback) {
+                            listener.callback(event);
+                        }
+
+                        listener.deferred.resolve(event);
+
                         matches ++;
 
                     }

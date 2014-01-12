@@ -81,7 +81,7 @@ define(['doh/runner',
         },
 
         /**
-         * Add listener with no query
+         * no query old style
          */
         function () {
 
@@ -92,9 +92,79 @@ define(['doh/runner',
                 doh.assertEqual('dummy-event', e.name, 'Event was not created as expected.');
             }));
 
-            emitter.emit('dummy-event', {});
+            emitter.emit('dummy-event', {
+                foo: 'bar'
+            });
+
+            return deferred;
+
+        },
+
+        /**
+         * no query new style
+         */
+        function () {
+
+            var emitter     = new Emitter(),
+                deferred    = new doh.Deferred()
+
+            emitter.on('dummy-event-2').then(deferred.getTestCallback(function (e) {
+                doh.assertEqual('dummy-event-2', e.name, 'Event was not created as expected.');
+            }));
+
+            emitter.emit('dummy-event-2', {
+                foo: 'bar'
+            });
+
+            return deferred;
+
+        },
+
+        /**
+         * query old style
+         */
+        function () {
+
+            var emitter     = new Emitter(),
+                deferred    = new doh.Deferred()
+
+            emitter.on('dummy-event-3', deferred.getTestCallback(function (e) {
+                doh.assertEqual('dummy-event-3', e.name, 'Event was not created as expected.');
+            }), {
+                foo: 'bar'
+            });
+
+            emitter.emit('dummy-event-3', {
+                foo: 'bar'
+            });
+
+            return deferred;
+
+        },
+
+        /**
+         * Query new style
+         *
+         * @returns {dojo.tests._base.Deferred}
+         */
+        function () {
+
+            var emitter     = new Emitter(),
+                deferred    = new doh.Deferred()
+
+            emitter.on('dummy-event-4', { foo: 'bar' }).then(deferred.getTestCallback(function (e) {
+                doh.assertEqual('dummy-event-4', e.name, 'Event was not created as expected.');
+            }));
+
+            emitter.emit('dummy-event-4', {
+                foo: 'bar'
+            });
+
+            return deferred;
 
         }
+
+
 
 
 

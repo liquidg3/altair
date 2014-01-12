@@ -26,4 +26,5 @@ the ability to trigger event listeners selectively.
 
 
 The examples above are powerful because it shows how to hook into any device that could possibly emit "the-force" gesture.
-To see all the ways you can query, use the link to underscore-query above.
+To see all the ways you can query, use the link to underscore-query above (Note: ignore the chain'able API, you will not
+be writing much code for event listeners, you will be setting them up inside your config/listeners.json.
