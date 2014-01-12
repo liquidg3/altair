@@ -15,22 +15,23 @@ define(['doh/runner', 'altair/CartridgeFactory', 'dojo/_base/lang'], function (r
             ]
         };
 
-    /**
-     * Make sure we can construct a CartridgeFactory instance
-     */
-    runner.register('cartridge-construct',
+
+    runner.register('cartridges', [
+
+        /**
+         * Make sure we can construct a CartridgeFactory instance
+         */
         function () {
 
             var factory = new CartridgeFactory();
             runner.assertTrue(!!factory);
 
-        }
-    );
+        },
 
-    /**
-     * Build some cartridges and test to make sure they are started up
-     */
-    runner.register('cartridge-factory',
+
+        /**
+         * Build some cartridges and test to make sure they are started up
+         */
         function () {
 
             var factory = new CartridgeFactory(),
@@ -53,7 +54,8 @@ define(['doh/runner', 'altair/CartridgeFactory', 'dojo/_base/lang'], function (r
             return deferred;
 
         }
-    );
+
+    ]);
 
 
 });

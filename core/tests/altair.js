@@ -1,22 +1,20 @@
 define(['doh/runner', 'altair/Altair'], function (doh, Altair) {
 
-    /**
-     * Make sure we can construct an Altair instance
-     */
-    doh.register('altair-construct',
+    doh.register('altair', [
+        /**
+         * Make sure we can construct an Altair instance
+         */
         function () {
 
             var a = new Altair();
 
             doh.assertTrue(!!a, 'Altair instantiation failed');
 
-        }
-    );
+        },
 
-    /**
-     * Make sure cartridges are setup and torn down properly
-     */
-    doh.register('altair-cartridge',
+        /**
+         * Make sure cartridges are setup and torn down properly
+         */
         function () {
 
             var setupCalled = false,
@@ -39,7 +37,8 @@ define(['doh/runner', 'altair/Altair'], function (doh, Altair) {
             doh.assertTrue(setupCalled, 'setup not called on cartridge');
             doh.assertFalse(teardownCalled, 'teardown should not called on cartridge');
 
-        });
+        }
+    ]);
 
 
 });

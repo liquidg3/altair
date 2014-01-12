@@ -8,7 +8,10 @@
  *
  * ...
  *
- * startup: function (option) {
+ * startup: function (options) {
+ *
+ *      //options are optional, fallback to the ones already set
+ *      options = options || this.options;
  *
  *      //creating your own deferred will stop the auto-resolve behavior
  *      this.deferred = new Deferred();
@@ -23,7 +26,6 @@
  *          this.deferred.resolve(this);
  *
  *      }));
- *
  *
  *      return this.inherited(arguments);
  *
@@ -45,6 +47,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/Deferred'], function (dec
         constructor: function (options) {
             this.options = options;
         },
+
         /**
          * Put anything that needs to be done (configuring, setup, etc.) before your lifecycle is executed.
          *
@@ -57,7 +60,7 @@ define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/Deferred'], function (dec
         startup: function (options) {
 
             if(options) {
-                this.options   = options;
+                this.options = options;
             }
 
             if(!this.deferred) {

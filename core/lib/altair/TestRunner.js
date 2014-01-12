@@ -1,5 +1,5 @@
 /**
- * Runs any tests passed in options.
+ * Our simple test running. Works with doh/runner
  */
 define(['dojo/_base/declare',
         'altair/Lifecycle',

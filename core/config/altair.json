@@ -1,9 +1,14 @@
 {
     "cartridges": [
         {
-            "name": "Nexus",
             "key": "nexus",
-            "path": "altair/cartridges/Nexus"
+            "path": "altair/cartridges/nexus/Nexus"
+        },
+        {
+            "key": "cache",
+            "path": "altair/cartridges/cache/Cache",
+            "options": {
+            }
         }
     ]
 }

@@ -15,7 +15,7 @@ dojoConfig = {
         },
         {
             name: "altair",
-            location: "core/lib"
+            location: "core/lib/altair"
         },
         {
             name: "core",
@@ -31,7 +31,7 @@ dojoConfig = {
     ]
 };
 
-if(true || process.argv[2] == '-test') {
+if(process.argv[2] == '-test') {
     dojoConfig.deps = ['core/bootstrap-test'];
 }
 
