@@ -9,7 +9,7 @@
  * for a stub class you can mixin.
  *
  */
-define(['../../../dojo/_base/declare',
+define(['dojo/_base/declare',
     'dojo/_base/lang',
     'altair/Lifecycle'], function (declare, lang, Lifecycle) {
 

@@ -1,7 +1,7 @@
 /**
  * TEST CARTRIDGE ONLY ** DO NOT USE BECAUSE IT IS REALLY BORING **
  */
-define(['../../dojo/_base/declare', 'altair/Lifecycle'], function (declare, Lifecycle) {
+define(['dojo/_base/declare', 'altair/Lifecycle'], function (declare, Lifecycle) {
 
     return declare([Lifecycle], {
 
