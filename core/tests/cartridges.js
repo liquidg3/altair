@@ -1,4 +1,4 @@
-define(['doh/runner', 'altair/CartridgeFactory', 'dojo/_base/lang'], function (runner, CartridgeFactory, lang) {
+define(['doh/runner', 'altair/cartridges/Foundry', 'dojo/_base/lang'], function (runner, Foundry, lang) {
 
     /**
      * Dependencies
@@ -19,12 +19,12 @@ define(['doh/runner', 'altair/CartridgeFactory', 'dojo/_base/lang'], function (r
     runner.register('cartridges', [
 
         /**
-         * Make sure we can construct a CartridgeFactory instance
+         * Make sure we can construct a Foundry instance
          */
         function () {
 
-            var factory = new CartridgeFactory();
-            runner.assertTrue(!!factory);
+            var foundry = new Foundry();
+            runner.assertTrue(!!foundry);
 
         },
 
@@ -34,10 +34,10 @@ define(['doh/runner', 'altair/CartridgeFactory', 'dojo/_base/lang'], function (r
          */
         function () {
 
-            var factory = new CartridgeFactory(),
-                deferred = new doh.Deferred();
+            var foundry     = new Foundry(),
+                deferred    = new doh.Deferred();
 
-            factory.build(options.cartridges).then(deferred.getTestCallback(lang.hitch(this, function (cartridges) {
+            foundry.build(options.cartridges).then(deferred.getTestCallback(lang.hitch(this, function (cartridges) {
 
                 var mock = cartridges[0];
 
@@ -49,7 +49,7 @@ define(['doh/runner', 'altair/CartridgeFactory', 'dojo/_base/lang'], function (r
             })));
 
 
-            runner.assertTrue(!!factory);
+            runner.assertTrue(!!foundry);
 
             return deferred;
 

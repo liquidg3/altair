@@ -11,7 +11,9 @@
  */
 define(['dojo/_base/declare',
     'dojo/_base/lang',
-    'altair/Lifecycle'], function (declare, lang, Lifecycle) {
+    'dojo/DeferredList',
+    'dojo/Deferred',
+    'altair/Lifecycle'], function (declare, lang, DeferredList, Deferred, Lifecycle) {
 
     return declare([Lifecycle], {
 
@@ -45,6 +47,19 @@ define(['dojo/_base/declare',
 
             return this.inherited(arguments);
 
+        },
+
+        /**
+         * clear resolvers and reset our map
+         *
+         * @returns {*}
+         */
+        teardown: function () {
+
+            this._map       = []
+            this._resolvers = [];
+
+            return this.inherited(arguments);
         },
 
         /**

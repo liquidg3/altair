@@ -1,6 +1,6 @@
 /**
  * Altair's Event/Emitter is a little twist on the original NodeJs EventEmitter implementation. The event system has been
- * augmented with a query engine to allow much more sophisticated listening potential.
+ * augmented with a query engine to allow much more sophisticated listening potential. Take a look at the ReadMe
  */
 define(['dojo/_base/declare',
     'dojo/_base/lang',
@@ -14,7 +14,7 @@ define(['dojo/_base/declare',
 
     return declare(null, {
 
-        agent: agent,
+        _eventListenerQueryAgent: agent,
         _listeners: {},
 
         /**
@@ -67,6 +67,14 @@ define(['dojo/_base/declare',
 
         },
 
+        /**
+         *
+         * @param event
+         * @param data
+         * @param callback
+         * @param config
+         * @returns {number}
+         */
         emit: function (event, data, callback, config) {
 
             event = this._normalizeEvent(event, data);
@@ -76,7 +84,7 @@ define(['dojo/_base/declare',
 
             if(this._listeners[event.name]) {
 
-                var _agent = (config && config.agent) ? config.agent : this.agent;
+                var _agent = (config && config.agent) ? config.agent : this._eventListenerQueryAgent;
 
                 this._listeners[event.name].forEach(lang.hitch(this, function (listener) {
 

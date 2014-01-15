@@ -1,5 +1,5 @@
 /**
- *
+ * Altair actually passes around Event objects to its listeners. This give
  */
 define(['dojo/_base/declare',
     'dojo/_base/lang'
@@ -9,10 +9,12 @@ define(['dojo/_base/declare',
     return declare(null, {
         name: '',
         data: null,
+        target: null,
 
-        constructor: function (name, data) {
+        constructor: function (name, data, target) {
             this.name = name;
             this.data = data;
+            this.target = target;
         },
 
         get: function (name, defaultValue) {

@@ -1,14 +1,23 @@
 {
+    "paths": [
+        "core",
+        "../app"
+    ],
     "cartridges": [
         {
             "key": "nexus",
-            "path": "altair/cartridges/nexus/Nexus"
+            "path": "altair/cartridges/nexus/Nexus",
+            "options": {}
         },
         {
             "key": "cache",
             "path": "altair/cartridges/cache/Cache",
-            "options": {
-            }
+            "options": {}
+        },
+        {
+            "key": "module",
+            "path": "altair/cartridges/module/Module",
+            "options": {}
         }
     ]
 }
