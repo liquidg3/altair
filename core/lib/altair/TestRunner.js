@@ -26,6 +26,12 @@ function (declare, Lifecycle, lang, DeferredList, Deferred, fs, path, doh) {
             var _defers = [],
                 readDeferred = new Deferred();
 
+            options = this.options || options;
+
+            // No tests to run throw error
+            if(!options && !options.paths) {
+                throw "You must pass an array of paths for the test runner to parse to look for tests.";
+            }
 
             options.paths.forEach(lang.hitch(this, function (thisPath, i) {
 
