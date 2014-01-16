@@ -39,30 +39,52 @@ define(['dojo/_base/declare',
     return declare(null, {
 
 
+        modulesToInstantiate: null,
 
         /**
          * Build modules by looking in paths you pass. The modules that come back will *not* be started up.
          *
          * @param options - {
-         *      paths: ['array', 'of', 'dirs', 'to', 'search', 'against']
+         *      paths:      ['array', 'of', 'dirs', 'to', 'search', 'against'],
+         *      modules:    ['array','of','modules','to','instantiate'] //if missing, all modules will be created
          * }
          *
          * @returns {dojo.Deferred}
          */
         build: function (options) {
 
-            var list = [];
+            var list = [],
+                resetModulesToInstantiate = false,
+                oldModulesToInstantiate   = this.modulesToInstantiate;
+
+            //they want to restrict the modules being created
+            if(options.modules) {
+                this.modulesToInstantiate = options.modules;
+            }
+
+            if(!options.paths) {
+                throw "You must pass an array of paths for the Module Foundry to search and parse."
+            }
 
             //usually the path is called vendors
             options.paths.forEach(lang.hitch(this, function (_path) {
                 list.push(this._traverseAndBuildFromVendorsPath(require.toUrl(_path)));
             }));
 
+
             var deferredList = new DeferredList(list),
                 deferred     = new Deferred();
 
-
+            /**
+             * We'll get back a 2 dimensional array where the 1st dimension groups by vendor directory (core, community, local)
+             * and the 2nd dimension are the modules inside that directory.
+             */
             deferredList.then(lang.hitch(this, function (results) {
+
+                //reset modulesToInstantiate for next call, more often than not will be null
+                if(resetModulesToInstantiate) {
+                    this.modulesToInstantiate = oldModulesToInstantiate;
+                }
 
                 var modules = [];
 
@@ -155,8 +177,20 @@ define(['dojo/_base/declare',
                 //here are all the modules, each folder has a js file by the same Name
                 allModules.forEach(lang.hitch(this, function (moduleName) {
 
-                    var modulePath = path.join(modulesPath, moduleName, ucfirst(moduleName)) + '.js';
-                    list.push(this.buildOne(modulePath));
+                    var modulePath  = path.join(modulesPath, moduleName, ucfirst(moduleName)) + '.js',
+                        skip        = false;
+
+                    //if modulesToInstantiate is truthy and this module is NOT in it, we will not create it
+                    if(this.modulesToInstantiate) {
+                        var name = this._pathToModuleName(modulePath);
+                        if(this.modulesToInstantiate.indexOf(name) === -1) {
+                            skip = true;
+                        }
+                    }
+
+                    if(!skip) {
+                        list.push(this.buildOne(modulePath));
+                    }
 
                 }));
 
@@ -166,9 +200,13 @@ define(['dojo/_base/declare',
 
                     var modules = [];
 
-                    results.forEach(function (result) {
-                        modules.push(result[1]);
-                    });
+                    if(list.length > 0) {
+
+                        results.forEach(function (result) {
+                            modules.push(result[1]);
+                        });
+
+                    }
 
                     deferred.resolve(modules);
 
@@ -183,30 +221,43 @@ define(['dojo/_base/declare',
         },
 
         /**
+         * Pass the full path to a Module.js and get back its name.
+         *
+         * @param modulePath
+         * @returns {string}
+         * @private
+         */
+        _pathToModuleName: function (modulePath) {
+
+            var dir         = path.dirname(modulePath),
+                pathParts   = dir.split(path.sep),
+                moduleName  = ucfirst(pathParts.pop()),
+                junk        = pathParts.pop(),
+                vendorName  = ucfirst(pathParts.pop());
+
+
+            return vendorName + ':' + moduleName;
+        },
+
+        /**
          * Pass full path/to/Module.js and I'll load it up
          * @param path
          */
         buildOne: function (modulePath) {
 
-
             var deferred = new Deferred();
 
-            require([modulePath], function (Module) {
+            require([modulePath], lang.hitch(this, function (Module) {
 
-                var module      = new Module(),
-                    dir         = path.dirname(modulePath),
-                    pathParts   = dir.split(path.sep),
-                    moduleName  = ucfirst(pathParts.pop()),
-                    junk        = pathParts.pop(),
-                    vendorName  = ucfirst(pathParts.pop());
+                var module      = new Module();
 
 
-                module.dir  = dir;
-                module.name = vendorName + ':' + moduleName;
+                module.dir  = path.dirname(modulePath);
+                module.name = this._pathToModuleName(modulePath);
 
                 deferred.resolve(module);
 
-            });
+            }));
 
             return deferred;
 

@@ -3,22 +3,26 @@
  */
 define(['dojo/_base/declare',
     'dojo/_base/lang',
-    'altair/Lifecycle',
+    '../Base',
+    'dojo/Deferred',
     './Foundry'], function (declare,
                             lang,
-                            Lifecycle,
+                            Base,
+                            Deferred,
                             Foundry) {
 
-    return declare([Lifecycle], {
+    return declare([Base], {
 
-        foundry: null,
+        foundry:    null,
+        modules:    [],
 
         /**
          * Load up the modules.
          *
          * @param options {
          *
-         *      modules:    ['array', 'of', 'module', 'names'],
+         *      modules:    ['array', 'of', 'module', 'names', 'that', 'will', 'be', 'created'],
+         *      paths:      ['array', 'of', 'paths', 'to', 'look', 'for', 'modules'],
          *      dataStore:  configured instance of altair/cartridges/modules/DataStore
          *
          * }
@@ -29,6 +33,8 @@ define(['dojo/_base/declare',
 
             var modules = options.modules,
                 list    = [];
+
+            this.deferred = new Deferred();
 
 
             if(!modules) {
@@ -54,12 +60,19 @@ define(['dojo/_base/declare',
 
                 throw "Not finished, need to figure out how to do this one";
             }
-            //assume modules are nexus names
+
             else {
 
-                modules.forEach(lang.hitch(this, function (module) {
+                this.foundry.build({
+                    paths: options.paths,
+                    modules: options.modules
+                }).then(lang.hitch(this, function (modules) {
+
+                    this.modules = modules;
+                    this.deferred.resolve(this);
 
                 }));
+
 
             }
 

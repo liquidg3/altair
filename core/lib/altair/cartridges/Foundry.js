@@ -11,6 +11,15 @@ define(['dojo/_base/declare',
 
     return declare(null, {
 
+        altair: null,
+        constructor: function (altair) {
+            this.altair = altair;
+
+            if(!altair) {
+                throw "The Cartridge Foundry must be instantiated with an instance of altair."
+            }
+        },
+
         /**
          * Send me an array of cartridge options and I'll return a deferred that will resolve once all of them our built.
          *

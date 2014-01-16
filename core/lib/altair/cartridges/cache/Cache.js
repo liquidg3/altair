@@ -23,10 +23,10 @@
  */
 define(['dojo/_base/declare',
     'dojo/_base/lang',
-    'altair/Lifecycle',
-    'dojo/Deferred'], function (declare, lang, Lifecycle, Deferred) {
+    '../Base',
+    'dojo/Deferred'], function (declare, lang, Base, Deferred) {
 
-    return declare([Lifecycle], {
+    return declare([Base], {
 
         plugin: null,
 
@@ -45,7 +45,7 @@ define(['dojo/_base/declare',
             if(options.plugin) {
 
                 require([options.plugin.path], lang.hitch(this, function (Plugin) {
-                    this.plugin = new Plugin();
+                    this.plugin = new Plugin(this);
                     this.plugin.startup(options.plugin.options);
                     this.deferred.resolve(this);
                 }));
