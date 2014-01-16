@@ -10,8 +10,8 @@ require(['altair/Altair',
      * Startup the cartridge factory and create the cartridges, then add
      * them to altair.
      */
-    var factory = new Foundry(),
-        altair  = new Altair();
+    var altair  = new Altair(),
+        factory = new Foundry(altair);
 
     console.log('Creating cartridge foundry. Adding', config.cartridges.length, 'cartridges.');
 

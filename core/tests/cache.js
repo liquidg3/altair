@@ -1,4 +1,4 @@
-define(['doh/runner', 'altair/cartridges/cache/Cache', 'altair/cartridges/cache/plugins/Mock', 'dojo/_base/lang'], function (doh, Cache, Mock, lang) {
+define(['doh/runner', 'altair/cartridges/cache/Cache', 'altair/cartridges/cache/plugins/Mock', 'dojo/_base/lang', 'altair/Altair'], function (doh, Cache, Mock, lang, Altair) {
 
     /**
      * Dependencies
@@ -19,7 +19,8 @@ define(['doh/runner', 'altair/cartridges/cache/Cache', 'altair/cartridges/cache/
          */
         function () {
 
-            var cartridge = new Cache();
+            var altair      = new Altair(),
+                cartridge   = new Cache(altair);
 
             doh.assertTrue(!!cartridge, 'Basic instantiation failed.');
 
@@ -31,7 +32,8 @@ define(['doh/runner', 'altair/cartridges/cache/Cache', 'altair/cartridges/cache/
         function () {
 
             var deferred    = new doh.Deferred(),
-                cartridge   = new Cache();
+                altair      = new Altair(),
+                cartridge   = new Cache(altair);
 
             cartridge.startup(options).then(deferred.getTestCallback(lang.hitch(this, function () {
 

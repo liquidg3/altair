@@ -1,4 +1,11 @@
-define(['doh/runner', 'altair/cartridges/nexus/Nexus', 'dojo/_base/lang'], function (doh, Nexus, lang) {
+define(['doh/runner',
+        'altair/cartridges/nexus/Nexus',
+        'dojo/_base/lang',
+        'altair/Altair'],
+                            function (doh,
+                                      Nexus,
+                                      lang,
+                                      Altair) {
 
     /**
      * Dependencies
@@ -34,7 +41,9 @@ define(['doh/runner', 'altair/cartridges/nexus/Nexus', 'dojo/_base/lang'], funct
          */
         function () {
 
-            var nexus = new Nexus();
+            var altair  = new Altair(),
+                nexus   = new Nexus(altair);
+
             doh.assertTrue(!!nexus);
 
         },
@@ -44,7 +53,9 @@ define(['doh/runner', 'altair/cartridges/nexus/Nexus', 'dojo/_base/lang'], funct
          */
         function () {
 
-            var nexus = new Nexus();
+            var altair  = new Altair(),
+                nexus   = new Nexus(altair);
+
             nexus.set('foo', 'bar');
 
             doh.assertEqual('bar', nexus.resolve('foo'), 'Basic Nexus set/get failed.');
@@ -56,7 +67,9 @@ define(['doh/runner', 'altair/cartridges/nexus/Nexus', 'dojo/_base/lang'], funct
          */
         function () {
 
-            var nexus = new Nexus();
+            var altair  = new Altair(),
+                nexus   = new Nexus(altair);
+
             nexus.addResolver(resolver);
 
             doh.assertEqual('bar', nexus.resolve('test'), 'Resolver failed to resolve.');

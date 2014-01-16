@@ -1,4 +1,4 @@
-define(['doh/runner', 'altair/cartridges/Foundry', 'dojo/_base/lang'], function (runner, Foundry, lang) {
+define(['doh/runner', 'altair/Altair', 'altair/cartridges/Foundry', 'dojo/_base/lang'], function (runner, Altair, Foundry, lang) {
 
     /**
      * Dependencies
@@ -23,7 +23,9 @@ define(['doh/runner', 'altair/cartridges/Foundry', 'dojo/_base/lang'], function 
          */
         function () {
 
-            var foundry = new Foundry();
+            var altair  = new Altair(),
+                foundry = new Foundry(altair);
+
             runner.assertTrue(!!foundry);
 
         },
@@ -34,7 +36,8 @@ define(['doh/runner', 'altair/cartridges/Foundry', 'dojo/_base/lang'], function 
          */
         function () {
 
-            var foundry     = new Foundry(),
+            var altair      = new Altair(),
+                foundry     = new Foundry(altair),
                 deferred    = new doh.Deferred();
 
             foundry.build(options.cartridges).then(deferred.getTestCallback(lang.hitch(this, function (cartridges) {

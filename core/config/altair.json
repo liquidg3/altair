@@ -1,7 +1,7 @@
 {
     "paths": [
         "core",
-        "../app"
+        "../../app"
     ],
     "cartridges": [
         {
@@ -17,7 +17,9 @@
         {
             "key": "module",
             "path": "altair/cartridges/module/Module",
-            "options": {}
+            "options": {
+                "modules": ["Altair"]
+            }
         }
     ]
 }

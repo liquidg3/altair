@@ -11,14 +11,25 @@
  */
 define(['dojo/_base/declare',
     'dojo/_base/lang',
-    'dojo/DeferredList',
-    'dojo/Deferred',
-    'altair/Lifecycle'], function (declare, lang, DeferredList, Deferred, Lifecycle) {
+    '../Base'], function (declare,
+                          lang,
+                          Base) {
 
-    return declare([Lifecycle], {
+
+    return declare([Base], {
 
         _resolvers: [],
         _map: {},
+
+        constructor: function (altair) {
+
+            //easy alias for nexus('Altair');
+            this.set('Altair', altair);
+
+            //easy alias for nexus('Nexus')
+            this.set('Nexus', this);
+
+        },
 
         /**
          * If no resolver was passed, instantiate one. Then, setup some basic stuff that we know would be useful.
@@ -36,14 +47,6 @@ define(['dojo/_base/declare',
                     this.addResolver(resolver);
                 }));
             }
-
-            //pass through altair if it was passed
-            if (options && options.altair) {
-                this.set('Altair', options.altair);
-            }
-
-            //Easier to get access this way when working with Nexus externally
-            this.set('Nexus', this);
 
             return this.inherited(arguments);
 
