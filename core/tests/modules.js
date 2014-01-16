@@ -103,6 +103,7 @@ define(['doh/runner',
 
         /**
          * Test that module cartridge can create some modules when passed through to Altair
+         * Purposely passing bad module expecting it to fail and not find Mtock.
          */
         function () {
 
@@ -110,7 +111,7 @@ define(['doh/runner',
                 altair      = new Altair(),
                 cartridge   = new ModuleCartridge(altair, {
                     paths: testPaths,
-                    modules: ["Altair:Mtock"]
+                    modules: ["Altair:Mtock"] // DO NOT TOUCH! READ DESCRIPTION DESCRIPTION ABOVE
                 });
 
 

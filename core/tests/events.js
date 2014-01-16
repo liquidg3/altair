@@ -42,7 +42,10 @@ define(['doh/runner',
                 event = new Event('test', {
                     foo: 'bar',
                     cheesy: {
-                        gordida: 'crunch'
+                        gordida: 'crunch',
+                        crunch: {
+                            tacos: "Ay Caramba"
+                        }
                     }
                 });
 
@@ -53,6 +56,10 @@ define(['doh/runner',
             doh.assertTrue(agent.matches(event, {
                 'cheesy.gordida': 'crunch'
             }), 'Nested object query fail');
+
+            doh.assertTrue(agent.matches(event, {
+                'cheesy.crunch.tacos': 'Ay Caramba'
+            }), 'Triple Nested object query fail');
 
         },
 
@@ -77,6 +84,11 @@ define(['doh/runner',
             doh.assertTrue(agent.matches(event, {
                 'foo': 'bar'
             }), 'Basic query agent match failed.');
+
+            // @TODO Implement dot syntax for getters > QueryAgents.js
+//            doh.assertTrue(agent.matches(event, {
+//                'cheesy.gordita': 'crunch'
+//            }), 'Getter double query agent match failed.');
 
         },
 
@@ -126,7 +138,7 @@ define(['doh/runner',
         function () {
 
             var emitter     = new Emitter(),
-                deferred    = new doh.Deferred()
+                deferred    = new doh.Deferred();
 
             emitter.on('dummy-event-3', deferred.getTestCallback(function (e) {
                 doh.assertEqual('dummy-event-3', e.name, 'Event was not created as expected.');
@@ -164,11 +176,6 @@ define(['doh/runner',
 
         }
 
-
-
-
-
     ]);
-
 
 });
