@@ -21,5 +21,5 @@ You get the picture. Writing code to do this mundane setup is a waste of time.
 
 Now that we've got that out of the way, go ahead and run:
 
-$ node altair.js
+$ node altair.js<br/>
 $ node altair.js -test
