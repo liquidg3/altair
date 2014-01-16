@@ -6,7 +6,6 @@ define(['doh/runner', 'altair/Altair', 'altair/cartridges/Foundry', 'dojo/_base/
     var options   = {
             cartridges: [
                 {
-                    "name": "Mock",
                     "path": "altair/cartridges/Mock",
                     "options": {
                         foo: "bar"
@@ -23,8 +22,7 @@ define(['doh/runner', 'altair/Altair', 'altair/cartridges/Foundry', 'dojo/_base/
          */
         function () {
 
-            var altair  = new Altair(),
-                foundry = new Foundry(altair);
+            var foundry = new Foundry();
 
             runner.assertTrue(!!foundry);
 
@@ -36,8 +34,7 @@ define(['doh/runner', 'altair/Altair', 'altair/cartridges/Foundry', 'dojo/_base/
          */
         function () {
 
-            var altair      = new Altair(),
-                foundry     = new Foundry(altair),
+            var foundry     = new Foundry(),
                 deferred    = new doh.Deferred();
 
             foundry.build(options.cartridges).then(deferred.getTestCallback(lang.hitch(this, function (cartridges) {

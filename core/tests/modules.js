@@ -14,8 +14,8 @@ define(['doh/runner',
      */
     var testPaths = ['altair/cartridges/module/test'],
         nexusMaps = {
-        'Altair:Jarvis': 'core/vendors/altair/modules/'
-    };
+            'Altair:Jarvis': 'core/vendors/altair/modules/'
+        };
 
     doh.register('modules', [
 

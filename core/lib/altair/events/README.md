@@ -33,6 +33,6 @@ be writing much code for event listeners, you will be setting them up inside you
 Using the Emitter
 ==
 
-The Emitter is a simple mixin that will give your component all the pieces it needs to be a 1st class event despatching
+The Emitter is a simple mixin that will give your component all the pieces it needs to be a 1st class event dispatching
 citizen.
 
