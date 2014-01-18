@@ -25,9 +25,15 @@ define(['dojo/_base/declare',
          */
         addCartridge: function (cartidge) {
 
+            var deferred = new Deferred();
+
             this._cartridges[cartidge.key] = cartidge;
 
-            return cartidge.startup();
+            cartidge.startup().then(function (cartridge) {
+                cartridge.execute().then(lang.hitch(deferred, 'resolve'));
+            });
+
+            return deferred;
 
         },
 

@@ -234,7 +234,8 @@ lang.extend(doh.Deferred, {
 		this.then(cb, eb);
 	},
 
-	addCallback: function(cb, cbfn){
+
+    addCallback: function(cb, cbfn){
 		var enclosed = this.getFunctionFromArgs(cb, cbfn);
 		if(arguments.length > 2){
 			enclosed = lang.hitch(null, enclosed, arguments, 2);
