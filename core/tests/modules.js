@@ -158,6 +158,8 @@ define(['doh/runner',
 
                         doh.assertTrue(!!cartridge.modules, 'module cartridge failed to create modules when plugins were passed too');
                         doh.assertEqual(1, cartridge.modules.length, 'module cartridge failed to create modules when plugins were passed too');
+                        doh.assertEqual('bar', cartridge.modules[0].foo(), 'Mock plugin failed to create foo() method.');
+                        doh.assertEqual('nexus', cartridge.modules[0].nexus.nom, 'Mock plugin failed to create nexus() method.');
 
                         deferred.resolve(true)
 

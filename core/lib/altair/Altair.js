@@ -38,7 +38,7 @@ define(['dojo/_base/declare',
         },
 
         /**
-         * Removes a cartridge, but tears it down irst
+         * Removes a cartridge, but tears it down first
          *
          * @param key
          * @returns dojo/Deferred
@@ -64,7 +64,7 @@ define(['dojo/_base/declare',
         },
 
         /**
-         * Add an array of cartridges. Each next cartridge will wa
+         * Add an array of cartridges. Each cartridge will wa
          *
          * @param cartridges
          * @returns dojo/Deferred
