@@ -6,7 +6,7 @@ define(['dojo/_base/declare',
     '../Base',
     'dojo/Deferred',
     'dojo/DeferredList',
-    'Resolver',
+    './Resolver',
     './Foundry'], function (declare, lang, Base, Deferred, DeferredList, Resolver, Foundry) {
 
     return declare('altair/cartridges/module/Module', [Base], {

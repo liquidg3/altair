@@ -37,7 +37,12 @@
  * is to ensure execute() has everything it needs to do its job. Don't abuse startup().
  *
  */
-define(['dojo/_base/declare', 'dojo/_base/lang', 'dojo/Deferred'], function (declare, lang, Deferred) {
+define(['dojo/_base/declare',
+        'dojo/_base/lang',
+        'dojo/Deferred'],
+                        function (declare,
+                                  lang,
+                                  Deferred) {
 
     return declare('altair/Lifecycle', null, {
 

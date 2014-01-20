@@ -18,10 +18,13 @@ define(['dojo/_base/declare',
 
     return declare('altair/cartridges/nexus/Nexus', [Base], {
 
-        _resolvers: [],
-        _map: {},
+        _resolvers: null,
+        _map:       null,
 
         constructor: function (altair) {
+
+            this._resolvers = [];
+            this._map       = {};
 
             //easy alias for nexus('Altair');
             this.set('Altair', altair);
