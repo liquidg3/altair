@@ -1,4 +1,4 @@
-define(['doh/runner', 'altair/Altair'], function (doh, Altair) {
+define(['doh/runner', 'altair/Altair', 'dojo/Deferred'], function (doh, Altair, Deferred) {
 
     doh.register('altair', [
         /**
@@ -19,14 +19,28 @@ define(['doh/runner', 'altair/Altair'], function (doh, Altair) {
 
             var setupCalled = false,
                 teardownCalled = false,
+                executeCalled   = false,
                 cartridge = {
 
                     startup: function () {
                         setupCalled = true;
+                        var deferred = new Deferred();
+                        deferred.resolve(this);
+                        return deferred;
+                    },
+
+                    execute: function () {
+                        executeCalled = true;
+                        var deferred = new Deferred();
+                        deferred.resolve(this);
+                        return deferred;
                     },
 
                     teardown: function () {
                         teardownCalled = true;
+                        var deferred = new Deferred();
+                        deferred.resolve(this);
+                        return deferred;
                     }
 
                 },
@@ -35,7 +49,8 @@ define(['doh/runner', 'altair/Altair'], function (doh, Altair) {
             a.addCartridge(cartridge);
 
             doh.assertTrue(setupCalled, 'setup not called on cartridge');
-            doh.assertFalse(teardownCalled, 'teardown should not called on cartridge');
+            doh.assertTrue(executeCalled, 'execute not called on cartridge');
+            doh.assertFalse(teardownCalled, 'teardown should NOT be called on cartridge');
 
         }
     ]);

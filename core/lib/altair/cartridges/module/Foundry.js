@@ -127,10 +127,15 @@ define(['dojo/_base/declare',
                 //each vendor folder has a modules dir which contains an array of modules
                 vendors.forEach(lang.hitch(this, function (vendor) {
 
-                    var modulesPath = path.join(vendorsPath, vendor, 'modules');
+                    if(vendor[0] !== '.') {
 
-                    //load modules for this vendor
-                    list.push(this._traverseAndBuildFromModulesPath(modulesPath));
+                        var modulesPath = path.join(vendorsPath, vendor, 'modules');
+
+                        //load modules for this vendor
+                        list.push(this._traverseAndBuildFromModulesPath(modulesPath));
+
+                    }
+
 
                 }));
 
@@ -177,20 +182,25 @@ define(['dojo/_base/declare',
                 //here are all the modules, each folder has a js file by the same Name
                 allModules.forEach(lang.hitch(this, function (moduleName) {
 
-                    var modulePath  = path.join(modulesPath, moduleName, ucfirst(moduleName)) + '.js',
-                        skip        = false;
+                    if(moduleName[0] !== '.') {
 
-                    //if modulesToInstantiate is truthy and this module is NOT in it, we will not create it
-                    if(this.modulesToInstantiate) {
-                        var name = this._pathToModuleName(modulePath);
-                        if(this.modulesToInstantiate.indexOf(name) === -1) {
-                            skip = true;
+                        var modulePath  = path.join(modulesPath, moduleName, ucfirst(moduleName)) + '.js',
+                            skip        = false;
+
+                        //if modulesToInstantiate is truthy and this module is NOT in it, we will not create it
+                        if(this.modulesToInstantiate) {
+                            var name = this._pathToModuleName(modulePath);
+                            if(this.modulesToInstantiate.indexOf(name) === -1) {
+                                skip = true;
+                            }
                         }
+
+                        if(!skip) {
+                            list.push(this.buildOne(modulePath));
+                        }
+
                     }
 
-                    if(!skip) {
-                        list.push(this.buildOne(modulePath));
-                    }
 
                 }));
 
