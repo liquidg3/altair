@@ -3,7 +3,7 @@
  */
 define(['dojo/_base/declare', 'altair/Lifecycle'], function (declare, Lifecycle) {
 
-    return declare([Lifecycle], {
+    return declare('altair/cartridges/Mock', [Lifecycle], {
 
         startedUp: false,
         tornDown: false,

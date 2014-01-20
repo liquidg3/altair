@@ -3,7 +3,7 @@
  */
 define(['dojo/_base/declare', './Base'], function (declare, Base) {
 
-    return declare([Base], {
+    return declare('altair/cartridges/module/plugins/Mock',[Base], {
 
         foo: 'bar',
         execute: function (module) {

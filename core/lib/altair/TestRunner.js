@@ -11,7 +11,7 @@ define(['dojo/_base/declare',
         'doh/runner'],
 function (declare, Lifecycle, lang, DeferredList, Deferred, fs, path, doh) {
 
-    return declare([Lifecycle], {
+    return declare('altair/TestRunner', [Lifecycle], {
 
         /**
          * @param options

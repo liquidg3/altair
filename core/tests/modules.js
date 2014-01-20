@@ -1,9 +1,11 @@
 define(['doh/runner',
         'altair/cartridges/module/Module',
+        'altair/cartridges/nexus/Nexus',
         'altair/Altair',
         'altair/cartridges/module/Foundry'],
                             function (doh,
                                       ModuleCartridge,
+                                      NexusCartridge,
                                       Altair,
                                       Foundry) {
 
@@ -134,7 +136,9 @@ define(['doh/runner',
         /**
          * Test the nexis plugin and make sure it adds a _nexus instance and nexus() and that the
          * Mock plugin adds property called "foo" with a value of "bar" to all modules being created in the module
-         * cartridge
+         * cartridge.
+         *
+         * I'm not sure if i needed to increase the timeout to 500 or even why i did this one unlike the others, just lots of testing i guess =)
          */
         {
             name: 'cartridgeWithPluginsAndModules',
@@ -192,6 +196,28 @@ define(['doh/runner',
 
                 doh.assertEqual(1, cartridge.modules.length, 'Module creation failed through Altair and the ModuleCartridge');
                 doh.assertEqual('Altair:Mock', cartridge.modules[0].name, 'Module name was not set.');
+
+            }));
+
+        },
+
+        /**
+         * Test module resolver for nexus
+         */
+        function () {
+
+            var deferred    = new doh.Deferred(),
+                altair      = new Altair(),
+                nexus       = new NexusCartridge(altair),
+                modules     = new ModuleCartridge(altair, {
+                    paths: testPaths,
+                    modules: ["Altair:Mock"]
+                });
+
+
+            altair.addCartridges([nexus, modules]).then(deferred.getTestCallback(function () {
+
+                var mock = nexus.resolve('Altair:Mock');
 
             }));
 

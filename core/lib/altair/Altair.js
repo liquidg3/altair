@@ -13,7 +13,7 @@ define(['dojo/_base/declare',
 
 
 
-    return declare(null, {
+    return declare('altair/Altair', null, {
 
         _cartridges:    {},
 
@@ -64,7 +64,8 @@ define(['dojo/_base/declare',
         },
 
         /**
-         * Add an array of cartridges. Each cartridge will wa
+         * Add an array of cartridges. Each cartridge will be started up AFTER the one before it. This is to ensure
+         * dependencies are started up on time
          *
          * @param cartridges
          * @returns dojo/Deferred

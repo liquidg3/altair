@@ -6,7 +6,7 @@ define(['dojo/_base/declare',
 ], function (declare, lang) {
 
 
-    return declare(null, {
+    return declare('altair/cartridges/test/altair/modules/mock/Mock', null, {
 
     });
 });

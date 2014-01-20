@@ -16,7 +16,7 @@ define(['dojo/_base/declare',
                           Base) {
 
 
-    return declare([Base], {
+    return declare('altair/cartridges/nexus/Nexus', [Base], {
 
         _resolvers: [],
         _map: {},

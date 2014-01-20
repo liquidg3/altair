@@ -36,7 +36,7 @@ define(['dojo/_base/declare',
     }
 
 
-    return declare(null, {
+    return declare('altair/cartridges/module/Foundry', null, {
 
 
         modulesToInstantiate: null,

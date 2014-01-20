@@ -9,7 +9,7 @@ define(['dojo/_base/declare',
                                     DeferredList,
                                     Deferred) {
 
-    return declare(null, {
+    return declare('altair/cartridges/Foundry', null, {
 
         /**
          * Send me an array of cartridge options and I'll return a deferred that will resolve once all of them our built.
