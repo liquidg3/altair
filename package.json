@@ -1,4 +1,16 @@
 {
     "name": "altair.io",
-    "private": true
+    "version": "0.0.4",
+    "description": "placeholder- comming soon",
+    "main": "Altair.js",
+    "private": true,
+    "dependencies": {
+        "altair": "git+https://altair-admin@bitbucket.org/altair-admin/altair.git"
+    },
+    "scripts": {
+        "test": "Altair -test"
+    },
+
+    "author": "altair.io <admin@altair.io> (http://altair.io/)",
+    "license": "BSD-2-Clause"
 }
