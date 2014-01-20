@@ -21,7 +21,7 @@ Core Values
 ---
 
 The Altair team has a core principle different than most other software teams. We strive for these values in everything that
-we do. Sometimes we come up short, but we always try and push each other as to our limit.
+we do. Sometimes we come up short, but we always try and push each other to our limits and keep each other honest.
 
 1. **Tomorrow must be more productive than today.** Over enough time, all things are renewable. All things except time.
 We do everything in our power to enhance each others productivity while minimizing the complexities added to our lives.
