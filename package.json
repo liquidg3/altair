@@ -1,9 +1,8 @@
 {
     "name": "altair.io",
-    "version": "0.0.1",
+    "version": "0.0.11",
     "description": "A platfrom to facilitate the building of experiences in the Internet of Everything.",
     "main": "altair.js",
-    "private": true,
     "repository": {
         "type": "git",
         "url": "https://altair-admin@bitbucket.org/altair-admin/altair.git"
@@ -11,7 +10,10 @@
     "scripts": {
         "test": "Altair -test"
     },
+    "dependencies": {
+        "underscore-query": ">=0.4.x"
+    },
 
     "author": "altair.io <admin@altair.io> (http://altair.io/)",
-    "license": "BSD-2-Clause"
+    "license": "MIT"
 }
