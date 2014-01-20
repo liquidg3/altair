@@ -15,27 +15,27 @@ enable the Titan:Alfred module to have web server functionality through [express
 web application framework that exists for node.
 
 Altair's flexible architecture actually allows us to connect to other libraries, platforms, frameworks, as easily as devices.
-Connecting hardware and software are both amazingly easy in Altair.
+Connecting hardware and software are now both amazingly easy!
 
 Core Values
 ---
 
-The Altair team has a core principle different than most other software teams. We strive for these values in everything that
-we do. Sometimes we come up short, but we always try and push each other to our limits and keep each other honest.
+The Altair team has core principles different than most other software teams. We strive for these values in everything that
+we do. Sometimes we come up short, but we push each other to our limits and keep each other honest.
 
-1. **Tomorrow must be more productive than today.** Over enough time, all things are renewable. All things except time.
-We do everything in our power to enhance each others productivity while minimizing the complexities added to our lives.
+1. **Tomorrow must be more productive than today.** Over enough time, almost all things are renewable. All things except time.
+We do everything in our power to enhance each others productivity while minimizing the complexities added to our lives. We
+can't get our time back, so lets maximize what we can get done and minimize the time that it takes.
 
 1. **The difficulties in managing the code should not increase with lines of code.** We chose
 [dojo's very powerful AMD implementation](http://dojotoolkit.org/documentation/tutorials/1.9/modules/) to
-keep code management from becoming a problem we have to solve (we hate solving problems that are not the problems we're
-setting out to solve =). We also rely on a strict file and config structure. It's proven very successful for us and we
-only intend on making it better.
+keep code management from becoming a problem we have to solve). We also rely on a strict file and config structure.
+It's proven very successful for us and we only intend on making it better.
 
 1. **One should focus on the problem they are trying to solve and forget all else.** We are trying to solve the problem
 of how to connect and control many devices as elegantly and simply as possible, not whether or not Ember.js is cooler
-than Angular.js or if python would kick ruby's ass in a street fight. Do that stuff over the foosball table while we blow
-minds.
+than Angular.js or if python would kick ruby's ass in a street fight. Do that stuff over the foosball table, we'll be over
+here building mind blowing experiences.
 
 1. **Never forget that it's the value our systems provide to individuals that allows us to pursue our passions.** If you
 have time to spend, why not spend it making someones life better. We are going to launch our "App Store of Everything"
