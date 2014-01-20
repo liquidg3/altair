@@ -1,7 +1,7 @@
 {
     "name": "altair.io",
-    "version": "0.0.9",
-    "description": "placeholder- comming soon",
+    "version": "0.0.1",
+    "description": "A platfrom to facilitate the building of experiences in the Internet of Everything.",
     "main": "altair.js",
     "private": true,
     "repository": {
