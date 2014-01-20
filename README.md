@@ -7,7 +7,7 @@ Value Proposition
 ---
 
 Altair was build with the vision of creating what we've coined as, "experiences of everything." This is more than just
-connecting to devices: it's orchestrating complex interactions between those devices in such a way to blend the technology
+connecting to devices: it's orchestrating complex interactions between those devices in such a way as to blend the technology
 so beautifully into our lives that we don't even know that it's there.
 
 But, controlling devices is only one of many things Altair can do (through the Altair:Jarvis module). You can download and
@@ -44,7 +44,8 @@ to start full time enterprises.
 
 1. **Commit on a convention, not on an implementation.** By wrapping complex systems in simple and consistent API's, we
 are able to break the coupling between us and our 3rd party choices. Example, don't like how the express handles its web
-requests, fine, use Titan:Alfred's adapter engine to drop in
+requests, fine, use Titan:Alfred's adapter engine to drop in another one. Hell, don't like how the Titan:Alfred module
+normalizes web experiences, then create a new module to do it your way.
 
 Events++
 ---
@@ -137,3 +138,9 @@ Now check out how easy it is to control our imaginary thermostat and maybe some 
 
 
     }
+
+The examples above would never scale when it comes to controlling 1000's of devices. That's cool, the examples are just
+to give you a taste of how easy it is to create "experiences in everything."
+
+Modules
+---
