@@ -1,6 +1,7 @@
 Altair
 ===
 
+
 Welcome to the IoE. Before you get started, you should read this whole thing. It's worth it and we'll keep it short!
 
 Value Proposition
