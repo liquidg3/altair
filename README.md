@@ -1,9 +1,8 @@
-Altair
-===
+###Altair
 
 **UNSTABLE - ONLY TESTS RUN**
 
-    #node core/altair.js -test
+    #node altair.js -test
 
 Welcome to the IoE. Before you get started, you should read this whole thing. It's worth it and we'll keep it short!
 
@@ -62,7 +61,7 @@ See it in action:
     /**
      * Altair has 2 ways to set listeners, the chain'able way is .on(eventName, query).then(...
      */
-    this.on('Altair:Jarvis::DID_GESTURE', { 'gesture.type': 'the-force' }).then(function (e) {
+    this.on('Altair:Jarvis::DID_GESTURE', { 'gesture.type': 'the-force' }).then(lang.hitch(this, function (e) {
 
         //the device that triggered the gesture
         var device = e.get('device');
@@ -75,11 +74,11 @@ See it in action:
     /**
      * The normal normal way is on(eventName, callback, query)
      */
-    this.on('Altair:Jarvis::DID_GESTURE', function (e) {
+    this.on('Altair:Jarvis::DID_GESTURE', lang.hitch(this, function (e) {
 
         ....
 
-    }, { 'gesture.type': 'the-force' });
+    }), { 'gesture.type': 'the-force' });
 
 We have build a simple QueryAgent system that allows us to swap out query engines. Currently we use the kickass
 [underscore-query](https://github.com/davidgtonge/underscore-query) and absolutely love it! But, in Altair tradition,
@@ -148,6 +147,7 @@ Now check out how easy it is to control our imaginary thermostat and maybe some 
 The examples above would never scale when it comes to controlling 1000's of devices. That's cool, the examples are just
 to give you a taste of how easy it is to create "experiences in everything."
 
-##Modules
+Modules
+---
 The module layer is the most powerful in all of Altair. This is because it is where all events in the system are centralized
 on the module layer. This makes it very easy to hook into the events taking place in both the digital and analog worlds.

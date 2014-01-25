@@ -1,3 +1,6 @@
+/**
+ * Base field type
+ */
 define(['dojo/_base/declare',
     'dojo/Deferred',
     'dojo/_base/lang'
@@ -5,7 +8,10 @@ define(['dojo/_base/declare',
 
     return declare('apollo/fieldtypes/_Base', null, {
 
-        schemaPath: 'config/schema.json'
+        options: {},
+        renderer: null,
+
+        transform
 
     });
 });
