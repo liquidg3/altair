@@ -61,7 +61,9 @@ define(['dojo/_base/declare',
                                 files.forEach(lang.hitch(this, function (name) {
 
                                     //include the test
-                                    _defers.push( this.includeTest( path.join(thisPath, name ) ));
+                                    if(name.search('.js') > 0) {
+                                        _defers.push( this.includeTest( path.join(thisPath, name ) ));
+                                    }
 
                                     //we have read and included all files
                                     if(i == options.paths.length -1) {
