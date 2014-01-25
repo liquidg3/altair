@@ -3,13 +3,14 @@
  */
 define(['dojo/_base/declare',
     'dojo/_base/lang',
-    '../Base',
+    '../_Base',
     'dojo/Deferred',
     'dojo/DeferredList',
     './Resolver',
-    './Foundry'], function (declare, lang, Base, Deferred, DeferredList, Resolver, Foundry) {
+    'altair/Lifecycle',
+    './Foundry'], function (declare, lang, _Base, Deferred, DeferredList, Resolver, Lifecycle, Foundry) {
 
-    return declare('altair/cartridges/module/Module', [Base], {
+    return declare('altair/cartridges/module/Module', [_Base], {
 
         foundry: null,
         modules: null,
@@ -34,7 +35,6 @@ define(['dojo/_base/declare',
             var modules = options.modules;
 
             this.deferred = new Deferred();
-
 
             if (!modules) {
                 throw "The Modules Cartridge needs some modules, yo.";
@@ -111,15 +111,59 @@ define(['dojo/_base/declare',
 
             this.buildModules(this.options.modules).then(lang.hitch(this, function (modules) {
 
-                this.modules = modules;
-                this.deferred.resolve(this);
+                //soft copy
+                this.modules = modules.slice(0);
+
+                //lets startup all modules, ensuring one is not started until the one before it is
+                var load = lang.hitch(this, function () {
+
+                    var module = modules.pop();
+
+                    if(module) {
+
+                        //lifecycle class gets startup
+                        if(module.isInstanceOf && module.isInstanceOf(Lifecycle)) {
+                            module.startup().then(load);
+                        }
+                        //but it's not required
+                        else {
+                            load();
+                        }
+                    } else {
+                        this.deferred.resolve(this);
+                    }
+                });
+
+                load();
+
 
             }));
 
             return this.inherited(arguments);
         },
 
+        /**
+         * Teardown every module, leave no prisoners!
+         *
+         * @returns {*}
+         */
         teardown: function () {
+
+            //tear down all the modules
+            var list = [];
+
+            this.modules.forEach(function (module) {
+                list.push(module.teardown());
+            });
+
+            //make sure auto resolved deferred is not returned by Lifecycle parent
+            this.deferred = new Deferred();
+            this.modules  = [];
+
+            var deferred = new DeferredList(list);
+            deferred.on(lang.hitch(this, function() {
+                this.deferred.resolve(this);
+            }));
 
 
             return this.inherited(arguments);

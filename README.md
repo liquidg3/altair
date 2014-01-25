@@ -1,7 +1,11 @@
-#Altair
+Altair
+===
+
 Welcome to the IoE. Before you get started, you should read this whole thing. It's worth it and we'll keep it short!
 
-###Value Proposition
+Value Proposition
+---
+
 Altair was build with the vision of creating what we've coined as, "experiences of everything." This is more than just
 connecting to devices: it's orchestrating complex interactions between those devices in such a way as to blend the technology
 so beautifully into our lives that we don't even know that it's there.
@@ -13,7 +17,8 @@ web application framework that exists for node.
 Altair's flexible architecture actually allows us to connect to other libraries, platforms, frameworks, as easily as devices.
 Connecting hardware and software are now both amazingly easy!
 
-###Core Values
+Core Values
+---
 
 The Altair team has core principles different than most other software teams. We strive for these values in everything that
 we do. Sometimes we come up short, but we push each other to our limits and keep each other honest.
@@ -42,7 +47,9 @@ are able to break the coupling between us and our 3rd party choices. Example, do
 requests, fine, use Titan:Alfred's adapter engine to drop in another one. Hell, don't like how the Titan:Alfred module
 normalizes web experiences, then create a new module to do it your way.
 
-##Events++
+Events++
+---
+
 One thing that makes Altair different is its event engine. We have taken the EventEmitter api and added a query engine.
 See it in action:
 
@@ -136,4 +143,5 @@ The examples above would never scale when it comes to controlling 1000's of devi
 to give you a taste of how easy it is to create "experiences in everything."
 
 ##Modules
-
+The module layer is the most powerful in all of Altair. This is because it is where all events in the system are centralized
+on the module layer. This makes it very easy to hook into the events taking place in both the digital and analog worlds.

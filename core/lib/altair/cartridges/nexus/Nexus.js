@@ -11,12 +11,13 @@
  */
 define(['dojo/_base/declare',
     'dojo/_base/lang',
-    '../Base'], function (declare,
+    '../_Base'],
+                function (declare,
                           lang,
-                          Base) {
+                          _Base) {
 
 
-    return declare('altair/cartridges/nexus/Nexus', [Base], {
+    return declare('altair/cartridges/nexus/Nexus', [_Base], {
 
         _resolvers: null,
         _map:       null,

@@ -261,7 +261,6 @@ define(['dojo/_base/declare',
 
                 var module      = new Module();
 
-
                 module.dir  = path.dirname(modulePath);
                 module.name = this._pathToModuleName(modulePath);
 

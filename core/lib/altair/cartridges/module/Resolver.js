@@ -2,12 +2,12 @@
  * The nexus resolver used to let users gain access to modules via nexus
  */
 define(['dojo/_base/declare',
-        'altair/cartridges/nexus/ResolverBase',
+        'altair/cartridges/nexus/_ResolverBase',
         'dojo/_base/lang'], function (declare,
-                                      ResolverBase,
+                                      _ResolverBase,
                                       lang) {
 
-    return declare('altair/cartridges/module/Resolver', [ResolverBase], {
+    return declare('altair/cartridges/module/Resolver', [_ResolverBase], {
 
         resolve: function (key, options, config) {},
         handles: function (key) {

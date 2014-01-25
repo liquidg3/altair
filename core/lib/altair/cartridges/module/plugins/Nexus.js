@@ -1,9 +1,9 @@
 /**
  * Gives each module a nexus() function that will resolve nexus('') calls
  */
-define(['dojo/_base/declare', 'dojo/Deferred', './Base'], function (declare, Deferred, Base) {
+define(['dojo/_base/declare', 'dojo/Deferred', './_Base'], function (declare, Deferred, _Base) {
 
-    return declare('altair/cartridges/module/plugins/Nexus', [Base], {
+    return declare('altair/cartridges/module/plugins/Nexus', [_Base], {
 
         execute: function (module) {
 

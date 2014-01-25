@@ -1,6 +1,6 @@
-define(['dojo/_base/declare', 'dojo/Deferred', './Base'], function (declare, Deferred, Base) {
+define(['dojo/_base/declare', 'dojo/Deferred', './_Base'], function (declare, Deferred, _Base) {
 
-    return declare([Base], {
+    return declare([_Base], {
 
         values: {},
         startedUp: false,

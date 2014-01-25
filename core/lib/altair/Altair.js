@@ -3,8 +3,8 @@
  * responsible for enhancing the environment in various ways. It should be really easy to augment the platform at a very
  * low level this way. Chances are that if you need to add new functionality into the platform you should be doing it
  * as a module. The only things that should be cartridges are components that need to exist before the module system
- * is ready. Currently, this is things like Nexus, Cache, Database, and a few others. See core/config/altair.json to see
- * the current config.
+ * is ready. Currently, this is things like Nexus (Dependency Injection), Apollo (ORM), Cache, Database, and a few others.
+ * See core/config/altair.json to see the current config.
  */
 define(['dojo/_base/declare',
         'dojo/Deferred',
@@ -38,7 +38,7 @@ define(['dojo/_base/declare',
         },
 
         /**
-         * Removes a cartridge, but tears it down first
+         * Removes a cartridge, but tears it down first.
          *
          * @param key
          * @returns dojo/Deferred
@@ -65,7 +65,7 @@ define(['dojo/_base/declare',
 
         /**
          * Add an array of cartridges. Each cartridge will be started up AFTER the one before it. This is to ensure
-         * dependencies are started up on time
+         * dependencies are in place before dependants are loaded =)
          *
          * @param cartridges
          * @returns dojo/Deferred

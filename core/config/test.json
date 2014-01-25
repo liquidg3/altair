@@ -1,5 +1,6 @@
 {
     "paths": [
-        "core/tests"
+        "core/tests",
+        "apollo/tests"
     ]
 }

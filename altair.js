@@ -24,6 +24,10 @@ dojoConfig = {
         {
             name: "doh",
             location: "core/lib/doh"
+        },
+        {
+            name: "apollo",
+            location: "core/lib/apollo"
         }
     ],
     deps: [
