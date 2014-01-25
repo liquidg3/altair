@@ -104,7 +104,7 @@ verbal command send from an imaginary thermostat with a microphone attached to i
     }
 
 From the config/listeners.json above you can see that the "onDidYellAtThermostat" method will be called when a device whose
-tags contain thermostat and whose command starts with the word "thermostat." This gives the very cool effect of making
+tags contain thermostat and is given a verbal command (speech to text) that starts with the word "thermostat." This gives the very cool effect of making
 it seem that we are commanding our thermostat by name (API's may change)!
 
 Now check out how easy it is to control our imaginary thermostat and maybe some [Philips Hue Light Bulbs](http://www.meethue.com) too:
