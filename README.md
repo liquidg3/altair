@@ -12,10 +12,12 @@ so beautifully into our lives that we don't even know that it's there.
 
 But, controlling devices is only one of many things Altair can do (through the Altair:Jarvis module). You can download and
 enable the Titan:Alfred module to have web server functionality through [express](http://expressjs.com/) or any other
-web application framework that exists for node.
+web application framework that exists for node. Then, have your webpage update in real time as sensors are triggered and
+switches are flipped.
 
-Altair's flexible architecture actually allows us to connect to other libraries, platforms, frameworks, as easily as devices.
-Connecting hardware and software are now both amazingly easy!
+Altair will blend the digital and analog words like nothing before it. Its flexible architecture actually allows it to
+connect to other libraries, platforms, frameworks, as easily as devices. Connecting hardware and software are both
+brilliantly simple in Altair!
 
 Core Values
 ---
