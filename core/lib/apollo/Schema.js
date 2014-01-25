@@ -9,21 +9,22 @@ define(['dojo/_base/declare',
     return declare('apollo/Schema', null, {
 
         data: null,
-        apollo: null,
 
         /**
-         * Pass through straight config... assume its setup how we like it. We also need apollo to get access to all our
-         * fieldtypes with house our casting and rendering
+         * Pass through straight config... assume its setup how we like it.
          *
          * @param schema
          */
-        constructor: function (schema, apollo) {
+        constructor: function (schema) {
             this.data = schema;
-            this.apollo = apollo;
         },
 
         has: function (fieldName) {
             return fieldName in this.data.elements;
+        },
+
+        optionsFor: function (fieldName) {
+            return this.data.elements[fieldName].options;
         }
 
     });
