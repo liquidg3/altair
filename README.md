@@ -144,7 +144,6 @@ Now check out how easy it is to control our imaginary thermostat and maybe some 
 The examples above would never scale when it comes to controlling 1000's of devices. That's cool, the examples are just
 to give you a taste of how easy it is to create "experiences in everything."
 
-Modules
----
+##Modules
 The module layer is the most powerful in all of Altair. This is because it is where all events in the system are centralized
 on the module layer. This makes it very easy to hook into the events taking place in both the digital and analog worlds.
