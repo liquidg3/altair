@@ -1,7 +1,6 @@
 Altair
 ===
 
-
 Welcome to the IoE. Before you get started, you should read this whole thing. It's worth it and we'll keep it short!
 
 Value Proposition
@@ -145,3 +144,5 @@ to give you a taste of how easy it is to create "experiences in everything."
 
 Modules
 ---
+The module layer is the most powerful in all of Altair. This is because it is where all events in the system are centralized
+on the module layer. This makes it very easy to hook into the events taking place in both the digital and analog worlds.

@@ -4,7 +4,7 @@
  */
 define(['dojo/_base/declare', 'dojo/_base/lang'], function (declare, lang) {
 
-    return declare('altair/cartridges/nexus/ResolverBase', null, {
+    return declare('altair/cartridges/nexus/_ResolverBase', null, {
 
         resolve: function (key, options, config) {},
         handles: function (key) {

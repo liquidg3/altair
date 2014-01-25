@@ -23,10 +23,10 @@
  */
 define(['dojo/_base/declare',
     'dojo/_base/lang',
-    '../Base',
-    'dojo/Deferred'], function (declare, lang, Base, Deferred) {
+    '../_Base',
+    'dojo/Deferred'], function (declare, lang, _Base, Deferred) {
 
-    return declare('altair/cartridges/cache/Cache', [Base], {
+    return declare('altair/cartridges/cache/Cache', [_Base], {
 
         plugin: null,
 

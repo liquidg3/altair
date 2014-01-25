@@ -1,3 +1,8 @@
+/**
+ * The event system in Altair (a unique combination of a traditional event system with a query engine twist) is wicked
+ * powerful in practice. It actually makes events fun again!
+ *
+ */
 define(['doh/runner',
         'altair/events/Emitter',
         'altair/events/QueryAgent',
@@ -34,7 +39,7 @@ define(['doh/runner',
         },
 
         /**
-         * Query agent test some queries
+         * Query agent wants to test some queries
          */
         function () {
 
@@ -64,7 +69,7 @@ define(['doh/runner',
         },
 
         /**
-         * Query agent test some queries using getters
+         * Query agent testing some queries using getters. **THIS BEHAVIOR MAY CHANGE**
          */
         function () {
 
@@ -93,7 +98,7 @@ define(['doh/runner',
         },
 
         /**
-         * no query old style
+         * No query, old style callback
          */
         function () {
 
@@ -113,7 +118,7 @@ define(['doh/runner',
         },
 
         /**
-         * no query new style
+         * No query, new style (using a deferred)
          */
         function () {
 
@@ -155,7 +160,7 @@ define(['doh/runner',
         },
 
         /**
-         * Query new style
+         * Query new style. This syntax is just so much more slick (ingoring the ugly getTestCallback())
          *
          * @returns {dojo.tests._base.Deferred}
          */

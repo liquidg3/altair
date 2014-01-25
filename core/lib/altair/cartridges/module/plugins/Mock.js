@@ -1,9 +1,9 @@
 /**
  * A plugin for testing, do not use
  */
-define(['dojo/_base/declare', './Base'], function (declare, Base) {
+define(['dojo/_base/declare', './_Base'], function (declare, _Base) {
 
-    return declare('altair/cartridges/module/plugins/Mock',[Base], {
+    return declare('altair/cartridges/module/plugins/Mock',[_Base], {
 
         foo: 'bar',
         execute: function (module) {

@@ -1,3 +1,8 @@
+/**
+ * This config loader is going to be built out (hopefully??) so we can search app/communit/core or whatever
+ * arbitrary path precedence is set.
+ *
+ */
 define(['require'], function (require) {
 
     return {

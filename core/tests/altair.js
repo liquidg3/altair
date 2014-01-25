@@ -1,3 +1,7 @@
+/**
+ * Very simple altair and cartridge tests. Since all Altair does is load cartridges, we really
+ * don't need to test much. =)
+ */
 define(['doh/runner', 'altair/Altair', 'dojo/Deferred'], function (doh, Altair, Deferred) {
 
     doh.register('altair', [

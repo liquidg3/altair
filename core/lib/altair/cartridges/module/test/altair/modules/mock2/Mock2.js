@@ -7,7 +7,7 @@ define(['dojo/_base/declare',
 ], function (declare, lang, Lifecycle) {
 
 
-    return declare('altair/cartridges/test/altair/modules/mock/Mock', [Lifecycle], {
+    return declare('altair/cartridges/test/altair/modules/mock/Mock2', [Lifecycle], {
 
         startedUp: false,
         startup: function () {
