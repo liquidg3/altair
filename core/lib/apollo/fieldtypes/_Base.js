@@ -9,9 +9,8 @@ define(['dojo/_base/declare',
     return declare('apollo/fieldtypes/_Base', null, {
 
         options: {},
-        renderer: null,
+        renderer: null
 
-        transform
 
     });
 });
