@@ -1,6 +1,10 @@
 Altair
 ===
 
+**UNSTABLE - ONLY TESTS RUN**
+
+    #node core/altair.js -test
+
 Welcome to the IoE. Before you get started, you should read this whole thing. It's worth it and we'll keep it short!
 
 Value Proposition
