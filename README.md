@@ -1,13 +1,14 @@
-#Altair
-
+##Altair
 
 **UNSTABLE - ONLY TESTS RUN**
 
-    #node core/altair.js -test
+    #node altair.js -test
 
 Welcome to the IoE. Before you get started, you should read this whole thing. It's worth it and we'll keep it short!
 
-##Value Proposition
+Value Proposition
+---
+
 Altair was build with the vision of creating what we've coined as, "experiences of everything." This is more than just
 connecting to devices: it's orchestrating complex interactions between those devices in such a way as to blend the technology
 so beautifully into our lives that we don't even know that it's there and wonder how we lived without it.
@@ -21,7 +22,9 @@ Altair will blend the digital and analog words like nothing before it. Its flexi
 connect to other libraries, platforms, frameworks, as easily as devices. Connecting hardware and software are both
 brilliantly simple in Altair!
 
-##Core Values
+Core Values
+---
+
 The Altair team has core principles different than most other software teams. We strive for these values in everything that
 we do. Sometimes we come up short, but we push each other to our limits and keep each other honest.
 
@@ -49,14 +52,16 @@ are able to break the coupling between us and our 3rd party choices. Example, do
 requests, fine, use Titan:Alfred's adapter engine to drop in another one. Hell, don't like how the Titan:Alfred module
 normalizes web experiences, then create a new module to do it your way.
 
-##Events++
+Events++
+---
+
 One thing that makes Altair different is its event engine. We have taken the EventEmitter api and added a query engine.
 See it in action:
 
     /**
      * Altair has 2 ways to set listeners, the chain'able way is .on(eventName, query).then(...
      */
-    this.on('Altair:Jarvis::DID_GESTURE', { 'gesture.type': 'the-force' }).then(function (e) {
+    this.on('Altair:Jarvis::DID_GESTURE', { 'gesture.type': 'the-force' }).then(lang.hitch(this, function (e) {
 
         //the device that triggered the gesture
         var device = e.get('device');
@@ -69,11 +74,11 @@ See it in action:
     /**
      * The normal normal way is on(eventName, callback, query)
      */
-    this.on('Altair:Jarvis::DID_GESTURE', function (e) {
+    this.on('Altair:Jarvis::DID_GESTURE', lang.hitch(this, function (e) {
 
         ....
 
-    }, { 'gesture.type': 'the-force' });
+    }), { 'gesture.type': 'the-force' });
 
 We have build a simple QueryAgent system that allows us to swap out query engines. Currently we use the kickass
 [underscore-query](https://github.com/davidgtonge/underscore-query) and absolutely love it! But, in Altair tradition,
@@ -98,7 +103,7 @@ verbal command send from an imaginary thermostat with a microphone attached to i
     }
 
 From the config/listeners.json above you can see that the "onDidYellAtThermostat" method will be called when a device whose
-tags contain thermostat and whose command starts with the word "thermostat." This gives the very cool effect of making
+tags contain thermostat and is given a verbal command (speech to text) that starts with the word "thermostat." This gives the very cool effect of making
 it seem that we are commanding our thermostat by name (API's may change)!
 
 Now check out how easy it is to control our imaginary thermostat and maybe some [Philips Hue Light Bulbs](http://www.meethue.com) too:
@@ -142,6 +147,7 @@ Now check out how easy it is to control our imaginary thermostat and maybe some 
 The examples above would never scale when it comes to controlling 1000's of devices. That's cool, the examples are just
 to give you a taste of how easy it is to create "experiences in everything."
 
-##Modules
+Modules
+---
 The module layer is the most powerful in all of Altair. This is because it is where all events in the system are centralized
 on the module layer. This makes it very easy to hook into the events taking place in both the digital and analog worlds.

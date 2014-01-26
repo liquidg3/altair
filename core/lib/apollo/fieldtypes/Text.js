@@ -1,13 +1,13 @@
 define(['dojo/_base/declare',
-    'dojo/Deferred',
-    'dojo/_base/lang'
-], function (declare, Deferred, lang) {
+       '_Base'],
+
+    function (declare,
+              _Base) {
 
 
 
-    return declare('apollo/fieldtypes/Text', null, {
+    return declare('apollo/fieldtypes/Text', [_Base], {
 
-        schemaPath: 'config/schema.json'
 
     });
 });
