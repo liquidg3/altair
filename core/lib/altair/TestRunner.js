@@ -42,6 +42,9 @@ define(['dojo/_base/declare',
                     throw "You must pass an array of paths for the test runner to parse to look for tests.";
                 }
 
+                //rebuild the paths array if there are any paths with wildcards in them.
+                options.paths = this.parsePathWildcards( options.paths );
+
                 options.paths.forEach(lang.hitch(this, function (thisPath, i) {
 
                     thisPath = require.toUrl(thisPath);
@@ -125,7 +128,62 @@ define(['dojo/_base/declare',
 
                 return deferred;
 
+            },
+
+            parsePathWildcards: function( _paths ){
+
+                for( var i = 0; i < _paths.length; i++ ){
+                    var _path = _paths[i];
+
+                    var pathParts = _path.split(/\*(.+)?/);
+
+
+                    if( pathParts.length - 1 ){
+                        var basePath = pathParts[0] ? pathParts[0] : '';
+                        var trailingPath = pathParts[1] ? pathParts[1] : '';
+
+                        //remove this item from the paths list...
+                        var index = _paths.indexOf( _path );
+
+                        if( index > -1 ){
+                            //take the old path out, 'cause we know it's not a real path.
+                            _paths.splice( index, 1 );
+
+                            //create a new list of paths, substituting the first * with each directory in the folder.
+                            if( fs.existsSync( basePath ) && fs.lstatSync( basePath ).isDirectory() ){
+                                var fileNames = fs.readdirSync( require.toUrl(basePath) );
+
+                                for( var i = 0; i < fileNames.length; i++ ){
+
+                                    var newBasePath = path.join( basePath, fileNames[i] );
+
+                                    var newPath = path.join( newBasePath, trailingPath );
+
+                                    if( fs.statSync( require.toUrl( newBasePath ) ).isDirectory() ){
+                                        //append new path to _paths.
+                                        _paths.splice(index,0,newPath);
+                                        index++
+                                    }
+
+                                }
+
+                                _paths = this.parsePathWildcards( _paths );
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+
+                return _paths;
+
             }
 
+
+
         });
+
     });
