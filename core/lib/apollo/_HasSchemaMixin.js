@@ -2,30 +2,29 @@
  * Apollo
  */
 define(['dojo/_base/declare',
-    'dojo/Deferred',
-    'dojo/_base/lang'
-], function (declare, Deferred, lang) {
+        'dojo/Deferred',
+        'dojo/_base/lang',
+        './Schema'
+], function (declare,
+             Deferred,
+             lang,
+             Schema) {
 
 
     return declare('apollo/_HasSchemaMixin', null, {
 
         schemaPath: 'config/schema.json',
-        apollo:     null,
+        schema:     null,
         values:     null,
 
         /**
          * Load your schema
          */
-        launch: function (schema) {
+        constructor: function (schema) {
 
-            var deferred = new Deferred();
-
-            if(schema) {
-                this.schema = new Schema(schema, this.apollo);
+            if(schema && schema.isInstanceOf(Schema)) {
+                this.schema = schema;
             }
-
-            return deferred;
-
         },
 
         get: function (name, defaultValue, options, config) {

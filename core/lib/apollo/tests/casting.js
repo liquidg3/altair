@@ -47,8 +47,6 @@ define(['doh/runner',
 
 
 
-
-
         doh.register('apollo-casting', [
 
 
@@ -58,7 +56,7 @@ define(['doh/runner',
             function () {
 
                 var schema = new Schema(schemaLiteral, fieldTypes),
-                    mock   = new Entity();
+                    mock   = new Entity(schema);
 
 
                 doh.assertTrue(schema.has('firstName'), 'Schema.has failed');
