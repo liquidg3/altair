@@ -9,13 +9,20 @@ define(['dojo/_base/declare',
     return declare('apollo/Schema', null, {
 
         data: null,
+        fieldTypes: null,
 
         /**
          * Pass through straight config... assume its setup how we like it.
          *
          * @param schema
          */
-        constructor: function (schema) {
+        constructor: function (schema, fieldTypes) {
+
+            if(!schema || !fieldTypes) {
+                throw "You must pass a schema literal and an array of apollo/fieldtypes/_Base instances";
+            }
+
+            this.fieldTypes = fieldTypes;
             this.data = schema;
         },
 

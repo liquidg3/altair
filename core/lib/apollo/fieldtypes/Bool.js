@@ -4,11 +4,9 @@ define(['dojo/_base/declare',
     function (declare,
               _Base) {
 
+    return declare('apollo/fieldtypes/Bool', [_Base], {
 
-
-    return declare('apollo/fieldtypes/Text', [_Base], {
-
-        key: 'text'
+        key: 'bool'
 
     });
 });
