@@ -43,7 +43,7 @@ define(['dojo/_base/declare',
                 }
 
                 //rebuild the paths array if there are any paths with wildcards in them.
-              //  options.paths = this.parsePathWildcards( options.paths );
+                options.paths = this.parsePathWildcards( options.paths );
 
                 options.paths.forEach(lang.hitch(this, function (thisPath, i) {
 
