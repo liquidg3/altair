@@ -1,0 +1,8 @@
+{
+    "name": "Core Altair Module",
+    "version": "0.0.1",
+    "description": "P",
+    "altairDependencies": {
+        "Altair:Mock": "0.0.1"
+    }
+}

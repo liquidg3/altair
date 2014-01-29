@@ -1,4 +1,18 @@
-var path = require('path');
+#!/usr/bin/env node
+
+var path = require('path'),
+    argv = require('optimist').usage('Altair - Experiences of Everything\n Usage: $0').options('env', {
+                'default': 'dev',
+                describe: 'specify the environment you want to run'
+            }).options('bootstrap', {
+                'default': 'core/bootstrap',
+                describe: 'change the bootstrap file used by Altair'
+            }).boolean('help').alias('help', 'h').describe('help', 'display help').boolean('test').describe('test', 'run our unit tests').argv;
+
+if(argv.help) {
+    require('optimist').showHelp();
+    return;
+}
 
 // Configuration Object for Dojo Loader:
 dojoConfig = {
@@ -31,11 +45,11 @@ dojoConfig = {
         }
     ],
     deps: [
-        "core/bootstrap"
+        argv.boostrap
     ]
 };
 
-if(process.argv[2] == '-test') {
+if(argv.test) {
     dojoConfig.deps = ['core/bootstrap-test'];
 }
 

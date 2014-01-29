@@ -11,7 +11,8 @@ Value Proposition
 
 Altair was build with the vision of creating what we've coined as, "experiences of everything." This is more than just
 connecting to devices: it's orchestrating complex interactions between those devices in such a way as to blend the technology
-so beautifully into our lives that we don't even know that it's there and wonder how we lived without it.
+so beautifully into our lives that we don't even know that it's there. Not only that, but we quickly begin to question
+how we ever lived without it.
 
 But, controlling devices is only one of many things Altair can do (through the Altair:Jarvis module). You can download and
 enable the Titan:Alfred module to have web server functionality through [express](http://expressjs.com/) or any other

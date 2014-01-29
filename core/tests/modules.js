@@ -123,8 +123,8 @@ define(['doh/runner',
 
                 var plugins = cartridge.plugins;
 
-                doh.assertEqual(2, plugins.length, 'Module cartridge failed to create plugins');
-                doh.assertEqual('bar', plugins[1].foo, 'Mock plugin failed.');
+                doh.assertTrue('altair/cartridges/module/plugins/Nexus' in plugins, 'Module cartridge failed to create plugins');
+                doh.assertEqual('bar', plugins['altair/cartridges/module/plugins/Mock'].foo, 'Mock plugin failed.');
 
             }));
 

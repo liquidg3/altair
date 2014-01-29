@@ -66,7 +66,7 @@ define(['dojo/_base/declare',
             if (options.plugins) {
 
                 var list = [];
-                this.plugins = [];
+                this.plugins = {};
 
                 options.plugins.forEach(lang.hitch(this, function (path) {
 
@@ -76,7 +76,7 @@ define(['dojo/_base/declare',
 
                         var plugin = new Plugin(this);
 
-                        this.plugins.push(plugin);
+                        this.plugins[plugin.declaredClass] = plugin;
 
                         def.resolve(this);
 
@@ -98,6 +98,31 @@ define(['dojo/_base/declare',
 
             return this.inherited(arguments);
 
+        },
+
+        /**
+         *
+         * @param declaredClass
+         * @returns {boolean}
+         */
+        hasPlugin: function (declaredClass) {
+            return !!this.plugins[declaredClass];
+        },
+
+        /**
+         *
+         * @param declaredClasses
+         * @returns {boolean}
+         */
+        hasPlugins: function (declaredClasses) {
+
+            for(var i = 0; i < declaredClasses.length; i ++) {
+                if(!this.hasPlugin(declaredClasses[i])) {
+                    return false;
+                }
+            }
+
+            return true;
         },
 
         /**
@@ -189,8 +214,9 @@ define(['dojo/_base/declare',
 
                     modules.forEach(lang.hitch(this, function (module) {
 
-                        this.plugins.forEach(lang.hitch(this, function (plugin) {
+                        Object.keys(this.plugins).forEach(lang.hitch(this, function (key) {
 
+                            var plugin = this.plugins[key];
                             plugin.execute(module);
 
 

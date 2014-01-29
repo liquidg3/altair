@@ -45,7 +45,8 @@ define(['doh/runner', 'altair/Altair', 'dojo/Deferred'], function (doh, Altair, 
                         var deferred = new Deferred();
                         deferred.resolve(this);
                         return deferred;
-                    }
+                    },
+                    declaredClass: '/mock/mock'
 
                 },
                 a = new Altair();

@@ -3,11 +3,12 @@
  */
 define(['dojo/_base/declare',
         'dojo/_base/lang',
-        'altair/Lifecycle'
-], function (declare, lang, Lifecycle) {
+        'altair/Lifecycle',
+        'apollo/_HasSchemaMixin'
+], function (declare, lang, Lifecycle, _HasSchemaMixin) {
 
 
-    return declare('altair/cartridges/test/altair/modules/mock/Mock', [Lifecycle], {
+    return declare('altair/cartridges/test/altair/modules/mock/Mock', [Lifecycle, _HasSchemaMixin], {
 
         startedUp: false,
         startup: function () {

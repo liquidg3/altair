@@ -1,0 +1,17 @@
+{
+    "elements": {
+        "foo": {
+            "type": "text",
+            "options": {
+                "label": "Foo",
+                "value": "bar"
+            }
+        },
+        "email": {
+            "type": "email",
+            "options": {
+                "label": "Email"
+            }
+        }
+    }
+}

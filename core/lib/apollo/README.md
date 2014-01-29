@@ -20,6 +20,8 @@ Apollo has several components:
 - Validators get attached to FieldTypes to do, you guessed it, validation.
 - _HasSchemaMixin is what actually gives any arbitrary object the ability to have a schema.
 
+** Apollo is totally decoupled from Altair **
+
 _HasSchemaMixin
 ---
 
