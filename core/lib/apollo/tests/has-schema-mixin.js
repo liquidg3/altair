@@ -1,19 +1,17 @@
 /**
- * Apollo Tests
+ * Apollo Tests - need more thought/time here ** moving too fast =) **
  */
 define(['doh/runner',
         'apollo/Schema',
         'apollo/tests/mock/Entity',
         'apollo/fieldtypes/Text',
-        'apollo/fieldtypes/Bool',
-        'apollo/fieldtypes/Email'],
+        'apollo/fieldtypes/Bool'],
 
     function (doh,
               Schema,
               Entity,
               Text,
-              Bool,
-              Email) {
+              Bool) {
 
         /**
          * Dependencies
@@ -41,29 +39,28 @@ define(['doh/runner',
         },
         fieldTypes = [
             new Text(),
-            new Bool(),
-            new Email()
+            new Bool()
         ];
 
 
 
-
-
-        doh.register('apollo-casting', [
+        doh.register('apollo-has-schema-mixin', [
 
 
             /**
-             * Testing that a schema has its useful methods
+             * Test basic getters/setters
              */
             function () {
 
                 var schema = new Schema(schemaLiteral, fieldTypes),
-                    mock   = new Entity();
+                    mock   = new Entity(schema);
 
 
-                doh.assertTrue(schema.has('firstName'), 'Schema.has failed');
-                doh.assertFalse(schema.has('firstName2'), 'Schema.has failed');
-                doh.assertEqual('First Name', schema.optionsFor('firstName').label, 'Schema.has failed');
+                mock.set('firstName', 'taylor')
+                    .set('email', 'liquidg3@mac.com');
+
+                doh.assertEqual('taylor', mock.get('firstName'), 'default setter did not work');
+                doh.assertTrue(mock.calledOverriddenSetter, 'overidden setter failed');
 
             }
 

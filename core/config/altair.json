@@ -1,23 +1,30 @@
 {
-    "paths": [
-        "core",
-        "../../app"
-    ],
-    "cartridges": [
-        {
-            "key": "nexus",
-            "path": "altair/cartridges/nexus/Nexus",
-            "options": "nexus.json"
-        },
-        {
-            "key": "cache",
-            "path": "altair/cartridges/cache/Cache",
-            "options": "cache.json"
-        },
-        {
-            "key": "module",
-            "path": "altair/cartridges/module/Module",
-            "options": "modules.json"
-        }
-    ]
+    "default": {
+
+        "paths": [
+            "core",
+            "../../app"
+        ],
+        "cartridges": [
+            {
+                "key": "nexus",
+                "path": "altair/cartridges/nexus/Nexus",
+                "options": {
+                }
+            },
+            {
+                "key": "module",
+                "path": "altair/cartridges/module/Module",
+                "options": {
+                    "$ref": "./modules.json"
+                }
+            }
+        ]
+
+    },
+
+    "dev": {
+
+
+    }
 }

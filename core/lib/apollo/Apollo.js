@@ -6,14 +6,40 @@
  */
 define(['dojo/_base/declare',
         'dojo/Deferred',
-        'dojo/_base/lang'
-], function (declare, Deferred, lang) {
+        'dojo/_base/lang',
+        './Schema'
+], function (declare,
+             Deferred,
+             lang,
+             Schema) {
 
 
     return declare('apollo/Apollo', null, {
 
 
-        registerType: function (key, type) {
+        fieldTypes: null,
+
+        constructor: function () {
+            this.fieldTypes = {};
+        },
+
+        addType: function (fieldType) {
+            this.fieldTypes[fieldType.key] = fieldType;
+            return this;
+        },
+
+        addTypes: function (types) {
+
+            types.forEach(lang.hitch(this, function (type) {
+                this.addType(type);
+            }));
+        },
+
+        createSchema: function (data) {
+
+            var schema = new Schema(data, this.fieldTypes);
+
+            return schema;
 
         }
 

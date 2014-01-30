@@ -11,6 +11,18 @@ define(['dojo/_base/declare',
 
     return declare('altair/cartridges/Foundry', null, {
 
+
+        constructor: function (altair) {
+
+            this.altair = altair;
+
+            if(!this.altair) {
+                throw 'A cartridge Foundry needs an instance of Altair.';
+            }
+
+
+        },
+
         /**
          * Send me an array of cartridge options and I'll return a deferred that will resolve once all of them our built.
          *
@@ -71,9 +83,9 @@ define(['dojo/_base/declare',
 
             var def = new Deferred();
 
-            require([options.path], function (Cartridge) {
-                def.resolve(new Cartridge(options.options));
-            });
+            require([options.path], lang.hitch(this, function (Cartridge) {
+                def.resolve(new Cartridge(this.altair, options.options));
+            }));
 
             return def;
         }

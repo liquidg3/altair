@@ -15,7 +15,12 @@ define(['dojo/_base/declare',
 
     return declare('altair/Altair', null, {
 
-        _cartridges:    {},
+        _cartridges:    null,
+        environment:    'dev',
+
+        constructor: function () {
+            this._cartridges = {};
+        },
 
         /**
          * Add an un-started cartridge and I'll add it to the system and start it up.
@@ -27,7 +32,7 @@ define(['dojo/_base/declare',
 
             var deferred = new Deferred();
 
-            this._cartridges[cartidge.key] = cartidge;
+            this._cartridges[cartidge.declaredClass] = cartidge;
 
             cartidge.startup().then(function (cartridge) {
                 cartridge.execute().then(lang.hitch(deferred, 'resolve'));
@@ -43,11 +48,11 @@ define(['dojo/_base/declare',
          * @param key
          * @returns dojo/Deferred
          */
-        removeCartridge: function (key) {
+        removeCartridge: function (declaredClass) {
 
-            var def = this.cartridge(key).teardown();
+            var def = this.cartridge(declaredClass).teardown();
 
-            delete this._cartridges[key];
+            delete this._cartridges[declaredClass];
 
             return def;
 
@@ -59,8 +64,36 @@ define(['dojo/_base/declare',
          * @param key
          * @returns {*|null}
          */
-        cartridge: function (key) {
-            return this._cartridges[key] || null;
+        cartridge: function (declaredClass) {
+            return this._cartridges[declaredClass] || null;
+        },
+
+        /**
+         * Is this cartridge loaded?
+         *
+         * @param declaredClass
+         * @returns {boolean}
+         */
+        hasCartridge: function (declaredClass) {
+            return !!this._cartridges[declaredClass];
+        },
+
+        /**
+         * Quick check if all the cartridges are loaded. If any single one is missing,
+         * it returns false.
+         *
+         * @param declaredClasses
+         * @returns {boolean}
+         */
+        hasCartridges: function (declaredClasses) {
+
+            for(var i = 0; i < declaredClasses.length; i ++) {
+                if(!this.hasCartridge(declaredClasses[i])) {
+                    return false;
+                }
+            }
+
+            return true;
         },
 
         /**
@@ -76,7 +109,7 @@ define(['dojo/_base/declare',
 
             var load = lang.hitch(this, function () {
 
-                var cartridge = cartridges.pop();
+                var cartridge = cartridges.shift();
 
                 if(cartridge) {
                     this.addCartridge(cartridge).then(load);

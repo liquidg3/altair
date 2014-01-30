@@ -1,11 +1,15 @@
 /**
- * Apollo Tests
+ * Apollo Tests - need more thought/time here ** moving too fast =) **
  */
 define(['doh/runner',
-        'apollo/Schema'],
+        'apollo/Schema',
+        'apollo/fieldtypes/Text',
+        'apollo/fieldtypes/Bool'],
 
     function (doh,
-              Schema) {
+              Schema,
+              Text,
+              Bool) {
 
         /**
          * Dependencies
@@ -18,7 +22,8 @@ define(['doh/runner',
                 firstName: {
                     type: 'text',
                     options: {
-                        'label': 'First Name'
+                        label: 'First Name',
+                        value:   'Taylor'
                     }
                 },
 
@@ -30,21 +35,44 @@ define(['doh/runner',
                 }
 
             }
-        };
+        },
+        fieldTypes =  [
+            new Text(),
+            new Bool()
+        ];
 
         doh.register('apollo-schemas', [
 
+            function () {
+
+                var schema = new Schema(schemaLiteral, fieldTypes);
+
+                doh.assertTrue('text' in schema.fieldTypes, 'Email field not added to fieldtypes of schema.');
+
+            },
 
             /**
              * Testing that a schema has its useful methods
              */
             function () {
 
-                var schema = new Schema(schemaLiteral);
+                var schema = new Schema(schemaLiteral, fieldTypes);
 
                 doh.assertTrue(schema.has('firstName'), 'Schema.has failed');
                 doh.assertFalse(schema.has('firstName2'), 'Schema.has failed');
+
+            },
+
+            /**
+             * Testing options mixing in
+             */
+            function () {
+
+                var schema = new Schema(schemaLiteral, fieldTypes);
+
                 doh.assertEqual('First Name', schema.optionsFor('firstName').label, 'Schema.has failed');
+                doh.assertFalse('maximumLength' in schema.optionsFor('firstName'), 'schema field type did not mixin max length option');
+
 
             }
 

@@ -68,12 +68,13 @@ define(['dojo/_base/declare',
                                         _defers.push( this.includeTest( path.join(thisPath, name ) ));
                                     }
 
-                                    //we have read and included all files
-                                    if(i == options.paths.length -1) {
-                                        readDeferred.resolve();
-                                    }
 
                                 }));
+
+                                //we have read and included all files
+                                if(i == options.paths.length -1) {
+                                    readDeferred.resolve();
+                                }
 
                             }));
 

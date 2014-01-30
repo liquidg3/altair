@@ -1,5 +1,9 @@
 /**
+ * The module cartridge does a few things. Firstly, it uses ./Foundry to instantiate all the modules you passed as
+ * options. Secondly
+ *
  * @required Nexus cartridge
+ *
  */
 define(['dojo/_base/declare',
     'dojo/_base/lang',
@@ -12,10 +16,11 @@ define(['dojo/_base/declare',
 
     return declare('altair/cartridges/module/Module', [_Base], {
 
-        foundry: null,
-        modules: null,
-        plugins: null,
-        paths: null,
+        foundry:        null,
+        modules:        null,
+        plugins:        null,
+        paths:          null,
+        modulesByName:  null,
 
         /**
          * Load up the modules.
@@ -66,7 +71,7 @@ define(['dojo/_base/declare',
             if (options.plugins) {
 
                 var list = [];
-                this.plugins = [];
+                this.plugins = {};
 
                 options.plugins.forEach(lang.hitch(this, function (path) {
 
@@ -76,7 +81,7 @@ define(['dojo/_base/declare',
 
                         var plugin = new Plugin(this);
 
-                        this.plugins.push(plugin);
+                        this.plugins[plugin.declaredClass] = plugin;
 
                         def.resolve(this);
 
@@ -101,7 +106,40 @@ define(['dojo/_base/declare',
         },
 
         /**
-         * Build the modules and install our
+         *
+         * @param declaredClass
+         * @returns {boolean}
+         */
+        hasPlugin: function (declaredClass) {
+            return !!this.plugins[declaredClass];
+        },
+
+        /**
+         *
+         * @param declaredClasses
+         * @returns {boolean}
+         */
+        hasPlugins: function (declaredClasses) {
+
+            for(var i = 0; i < declaredClasses.length; i ++) {
+                if(!this.hasPlugin(declaredClasses[i])) {
+                    return false;
+                }
+            }
+
+            return true;
+        },
+
+        module: function (named) {
+            return this.modulesByName[named];
+        },
+
+        hasModule: function (named) {
+            return !!this.modulesByName[named];
+        },
+
+        /**
+         * Build the modules and plug our resolver into nexus if the nexus cartridge is loaded
          *
          * @returns {*}
          */
@@ -111,36 +149,95 @@ define(['dojo/_base/declare',
 
             this.buildModules(this.options.modules).then(lang.hitch(this, function (modules) {
 
-                //soft copy
-                this.modules = modules.slice(0);
+                this.modules = [];
 
-                //lets startup all modules, ensuring one is not started until the one before it is
-                var load = lang.hitch(this, function () {
+                //make it easy to access modules by name
+                this.modulesByName = {};
 
-                    var module = modules.pop();
+                //if the nexus cartridge is in, register our resolver
 
-                    if(module) {
+                if(this.altair.hasCartridge('altair/cartridges/nexus/Nexus')) {
 
-                        //lifecycle class gets startup
-                        if(module.isInstanceOf && module.isInstanceOf(Lifecycle)) {
-                            module.startup().then(load);
-                        }
-                        //but it's not required
-                        else {
-                            load();
-                        }
-                    } else {
-                        this.deferred.resolve(this);
-                    }
-                });
+                    var nexus       = this.altair.cartridge('altair/cartridges/nexus/Nexus'),
+                        resolver    = new Resolver(this);
 
-                load();
+                    nexus.addResolver(resolver);
 
+                }
+
+                this.addModules(modules).then(lang.hitch(this, function () {
+                    this.deferred.resolve(this);
+                }));
 
             }));
 
             return this.inherited(arguments);
         },
+
+        /**
+         * Add modules to the cartridge
+         *
+         * @param modules
+         * @returns {dojo.Deferred}
+         */
+        addModules: function (modules) {
+
+            //shallow copy
+            var _modules    = modules.slice(0),
+                deferred    = new Deferred();
+
+            this.modules = this.modules.concat(_modules);
+
+            //add to local store of modules by name
+            _modules.forEach(lang.hitch(this, function (module) {
+                this.modulesByName[module.name] = module;
+            }));
+
+            //run through plugins and execute them on the plugins we have
+            if (this.plugins) {
+
+                _modules.forEach(lang.hitch(this, function (module) {
+
+                    Object.keys(this.plugins).forEach(lang.hitch(this, function (key) {
+
+                        var plugin = this.plugins[key];
+                        plugin.execute(module);
+
+
+                    }));
+
+                }));
+
+
+            }
+
+
+            //lets startup all modules, ensuring one is not started until the one before it is
+            var load = lang.hitch(this, function () {
+
+                var module = _modules.pop();
+
+                if(module) {
+
+                    //lifecycle class gets startup
+                    if(module.isInstanceOf && module.isInstanceOf(Lifecycle)) {
+                        module.startup().then(load);
+                    }
+                    //but it's not required
+                    else {
+                        load();
+                    }
+                } else {
+                    deferred.resolve(this);
+                }
+            });
+
+            load();
+
+            return deferred;
+
+        },
+
 
         /**
          * Teardown every module, leave no prisoners!
@@ -170,8 +267,7 @@ define(['dojo/_base/declare',
         },
 
         /**
-         * Build modules, then loop through each plugin and call plugin.execute(module) on every module
-         * to tack on super cool functionality
+         * Build modules against our local path settings
          *
          * @param modules
          * @returns {*|Promise}
@@ -185,21 +281,6 @@ define(['dojo/_base/declare',
                 modules: modules
             }).then(lang.hitch(this, function (modules) {
 
-                if (this.plugins) {
-
-                    modules.forEach(lang.hitch(this, function (module) {
-
-                        this.plugins.forEach(lang.hitch(this, function (plugin) {
-
-                            plugin.execute(module);
-
-
-                        }));
-
-                    }));
-
-
-                }
 
                 deferred.resolve(modules);
 

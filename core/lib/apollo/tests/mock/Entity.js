@@ -12,7 +12,14 @@ define(['dojo/_base/declare',
 
     return declare('apollo/tests/mock/Entity', [_HasSchemaMixin], {
 
-        launch: function () {
+        calledOverriddenSetter: false,
+        setFirstName: function (name) {
+
+            this._set('firstName', name);
+
+            this.calledOverriddenSetter = true;
+
+            return this;
 
         }
 

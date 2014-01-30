@@ -3,7 +3,7 @@
  */
 require(['altair/Altair',
          'altair/cartridges/Foundry',
-         'altair/config!core/config/altair.json'], function(Altair, Foundry, config){
+         'altair/plugins/config!core/config/altair.json?env=' + GLOBAL.env], function(Altair, Foundry, config){
 
 
     /**
@@ -11,11 +11,11 @@ require(['altair/Altair',
      * them to altair.
      */
     var altair  = new Altair(),
-        factory = new Foundry(altair);
+        foundry = new Foundry(altair);
 
     console.log('Creating cartridge foundry. Adding', config.cartridges.length, 'cartridges.');
 
-    factory.build(config.cartridges).then(function (cartridges) {
+    foundry.build(config.cartridges).then(function (cartridges) {
 
 
         console.log('Cartridges created. Adding to Altair for startup.');

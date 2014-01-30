@@ -20,7 +20,7 @@ define(['doh/runner', 'altair/cartridges/cache/Cache', 'altair/cartridges/cache/
         function () {
 
             var altair      = new Altair(),
-                cartridge   = new Cache(altair);
+                cartridge   = new Cache(altair, {});
 
             doh.assertTrue(!!cartridge, 'Basic instantiation failed.');
 
@@ -33,7 +33,7 @@ define(['doh/runner', 'altair/cartridges/cache/Cache', 'altair/cartridges/cache/
 
             var deferred    = new doh.Deferred(),
                 altair      = new Altair(),
-                cartridge   = new Cache(altair);
+                cartridge   = new Cache(altair, {});
 
             cartridge.startup(options).then(deferred.getTestCallback(lang.hitch(this, function () {
 

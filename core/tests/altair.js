@@ -45,7 +45,8 @@ define(['doh/runner', 'altair/Altair', 'dojo/Deferred'], function (doh, Altair, 
                         var deferred = new Deferred();
                         deferred.resolve(this);
                         return deferred;
-                    }
+                    },
+                    declaredClass: '/mock/mock'
 
                 },
                 a = new Altair();
@@ -55,6 +56,41 @@ define(['doh/runner', 'altair/Altair', 'dojo/Deferred'], function (doh, Altair, 
             doh.assertTrue(setupCalled, 'setup not called on cartridge');
             doh.assertTrue(executeCalled, 'execute not called on cartridge');
             doh.assertFalse(teardownCalled, 'teardown should NOT be called on cartridge');
+
+        },
+
+        /**
+         * Test that our altair/plugins/config can handle environments
+         */
+        function () {
+
+            var deferred = new doh.Deferred();
+
+            require(['altair/plugins/config!core/tests/configs/env.json?env=dev'], deferred.getTestCallback(function (config) {
+
+                doh.assertEqual('bar2', config.foo, 'Config inheritance did not work.');
+                doh.assertEqual('world', config.hello, 'Config inheritance did not work.');
+
+            }));
+
+            return deferred;
+
+        },
+
+        /**
+         * Test that our altair/plugins/config can handle environments
+         */
+        function () {
+
+            var deferred = new doh.Deferred();
+
+            require(['altair/plugins/config!core/tests/configs/ref.json'], deferred.getTestCallback(function (config) {
+
+                doh.assertEqual('world', config.options.hello, 'Config $ref resolution did not work.');
+
+            }));
+
+            return deferred;
 
         }
     ]);
