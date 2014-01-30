@@ -1,6 +1,6 @@
 {
     "name": "altair.io",
-    "version": "0.0.24",
+    "version": "0.0.25",
     "description": "A platform to facilitate the building of experiences in the Internet of Everything.",
     "main": "altair.js",
     "repository": {
@@ -12,7 +12,8 @@
     },
     "dependencies": {
         "underscore": ">=1.1.x",
-        "underscore-query": ">=0.4.x"
+        "underscore-query": ">=0.4.x",
+        "optimist": ">=0.6.x"
     },
 
     "author": "altair.io <admin@altair.io> (http://altair.io/)",

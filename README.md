@@ -1,4 +1,4 @@
-##Altair
+#Altair
 
 **UNSTABLE - ONLY TESTS RUN**
 
@@ -6,12 +6,12 @@
 
 Welcome to the IoE. Before you get started, you should read this whole thing. It's worth it and we'll keep it short!
 
-Value Proposition
----
+##Value Proposition
 
 Altair was build with the vision of creating what we've coined as, "experiences of everything." This is more than just
 connecting to devices: it's orchestrating complex interactions between those devices in such a way as to blend the technology
-so beautifully into our lives that we don't even know that it's there and wonder how we lived without it.
+so beautifully into our lives that we don't even know that it's there. Not only that, but we quickly begin to question
+how we ever lived without it.
 
 But, controlling devices is only one of many things Altair can do (through the Altair:Jarvis module). You can download and
 enable the Titan:Alfred module to have web server functionality through [express](http://expressjs.com/) or any other
@@ -22,8 +22,8 @@ Altair will blend the digital and analog words like nothing before it. Its flexi
 connect to other libraries, platforms, frameworks, as easily as devices. Connecting hardware and software are both
 brilliantly simple in Altair!
 
-Core Values
----
+##Core Values
+
 
 The Altair team has core principles different than most other software teams. We strive for these values in everything that
 we do. Sometimes we come up short, but we push each other to our limits and keep each other honest.
@@ -52,8 +52,8 @@ are able to break the coupling between us and our 3rd party choices. Example, do
 requests, fine, use Titan:Alfred's adapter engine to drop in another one. Hell, don't like how the Titan:Alfred module
 normalizes web experiences, then create a new module to do it your way.
 
-Events++
----
+##Events++
+
 
 One thing that makes Altair different is its event engine. We have taken the EventEmitter api and added a query engine.
 See it in action:
@@ -147,7 +147,7 @@ Now check out how easy it is to control our imaginary thermostat and maybe some 
 The examples above would never scale when it comes to controlling 1000's of devices. That's cool, the examples are just
 to give you a taste of how easy it is to create "experiences in everything."
 
-Modules
----
+##Modules
+
 The module layer is the most powerful in all of Altair. This is because it is where all events in the system are centralized
 on the module layer. This makes it very easy to hook into the events taking place in both the digital and analog worlds.
