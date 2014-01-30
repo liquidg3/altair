@@ -3,7 +3,7 @@
  */
 require(['altair/Altair',
          'altair/cartridges/Foundry',
-         'altair/config!core/config/altair.json'], function(Altair, Foundry, config){
+         'altair/plugins/config!core/config/altair.json?env=' + GLOBAL.env], function(Altair, Foundry, config){
 
 
     /**

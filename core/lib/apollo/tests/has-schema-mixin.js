@@ -39,8 +39,7 @@ define(['doh/runner',
         },
         fieldTypes = [
             new Text(),
-            new Bool(),
-            new Email()
+            new Bool()
         ];
 
 

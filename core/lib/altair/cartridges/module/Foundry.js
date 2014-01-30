@@ -264,6 +264,20 @@ define(['dojo/_base/declare',
                 module.dir  = path.dirname(modulePath);
                 module.name = this._pathToModuleName(modulePath);
 
+                //add this module's declared class to the require paths so
+                //including mixins are easy
+                var pathParts = module.declaredClass.split('/');
+                pathParts.pop();
+
+                var name = pathParts.join('/'),
+                    paths = {};
+
+                paths[name] = module.dir;
+
+                require({
+                    paths: paths
+                });
+
                 deferred.resolve(module);
 
             }));

@@ -203,6 +203,29 @@ define(['doh/runner',
         },
 
         /**
+         * Test to make sure the mock2 class can access the mock1/mixin/_MockMixin
+         */
+        function () {
+
+            var deferred    = new doh.Deferred(),
+                altair      = new Altair(),
+                cartridge   = new ModuleCartridge(altair, {
+                    paths: testPaths,
+                    modules: ['Altair:Mock', 'Altair:Mock2']
+                });
+
+
+            altair.addCartridge(cartridge).then(deferred.getTestCallback(function () {
+
+                var mock2 = cartridge.module('Altair:Mock2');
+
+                doh.assertTrue(mock2.mockMixinSuccess, '_MockMixin failed to mixin');
+
+            }));
+
+        },
+
+        /**
          * Test module resolver for nexus
          */
         function () {
@@ -219,6 +242,8 @@ define(['doh/runner',
             altair.addCartridges([nexus, modules]).then(deferred.getTestCallback(function () {
 
                 var mock = nexus.resolve('Altair:Mock');
+
+                doh.assertTrue(!!mock, 'nexus could not resolve Altair:Mock');
 
             }));
 

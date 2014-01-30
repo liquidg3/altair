@@ -7,7 +7,7 @@ define(['dojo/_base/declare',
 ], function (declare, lang, Lifecycle) {
 
 
-    return declare('altair/modules/core/Core', [Lifecycle], {
+    return declare('altair/modules/cli/Cli', [Lifecycle], {
 
         startup: function () {
             return this.inherited(arguments);

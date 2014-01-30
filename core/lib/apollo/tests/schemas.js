@@ -38,8 +38,7 @@ define(['doh/runner',
         },
         fieldTypes =  [
             new Text(),
-            new Bool(),
-            new Email()
+            new Bool()
         ];
 
         doh.register('apollo-schemas', [
@@ -48,7 +47,7 @@ define(['doh/runner',
 
                 var schema = new Schema(schemaLiteral, fieldTypes);
 
-                doh.assertTrue('email' in schema.fieldTypes, 'Email field not added to fieldtypes of schema.');
+                doh.assertTrue('text' in schema.fieldTypes, 'Email field not added to fieldtypes of schema.');
 
             },
 

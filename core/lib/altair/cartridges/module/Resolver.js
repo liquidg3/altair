@@ -9,9 +9,19 @@ define(['dojo/_base/declare',
 
     return declare('altair/cartridges/module/Resolver', [_ResolverBase], {
 
-        resolve: function (key, options, config) {},
+        moduleCartridge: null,
+
+        constructor: function (moduleCartridge) {
+            this.moduleCartridge = moduleCartridge;
+            if(!moduleCartridge) {
+                throw "You must pass the nexus module resolver a module cartridge."
+            }
+        },
+        resolve: function (key, options, config) {
+            return this.moduleCartridge.module(key);
+        },
         handles: function (key) {
-            return false;
+            return this.moduleCartridge.hasModule(key);
         }
 
 

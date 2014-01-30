@@ -46,7 +46,7 @@ define(['dojo/_base/declare',
 
                         var path = this.resolvePath(named);
 
-                        require(['altair/config!' + path], lang.hitch(this, function (config) {
+                        require(['altair/plugins/config!' + path], lang.hitch(this, function (config) {
 
                             this._configs[named] = config;
 

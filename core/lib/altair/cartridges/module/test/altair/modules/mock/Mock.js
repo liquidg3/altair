@@ -8,7 +8,7 @@ define(['dojo/_base/declare',
 ], function (declare, lang, Lifecycle, _HasSchemaMixin) {
 
 
-    return declare('altair/cartridges/test/altair/modules/mock/Mock', [Lifecycle, _HasSchemaMixin], {
+    return declare('altair/modules/mock/Mock', [Lifecycle, _HasSchemaMixin], {
 
         startedUp: false,
         startup: function () {
