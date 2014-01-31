@@ -12,10 +12,8 @@ define(['doh/runner',
     /**
      * Dependencies
      */
-    var testPaths = ['altair/cartridges/module/test'],
-        nexusMaps = {
-        'Altair:Jarvis': 'core/vendors/altair/modules/'
-    };
+    var testPaths       = ['core/tests/modules/vendors'],
+        altairTestPaths = ['core/tests/modules'];
 
     doh.register('modules', [
 
@@ -247,7 +245,34 @@ define(['doh/runner',
 
             }));
 
+        },
+
+
+        /**
+         * Ensure that the module cartridge will fallback onto altair's paths
+         */
+        function () {
+
+            var deferred    = new doh.Deferred(),
+                altair      = new Altair({
+                    paths: altairTestPaths
+                }),
+                cartridge   = new ModuleCartridge(altair, {
+                    modules: ['Altair:Mock', 'Altair:Mock2']
+                });
+
+
+            altair.addCartridge(cartridge).then(deferred.getTestCallback(function () {
+
+                var mock2 = cartridge.module('Altair:Mock2');
+
+                doh.assertTrue(!!mock2, 'Module cartridge did not fallback to use altair\'s paths.');
+
+            }));
+
         }
+
+
 
     ]);
 

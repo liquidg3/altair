@@ -22,9 +22,11 @@ if(argv.help) {
     return;
 }
 
+var base = path.join('node_modules', 'altair.io');
+
 // Configuration Object for Dojo Loader:
 dojoConfig = {
-    baseUrl: __dirname, // Where we will put our packages
+    baseUrl: path.resolve(__dirname, '../../'), // Where we will put our packages
     async: 1, // We want to make sure we are using the "modern" loader
     hasCache: {
         "host-node": 1, // Ensure we "force" the loader into Node.js mode
@@ -33,23 +35,23 @@ dojoConfig = {
     packages: [
         {
             name: "dojo",
-            location: "core/lib/dojo"
+            location: path.join(base, "core/lib/dojo")
         },
         {
             name: "altair",
-            location: "core/lib/altair"
+            location: path.join(base, "core/lib/altair")
         },
         {
             name: "core",
-            location: "core"
+            location: path.join(base, "core")
         },
         {
             name: "doh",
-            location: "core/lib/doh"
+            location: path.join(base, "core/lib/doh")
         },
         {
             name: "apollo",
-            location: "core/lib/apollo"
+            location: path.join(base, "core/lib/apollo")
         }
     ],
     deps: [

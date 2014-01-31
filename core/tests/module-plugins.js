@@ -13,7 +13,7 @@ define(['doh/runner',
             var deferred    = new doh.Deferred(),
                 altair      = new Altair(),
                 cartridge   = new ModuleCartridge(altair, {
-                    paths:      ['altair/cartridges/module/test'],
+                    paths:      ['core/tests/modules/vendors'],
                     modules:    ['Altair:Mock'],
                     plugins:    plugins
                 });

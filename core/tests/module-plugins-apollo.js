@@ -29,7 +29,7 @@ define(['doh/runner',
                 {
                     path: 'altair/cartridges/module/Module',
                     options: {
-                        paths:      ['altair/cartridges/module/test'],
+                        paths:      ['core/tests/modules/vendors'],
                         modules:    ['Altair:Mock'],
                         plugins:    plugins
                     }

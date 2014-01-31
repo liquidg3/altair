@@ -1,5 +1,5 @@
 /**
- * Well, this is it... Altair in its entirety. The whole application is simply a cartridge loader. These cartridges are
+ * Well, this is it... Altair in its entirety. The whole platform is simply a cartridge loader. These cartridges are
  * responsible for enhancing the environment in various ways. It should be really easy to augment the platform at a very
  * low level this way. Chances are that if you need to add new functionality into the platform you should be doing it
  * as a module. The only things that should be cartridges are components that need to exist before the module system
@@ -16,9 +16,15 @@ define(['dojo/_base/declare',
     return declare('altair/Altair', null, {
 
         _cartridges:    null,
-        environment:    'dev',
+        env:            'dev',
 
-        constructor: function () {
+        constructor: function (options) {
+
+            if(options) {
+                this.paths  = options.paths || [];
+                this.env    = options.env || 'dev';
+            }
+
             this._cartridges = {};
         },
 

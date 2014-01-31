@@ -60,6 +60,8 @@ define(['dojo/_base/declare',
             //they want to restrict the modules being created
             if(options.modules) {
                 this.modulesToInstantiate = options.modules;
+            } else {
+                this.modulesToInstantiate = null;
             }
 
             if(!options.paths) {
@@ -250,7 +252,8 @@ define(['dojo/_base/declare',
         },
 
         /**
-         * Pass full path/to/Module.js and I'll load it up
+         * Pass path/to/Module.js and I'll load it up
+         *
          * @param path
          */
         buildOne: function (modulePath) {

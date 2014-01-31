@@ -2,33 +2,52 @@
  * Bootstrap Altair instances based on a config
  */
 require(['altair/Altair',
-         'altair/cartridges/Foundry',
-         'altair/plugins/config!core/config/altair.json?env=' + GLOBAL.env], function(Altair, Foundry, config){
+        'require',
+        'altair/cartridges/Foundry',
+        'altair/plugins/config!core/config/altair.json?env=' + GLOBAL.env],
 
+    function (Altair, require, Foundry, config) {
 
-    /**
-     * Startup the cartridge factory and create the cartridges, then add
-     * them to altair.
-     */
-    var altair  = new Altair(),
-        foundry = new Foundry(altair);
-
-    console.log('Creating cartridge foundry. Adding', config.cartridges.length, 'cartridges.');
-
-    foundry.build(config.cartridges).then(function (cartridges) {
-
-
-        console.log('Cartridges created. Adding to Altair for startup.');
 
         /**
-         * Add cartridges
+         * Bring in the packages from the config, this should point to at least app and core. Even though core is not
+         * needed, this array is also used to build our lookup paths in altair. Altair only needs their names since
+         * dojo's define() and require() can map it to their paths.
          */
-        altair.addCartridges(cartridges).then(function () {
+        require({
+            paths: config.paths
+        });
 
-            console.log('Cartridges started.  ');
+        var paths = [];
+
+        Object.keys(config.paths).forEach(function (name) {
+            paths.push(name);
+        });
+
+
+        /**
+         * Startup the cartridge factory and create the cartridges, then add
+         * them to altair.
+         */
+        var altair      = new Altair({ paths: paths }),
+            foundry     = new Foundry(altair);
+
+        console.log('Creating cartridge foundry. Adding', config.cartridges.length, 'cartridges.');
+
+        foundry.build(config.cartridges).then(function (cartridges) {
+
+
+            console.log('Cartridges created. Adding to Altair for startup.');
+
+            /**
+             * Add cartridges
+             */
+            altair.addCartridges(cartridges).then(function () {
+
+                console.log('Cartridges started.  ');
+
+            });
 
         });
 
     });
-
-});

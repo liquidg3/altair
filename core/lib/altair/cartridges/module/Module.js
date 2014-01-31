@@ -12,7 +12,8 @@ define(['dojo/_base/declare',
     'dojo/DeferredList',
     './Resolver',
     'altair/Lifecycle',
-    './Foundry'], function (declare, lang, _Base, Deferred, DeferredList, Resolver, Lifecycle, Foundry) {
+    'dojo/node!path',
+    './Foundry'], function (declare, lang, _Base, Deferred, DeferredList, Resolver, Lifecycle, nodePath, Foundry) {
 
     return declare('altair/cartridges/module/Module', [_Base], {
 
@@ -37,16 +38,22 @@ define(['dojo/_base/declare',
 
             options = options || this.options;
 
-            var modules = options.modules;
-
+            //override our deferred
             this.deferred = new Deferred();
 
-            if (!modules) {
-                throw "The Modules Cartridge needs some modules, yo.";
-            }
-
-            //pass through altair if it was passed
+            //pass through altair if it was passed or fallback to altair's paths
             this.paths = options.paths;
+
+            if(!this.paths) {
+
+
+                if(this.altair.paths) {
+                    this.paths = [];
+                    this.altair.paths.forEach(lang.hitch(this, function (path) {
+                        this.paths.push(nodePath.join(path, 'vendors'));
+                    }));
+                }
+            }
 
             /**
              * Was a foundry passed? if not, lets create one

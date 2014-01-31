@@ -1,19 +1,23 @@
 {
     "default": {
 
-        "paths": [
-            "core",
-            "../../app"
-        ],
+        "paths": {
+            "app": "app",
+            "core": "node_modules/altair.io/core"
+        },
+
         "cartridges": [
             {
-                "key": "nexus",
                 "path": "altair/cartridges/nexus/Nexus",
                 "options": {
                 }
             },
             {
-                "key": "module",
+                "path": "altair/cartridges/apollo/Apollo",
+                "options": {
+                }
+            },
+            {
                 "path": "altair/cartridges/module/Module",
                 "options": {
                     "$ref": "./modules.json"
