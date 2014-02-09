@@ -1,36 +1,36 @@
 #Altair
 
-**UNSTABLE - ONLY TESTS RUN**
-
-    #node altair.js -test
-
 Welcome to the IoE. Before you get started, you should read this whole thing. It's worth it and we'll keep it short!
+
+**UNSTABLE - ONLY TESTS RUN**
+After you add altair.io to you package.json and run npm update, you can do the following:
+
+    #node node_modules/altair.io/altair.js -h
+
 
 ##Value Proposition
 
 Altair was build with the vision of creating what we've coined as, "experiences of everything." This is more than just
 connecting to devices: it's orchestrating complex interactions between those devices in such a way as to blend the technology
-so beautifully into our lives that we don't even know that it's there. Not only that, but we quickly begin to question
+so beautifully into our lives that we don't even know that it's there. Not only that, but we should quickly begin to question
 how we ever lived without it.
 
-But, controlling devices is only one of many things Altair can do (through the Altair:Jarvis module). You can download and
+Controlling devices is only one of many things Altair can do (through the Altair:Jarvis module). You can download and
 enable the Titan:Alfred module to have web server functionality through [express](http://expressjs.com/) or any other
 web application framework that exists for node. Then, have your webpage update in real time as sensors are triggered and
 switches are flipped.
 
-Altair will blend the digital and analog words like nothing before it. Its flexible architecture actually allows it to
-connect to other libraries, platforms, frameworks, as easily as devices. Connecting hardware and software are both
-brilliantly simple in Altair!
+Connecting hardware and software are both brilliantly simple in Altair! Its flexible architecture actually allows it to
+connect to other libraries, platforms, frameworks, as easily as devices.
 
 ##Core Values
-
 
 The Altair team has core principles different than most other software teams. We strive for these values in everything that
 we do. Sometimes we come up short, but we push each other to our limits and keep each other honest.
 
 1. **Tomorrow must be more productive than today.** Over enough time, almost all things are renewable. All things except time.
 We do everything in our power to enhance each others productivity while minimizing the complexities added to our lives. We
-can't get our time back, so lets maximize what we can get done and minimize the time that it takes.
+can't get our time back, so lets maximize what we can get done in that time.
 
 1. **The difficulties in managing the code should not increase with lines of code.** We chose
 [dojo's very powerful AMD implementation](http://dojotoolkit.org/documentation/tutorials/1.9/modules/) to
@@ -43,7 +43,7 @@ than Angular.js or if python would kick ruby's ass in a street fight. Do that st
 here building mind blowing experiences.
 
 1. **Never forget that it's the value our systems provide to individuals that allows us to pursue our passions.** If you
-have time to spend, why not spend it making someones life better. We are going to launch our "App Store of Everything"
+have time to spend, why not spend it making someone's life better. We are going to launch our "App Store of Everything"
 by 4th quarter 2014 and hope that hobbyists and enthusiasts will use it to fund their passions and maybe even allow them
 to start full time enterprises.
 
@@ -54,8 +54,7 @@ normalizes web experiences, then create a new module to do it your way.
 
 ##Events++
 
-
-One thing that makes Altair different is its event engine. We have taken the EventEmitter api and added a query engine.
+One thing that makes Altair different is its event engine. We have taken the observer pattern and added a query engine.
 See it in action:
 
     /**
