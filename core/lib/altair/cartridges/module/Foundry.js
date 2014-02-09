@@ -94,9 +94,7 @@ define(['dojo/_base/declare',
 
                         all(list).then(hitch(deferred, 'resolve')).otherwise(hitch(deferred, 'reject'));
 
-                    }), function (err) {
-                        deferred.reject(err);
-                    }).otherwise(hitch(deferred, 'reject'));
+                    })).otherwise(hitch(deferred, 'reject'));
 
 
                 })).otherwise(hitch(deferred, 'reject'));
@@ -265,7 +263,7 @@ define(['dojo/_base/declare',
 
 
             var paths = {};
-            path[alias] = dir;
+            paths[alias] = dir;
 
             require({
                 paths: paths
