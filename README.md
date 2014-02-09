@@ -1,14 +1,17 @@
 #Altair
 
+
 Welcome to the IoE. Before you get started, you should read this whole thing. It's worth it and we'll keep it short!
 
 **UNSTABLE - ONLY TESTS RUN**
+
 After you add altair.io to you package.json and run npm update, you can do the following:
 
     #node node_modules/altair.io/altair.js -h
 
 
 ##Value Proposition
+
 
 Altair was build with the vision of creating what we've coined as, "experiences of everything." This is more than just
 connecting to devices: it's orchestrating complex interactions between those devices in such a way as to blend the technology
