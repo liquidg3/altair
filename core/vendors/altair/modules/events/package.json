@@ -1,0 +1,5 @@
+{
+    "name": "Altair Events",
+    "version": "0.0.1",
+    "description": "When you want to introduce new events into Altair, use the _HasEventsMixin"
+}

@@ -44,15 +44,11 @@ define(['dojo/_base/declare',
             //pass through altair if it was passed or fallback to altair's paths
             this.paths = options.paths;
 
-            if(!this.paths) {
-
-
-                if(this.altair.paths) {
-                    this.paths = [];
-                    this.altair.paths.forEach(lang.hitch(this, function (path) {
-                        this.paths.push(nodePath.join(path, 'vendors'));
-                    }));
-                }
+            if(!this.paths && this.altair.paths) {
+                this.paths = [];
+                this.altair.paths.forEach(lang.hitch(this, function (path) {
+                    this.paths.push(nodePath.join(path, 'vendors'));
+                }));
             }
 
             /**
@@ -69,7 +65,8 @@ define(['dojo/_base/declare',
              */
             if (options.dataStore) {
 
-                throw "Not finished, need to figure out how to do this one";
+                this.deferred.reject("Not finished, need to figure out how to do this one");
+                return;
             }
 
             /**
@@ -176,7 +173,7 @@ define(['dojo/_base/declare',
                     this.deferred.resolve(this);
                 }));
 
-            }));
+            })).otherwise(lang.hitch(this.deferred, 'reject'));
 
             return this.inherited(arguments);
         },
@@ -226,11 +223,11 @@ define(['dojo/_base/declare',
 
                 if(module) {
 
-                    //lifecycle class gets startup
+                    //lifecycle class gets started up....
                     if(module.isInstanceOf && module.isInstanceOf(Lifecycle)) {
                         module.startup().then(load);
                     }
-                    //but it's not required
+                    //...but it's not required
                     else {
                         load();
                     }
@@ -288,10 +285,9 @@ define(['dojo/_base/declare',
                 modules: modules
             }).then(lang.hitch(this, function (modules) {
 
-
                 deferred.resolve(modules);
 
-            }));
+            })).otherwise(lang.hitch(deferred, 'reject'));
 
             return deferred;
 

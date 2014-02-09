@@ -3,10 +3,10 @@
  */
 define(['dojo/_base/declare',
         'dojo/_base/lang',
-        'dojo/DeferredList',
+        'dojo/promise/all',
         'dojo/Deferred'], function (declare,
                                     lang,
-                                    DeferredList,
+                                    all,
                                     Deferred) {
 
     return declare('altair/cartridges/Foundry', null, {
@@ -42,33 +42,9 @@ define(['dojo/_base/declare',
          */
         build: function (options) {
 
-            var list     = [];
+            var list            = options.map(lang.hitch(this, 'buildOne'));
 
-            options.forEach(lang.hitch(this, function (_options) {
-                list.push(this.buildOne(_options));
-            }));
-
-            var deferredList = new DeferredList(list),
-                deferred     = new Deferred();
-
-            deferredList.then(lang.hitch(this, function (results) {
-
-                var cartridges = [];
-
-                results.forEach(lang.hitch(this, function (item, index) {
-                    if(item[0]) {
-                       cartridges.push(item[1]);
-                    }
-                    else {
-                        throw "Cartridge:" + options.paths[index];
-                    }
-                }));
-
-                deferred.resolve(cartridges);
-
-            }));
-
-            return deferred;
+            return all(list);
 
 
         },

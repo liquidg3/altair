@@ -1,7 +1,0 @@
-{
-    "name": "Altair Command Line Interface (CLI)",
-    "version": "0.0.1",
-    "description": "One of many ways you can interface with Altair.",
-    "altairDependencies": {
-    }
-}

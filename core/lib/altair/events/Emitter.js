@@ -12,7 +12,7 @@ define(['dojo/_base/declare',
 
     var agent = new QueryAgent();
 
-    return declare(null, {
+    return declare('altair/events/Emitter', null, {
 
         _eventListenerQueryAgent: agent,
         _listeners: {},

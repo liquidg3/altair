@@ -41,8 +41,8 @@ define(['dojo/_base/declare',
             this._cartridges[cartidge.declaredClass] = cartidge;
 
             cartidge.startup().then(function (cartridge) {
-                cartridge.execute().then(lang.hitch(deferred, 'resolve'));
-            });
+                cartridge.execute().then(lang.hitch(deferred, 'resolve')).otherwise(lang.hitch(deferred, 'reject'));
+            }).otherwise(lang.hitch(deferred, 'reject'));
 
             return deferred;
 
@@ -118,7 +118,7 @@ define(['dojo/_base/declare',
                 var cartridge = cartridges.shift();
 
                 if(cartridge) {
-                    this.addCartridge(cartridge).then(load);
+                    this.addCartridge(cartridge).then(load).otherwise(lang.hitch(deferred, 'reject'));
                 } else {
                     deferred.resolve(this);
                 }

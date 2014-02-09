@@ -7,18 +7,24 @@
  * {{vendorname}}/modules/{{modulename}}/Module.js
  * {{vendorname}}/modules/{{modulename}}/package.json
  *
+ * Altair likes to call the folder "vendors," but it does not need to be
  */
 define(['dojo/_base/declare',
         'dojo/_base/lang',
+        'altair/wrappers/hitch',
         'dojo/DeferredList',
+        'dojo/promise/all',
         'dojo/Deferred',
-        'dojo/node!fs',
+        'altair/wrappers/glob',
         'dojo/node!path',
-        'require'], function (declare,
+        'require'],
+                         function (declare,
                                    lang,
+                                   hitch,
                                    DeferredList,
+                                   all,
                                    Deferred,
-                                   fs,
+                                   glob,
                                    path,
                                    require) {
 
@@ -39,68 +45,68 @@ define(['dojo/_base/declare',
     return declare('altair/cartridges/module/Foundry', null, {
 
 
-        modulesToInstantiate: null,
-
         /**
          * Build modules by looking in paths you pass. The modules that come back will *not* be started up.
          *
          * @param options - {
          *      paths:      ['array', 'of', 'dirs', 'to', 'search', 'against'],
-         *      modules:    ['array','of','modules','to','instantiate'] //if missing, all modules will be created
+         *      modules:    ['array','of','modules','to','instantiate'], //if missing, all modules will be created
+         *      loadDependencies: true|false //defaults to true
          * }
          *
          * @returns {dojo.Deferred}
          */
         build: function (options) {
 
-            var list = [],
-                resetModulesToInstantiate = false,
-                oldModulesToInstantiate   = this.modulesToInstantiate;
+            var deferred        = new Deferred();
 
-            //they want to restrict the modules being created
-            if(options.modules) {
-                this.modulesToInstantiate = options.modules;
-            } else {
-                this.modulesToInstantiate = null;
-            }
+            try {
 
-            if(!options.paths) {
-                throw "You must pass an array of paths for the Module Foundry to search and parse."
-            }
+                //they want to restrict the modules being created
+                options.modules = (options && options.modules) ? options.modules : '*';
 
-            //usually the path is called vendors
-            options.paths.forEach(lang.hitch(this, function (_path) {
-                list.push(this._traverseAndBuildFromVendorsPath(require.toUrl(_path)));
-            }));
-
-
-            var deferredList = new DeferredList(list),
-                deferred     = new Deferred();
-
-            /**
-             * We'll get back a 2 dimensional array where the 1st dimension groups by vendor directory (core, community, local)
-             * and the 2nd dimension are the modules inside that directory.
-             */
-            deferredList.then(lang.hitch(this, function (results) {
-
-                //reset modulesToInstantiate for next call, more often than not will be null
-                if(resetModulesToInstantiate) {
-                    this.modulesToInstantiate = oldModulesToInstantiate;
+                if(!options.paths || options.paths.length === 0) {
+                    deferred.reject("You must pass an array of paths for the Module Foundry to search and parse.");
+                    return deferred;
                 }
 
-                var modules = [];
-
-                results.forEach(function (result) {
-                    result[1].forEach(function (module) {
-
-                        modules.push(module);
-
-                    });
+                //take every path we have received and glob them for our module pattern
+                var paths = options.paths.map(function (_path) {
+                    return path.join(require.toUrl(_path), '*/modules/*/*.js');
                 });
 
-                deferred.resolve(modules);
 
-            }));
+                //glob all the dirs
+                glob(paths).then(hitch(this, function (files) {
+
+                    paths = this._filterPaths(files, options.modules);
+
+                    //all modules failed?
+                    if(!paths || paths.length === 0 || paths.length != options.modules.length) {
+                        deferred.reject("Failed to load modules: " + options.modules.join(', '));
+                        return;
+                    }
+
+                    this._sortByDependencies(paths).then(hitch(this, function (sorted) {
+
+                        //we have our sorted list, lets build each module
+                        var list    = sorted.map(hitch(this, 'buildOne'));
+
+                        all(list).then(hitch(deferred, 'resolve')).otherwise(hitch(deferred, 'reject'));
+
+                    }), function (err) {
+                        deferred.reject(err);
+                    }).otherwise(hitch(deferred, 'reject'));
+
+
+                })).otherwise(hitch(deferred, 'reject'));
+
+            } catch (e) {
+
+                deferred.reject(e);
+
+            }
+
 
 
             return deferred;
@@ -108,129 +114,120 @@ define(['dojo/_base/declare',
         },
 
         /**
-         * PRIVATE, takes a path and that contains folders that are vendor names.
+         * Filters all the paths you pass down to only those who match the passed module names
          *
-         * @param vendorsPath
-         * @returns {dojo.Deferred}
+         * @param paths
+         * @param moduleNames
          * @private
          */
-        _traverseAndBuildFromVendorsPath: function (vendorsPath) {
+        _filterPaths: function (paths, moduleNames) {
+            if(moduleNames == '*') {
+                return paths;
+            }
 
-            var list        = [],
-                deferred    = new Deferred();
-
-            //inside it should directories named after the vendor
-            fs.readdir(vendorsPath, lang.hitch(this, function (err, vendors) {
-
-                if(err) {
-                    throw err;
-                }
-
-                //each vendor folder has a modules dir which contains an array of modules
-                vendors.forEach(lang.hitch(this, function (vendor) {
-
-                    if(vendor[0] !== '.') {
-
-                        var modulesPath = path.join(vendorsPath, vendor, 'modules');
-
-                        //load modules for this vendor
-                        list.push(this._traverseAndBuildFromModulesPath(modulesPath));
-
-                    }
-
-
-                }));
-
-                var deferredList = new DeferredList(list);
-
-                deferredList.then(function (results) {
-
-                    var modules = [];
-
-                    results.forEach(function (result) {
-                        result[1].forEach(function (module) {
-
-                            modules.push(module);
-
-                        });
-                    });
-
-                    deferred.resolve(modules);
-
-                });
-
+            return paths.filter(hitch(this, function (path) {
+                var name = this._pathToModuleName(path);
+                return moduleNames.indexOf(name) > -1;
             }));
-
-            return deferred;
-
         },
 
         /**
-         * PRIVATE
-         * @param modulesPath
+         * Will read every module's package.json to read its dependencies, then tries to sort the list accordingly. Currently
+         * is stupid, does not handle versions, and only handles altairDepenencies as an object
+         *
+         * @param paths
          * @private
          */
-        _traverseAndBuildFromModulesPath: function (modulesPath) {
+        _sortByDependencies: function (paths) {
 
-            var list        = [],
-                deferred    = new Deferred();
+            var list                    = [],
+                pathsByName             = {},
+                deferred                = new Deferred();
 
-            fs.readdir(modulesPath, lang.hitch(this, function (err, allModules) {
+            //build up paths
+            paths.forEach(hitch(this, function (_path) {
 
-                if(err) {
-                    throw err;
-                }
+                var name        = this._pathToModuleName(_path),
+                    packagePath = path.resolve(require.toUrl(_path), '../', 'package.json'),
+                    module      = {
+                        name: name,
+                        path: _path,
+                        dependencies: null
+                    };
 
-                //here are all the modules, each folder has a js file by the same Name
-                allModules.forEach(lang.hitch(this, function (moduleName) {
+                pathsByName[name] = _path;
 
-                    if(moduleName[0] !== '.') {
+                //manage our deferreds
+                var def = new Deferred();
+                list.push(def);
 
-                        var modulePath  = path.join(modulesPath, moduleName, ucfirst(moduleName)) + '.js',
-                            skip        = false;
-
-                        //if modulesToInstantiate is truthy and this module is NOT in it, we will not create it
-                        if(this.modulesToInstantiate) {
-                            var name = this._pathToModuleName(modulePath);
-                            if(this.modulesToInstantiate.indexOf(name) === -1) {
-                                skip = true;
+                require(['altair/plugins/config!' + packagePath], hitch(this, function (config) {
+                    if(config.altairDependencies) {
+                        module.dependencies = Object.keys(config.altairDependencies);
+                        module.dependencies.forEach(function (dep) {
+                            if(!lang.isString(dep) && !def.isRejected()) {
+                                deferred.reject('Make sure your altairDependencies have a version number. Module in question is ' + module.name);
+                                return;
                             }
-                        }
-
-                        if(!skip) {
-                            list.push(this.buildOne(modulePath));
-                        }
-
-                    }
-
-
-                }));
-
-                var deferredList = new DeferredList(list);
-
-                deferredList.then(function (results) {
-
-                    var modules = [];
-
-                    if(list.length > 0) {
-
-                        results.forEach(function (result) {
-                            modules.push(result[1]);
                         });
-
                     }
-
-                    deferred.resolve(modules);
-
-                });
-
+                    if(!deferred.isRejected()) {
+                        def.resolve(module);
+                    }
+                }));
 
             }));
 
 
 
+
+            //make sure they all resolve, flatten the list, then order them by putting unshift()'ing dependent modules
+            var defList = new DeferredList(list);
+            defList.then(hitch(this, function (results) {
+
+                var sorted = [];
+
+                results.forEach(hitch(this, function (module) {
+
+                    if(!module[0]) {
+                        if(!deferred.isRejected()) {
+                            deferred.reject(module[1]);
+                        }
+                        return;
+                    }
+
+                    var m = module[1];
+
+
+                    if(m.dependencies) {
+                        m.dependencies.forEach(hitch(this, function (dep) {
+                            var p = pathsByName[dep];
+
+                            if(!p) {
+                                deferred.reject("Dependent module " + dep + " is missing. Make sure it exists in your 'paths' and is enabled. The module is in question is " + m.name);
+                            }
+
+                            if(sorted.indexOf(p) === -1) {
+                                sorted.unshift(p);
+                            }
+                        }));
+                    }
+
+                    if(sorted.indexOf(m.path) === -1) {
+                        sorted.push(m.path);
+                    }
+
+                }));
+
+                deferred.resolve(sorted);
+
+            }));
+
+
             return deferred;
+
         },
+
 
         /**
          * Pass the full path to a Module.js and get back its name.
@@ -241,10 +238,11 @@ define(['dojo/_base/declare',
          */
         _pathToModuleName: function (modulePath) {
 
-            var dir         = path.dirname(modulePath),
+            var dir         = path.resolve(modulePath),
                 pathParts   = dir.split(path.sep),
-                moduleName  = ucfirst(pathParts.pop()),
+                moduleName  = pathParts.pop().split('.')[0],
                 junk        = pathParts.pop(),
+                junk2       = pathParts.pop(),
                 vendorName  = ucfirst(pathParts.pop());
 
 
@@ -260,26 +258,26 @@ define(['dojo/_base/declare',
 
             var deferred = new Deferred();
 
-            require([modulePath], lang.hitch(this, function (Module) {
+            //before any module is required, we have to setup some paths in the AMD loader
+            var dir         = path.dirname(modulePath),
+                pathParts   = dir.split('/'),
+                alias       = pathParts.slice(-3).join(path.sep);
+
+
+            var paths = {};
+            path[alias] = dir;
+
+            require({
+                paths: paths
+            });
+
+
+            require([modulePath], hitch(this, function (Module) {
 
                 var module      = new Module();
 
-                module.dir  = path.dirname(modulePath);
+                module.dir  = dir;
                 module.name = this._pathToModuleName(modulePath);
-
-                //add this module's declared class to the require paths so
-                //including mixins are easy
-                var pathParts = module.declaredClass.split('/');
-                pathParts.pop();
-
-                var name = pathParts.join('/'),
-                    paths = {};
-
-                paths[name] = module.dir;
-
-                require({
-                    paths: paths
-                });
 
                 deferred.resolve(module);
 

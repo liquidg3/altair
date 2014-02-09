@@ -11,9 +11,11 @@
         "test": "Altair -test"
     },
     "dependencies": {
-        "underscore": ">=1.1.x",
+        "underscore":       ">=1.1.x",
         "underscore-query": ">=0.4.x",
-        "optimist": ">=0.6.x"
+        "optimist":         ">=0.6.x",
+        "prompt":           ">=0.2.x",
+        "glob":             ">=3.2.x"
     },
 
     "author": "altair.io <admin@altair.io> (http://altair.io/)",

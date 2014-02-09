@@ -12,9 +12,13 @@ require(['altair/TestRunner',
         console.log('-- Tests Loaded--');
 
         runner.execute().then(function () {
-            console.log('-- Tests Finished--');
+            console.log('-- Tests Finished --');
+        }).otherwise(function () {
+            console.error('-- Tests Failed --');
         });
 
+    }).otherwise(function (err) {
+        console.error(err);
     });
 
 

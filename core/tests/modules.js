@@ -48,13 +48,16 @@ define(['doh/runner',
                 deferred = new doh.Deferred();
 
             foundry.build({
-                paths: testPaths
+                paths: testPaths,
+                modules: ['Altair:Mock']
             }).then(deferred.getTestCallback(function (modules) {
 
                 var altair = modules[0];
                 doh.assertEqual('Altair:Mock', altair.name, 'Module name did not work right yo.');
 
-            }));
+            }), function (err) {
+                doh.assertEqual('', err, err);
+            });
 
 
             return deferred;
@@ -71,8 +74,10 @@ define(['doh/runner',
             foundry.build({
                 paths: testPaths,
                 modules: ["Altair:NeverFound"]
-            }).then(deferred.getTestCallback(function (modules) {
-                doh.assertEqual(0, modules.length, 'No modules should have been created.');
+            }).then(function () {
+                throw "SHOULD NEVER BE CALLED";
+            },deferred.getTestCallback(function (err) {
+                doh.assertEqual('Failed to load modules: Altair:NeverFound', err);
 
             }));
 
@@ -271,7 +276,6 @@ define(['doh/runner',
             }));
 
         }
-
 
 
     ]);

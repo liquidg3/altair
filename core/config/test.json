@@ -1,6 +1,6 @@
 {
-    "paths": [
-        "core/tests",
-        "apollo/tests"
+    "glob": [
+        "core/tests/*.js",
+        "apollo/tests/*.js"
     ]
 }
