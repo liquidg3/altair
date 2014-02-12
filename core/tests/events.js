@@ -7,10 +7,12 @@ define(['doh/runner',
         'altair/events/Emitter',
         'altair/events/QueryAgent',
         'altair/events/Event',
+        'dojo/Deferred',
         'dojo/_base/lang'], function (doh,
                                       Emitter,
                                       QueryAgent,
                                       Event,
+                                      Deferred,
                                       lang) {
 
     doh.register('events', [
@@ -172,6 +174,32 @@ define(['doh/runner',
             emitter.on('dummy-event-4', { foo: 'bar' }).then(deferred.getTestCallback(function (e) {
                 doh.assertEqual('dummy-event-4', e.name, 'Event was not created as expected.');
             }));
+
+            emitter.emit('dummy-event-4', {
+                foo: 'bar'
+            });
+
+            return deferred;
+
+        },
+
+        /**
+         * Test that you can pause event emission from a listener temporarily
+         * @returns {dojo.tests._base.Deferred}
+         */
+        function () {
+
+            var emitter     = new Emitter(),
+                deferred    = new doh.Deferred();
+
+
+
+            emitter.on('dummy-event-4', { foo: 'bar' }).then(function (e) {
+
+                doh.assertEqual('dummy-event-4', e.name, 'Event was not created as expected.');
+                deferred.resolve();
+
+            });
 
             emitter.emit('dummy-event-4', {
                 foo: 'bar'

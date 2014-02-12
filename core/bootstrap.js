@@ -4,9 +4,10 @@
 require(['altair/Altair',
         'require',
         'altair/cartridges/Foundry',
+        'altair/facades/hitch',
         'altair/plugins/config!core/config/altair.json?env=' + GLOBAL.env],
 
-    function (Altair, require, Foundry, config) {
+    function (Altair, require, Foundry, hitch, config) {
 
 
         /**
@@ -36,7 +37,6 @@ require(['altair/Altair',
 
         foundry.build(config.cartridges).then(function (cartridges) {
 
-
             console.log('Cartridges created. Adding to Altair for startup.');
 
             /**
@@ -46,8 +46,8 @@ require(['altair/Altair',
 
                 console.log('Cartridges started.  ');
 
-            });
+            }).otherwise(hitch(console, 'error'));
 
-        });
+        }).otherwise(hitch(console, 'error'));
 
     });

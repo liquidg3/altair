@@ -9,6 +9,7 @@ define(['dojo/_base/declare',
     return declare('altair/modules/events/mixins/_HasEventsMixin', null, {
 
             startup: function () {
+
                 if(this.package.events) {
                     this.on('Altair:Events::register-events').then(hitch(this, 'registerEvents'));
                 }

@@ -17,20 +17,29 @@ define(['dojo/_base/declare',
 
     return declare('altair/cartridges/module/plugins/Apollo',[_Base], {
 
+        startup: function () {
+
+            this.deferred = new Deferred();
+
+            //we have to make sure we have our dependent plugins loaded
+            if(!this.cartridge.altair.hasCartridges(['altair/cartridges/apollo/Apollo'])) {
+                this.deferred.reject("You must have the 'altair/cartridges/apollo/Apollo' cartridge enabled.");
+            }
+            //only 1 error at a time, now check for the config plugin
+            else if(!this.cartridge.hasPlugin('altair/cartridges/module/plugins/Config')) {
+                this.deferred.reject("Please make sure you have the 'altair/cartridges/module/plugins/Config' enabled.");
+            } else {
+                this.deferred.resolve(this);
+            }
+
+
+            return this.inherited(arguments);
+        },
+
         execute: function (module) {
 
 
             if(module.isInstanceOf(_HasSchemaMixin)) {
-
-                //we have to make sure we have our dependent plugins loaded
-                if(!this.cartridge.altair.hasCartridges(['altair/cartridges/apollo/Apollo'])) {
-                    throw "You must have the 'altair/cartridges/apollo/Apollo' cartridge enabled.";
-                }
-
-                //we also depend on the parseConfig method, usually given to us by our Config plugin
-                if(!module.parseConfig) {
-                    throw "Please make sure you have the 'altair/cartridges/module/plugins/Config' enabled."
-                }
 
                 this.deferred = new Deferred();
 
@@ -48,8 +57,6 @@ define(['dojo/_base/declare',
                 }), function (err) {
                     throw err;
                 });
-
-
 
             }
 

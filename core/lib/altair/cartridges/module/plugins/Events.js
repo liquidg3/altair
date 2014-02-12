@@ -26,38 +26,132 @@
  */
 define(['dojo/_base/declare',
         './_Base',
-        'dojo/_base/lang',
+        'dojo/Deferred',
+        'altair/facades/hitch',
         'altair/events/Emitter'],
 
     function (declare,
               _Base,
-              lang,
+              Deferred,
+              hitch,
               Emitter) {
+
+
+        /**
+         * Will apply the action to the parent, but use the event name to resolve the parent to
+         * something from nexus if necessary
+         *
+         * @param parent
+         * @param event
+         * @param action
+         * @param args
+         * @returns {*}
+         */
+        function apply(parent, event, action, args) {
+
+            var orgEvent = event;
+
+            if(event.indexOf('::') !== -1) {
+
+                var eventParts = event.split('::');
+
+                parent = parent.nexus(eventParts[0]);
+                event  = eventParts[1];
+
+            }
+
+            if(!parent) {
+                var def = new Deferred();
+                def.reject('Could not ' + action + '(' + orgEvent + ') because it could not be found.');
+                return def;
+            }
+
+            //pass in new event name as first
+            args.unshift(event);
+
+            return parent[action].apply(parent, args);
+
+        };
 
     return declare('altair/cartridges/module/plugins/Events',[_Base], {
 
-        execute: function (module) {
+        startup: function () {
 
+            this.deferred = new Deferred();
 
             if(!this.cartridge.hasPlugin('altair/cartridges/module/plugins/Nexus')) {
-                throw "The module event plugin needs the nexus plugin loaded first."
+                this.deferred.reject("The module event plugin needs the nexus plugin loaded first.");
+            } else {
+                this.deferred.resolve(this);
             }
+
+            return this.inherited(arguments);
+
+        },
+
+        execute: function (module) {
 
             //if they are an event emmiter
             if(module.isInstanceOf(Emitter)) {
     
                 declare.safeMixin(module, {
-    
-                    on: function (event, query, callback) {
-    
-                        //they passed old school
-                        if(lang.isFunction(query)) {
-                            callback    = query;
-                            query       = null;
+
+                    /**
+                     * We interject Nexus support into the event system.
+                     *
+                     * @param event
+                     * @param callback
+                     * @param query
+                     * @param config
+                     * @returns {*}
+                     */
+                    on: function (event, callback, query, config) {
+
+                        //if we are skipping on the nexus resolution call the
+                        //standard emitter's on()
+                        if(config && config.skipNexus) {
+                            return this.inherited(arguments);
                         }
-    
-                        return 'bar';
+
+                        //setup config with skipNexus
+                        if(!config) {
+                            config = {};
+                        }
+
+                        config.skipNexus = true;
+
+
+                        return apply(this, event, 'on', [callback, query, config]);
+                    },
+
+                    /**
+                     * So you can emit events through nexus
+                     *
+                     * @param event
+                     * @param data
+                     * @param callback
+                     * @param config
+                     */
+                    emit: function(event, data, callback, config) {
+
+
+                        //if we are skipping on the nexus resolution call the
+                        //standard emitter's emit()
+                        if(config && config.skipNexus) {
+                            return this.inherited(arguments);
+                        }
+
+                        //setup config with skipNexus
+                        if(!config) {
+                            config = {};
+                        }
+
+                        config.skipNexus = true;
+
+                        return apply(this, event, 'emit', [data, callback, config]);
+
                     }
+
                 });
 
             }

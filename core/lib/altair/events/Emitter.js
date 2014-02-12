@@ -47,9 +47,9 @@ define(['dojo/_base/declare',
             }
 
             //if they passed a query as the 2nd argument
-            if(typeof callback == 'object') {
-                query = callback;
-                callback = undefined;
+            if(callback && !lang.isFunction(callback)) {
+                query       = callback;
+                callback    = null;
             }
 
             //create deferred & listener
@@ -73,7 +73,6 @@ define(['dojo/_base/declare',
          * @param data
          * @param callback
          * @param config
-         * @returns {number}
          */
         emit: function (event, data, callback, config) {
 
@@ -115,11 +114,11 @@ define(['dojo/_base/declare',
          *
          * @param eventName
          * @param data
-         * @returns {core.lib.altair.events.Event}
+         * @returns {altair.io.core.lib.altair.events.Event}
          * @private
          */
         _normalizeEvent: function (eventName, data) {
-            return typeof eventName == 'string' ? new Event(eventName, data) : eventName;
+            return (typeof eventName == 'string') ? new Event(eventName, data, this) : eventName;
         }
 
     });

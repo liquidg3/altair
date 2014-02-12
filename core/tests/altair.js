@@ -8,18 +8,18 @@ define(['doh/runner', 'altair/Altair', 'dojo/Deferred'], function (doh, Altair, 
         /**
          * Make sure we can construct an Altair instance
          */
-        function () {
+        function (t) {
 
             var a = new Altair();
 
-            doh.assertTrue(!!a, 'Altair instantiation failed');
+            t.t(!!a, 'Altair instantiation failed');
 
         },
 
         /**
          * Make sure cartridges are setup and torn down properly
          */
-        function () {
+        function (t) {
 
             var setupCalled = false,
                 teardownCalled = false,
@@ -53,23 +53,23 @@ define(['doh/runner', 'altair/Altair', 'dojo/Deferred'], function (doh, Altair, 
 
             a.addCartridge(cartridge);
 
-            doh.assertTrue(setupCalled, 'setup not called on cartridge');
-            doh.assertTrue(executeCalled, 'execute not called on cartridge');
-            doh.assertFalse(teardownCalled, 'teardown should NOT be called on cartridge');
+            t.t(setupCalled, 'setup not called on cartridge');
+            t.t(executeCalled, 'execute not called on cartridge');
+            t.f(teardownCalled, 'teardown should NOT be called on cartridge');
 
         },
 
         /**
          * Test that our altair/plugins/config can handle environments
          */
-        function () {
+        function (t) {
 
             var deferred = new doh.Deferred();
 
             require(['altair/plugins/config!core/tests/configs/env.json?env=dev'], deferred.getTestCallback(function (config) {
 
-                doh.assertEqual('bar2', config.foo, 'Config inheritance did not work.');
-                doh.assertEqual('world', config.hello, 'Config inheritance did not work.');
+                t.is('bar2', config.foo, 'Config inheritance did not work.');
+                t.is('world', config.hello, 'Config inheritance did not work.');
 
             }));
 
@@ -80,15 +80,15 @@ define(['doh/runner', 'altair/Altair', 'dojo/Deferred'], function (doh, Altair, 
         /**
          * Test that our altair/plugins/config can handle environments
          */
-        function () {
+        function (t) {
 
             var deferred = new doh.Deferred();
 
-            require(['altair/plugins/config!core/tests/configs/ref.json'], deferred.getTestCallback(function (config) {
+            require(['altair/plugins/config!core/tests/configs/ref.json'], function (config) {
 
-                doh.assertEqual('world', config.options.hello, 'Config $ref resolution did not work.');
-
-            }));
+                t.is('world', config.options.hello, 'Config $ref resolution did not work.');
+                deferred.resolve();
+            });
 
             return deferred;
 

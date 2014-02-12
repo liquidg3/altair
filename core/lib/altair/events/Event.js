@@ -24,6 +24,14 @@ define(['dojo/_base/declare',
         set: function (name, value) {
             this.data[name] = value;
             return this;
+        },
+
+        wait: function (timeout) {
+
+        },
+
+        go: function () {
+
         }
 
 
