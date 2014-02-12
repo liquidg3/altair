@@ -1,5 +1,8 @@
 {
     "name": "Altair Events",
     "version": "0.0.1",
-    "description": "When you want to introduce new events into Altair, use the _HasEventsMixin"
+    "description": "When you want to introduce new events into Altair, use the _HasEventsMixin",
+    "events" : {
+        "register-events" : "Hook into this event using _HasEventsMixin to tell Altiar about your events"
+    }
 }

@@ -1,10 +1,12 @@
 define(['doh/runner',
         'altair/cartridges/module/Foundry',
-        'altair/Altair'],
+        'altair/Altair',
+        'altair/facades/hitch'],
 
     function (doh,
               Foundry,
-              Altair) {
+              Altair,
+              hitch) {
 
     doh.register('module-foundry', [
 
@@ -25,7 +27,7 @@ define(['doh/runner',
          * modules back, it should be in front. This could crash hard if it does not work (meaning it may not trigger
          * the failure callback).
          */
-        function () {
+        function (t) {
 
             var altair      = new Altair(),
                 foundry     = new Foundry(altair, {}),
@@ -36,12 +38,11 @@ define(['doh/runner',
                     'core/tests/modules/vendors'
                 ],
                 modules: [ "_altair:Mock", "Altair:Mock"]
-            }).then(deferred.getTestCallback(function (modules) {
-                doh.assertEqual('Altair:Mock', modules[0].name, 'Passing modules to foundry did not produce expected results.');
-                doh.assertEqual('_altair:Mock', modules[1].name, 'Passing modules to foundry did not produce expected results.');
-            })).otherwise(function (err) {
-                doh.reject(err);
-            });
+            }).then(function (modules) {
+                t.is(modules[0].name, 'Altair:Mock', 'Passing modules to foundry did not produce expected results.');
+                t.is(modules[1].name, '_altair:Mock', 'Passing modules to foundry did not produce expected results.');
+                deferred.resolve(true);
+            }).otherwise(hitch(deferred, 'reject'));
 
             return deferred;
         }

@@ -1,19 +1,16 @@
 /**
- * Kickass mixin for event <-> nexus integration
+ * Reads package for events described in it
  */
 define(['dojo/_base/declare',
-        'dojo/_base/lang',
-        'dojo/Deferred'
+        'altair/facades/hitch'
 ], function (declare,
-             lang,
-             Deferred) {
-
+             hitch) {
 
     return declare('altair/modules/events/mixins/_HasEventsMixin', null, {
 
             startup: function () {
                 if(this.package.events) {
-                    this.on('Altair:Events::REGISTER_EVENTS').then(lang.hitch(this, 'registerEvents'));
+                    this.on('Altair:Events::register-events').then(hitch(this, 'registerEvents'));
                 }
 
                 return this.inherited(arguments);
