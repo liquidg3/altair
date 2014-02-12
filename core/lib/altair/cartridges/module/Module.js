@@ -1,21 +1,41 @@
 /**
  * The module cartridge does a few things. Firstly, it uses ./Foundry to instantiate all the modules you passed as
- * options. Secondly
+ * options.
+ *
+ * Events:
+ *  will-startup-module
+ *  did-startup-module
  *
  * @required Nexus cartridge
  *
  */
 define(['dojo/_base/declare',
-    'dojo/_base/lang',
+    'altair/facades/hitch',
     '../_Base',
     'dojo/Deferred',
     'dojo/DeferredList',
+    'dojo/promise/all',
     './Resolver',
     'altair/Lifecycle',
     'dojo/node!path',
-    './Foundry'], function (declare, lang, _Base, Deferred, DeferredList, Resolver, Lifecycle, nodePath, Foundry) {
+    './Foundry',
+    'dojo/_base/array',
+    'altair/events/Emitter'],
 
-    return declare('altair/cartridges/module/Module', [_Base], {
+    function (declare,
+              hitch,
+              _Base,
+              Deferred,
+              DeferredList,
+              all,
+              Resolver,
+              Lifecycle,
+              nodePath,
+              Foundry,
+              array,
+              Emitter) {
+
+    return declare('altair/cartridges/module/Module', [_Base, Emitter], {
 
         foundry:        null,
         modules:        null,
@@ -46,7 +66,7 @@ define(['dojo/_base/declare',
 
             if(!this.paths && this.altair.paths) {
                 this.paths = [];
-                this.altair.paths.forEach(lang.hitch(this, function (path) {
+                this.altair.paths.forEach(hitch(this, function (path) {
                     this.paths.push(nodePath.join(path, 'vendors'));
                 }));
             }
@@ -57,7 +77,7 @@ define(['dojo/_base/declare',
             if (!options || !options.foundry) {
                 this.foundry = new Foundry();
             } else {
-                throw "Not finished, should this set directly or assume something needs to be loaded?";
+                this.deferred.reject("Not finished, should this set directly or assume something needs to be loaded?");
             }
 
             /**
@@ -75,29 +95,26 @@ define(['dojo/_base/declare',
             if (options.plugins) {
 
                 var list = [];
-                this.plugins = {};
+                this.plugins = [];
 
-                options.plugins.forEach(lang.hitch(this, function (path) {
+                options.plugins.forEach(hitch(this, function (path) {
 
                     var def = new Deferred();
 
-                    require([path], lang.hitch(this, function (Plugin) {
+                    require([path], hitch(this, function (Plugin) {
 
                         var plugin = new Plugin(this);
 
-                        this.plugins[plugin.declaredClass] = plugin;
-
-                        def.resolve(this);
+                        this.plugins.push(plugin);
+                        
+                        plugin.startup().then(hitch(def, 'resolve')).otherwise(hitch(def, 'reject'));
 
                     }));
 
                     list.push(def);
                 }));
 
-                var deferredList = new DeferredList(list);
-                deferredList.then(lang.hitch(this, function () {
-                    this.deferred.resolve(this);
-                }));
+                all(list).then(hitch(this.deferred, 'resolve', this)).otherwise(hitch(this.deferred, 'reject'));
 
             }
             //if there are no plugins, we are ready
@@ -110,12 +127,28 @@ define(['dojo/_base/declare',
         },
 
         /**
+         * Gets you a module plugin by a particular declared class.
+         *
+         * @param declaredClass
+         * @returns {*}
+         */
+        plugin: function (declaredClass) {
+            for(var c = 0; c <= this.plugins.length; c++) {
+                if(this.plugins[c].declaredClass === declaredClass) {
+                    return this.plugins[c];
+                }
+            }
+            return null;
+
+        },
+
+        /**
          *
          * @param declaredClass
          * @returns {boolean}
          */
         hasPlugin: function (declaredClass) {
-            return !!this.plugins[declaredClass];
+            return array.some(this.plugins, function (plugin) { return plugin.declaredClass === declaredClass; });
         },
 
         /**
@@ -151,29 +184,29 @@ define(['dojo/_base/declare',
 
             this.deferred = new Deferred();
 
-            this.buildModules(this.options.modules).then(lang.hitch(this, function (modules) {
+            this.buildModules(this.options.modules).then(hitch(this, function (modules) {
 
                 this.modules = [];
 
                 //make it easy to access modules by name
                 this.modulesByName = {};
 
-                //if the nexus cartridge is in, register our resolver
-
+                //if the nexus cartridge is in, register our resolver and ourselves
                 if(this.altair.hasCartridge('altair/cartridges/nexus/Nexus')) {
 
                     var nexus       = this.altair.cartridge('altair/cartridges/nexus/Nexus'),
                         resolver    = new Resolver(this);
 
                     nexus.addResolver(resolver);
+                    nexus.set('Cartridges/Module', this)
 
                 }
 
-                this.addModules(modules).then(lang.hitch(this, function () {
+                this.addModules(modules).then(hitch(this, function () {
                     this.deferred.resolve(this);
                 }));
 
-            })).otherwise(lang.hitch(this.deferred, 'reject'));
+            })).otherwise(hitch(this.deferred, 'reject'));
 
             return this.inherited(arguments);
         },
@@ -193,20 +226,20 @@ define(['dojo/_base/declare',
             this.modules = this.modules.concat(_modules);
 
             //add to local store of modules by name
-            _modules.forEach(lang.hitch(this, function (module) {
+            _modules.forEach(hitch(this, function (module) {
                 this.modulesByName[module.name] = module;
             }));
+
+            var list = []; // all our deferreds
 
             //run through plugins and execute them on the plugins we have
             if (this.plugins) {
 
-                _modules.forEach(lang.hitch(this, function (module) {
+                _modules.forEach(hitch(this, function (module) {
 
-                    Object.keys(this.plugins).forEach(lang.hitch(this, function (key) {
+                    this.plugins.forEach(hitch(this, function (plugin) {
 
-                        var plugin = this.plugins[key];
-                        plugin.execute(module);
-
+                        list.push(plugin.execute(module));
 
                     }));
 
@@ -215,9 +248,8 @@ define(['dojo/_base/declare',
 
             }
 
-
             //lets startup all modules, ensuring one is not started until the one before it is
-            var load = lang.hitch(this, function () {
+            var load = hitch(this, function () {
 
                 var module = _modules.pop();
 
@@ -225,7 +257,20 @@ define(['dojo/_base/declare',
 
                     //lifecycle class gets started up....
                     if(module.isInstanceOf && module.isInstanceOf(Lifecycle)) {
-                        module.startup().then(load);
+
+                        this.emit('will-startup-module', {
+                            module: module
+                        });
+
+                        module.startup().then(hitch(this, function () {
+
+                            this.emit('did-startup-module', {
+                                module: module
+                            });
+
+                            load();
+
+                        })).otherwise(hitch(deferred, 'reject'));
                     }
                     //...but it's not required
                     else {
@@ -236,7 +281,7 @@ define(['dojo/_base/declare',
                 }
             });
 
-            load();
+            all(list).then(load).otherwise(hitch(deferred, 'reject'));
 
             return deferred;
 
@@ -262,7 +307,7 @@ define(['dojo/_base/declare',
             this.modules  = [];
 
             var deferred = new DeferredList(list);
-            deferred.on(lang.hitch(this, function() {
+            deferred.on(hitch(this, function() {
                 this.deferred.resolve(this);
             }));
 
@@ -283,11 +328,11 @@ define(['dojo/_base/declare',
             this.foundry.build({
                 paths: this.paths,
                 modules: modules
-            }).then(lang.hitch(this, function (modules) {
+            }).then(hitch(this, function (modules) {
 
                 deferred.resolve(modules);
 
-            })).otherwise(lang.hitch(deferred, 'reject'));
+            })).otherwise(hitch(deferred, 'reject'));
 
             return deferred;
 

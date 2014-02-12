@@ -1,9 +1,11 @@
 define(['doh/runner',
         'altair/cartridges/Foundry',
-        'altair/Altair'],
+        'altair/Altair',
+        'altair/facades/hitch'],
     function (doh,
               CartridgeFoundry,
-              Altair) {
+              Altair,
+              hitch) {
 
 
         /**
@@ -13,7 +15,7 @@ define(['doh/runner',
          * @param plugins
          * @returns {dojo.tests._base.Deferred}
          */
-        var loadPlugins = function (plugins) {
+        var boot = function (callback) {
 
             var deferred    = new doh.Deferred(),
                 altair      = new Altair(),
@@ -31,17 +33,16 @@ define(['doh/runner',
                     options: {
                         paths:      ['core/tests/modules/vendors'],
                         modules:    ['Altair:Mock'],
-                        plugins:    plugins
+                        plugins:    ['altair/cartridges/module/plugins/Paths', 'altair/cartridges/module/plugins/Config', 'altair/cartridges/module/plugins/Apollo']
                     }
                 }
-            ]).then(function (cartridges) {
+            ]).then(deferred.getTestCallback(function (cartridges) {
 
                 altair.addCartridges(cartridges).then(function () {
-                    deferred.resolve(altair.cartridge('altair/cartridges/module/Module').modules);
-                });
+                    callback(altair.cartridge('altair/cartridges/module/Module').modules);
+                }).otherwise(hitch(deferred, 'reject'));
 
-            });
-
+            })).otherwise(hitch(deferred, 'reject'));
 
             return deferred;
 
@@ -56,18 +57,14 @@ define(['doh/runner',
              */
              function () {
 
-                var deferred = new doh.Deferred();
-
-                loadPlugins(['altair/cartridges/module/plugins/Paths', 'altair/cartridges/module/plugins/Config', 'altair/cartridges/module/plugins/Apollo']).then(deferred.getTestCallback(function (modules) {
+                return boot(function (modules) {
 
                     var module = modules[0];
 
                     doh.assertEqual('bar', module.get('foo'), 'Altair:Mock did not get a schema.');
 
 
-                }));
-
-                return deferred;
+                });
 
 
             }

@@ -4,7 +4,7 @@
  */
 define(['dojo/Deferred',
         'dojo/promise/all',
-        'altair/wrappers/hitch',
+        'altair/facades/hitch',
         'dojo/node!glob'
 ], function (Deferred, all, hitch, glob) {
 

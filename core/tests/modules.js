@@ -2,11 +2,13 @@ define(['doh/runner',
         'altair/cartridges/module/Module',
         'altair/cartridges/nexus/Nexus',
         'altair/Altair',
+        'altair/facades/hitch',
         'altair/cartridges/module/Foundry'],
                             function (doh,
                                       ModuleCartridge,
                                       NexusCartridge,
                                       Altair,
+                                      hitch,
                                       Foundry) {
 
     /**
@@ -55,9 +57,7 @@ define(['doh/runner',
                 var altair = modules[0];
                 doh.assertEqual('Altair:Mock', altair.name, 'Module name did not work right yo.');
 
-            }), function (err) {
-                doh.assertEqual('', err, err);
-            });
+            })).otherwise(hitch(deferred, 'reject'));
 
 
             return deferred;
@@ -77,7 +77,7 @@ define(['doh/runner',
             }).then(function () {
                 throw "SHOULD NEVER BE CALLED";
             },deferred.getTestCallback(function (err) {
-                doh.assertEqual('Failed to load modules: Altair:NeverFound', err);
+                doh.assertEqual('Failed to load all modules: Altair:NeverFound', err);
 
             }));
 
@@ -117,7 +117,6 @@ define(['doh/runner',
                     paths: testPaths,
                     modules: [],
                     plugins: [
-                        'altair/cartridges/module/plugins/Nexus',
                         'altair/cartridges/module/plugins/Mock'
                     ]
                 });
@@ -126,10 +125,10 @@ define(['doh/runner',
 
                 var plugins = cartridge.plugins;
 
-                doh.assertTrue('altair/cartridges/module/plugins/Nexus' in plugins, 'Module cartridge failed to create plugins');
-                doh.assertEqual('bar', plugins['altair/cartridges/module/plugins/Mock'].foo, 'Mock plugin failed.');
+                doh.assertTrue(cartridge.hasPlugin('altair/cartridges/module/plugins/Mock'), 'Module cartridge failed to create plugins');
+                doh.assertEqual('bar', cartridge.plugin('altair/cartridges/module/plugins/Mock').foo, 'Mock plugin failed.');
 
-            }));
+            })).otherwise(hitch(deferred, 'reject'));
 
 
             return deferred;
@@ -154,7 +153,6 @@ define(['doh/runner',
                         paths: testPaths,
                         modules: ["Altair:Mock"],
                         plugins: [
-                            'altair/cartridges/module/plugins/Nexus',
                             'altair/cartridges/module/plugins/Mock'
                         ]
                     });
@@ -166,16 +164,13 @@ define(['doh/runner',
                         doh.assertTrue(!!cartridge.modules, 'module cartridge failed to create modules when plugins were passed too');
                         doh.assertEqual(1, cartridge.modules.length, 'module cartridge failed to create modules when plugins were passed too');
                         doh.assertEqual('bar', cartridge.modules[0].foo(), 'Mock plugin failed to create foo() method.');
-                        doh.assertEqual('nexus', cartridge.modules[0].nexus.nom, 'Mock plugin failed to create nexus() method.');
                         doh.assertTrue(cartridge.modules[0].startedUp, 'Mock plugin was not started up.');
 
                         deferred.resolve(true)
 
-                    });
+                    }).otherwise(hitch(deferred, 'reject'));
 
-
-
-                });
+                }).otherwise(hitch(deferred, 'reject'));
 
 
                 return deferred;
@@ -201,8 +196,9 @@ define(['doh/runner',
                 doh.assertEqual(1, cartridge.modules.length, 'Module creation failed through Altair and the ModuleCartridge');
                 doh.assertEqual('Altair:Mock', cartridge.modules[0].name, 'Module name was not set.');
 
-            }));
+            })).otherwise(hitch(deferred, 'reject'));
 
+            return deferred;
         },
 
         /**
@@ -224,7 +220,9 @@ define(['doh/runner',
 
                 doh.assertTrue(mock2.mockMixinSuccess, '_MockMixin failed to mixin');
 
-            }));
+            })).otherwise(hitch(deferred, 'reject'));
+
+            return deferred;
 
         },
 
@@ -248,8 +246,9 @@ define(['doh/runner',
 
                 doh.assertTrue(!!mock, 'nexus could not resolve Altair:Mock');
 
-            }));
+            })).otherwise(hitch(deferred, 'reject'));
 
+            return deferred;
         },
 
 
@@ -273,7 +272,9 @@ define(['doh/runner',
 
                 doh.assertTrue(!!mock2, 'Module cartridge did not fallback to use altair\'s paths.');
 
-            }));
+            })).otherwise(hitch(deferred, 'reject'));
+
+            return deferred;
 
         }
 

@@ -10,7 +10,10 @@
  *
  */
 define(['dojo/_base/declare',
-    'altair/Lifecycle'], function (declare, Lifecycle) {
+        'altair/Lifecycle'],
+
+    function (declare,
+              Lifecycle) {
 
     return declare('altair/cartridges/_Base', [Lifecycle], {
 

@@ -11,11 +11,11 @@
  */
 define(['dojo/_base/declare',
         'dojo/_base/lang',
-        'altair/wrappers/hitch',
+        'altair/facades/hitch',
         'dojo/DeferredList',
         'dojo/promise/all',
         'dojo/Deferred',
-        'altair/wrappers/glob',
+        'altair/facades/glob',
         'dojo/node!path',
         'require'],
                          function (declare,
@@ -82,8 +82,8 @@ define(['dojo/_base/declare',
                     paths = this._filterPaths(files, options.modules);
 
                     //all modules failed?
-                    if(!paths || paths.length === 0 || paths.length != options.modules.length) {
-                        deferred.reject("Failed to load modules: " + options.modules.join(', '));
+                    if(!paths || paths.length === 0 || (options.modules != '*' && paths.length != options.modules.length)) {
+                        deferred.reject("Failed to load all modules: " + options.modules.join(', '));
                         return;
                     }
 

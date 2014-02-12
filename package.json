@@ -8,14 +8,15 @@
         "url": "https://altair-admin@bitbucket.org/altair-admin/altair.git"
     },
     "scripts": {
-        "test": "Altair -test"
+        "test": "Altair --test"
     },
     "dependencies": {
         "underscore":       ">=1.1.x",
         "underscore-query": ">=0.4.x",
         "optimist":         ">=0.6.x",
         "prompt":           ">=0.2.x",
-        "glob":             ">=3.2.x"
+        "glob":             ">=3.2.x",
+        "blessed":          ">=0.0.x"
     },
 
     "author": "altair.io <admin@altair.io> (http://altair.io/)",

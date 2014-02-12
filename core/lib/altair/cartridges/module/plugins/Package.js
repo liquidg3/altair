@@ -1,7 +1,15 @@
 /**
  * Loads every modules' package.json so it
  */
-define(['dojo/_base/declare', 'dojo/Deferred', './_Base'], function (declare, Deferred, _Base) {
+define(['dojo/_base/declare',
+        'dojo/Deferred',
+        './_Base',
+        'altair/facades/hitch'],
+
+    function (declare,
+              Deferred,
+              _Base,
+              hitch) {
 
     return declare('altair/cartridges/module/plugins/Package', [_Base], {
 
@@ -13,11 +21,7 @@ define(['dojo/_base/declare', 'dojo/Deferred', './_Base'], function (declare, De
                 throw "The Package plugin depends on the Config plugin, make sure it's loaded and try again.";
             }
 
-            module.parseConfig('package.json').then(lang.hitch(this, function (err, parsedPackage) {
-
-                if(err) {
-                    throw err;
-                }
+            module.parseConfig('package.json').then(hitch(this, function (parsedPackage) {
 
                 declare.safeMixin(module, {
                     package: parsedPackage

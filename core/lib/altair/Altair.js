@@ -8,7 +8,7 @@
  */
 define(['dojo/_base/declare',
         'dojo/Deferred',
-        'dojo/_base/lang'
+        'dojo/_base/lang',
             ], function (declare, Deferred, lang) {
 
 
@@ -32,7 +32,7 @@ define(['dojo/_base/declare',
          * Add an un-started cartridge and I'll add it to the system and start it up.
          *
          * @param cartidge
-         * @returns dojo/Deferred
+         * @returns dojo.Deferred
          */
         addCartridge: function (cartidge) {
 
@@ -107,7 +107,7 @@ define(['dojo/_base/declare',
          * dependencies are in place before dependants are loaded =)
          *
          * @param cartridges
-         * @returns dojo/Deferred
+         * @returns dojo.Deferred
          */
         addCartridges: function (cartridges) {
 

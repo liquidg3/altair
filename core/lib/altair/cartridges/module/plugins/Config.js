@@ -21,8 +21,6 @@ define(['dojo/_base/declare',
                 throw "The Config plugin requires the altair/cartridges/module/plugins/Paths plugin, make sure Paths has been setup.";
             }
 
-            this.deferred = new Deferred();
-
             declare.safeMixin(module, {
 
                 _configs: null,
