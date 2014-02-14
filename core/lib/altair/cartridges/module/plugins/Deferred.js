@@ -9,7 +9,7 @@ define(['dojo/_base/declare',
               _Base,
               Deferred) {
 
-    return declare('altair/cartridges/module/plugins/Mock',[_Base], {
+    return declare('altair/cartridges/module/plugins/Deferred',[_Base], {
 
         execute: function (module) {
 

@@ -7,5 +7,6 @@
         "altair/cartridges/module/plugins/Apollo",
         "altair/cartridges/module/plugins/Nexus",
         "altair/cartridges/module/plugins/Events"
-    ]
+    ],
+    "modules": "*"
 }

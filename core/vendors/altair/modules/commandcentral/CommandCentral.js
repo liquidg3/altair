@@ -2,49 +2,33 @@
  * Test module
  */
 define(['dojo/_base/declare',
-        'altair/modules/events/mixins/_HasListenersMixin',
-        'dojo/node!blessed'],
+        'altair/modules/adapters/mixins/_HasAdaptersMixin',
+        'altair/facades/hitch',
+        'altair/Lifecycle'],
 
     function (declare,
-              _HasListenersMixin,
-              blessed) {
+              _HasAdaptersMixin,
+              blessed,
+              Lifecycle) {
 
 
-        return declare('altair/modules/commandcentral/CommandCentral', [_HasListenersMixin], {
+        return declare('altair/modules/commandcentral/CommandCentral', [_HasAdaptersMixin, Lifecycle], {
 
-            screen:   null,
-            box:      null,
-            count:    0,
+            /**
+             * Set the selected terminal interface adapter
+             *
+             * @returns {*}
+             */
             startup: function () {
 
-                this.screen = blessed.screen();
+                if(!process.stdin.isTTY || !process.stdout.isTTY) {
+                    this._selectedAdapter = 'adapters/Prompt';
+                } else {
+                    this._selectedAdapter = 'adapters/Blessed';
+                }
 
-
-                this.box = blessed.box({
-                    top: 'center',
-                    left: 'center',
-                    width: '50%',
-                    height: '50%',
-                    content: 'Hello {bold}Altair{/bold}!',
-                    tags: true,
-                    border: {
-                        type: 'line'
-                    },
-                    style: {
-                        fg: 'white',
-                        bg: 'magenta',
-                        border: {
-                            fg: '#f0f0f0'
-                        },
-                        hover: {
-                            bg: 'green'
-                        }
-                    }
-                });
-
-                this.screen.append(this.box);
-                this.screen.render();
                 return this.inherited(arguments);
+
             },
 
             /**
@@ -53,10 +37,7 @@ define(['dojo/_base/declare',
              * @param e
              */
             onDidStartupModule: function (e) {
-                console.log('in');
-                this.count++;
-                this.box.content += 'new module??' + "\n";
-                this.screen.render();
+                this.adapter();
             }
 
         });

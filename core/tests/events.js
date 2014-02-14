@@ -8,12 +8,14 @@ define(['doh/runner',
         'altair/events/QueryAgent',
         'altair/events/Event',
         'dojo/Deferred',
-        'dojo/_base/lang'], function (doh,
-                                      Emitter,
-                                      QueryAgent,
-                                      Event,
-                                      Deferred,
-                                      lang) {
+        'altair/facades/hitch'],
+
+    function (doh,
+              Emitter,
+              QueryAgent,
+              Event,
+              Deferred,
+              hitch) {
 
     doh.register('events', [
 
@@ -21,7 +23,6 @@ define(['doh/runner',
          * Make sure we can construct an Emitter instance
          */
         function () {
-
             var emitter = new Emitter();
             doh.assertTrue(!!emitter, 'Instantiating emitter failed');
 
@@ -73,7 +74,7 @@ define(['doh/runner',
         /**
          * Query agent testing some queries using getters. **THIS BEHAVIOR MAY CHANGE**
          */
-        function () {
+        function (t) {
 
             var agent = new QueryAgent(),
                 event = new Event('test', {
@@ -88,7 +89,7 @@ define(['doh/runner',
                     }
                 });
 
-            doh.assertTrue(agent.matches(event, {
+            t.t(agent.matches(event, {
                 'foo': 'bar'
             }), 'Basic query agent match failed.');
 
@@ -102,14 +103,15 @@ define(['doh/runner',
         /**
          * No query, old style callback
          */
-        function () {
+        function (t) {
 
             var emitter     = new Emitter(),
-                deferred    = new doh.Deferred()
+                deferred    = new Deferred()
 
-            emitter.on('dummy-event', deferred.getTestCallback(function (e) {
-                doh.assertEqual('dummy-event', e.name, 'Event was not created as expected.');
-            }));
+            emitter.on('dummy-event', function (e) {
+                t.is('dummy-event', e.name, 'Event was not created as expected.');
+                deferred.resolve(true);
+            });
 
             emitter.emit('dummy-event', {
                 foo: 'bar'
@@ -122,14 +124,15 @@ define(['doh/runner',
         /**
          * No query, new style (using a deferred)
          */
-        function () {
+        function (t) {
 
             var emitter     = new Emitter(),
                 deferred    = new doh.Deferred()
 
-            emitter.on('dummy-event-2').then(deferred.getTestCallback(function (e) {
-                doh.assertEqual('dummy-event-2', e.name, 'Event was not created as expected.');
-            }));
+            emitter.on('dummy-event-2').then(function (e) {
+                t.is('dummy-event-2', e.name, 'Event was not created as expected.');
+                deferred.resolve(true);
+            });
 
             emitter.emit('dummy-event-2', {
                 foo: 'bar'
@@ -142,14 +145,15 @@ define(['doh/runner',
         /**
          * query old style
          */
-        function () {
+        function (t) {
 
             var emitter     = new Emitter(),
                 deferred    = new doh.Deferred();
 
-            emitter.on('dummy-event-3', deferred.getTestCallback(function (e) {
-                doh.assertEqual('dummy-event-3', e.name, 'Event was not created as expected.');
-            }), {
+            emitter.on('dummy-event-3', function (e) {
+                t.is('dummy-event-3', e.name, 'Event was not created as expected.');
+                deferred.resolve(true);
+            }, {
                 foo: 'bar'
             });
 
@@ -171,9 +175,10 @@ define(['doh/runner',
             var emitter     = new Emitter(),
                 deferred    = new doh.Deferred()
 
-            emitter.on('dummy-event-4', { foo: 'bar' }).then(deferred.getTestCallback(function (e) {
+            emitter.on('dummy-event-4', { foo: 'bar' }).then(function (e) {
                 doh.assertEqual('dummy-event-4', e.name, 'Event was not created as expected.');
-            }));
+                deferred.resolve();
+            });
 
             emitter.emit('dummy-event-4', {
                 foo: 'bar'
@@ -185,14 +190,13 @@ define(['doh/runner',
 
         /**
          * Test that you can pause event emission from a listener temporarily
+         *
          * @returns {dojo.tests._base.Deferred}
          */
         function () {
 
             var emitter     = new Emitter(),
                 deferred    = new doh.Deferred();
-
-
 
             emitter.on('dummy-event-4', { foo: 'bar' }).then(function (e) {
 
@@ -206,6 +210,61 @@ define(['doh/runner',
             });
 
             return deferred;
+
+        },
+
+        /**
+         * Make sure our emit's deferred will receive an array of the returned values from the listeners
+         */
+        function (t) {
+
+
+            var emitter     = new Emitter(),
+                deferred    = new doh.Deferred();
+
+            emitter.on('dummy-event-4').then(function (e) {
+
+                return 1;
+
+            });
+
+            emitter.on('dummy-event-4').then(function (e) {
+
+                return 2;
+
+            });
+
+            emitter.on('dummy-event-4').then(function (e) {
+
+                return 2;
+
+            }).then(function (two) {
+                return two + 1;
+            });
+
+
+            emitter.on('dummy-event-4').then(function (e) {
+
+                var d = new Deferred();
+
+                setTimeout(function () {
+                    d.resolve(4)
+                }, 10);
+
+                return d;
+            });
+
+            emitter.emit('dummy-event-4', {
+                foo: 'bar'
+            }).then(function (results) {
+
+                deferred.resolve();
+                t.is('dummy-event-4', e.name, 'Event was not created as expected.');
+
+            });
+
+            return deferred;
+
 
         }
 

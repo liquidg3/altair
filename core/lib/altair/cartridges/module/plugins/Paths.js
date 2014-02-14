@@ -2,8 +2,8 @@
  * give every module a resolvePath: function that will resolve a path assuming the current working directory is that of
  * the module. Examples
  *
- *      module.resolvePath('config/listeners.json') -> /path/to/module/config/listeners.json
- *      module.resolvePath('/config/listeners.json') -> /config/listeners.json
+ *      module.resolvePath('configs/listeners.json') -> /path/to/module/configs/listeners.json
+ *      module.resolvePath('/configs/listeners.json') -> /configs/listeners.json
  *      module.resolvePath('public/js/Paths.js') -> /path/to/module/public/js/Paths.js
  *
  * This makes it very easy for you to get access to anything inside any particular module's directory.
@@ -16,7 +16,7 @@ define(['dojo/_base/declare',
               nodePath,
               _Base) {
 
-    return declare('altair/cartridges/module/plugins/Package', [_Base], {
+    return declare('altair/cartridges/module/plugins/Paths', [_Base], {
 
         execute: function (module) {
 

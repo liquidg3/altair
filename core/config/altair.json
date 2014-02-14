@@ -19,9 +19,7 @@
             },
             {
                 "path": "altair/cartridges/module/Module",
-                "options": {
-                    "$ref": "./modules.json"
-                }
+                "options": { "$ref": "./modules.json" }
             }
         ]
 

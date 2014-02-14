@@ -1,0 +1,5 @@
+{
+    "name": "Adapters",
+    "version": "0.0.1",
+    "description": "Introduces a lot of helpers to implement the adapter pattern into your module."
+}

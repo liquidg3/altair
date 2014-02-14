@@ -1,16 +1,20 @@
 define(['dojo/_base/declare',
         'dojo/_base/lang',
-        'dojo/Deferred'
+        'dojo/Deferred',
+        'altair/Lifecycle',
+        'altair/events/Emitter'
 ], function (declare,
              lang,
-             Deferred) {
+             Deferred,
+             Lifecycle,
+             Emitter) {
 
 
-    return declare('altair/modules/commandcentral/mixins/_HasCommandersMixin', null, {
+    return declare('altair/modules/commandcentral/mixins/_HasCommandersMixin', [Lifecycle, Emitter], {
 
             startup: function () {
 
-                this.on('Altair:CommandCentral::REGISTER_COMMANDERS').then(lang.hitch(this, 'registerCommanders'));
+                this.on('Altair:CommandCentral::register-commanders').then(lang.hitch(this, 'registerCommanders'));
 
                 return this.inherited(arguments);
             },

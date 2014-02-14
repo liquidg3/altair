@@ -13,33 +13,42 @@ define(['doh/runner', 'altair/Lifecycle', 'dojo/_base/lang'], function (doh, Lif
         /**
          * Make sure we can construct a CartridgeFactory instance
          */
-        function () {
+        function (t) {
 
             var life = new Lifecycle();
-            doh.assertTrue(!!life);
+            t.t(!!life);
 
         },
 
         /**
          * Make sure lifecycle passes options through
          */
-        function () {
+        function (t) {
 
             var life = new Lifecycle(options);
 
-            doh.assertEqual(options.foo, life.options.foo, 'options failed to pass through to lifecycle');
+            t.is(options.foo, life.options.foo, 'options failed to pass through to lifecycle');
 
         },
         /**
          * Make sure that startup returns a resolved deferred
          */
-        function () {
+        function (t) {
+
             var life = new Lifecycle(),
                 deferred = new doh.Deferred();
 
-            life.startup().then(deferred.getTestCallback(function () {
-                doh.assertTrue(true, 'LifeCycle Startup did not return a resolved deferred');
-            }));
+            life.startup().then(function () {
+
+                t.t(true, 'Lifecycle startup did not return a resolved deferred');
+                t.t(!!life.deferred, 'Lifecycle cleared deferred too soon');
+
+                setTimeout(function () {
+                    t.is(life.deferred, null, 'Lifecycle did not clear out resolved');
+                    deferred.resolve(true);
+                }, 10);
+
+            });
 
             return deferred;
         },
@@ -47,13 +56,22 @@ define(['doh/runner', 'altair/Lifecycle', 'dojo/_base/lang'], function (doh, Lif
         /**
          * Make sure that execute returns a resolved deferred
          */
-        function () {
+        function (t) {
+
             var life = new Lifecycle(),
                 deferred = new doh.Deferred();
 
-            life.execute().then(deferred.getTestCallback(function () {
-                doh.assertTrue(true, 'LifeCycle Execute did not return a resolved deferred');
-            }));
+            life.execute().then(function () {
+
+                t.t(true, 'Lifecycle startup did not return a resolved deferred');
+                t.t(!!life.deferred, 'Lifecycle cleared deferred too soon');
+
+                setTimeout(function () {
+                    t.is(life.deferred, null, 'Lifecycle did not clear out resolved');
+                    deferred.resolve(true);
+                }, 10);
+
+            });
 
             return deferred;
         },
@@ -61,13 +79,22 @@ define(['doh/runner', 'altair/Lifecycle', 'dojo/_base/lang'], function (doh, Lif
         /**
          * Make sure that teardown returns a resolved deferred
          */
-        function () {
-            var life = new Lifecycle(),
-                deferred = new doh.Deferred();
+        function (t) {
 
-            life.teardown().then(deferred.getTestCallback(function () {
-                doh.assertTrue(true, 'LifeCycle Execute did not return a resolved deferred');
-            }));
+            var life        = new Lifecycle(),
+                deferred    = new doh.Deferred();
+
+            life.teardown().then(function () {
+
+                t.t(true, 'Lifecycle startup did not return a resolved deferred');
+                t.t(!!life.deferred, 'Lifecycle cleared deferred too soon');
+
+                setTimeout(function () {
+                    t.is(life.deferred, null, 'Lifecycle did not clear out resolved');
+                    deferred.resolve(true);
+                }, 10);
+
+            });
 
             return deferred;
         }

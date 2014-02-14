@@ -1,13 +1,22 @@
 /**
  * Altair's Event/Emitter is a little twist on the original NodeJs EventEmitter implementation. The event system has been
- * augmented with a query engine to allow much more sophisticated listening potential. Take a look at the ReadMe
+ * augmented with a query engine to allow for much more sophisticated listening. Take a look at the ReadMe.md or someshit.
  */
 define(['dojo/_base/declare',
-    'dojo/_base/lang',
-    './Event',
-    'dojo/Deferred',
-    './QueryAgent'
-], function (declare, lang, Event, Deferred, QueryAgent) {
+        'dojo/_base/lang',
+        './Event',
+        'altair/facades/hitch',
+        'altair/Deferred',
+        './QueryAgent',
+        'dojo/promise/all'
+
+], function (declare,
+             lang,
+             Event,
+             hitch,
+             Deferred,
+             QueryAgent,
+             all) {
 
 
     var agent = new QueryAgent();
@@ -15,7 +24,11 @@ define(['dojo/_base/declare',
     return declare('altair/events/Emitter', null, {
 
         _eventListenerQueryAgent: agent,
-        _listeners: {},
+        _listeners: null,
+
+        constructor: function () {
+            this._listeners = {};
+        },
 
         /**
          * Alias for "on()"
@@ -74,28 +87,67 @@ define(['dojo/_base/declare',
          * @param callback
          * @param config
          */
-        emit: function (event, data, callback, config) {
+        emit: function (event, data, config) {
 
             event = this._normalizeEvent(event, data);
 
-            //are there any listeners?
-            var matches = 0;
+            //build a list of results all listeners...
+            var list = [];
 
             if(this._listeners[event.name]) {
 
                 var _agent = (config && config.agent) ? config.agent : this._eventListenerQueryAgent;
 
-                this._listeners[event.name].forEach(lang.hitch(this, function (listener) {
+                this._listeners[event.name].forEach(hitch(this, function (listener) {
 
                     if(_agent.matches(event, listener.query)) {
 
+                        var def,
+                            results;
+
+                        //if the listener was passed as the callback, or 2nd param, of on()
                         if(listener.callback) {
-                            listener.callback(event);
+
+                            results = listener.callback(event);
+
+                            if(results) {
+
+                                //normalize it to a deferred
+                                if( results.isInstanceOf && results.isInstanceOf(Deferred)) {
+                                    def = results;
+                                } else {
+
+                                    def = new Deferred();
+                                    def.resolve(results);
+
+                                }
+
+                                list.push(def);
+                            }
+
                         }
 
-                        listener.deferred.resolve(event);
+                        //the cool cats are using derrrferrrrds
+                        def = new Deferred();
+                        list.push(def);
 
-                        matches ++;
+
+                        listener.deferred.resolve(event).then(function (results) {
+
+                            if(results && results.isInstanceOf && !results.isInstanceOf(Event)) {
+
+                                if( results.isInstanceOf && results.isInstanceOf(Deferred)) {
+                                    results.then(hitch(def, 'resolve'));
+                                } else {
+
+                                    def.resolve(results);
+                                }
+
+
+                            }
+
+                        });
+
 
                     }
 
@@ -103,8 +155,11 @@ define(['dojo/_base/declare',
 
             }
 
+            var d = new Deferred();
 
-            return matches;
+            all(list,hitch(d, 'resolve'));
+
+            return d;
 
         },
 

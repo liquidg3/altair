@@ -38,11 +38,26 @@
  *
  */
 define(['dojo/_base/declare',
-        'dojo/_base/lang',
+        'altair/facades/hitch',
         'dojo/Deferred'],
                         function (declare,
-                                  lang,
+                                  hitch,
                                   Deferred) {
+
+
+    var resolve = function (scope, def) {
+
+        return function () {
+
+            setTimeout(function () {
+
+                if(scope.deferred === def) {
+                    scope.deferred = null;
+                }
+
+            }, 0);
+        };
+    }
 
     return declare('altair/Lifecycle', null, {
 
@@ -73,17 +88,8 @@ define(['dojo/_base/declare',
                 this.deferred.resolve(this);
             }
 
-            //track current deferred to check if we should clear it later
-            var cd = this.deferred;
-
             //remove the deferred after it's been resolved
-            this.deferred.then(lang.hitch(this, function () {
-                setTimeout(lang.hitch(this, function() {
-                    if(cd == this.deferred) {
-                        this.deferred = null;
-                    }
-                }), 0);
-            }));
+            this.deferred.promise.always(resolve(this, this.deferred));
 
             return this.deferred;
 
@@ -101,17 +107,8 @@ define(['dojo/_base/declare',
                 this.deferred.resolve(this);
             }
 
-            //track current deferred to check if we should clear it later
-            var cd = this.deferred;
-
             //remove the deferred after it's been resolved
-            this.deferred.then(lang.hitch(this, function () {
-                setTimeout(lang.hitch(this, function() {
-                    if(cd == this.deferred) {
-                        this.deferred = null;
-                    }
-                }), 0);
-            }));
+            this.deferred.promise.always(resolve(this, this.deferred));
 
             return this.deferred;
 
@@ -131,17 +128,8 @@ define(['dojo/_base/declare',
                 this.deferred.resolve(this);
             }
 
-            //track current deferred to check if we should clear it later
-            var cd = this.deferred;
-
             //remove the deferred after it's been resolved
-            this.deferred.then(lang.hitch(this, function () {
-                setTimeout(lang.hitch(this, function() {
-                    if(cd == this.deferred) {
-                        this.deferred = null;
-                    }
-                }), 0);
-            }));
+            this.deferred.promise.always(resolve(this, this.deferred));
 
             return this.deferred;
 

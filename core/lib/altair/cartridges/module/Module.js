@@ -6,6 +6,9 @@
  *  will-startup-module
  *  did-startup-module
  *
+ *  Nexus:
+ *   Cartridges/Module
+ *
  * @required Nexus cartridge
  *
  */
@@ -198,7 +201,7 @@ define(['dojo/_base/declare',
                         resolver    = new Resolver(this);
 
                     nexus.addResolver(resolver);
-                    nexus.set('Cartridges/Module', this)
+                    nexus.set('Cartridges/Module', this);
 
                 }
 
