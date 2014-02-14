@@ -12,13 +12,13 @@ define(['dojo/Deferred',
               Foundry,
               Altair) {
 
-        var boot = function () {
+        var boot = function (cartridges) {
 
             var deferred = new Deferred(),
                 altair = new Altair(),
                 foundry = new Foundry(altair);
 
-            foundry.build(boot.cartridges).then(function (cartridges) {
+            foundry.build(cartridges || boot.cartridges).then(function (cartridges) {
 
                     altair.addCartridges(cartridges).then(function () {
                         deferred.resolve(altair);

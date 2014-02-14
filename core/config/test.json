@@ -1,8 +1,7 @@
 {
     "glob": [
-        "/Users/taylorromero/Development/Altair/node_modules/altair.io/core/vendors/altair/modules/adapters/tests/*.js",
-        "fail-core/tests/deferred.js",
-        "fail-core/tests/*.js",
-        "fail-apollo/tests/*.js"
+        "altair/modules/adapters/tests/*.js",
+        "core/tests/*.js",
+        "apollo/tests/*.js"
     ]
 }

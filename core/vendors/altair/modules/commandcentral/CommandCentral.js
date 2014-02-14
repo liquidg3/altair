@@ -3,16 +3,17 @@
  */
 define(['dojo/_base/declare',
         'altair/modules/adapters/mixins/_HasAdaptersMixin',
+        'altair/modules/events/mixins/_HasListenersMixin',
         'altair/facades/hitch',
         'altair/Lifecycle'],
 
     function (declare,
               _HasAdaptersMixin,
-              blessed,
-              Lifecycle) {
+              _HasListenersMixin,
+              hitch) {
 
 
-        return declare('altair/modules/commandcentral/CommandCentral', [_HasAdaptersMixin, Lifecycle], {
+        return declare('altair/modules/commandcentral/CommandCentral', [_HasAdaptersMixin, _HasListenersMixin], {
 
             /**
              * Set the selected terminal interface adapter
@@ -37,7 +38,7 @@ define(['dojo/_base/declare',
              * @param e
              */
             onDidStartupModule: function (e) {
-                this.adapter();
+                this.adapter().notice('Started ' + e.get('module').name);
             }
 
         });

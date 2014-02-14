@@ -9,7 +9,7 @@ define(['doh/runner',
               has,
               hitch) {
 
-        boot.cartridges = [
+        var cartridges = [
             {
                 path: 'altair/cartridges/nexus/Nexus',
                 options: {
@@ -53,13 +53,11 @@ define(['doh/runner',
 
                 runTest: function (t) {
 
-                    return boot().then(function (altair) {
+                    return boot(cartridges).then(function (altair) {
 
                         var module = altair.cartridge('altair/cartridges/module/Module').module('Altair:Adapters');
 
                         var def = new Deferred();
-
-
 
                         module.adapter('adapters/Mock3').then(function (adapter) {
 
@@ -85,7 +83,7 @@ define(['doh/runner',
              */
             function (t) {
 
-                return boot().then(function (altair) {
+                return boot(cartridges).then(function (altair) {
 
 
                     var module = altair.cartridge('altair/cartridges/module/Module').module('Altair:Adapters');

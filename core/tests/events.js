@@ -248,7 +248,7 @@ define(['doh/runner',
                 var d = new Deferred();
 
                 setTimeout(function () {
-                    d.resolve(4)
+                    d.resolve(4);
                 }, 10);
 
                 return d;
@@ -258,8 +258,13 @@ define(['doh/runner',
                 foo: 'bar'
             }).then(function (results) {
 
+
+                t.is(results[0], 1, 'Event was not created as expected.');
+                t.is(results[1], 2, 'Event was not created as expected.');
+                t.is(results[2], 3, 'Event was not created as expected.');
+                t.is(results[3], 4, 'Event was not created as expected.');
+
                 deferred.resolve();
-                t.is('dummy-event-4', e.name, 'Event was not created as expected.');
 
             });
 

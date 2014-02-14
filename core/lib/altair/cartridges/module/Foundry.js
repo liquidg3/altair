@@ -12,7 +12,6 @@
 define(['dojo/_base/declare',
         'dojo/_base/lang',
         'altair/facades/hitch',
-        'dojo/DeferredList',
         'dojo/promise/all',
         'dojo/Deferred',
         'altair/facades/glob',
@@ -21,7 +20,6 @@ define(['dojo/_base/declare',
                          function (declare,
                                    lang,
                                    hitch,
-                                   DeferredList,
                                    all,
                                    Deferred,
                                    glob,
@@ -176,26 +174,12 @@ define(['dojo/_base/declare',
 
             }));
 
-
-
-
             //make sure they all resolve, flatten the list, then order them by putting unshift()'ing dependent modules
-            var defList = new DeferredList(list);
-            defList.then(hitch(this, function (results) {
+            all(list).then(hitch(this, function (results) {
 
                 var sorted = [];
 
-                results.forEach(hitch(this, function (module) {
-
-                    if(!module[0]) {
-                        if(!deferred.isRejected()) {
-                            deferred.reject(module[1]);
-                        }
-                        return;
-                    }
-
-                    var m = module[1];
-
+                results.forEach(hitch(this, function (m) {
 
                     if(m.dependencies) {
                         m.dependencies.forEach(hitch(this, function (dep) {

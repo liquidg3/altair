@@ -254,16 +254,16 @@ define(['dojo/_base/declare',
             //lets startup all modules, ensuring one is not started until the one before it is
             var load = hitch(this, function () {
 
-                var module = _modules.pop();
+                var module = _modules.shift();
 
                 if(module) {
 
+                    this.emit('will-startup-module', {
+                        module: module
+                    });
+
                     //lifecycle class gets started up....
                     if(module.isInstanceOf && module.isInstanceOf(Lifecycle)) {
-
-                        this.emit('will-startup-module', {
-                            module: module
-                        });
 
                         module.startup().then(hitch(this, function () {
 
@@ -277,6 +277,11 @@ define(['dojo/_base/declare',
                     }
                     //...but it's not required
                     else {
+
+                        this.emit('did-startup-module', {
+                            module: module
+                        });
+
                         load();
                     }
                 } else {

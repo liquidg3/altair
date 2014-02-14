@@ -226,6 +226,10 @@ define([
 			}
 		};
 
+        this.hasWaiting = function () {
+            return waiting.length > 0;
+        };
+
 		this.then = promise.then = function(callback, errback, progback){
 			// summary:
 			//		Add new callbacks to the deferred.

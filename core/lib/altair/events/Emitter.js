@@ -7,16 +7,20 @@ define(['dojo/_base/declare',
         './Event',
         'altair/facades/hitch',
         'altair/Deferred',
+        'dojo/Deferred',
         './QueryAgent',
-        'dojo/promise/all'
+        'dojo/promise/all',
+        'dojo/when'
 
 ], function (declare,
              lang,
              Event,
              hitch,
              Deferred,
+             DojoDeferred,
              QueryAgent,
-             all) {
+             all,
+             when) {
 
 
     var agent = new QueryAgent();
@@ -111,39 +115,31 @@ define(['dojo/_base/declare',
                             results = listener.callback(event);
 
                             if(results) {
-
-                                //normalize it to a deferred
-                                if( results.isInstanceOf && results.isInstanceOf(Deferred)) {
-                                    def = results;
-                                } else {
-
-                                    def = new Deferred();
-                                    def.resolve(results);
-
-                                }
-
-                                list.push(def);
+                                list.push(when(results));
                             }
 
                         }
 
                         //the cool cats are using derrrferrrrds
-                        def = new Deferred();
+                        def = new DojoDeferred();
                         list.push(def);
-
 
                         listener.deferred.resolve(event).then(function (results) {
 
-                            if(results && results.isInstanceOf && !results.isInstanceOf(Event)) {
+                            results = results[0];
 
-                                if( results.isInstanceOf && results.isInstanceOf(Deferred)) {
-                                    results.then(hitch(def, 'resolve'));
+                            if(results !== undefined && (!results.isInstanceOf || !results.isInstanceOf(Event))) {
+
+                                if( results && results.then) {
+                                    results.then(hitch(def, 'resolve')).otherwise(hitch(def, 'reject'));
                                 } else {
 
                                     def.resolve(results);
                                 }
 
 
+                            } else {
+                                def.resolve();
                             }
 
                         });
@@ -155,11 +151,7 @@ define(['dojo/_base/declare',
 
             }
 
-            var d = new Deferred();
-
-            all(list,hitch(d, 'resolve'));
-
-            return d;
+            return all(list);
 
         },
 

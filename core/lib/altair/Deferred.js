@@ -6,8 +6,9 @@ define([
     'dojo/promise/all',
     'altair/facades/hitch',
     'dojo/when',
+    'dojo/Deferred',
     "dojo/has!config-deferredInstrumentation?dojo/promise/instrumentation"
-], function(has, lang, CancelError, Promise, all, hitch, when, instrumentation){
+], function(has, lang, CancelError, Promise, all, hitch, when, DojoDeferred, instrumentation){
     "use strict";
 
     // module:
@@ -205,19 +206,17 @@ define([
             // returns: dojo/promise/Promise
             //		Returns the original promise for the deferred.
 
-            if(!fulfilled){
+            result      = value;
 
-                fulfilled   = RESOLVED
-                result      = value;
-
-                var callback,
-                    listener,
-                    finished = false,
-                    results = [],
-                    newResult;
+            var callback,
+                listener,
+                finished = false,
+                results = [],
+                newResult,
+                _waiting = waiting.slice(0),
 
                 //build a fake promise to stop recursion
-                promise     = {
+                newPromise     = {
                     callback: null,
                     then: function (callback) {
                         this.callback = callback;
@@ -227,81 +226,77 @@ define([
                     }
                 };
 
-                //will fire 1 waiting at a time
-                var fire = function () {
+            //will fire 1 waiting at a time
+            var fire = function () {
 
-                    listener = waiting.shift();
+                listener = _waiting.shift();
 
-                    if(listener) {
+                if(listener) {
 
-                        callback = listener[RESOLVED];
+                    callback = listener[RESOLVED];
 
-                        if(callback) {
+                    if(callback) {
 
-                            var _deferred    = listener.deferred;
-                            newResult        = callback(value);
-
-
-                            if(_deferred.hasWaiting()) {
-
-                                _deferred.resolve(newResult).then(function (_newResult) {
-
-                                    newResult = _newResult[0];
-
-                                    if(newResult && typeof newResult.then === "function"){
-                                        console.warn('@FINISH fluent then()\'s sot supported for result passthrough ');
-                                    } else {
-
-                                        results.push(_newResult[0]);
-                                        fire();
-
-                                    }
+                        var _deferred    = listener.deferred;
+                        newResult        = callback(value);
 
 
+                        if(_deferred.hasWaiting()) {
 
-                                });
+                            _deferred.resolve(newResult).then(function (_newResult) {
 
-                            } else {
+                                newResult = _newResult[0];
 
-                                when(newResult).then(function (_result) {
-                                    results.push(_result);
+                                if(newResult && typeof newResult.then === "function"){
+                                    console.warn('@FINISH fluent then()\'s sot supported for result passthrough ');
+                                } else {
+
+                                    results.push(_newResult[0]);
                                     fire();
-                                });
 
-                            }
+                                }
 
+
+
+                            });
+
+                        } else {
+
+                            when(newResult).then(function (_result) {
+                                results.push(_result);
+                                fire();
+                            });
 
                         }
 
 
                     }
-                    //there are no more waiting
-                    else {
-                        finished = true;
-                        if(promise.callback) {
-                            promise.callback(results);
-                        }
+
+
+                }
+                //there are no more waiting
+                else {
+                    finished = true;
+                    if(newPromise.callback) {
+                        newPromise.callback(results);
                     }
-
-
-                };
-
-                if(value && typeof value.then === "function"){
-                    when(value).then(function (_value) {
-                        value = _value;
-                        fire();
-                    });
-                } else {
-                    fire();
                 }
 
 
-                return promise;
-            }else if(strict === true){
-                throw new Error(FULFILLED_ERROR_MESSAGE);
-            }else{
-                return promise;
+            };
+
+            if(value && typeof value.then === "function"){
+                when(value).then(function (_value) {
+                    value = _value;
+                    fire();
+                });
+            } else {
+                fire();
             }
+
+            return newPromise;
+
+
         };
 
         var reject = this.reject = function(error, strict){
