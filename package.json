@@ -16,7 +16,8 @@
         "optimist":         ">=0.6.x",
         "prompt":           ">=0.2.x",
         "glob":             ">=3.2.x",
-        "blessed":          ">=0.0.x"
+        "blessed":          ">=0.0.x",
+        "colors":           ">=0.6.x"
     },
 
     "author": "altair.io <admin@altair.io> (http://altair.io/)",

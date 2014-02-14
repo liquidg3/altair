@@ -3,7 +3,8 @@
     "version": "0.0.1",
     "description": "One of many ways you can interface with Altair.",
     "dependencies": {
-        "prompt": ">=0.2.x"
+        "prompt": ">=0.2.x",
+        "colors": ">=0.6.x"
     },
     "altairDependencies": {
         "Altair:Adapters": ">=0.1.x",

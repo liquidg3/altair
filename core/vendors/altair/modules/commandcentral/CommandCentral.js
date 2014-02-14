@@ -28,7 +28,26 @@ define(['dojo/_base/declare',
                     this._selectedAdapter = 'adapters/Blessed';
                 }
 
-                return this.inherited(arguments);
+                return this.inherited(arguments).then(hitch(this, function () {
+
+                    this.adapter().showProgress('Giving modules a moment to load.');
+                    //give altair a moment to boot, then render the menu
+                    setTimeout(hitch(this, function() {
+                        this.adapter().hideProgress();
+                        this.menu();
+                    }), 1500);
+                }));
+
+            },
+
+            splash: function () {
+                this.adapter().splash();
+            },
+
+            menu: function () {
+
+
+//                this.adapter().select();
 
             },
 
