@@ -1,10 +1,12 @@
 define(['dojo/_base/declare',
         'altair/facades/hitch',
+        'altair/facades/mixin',
         'dojo/Deferred',
         'altair/modules/commandcentral/adapters/_Base',
         'dojo/node!blessed'
 ], function (declare,
              hitch,
+             mixin,
              Deferred,
              _Base,
              blessed) {
@@ -12,8 +14,8 @@ define(['dojo/_base/declare',
 
     return declare('altair/modules/commandcentral/adapters/Blessed', [_Base], {
 
-        screen: null,
-        noticeBox: null,
+        screen:     null,
+        noticeBox:  null,
 
         startup: function () {
 
@@ -31,28 +33,11 @@ define(['dojo/_base/declare',
 
         splash: function () {
 
-            this.splash = this.splash ||  blessed.box({
-                top: 'center',
-                left: 'center',
-                width: '50%',
-                parent: this.screen,
-                height: '50%',
-                content: 'Welcome to {bold}Altair{/bold}!',
-                tags: true,
-                border: {
-                    type: 'line'
-                },
-                style: {
-                    fg: 'white',
-                    bg: 'magenta',
-                    border: {
-                        fg: '#f0f0f0'
-                    },
-                    hover: {
-                        bg: 'green'
-                    }
-                }
-            });
+            if(!this._styles['#splash']) {
+                throw "You must create a commanders/styles.json and drop in a style for #splash";
+            }
+
+            this.splash = this.splash ||  blessed.box(this._styles['#splash']);
 
         },
 
@@ -117,49 +102,20 @@ define(['dojo/_base/declare',
 
         },
 
-        select: function (question, options) {
+        select: function (question, options, id) {
 
-            var def = new Deferred();
+            var def = new Deferred(),
+                keys = Object.keys(options),
+                values = keys.map(function (key) {
+                    return options[key];
+                });
 
-
-            var list = blessed.list({
-                align: 'center',
-                mouse: true,
+            var styles = mixin({
                 parent: this.screen,
-                fg: 'blue',
-                bg: 'default',
-                border: {
-                    type: 'ascii',
-                    fg: 'default',
-                    bg: 'default'
-                },
-                width: '50%',
-                height: '50%',
-                top: 'center',
-                left: 'center',
-                selectedBg: 'green',
-                items: [
-                    'one',
-                    'two',
-                    'three',
-                    'four',
-                    'five',
-                    'six',
-                    'seven',
-                    'eight',
-                    'nine',
-                    'ten'
-                ],
-                scrollbar: {
-                    ch: ' ',
-                    track: {
-                        bg: 'yellow'
-                    },
-                    style: {
-                        inverse: true
-                    }
-                }
-            });
+                items: values
+            }, this.styles('select, #' + id));
+
+            var list = blessed.list(styles);
 
             return def;
         }

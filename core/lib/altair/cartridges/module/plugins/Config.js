@@ -2,16 +2,18 @@
  * Gives every module a config(named) method so other people can easily get configs
  */
 define(['dojo/_base/declare',
-        'dojo/Deferred',
+        'altair/Deferred',
         './_Base',
         'dojo/_base/lang',
-        'require'],
+        'require',
+        'dojo/has'],
 
     function (declare,
               Deferred,
               _Base,
               lang,
-              require) {
+              require,
+              has) {
 
     return declare('altair/cartridges/module/plugins/Config', [_Base], {
 
@@ -44,13 +46,20 @@ define(['dojo/_base/declare',
 
                         var path = this.resolvePath(named);
 
-                        require(['altair/plugins/config!' + path], lang.hitch(this, function (config) {
+                        try {
 
-                            this._configs[named] = config;
+                            require(['altair/plugins/config!' + path], lang.hitch(this, function (config) {
 
-                            deferred.resolve(config);
+                                this._configs[named] = config;
 
-                        }));
+                                deferred.resolve(config);
+
+                            }));
+
+                        } catch (e) {
+                            deferred.reject(e, false); //reject and suppress error logging
+                        }
+
 
                     }
 

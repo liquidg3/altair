@@ -1,13 +1,10 @@
 define(['dojo/_base/declare',
-    'altair/facades/hitch',
     'altair/modules/commandcentral/adapters/_Base'
 ], function (declare,
-             hitch,
              _Base) {
 
 
-    return declare('altair/modules/commandcentral/commanders/Splash', null, {
-
+    return declare('altair/modules/commandcentral/adapters/Mock', [_Base], {
 
 
     });

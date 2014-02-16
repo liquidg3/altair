@@ -4,11 +4,13 @@
  *
  */
 define(['doh/runner',
-        'altair/Deferred',
+        'altair/events/Deferred',
+        'dojo/Deferred',
         'altair/facades/hitch'],
 
     function (doh,
               Deferred,
+              DojoDeferred,
               hitch) {
 
         doh.register('deferred', [
@@ -21,8 +23,10 @@ define(['doh/runner',
             function (t) {
 
 
-                var def = new Deferred();
+                var def = new Deferred(),
+                    d2  = new DojoDeferred();
 
+                //we want the value of the LAST then(), the 3rd one should wait 10 mili for the 2nd one
                 def.then(function (num) {
                     return --num;
                 }).then(function (num) {
@@ -37,6 +41,7 @@ define(['doh/runner',
                     return --num;
                 });
 
+                //simple, 1 deferred out of the gate
                 def.then(function (num) {
                     var _def = new Deferred();
 
@@ -47,11 +52,14 @@ define(['doh/runner',
                     return _def;
                 });
 
+                //should wait until each "then()" chain is completed, then give us all the results
                 def.resolve(1).then(function (nums) {
                     t.is(nums[0], -2, 'resolves deferred did not receive result of last then()');
                     t.is(nums[1], 2, 'resolves deferred did not receive result of last then()');
+                    d2.resolve(true);
                 });
 
+                return d2;
 
             },
 
@@ -63,7 +71,8 @@ define(['doh/runner',
             function (t) {
 
 
-                var def = new Deferred();
+                var def = new Deferred(),
+                    d2  = new DojoDeferred();
 
                 def.then(function (num) {
                     return --num;
@@ -84,8 +93,10 @@ define(['doh/runner',
                 def.resolve(1).then(function (nums) {
                     t.is(nums[0], -1, 'resolves deferred did not receive result of last then()');
                     t.is(nums[1], 2, 'resolves deferred did not receive result of last then()');
+                    d2.resolve(true);
                 });
 
+                return d2;
 
             },
 
@@ -97,7 +108,8 @@ define(['doh/runner',
             function (t) {
 
 
-                var def = new Deferred();
+                var def = new Deferred(),
+                    d2  = new DojoDeferred();
 
                 def.then(function (num) {
                     var _def = new Deferred();
@@ -116,8 +128,10 @@ define(['doh/runner',
                 def.resolve(1).then(function (nums) {
                     t.is(nums[0], 2, 'resolves deferred did not receive result of last then()');
                     t.is(nums[1], 0, 'resolves deferred did not receive result of last then()');
+                    d2.resolve(true);
                 });
 
+                return d2;
 
             },
 
@@ -127,7 +141,8 @@ define(['doh/runner',
             function (t) {
 
 
-                var def = new Deferred();
+                var def = new Deferred(),
+                    d2  = new DojoDeferred();
 
                 def.then(function (num) {
                     return ++num;
@@ -140,7 +155,11 @@ define(['doh/runner',
                 def.resolve(1).then(function (nums) {
                     t.is(nums[0], 2, 'resolves deferred did not receive result of last then()');
                     t.is(nums[1], 0, 'resolves deferred did not receive result of last then()');
+                    d2.resolve(true);
                 });
+
+
+                return d2;
 
 
             }

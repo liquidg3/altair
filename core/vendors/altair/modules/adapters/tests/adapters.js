@@ -26,7 +26,8 @@ define(['doh/runner',
                         'altair/cartridges/module/plugins/Deferred',
                         'altair/cartridges/module/plugins/Paths',
                         'altair/cartridges/module/plugins/Config',
-                        'altair/cartridges/module/plugins/Events'
+                        'altair/cartridges/module/plugins/Events',
+                        'altair/cartridges/module/plugins/Foundry'
                     ]
                 }
             }

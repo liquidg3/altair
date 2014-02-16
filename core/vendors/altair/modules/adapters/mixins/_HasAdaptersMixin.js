@@ -22,13 +22,11 @@
 define(['dojo/_base/declare',
         'altair/facades/hitch',
         'altair/Lifecycle',
-        'dojo/node!fs',
         'altair/events/Emitter'],
 
     function (declare,
               hitch,
               Lifecycle,
-              fs,
               Emitter) {
 
 
@@ -81,7 +79,8 @@ define(['dojo/_base/declare',
         },
 
         /**
-         * Get an adapter by name, if no name is passed it'll be the selected adapter
+         * Get an adapter by name, if no name is passed it'll be the selected adapter. If you pass no name and selected
+         * adapter is returned, no deferred is returned. That is to say, your selected adapter is always available.
          *
          * @param named
          * @returns {Deferred}
@@ -115,32 +114,7 @@ define(['dojo/_base/declare',
             //load it from scratch
             else {
 
-                var path = this.resolvePath(named + '.js');
-
-                fs.exists(path, hitch(this, function (exists) {
-
-                    if(exists) {
-
-                        require([path], hitch(this, function (Adapter) {
-
-                            var a = new Adapter();
-
-                            a.name      = this.name + '::' + named;
-                            a.module    = this.name + '::' + named;
-
-                            if(a.startup) {
-                                a.startup().then(hitch(d, 'resolve', a)).otherwise(hitch(d, 'reject'));
-                            } else {
-                                d.resolve(a);
-                            }
-                        }));
-
-                    } else {
-                        d.reject('Could not find adapter named ' + this.name + '::' + named);
-                    }
-
-                }));
-
+                d = this.foundry(named);
             }
 
             return d;
@@ -156,7 +130,7 @@ define(['dojo/_base/declare',
             }
 
             this.emit('register-adapters', {}, function () {
-
+                throw "NOT IMPLEMENTED";
             });
 
 

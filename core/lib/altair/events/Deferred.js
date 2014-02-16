@@ -3,8 +3,12 @@ define([
     "dojo/_base/lang",
     "dojo/errors/CancelError",
     "dojo/promise/Promise",
+    'dojo/promise/all',
+    'altair/facades/hitch',
+    'dojo/when',
+    'dojo/Deferred',
     "dojo/has!config-deferredInstrumentation?dojo/promise/instrumentation"
-], function(has, lang, CancelError, Promise, instrumentation){
+], function(has, lang, CancelError, Promise, all, hitch, when, DojoDeferred, instrumentation){
     "use strict";
 
     // module:
@@ -17,22 +21,21 @@ define([
 
     var freezeObject = Object.freeze || function(){};
 
-    var signalWaiting = function(waiting, type, result, rejection, deferred, ignoreErrors){
+    var signalWaiting = function(waiting, type, result, rejection, deferred){
         if(has("config-deferredInstrumentation")){
-            if(!ignoreErrors && type === REJECTED && Deferred.instrumentRejected && waiting.length === 0){
+            if(type === REJECTED && Deferred.instrumentRejected && waiting.length === 0){
                 Deferred.instrumentRejected(result, false, rejection, deferred);
             }
         }
 
         for(var i = 0; i < waiting.length; i++){
-            signalListener(waiting[i], type, result, rejection, ignoreErrors);
+            signalListener(waiting[i], type, result, rejection);
         }
     };
 
-    var signalListener = function(listener, type, result, rejection, ignoreErrors){
+    var signalListener = function(listener, type, result, rejection){
         var func = listener[type];
         var deferred = listener.deferred;
-        ignoreErrors = ignoreErrors || deferred.ignoreErrors;
         if(func){
             try{
                 var newResult = func(result);
@@ -45,35 +48,34 @@ define([
                         listener.cancel = newResult.cancel;
                         newResult.then(
                             // Only make resolvers if they're actually going to be used
-                            makeDeferredSignaler(deferred, RESOLVED,ignoreErrors),
-                            makeDeferredSignaler(deferred, REJECTED,ignoreErrors),
-                            makeDeferredSignaler(deferred, PROGRESS,ignoreErrors));
+                            makeDeferredSignaler(deferred, RESOLVED),
+                            makeDeferredSignaler(deferred, REJECTED),
+                            makeDeferredSignaler(deferred, PROGRESS));
                         return;
                     }
-                    signalDeferred(deferred, RESOLVED, newResult, ignoreErrors);
+                    signalDeferred(deferred, RESOLVED, newResult);
                 }
             }catch(error){
-                signalDeferred(deferred, REJECTED, error, ignoreErrors);
+                signalDeferred(deferred, REJECTED, error);
             }
         }else{
-            signalDeferred(deferred, type, result, ignoreErrors);
+            signalDeferred(deferred, type, result);
         }
 
         if(has("config-deferredInstrumentation")){
-            if(!ignoreErrors && type === REJECTED && Deferred.instrumentRejected){
+            if(type === REJECTED && Deferred.instrumentRejected){
                 Deferred.instrumentRejected(result, !!func, rejection, deferred.promise);
             }
         }
     };
 
-    var makeDeferredSignaler = function(deferred, type, ignoreErrors){
+    var makeDeferredSignaler = function(deferred, type){
         return function(value){
-            signalDeferred(deferred, type, value, ignoreErrors);
+            signalDeferred(deferred, type, value);
         };
     };
 
-    var signalDeferred = function(deferred, type, result, ignoreErrors){
-        ignoreErrors = ignoreErrors || deferred.ignoreErrors;
+    var signalDeferred = function(deferred, type, result){
         if(!deferred.isCanceled()){
             switch(type){
                 case PROGRESS:
@@ -83,12 +85,7 @@ define([
                     deferred.resolve(result);
                     break;
                 case REJECTED:
-                    if(ignoreErrors) {
-                        deferred.reject(result, false);
-                    } else {
-                        deferred.reject(result);
-
-                    }
+                    deferred.reject(result);
                     break;
             }
         }
@@ -118,9 +115,7 @@ define([
         var canceled = false;
         var waiting = [];
 
-        this.ignoreErrors;
-
-        if(!this.ignoreErrors && !has("config-deferredInstrumentation") && Error.captureStackTrace){
+        if(has("config-deferredInstrumentation") && Error.captureStackTrace){
             Error.captureStackTrace(deferred, Deferred);
             Error.captureStackTrace(promise, Deferred);
         }
@@ -131,6 +126,16 @@ define([
             // returns: Boolean
 
             return fulfilled === RESOLVED;
+        };
+
+
+        /**
+         * Tells us if we have made any promises
+         *
+         * @returns {boolean}
+         */
+        this.hasWaiting = function () {
+            return waiting.length > 0;
         };
 
         this.isRejected = promise.isRejected = function(){
@@ -182,6 +187,12 @@ define([
             }
         };
 
+        /**
+         * Overridden so promises new "then" returns the results from all callbacks
+         * @param value
+         * @param strict
+         * @returns {dojo.promise.Promise}
+         */
         this.resolve = function(value, strict){
             // summary:
             //		Resolve the deferred.
@@ -195,23 +206,99 @@ define([
             // returns: dojo/promise/Promise
             //		Returns the original promise for the deferred.
 
-            if(!fulfilled){
-                // Set fulfilled, store value. After signaling waiting listeners unset
-                // waiting.
-                signalWaiting(waiting, fulfilled = RESOLVED, result = value, null, deferred);
-                waiting = null;
-                return promise;
-            }else if(strict === true){
-                throw new Error(FULFILLED_ERROR_MESSAGE);
-            }else{
-                return promise;
+            result      = value;
+
+            var callback,
+                listener,
+                finished = false,
+                results = [],
+                newResult,
+                _waiting = waiting.slice(0),
+
+                //build a fake promise to stop recursion
+                newPromise     = {
+                    callback: null,
+                    then: function (callback) {
+                        this.callback = callback;
+                        if(finished) {
+                            callback(results);
+                        }
+                    }
+                };
+
+            //will fire 1 waiting at a time
+            var fire = function () {
+
+                listener = _waiting.shift();
+
+                if(listener) {
+
+                    callback = listener[RESOLVED];
+
+                    if(callback) {
+
+                        var _deferred    = listener.deferred;
+                        newResult        = callback(value);
+
+
+                        if(_deferred.hasWaiting()) {
+
+                            _deferred.resolve(newResult).then(function (_newResult) {
+
+                                newResult = _newResult[0];
+
+                                if(newResult && typeof newResult.then === "function"){
+                                    console.warn('@FINISH fluent then()\'s sot supported for result passthrough ');
+                                } else {
+
+                                    results.push(_newResult[0]);
+                                    fire();
+
+                                }
+
+
+
+                            });
+
+                        } else {
+
+                            when(newResult).then(function (_result) {
+                                results.push(_result);
+                                fire();
+                            });
+
+                        }
+
+
+                    }
+
+
+                }
+                //there are no more waiting
+                else {
+                    finished = true;
+                    if(newPromise.callback) {
+                        newPromise.callback(results);
+                    }
+                }
+
+
+            };
+
+            if(value && typeof value.then === "function"){
+                when(value).then(function (_value) {
+                    value = _value;
+                    fire();
+                });
+            } else {
+                fire();
             }
+
+            return newPromise;
+
+
         };
 
-        /**
-         * Now passing strict as false with disable error reporting
-         * @type {reject}
-         */
         var reject = this.reject = function(error, strict){
             // summary:
             //		Reject the deferred.
@@ -226,13 +313,10 @@ define([
             //		Returns the original promise for the deferred.
 
             if(!fulfilled){
-                if(strict === false) {
-                    this.ignoreErrors = true;
-                }
-                if(!this.ignoreErrors && has("config-deferredInstrumentation") && Error.captureStackTrace){
+                if(has("config-deferredInstrumentation") && Error.captureStackTrace){
                     Error.captureStackTrace(rejection = {}, reject);
                 }
-                signalWaiting(waiting, fulfilled = REJECTED, result = error, rejection, deferred, this.ignoreErrors);
+                signalWaiting(waiting, fulfilled = REJECTED, result = error, rejection, deferred);
                 waiting = null;
                 return promise;
             }else if(strict === true){
@@ -240,10 +324,6 @@ define([
             }else{
                 return promise;
             }
-        };
-
-        this.hasWaiting = function () {
-            return waiting.length > 0;
         };
 
         this.then = promise.then = function(callback, errback, progback){
@@ -274,10 +354,6 @@ define([
                 // required to expose `cancel`
                 return listener.cancel && listener.cancel(reason);
             });
-
-
-            listener.deferred.ignoreErrors = this.ignoreErrors;
-
             if(fulfilled && !waiting){
                 signalListener(listener, fulfilled, result, rejection);
             }else{

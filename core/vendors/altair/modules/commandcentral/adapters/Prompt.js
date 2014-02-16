@@ -15,8 +15,9 @@ define(['dojo/_base/declare',
      * We user colors to manage our theme.
      */
     colors.setTheme({
-        notice: 'yellow',
-        progress: 'bold'
+        notice:     'yellow',
+        progress:   'bold',
+        plain:      'grey'
     });
 
 
@@ -35,14 +36,22 @@ define(['dojo/_base/declare',
         },
 
         notice: function(str) {
-            console.log('* Notice:', str.notice, '*');
+            console.log('* Notice:', str.inverse, '*');
         },
 
-        select: function (question, options) {
+        writeLine: function (str, options) {
+            console.log(str.notice);
+        },
+
+        select: function (question, selectOptions, options) {
 
             var def = new Deferred();
 
-            prompt.get([question], function (err, results) {
+            prompt.get([{
+                name: 'answer',
+                description: question
+
+            }], function (err, results) {
 
                 def.resolve();
 

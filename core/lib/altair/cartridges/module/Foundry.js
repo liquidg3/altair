@@ -243,10 +243,11 @@ define(['dojo/_base/declare',
             //before any module is required, we have to setup some paths in the AMD loader
             var dir         = path.dirname(modulePath),
                 pathParts   = dir.split('/'),
-                alias       = pathParts.slice(-3).join(path.sep);
+                alias       = pathParts.slice(-3).join(path.sep),
+                name        = this._pathToModuleName(modulePath);
 
 
-            var paths = {};
+            var paths    = {};
             paths[alias] = dir;
 
             require({
@@ -259,7 +260,7 @@ define(['dojo/_base/declare',
                 var module      = new Module();
 
                 module.dir  = dir;
-                module.name = this._pathToModuleName(modulePath);
+                module.name = name;
 
                 deferred.resolve(module);
 

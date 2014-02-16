@@ -1,0 +1,32 @@
+{
+    "#splash": {
+        "top": "center",
+        "left": "center",
+        "width": "50%",
+        "height": "50%",
+        "content": "Welcome to {bold}Altair{/bold}!",
+        "tags": true,
+        "border": {
+            "type": "line"
+        },
+        "style": {
+            "fg": "white",
+            "bg": "magenta",
+            "border": {
+                "fg": "#f0f0f0"
+            },
+            "hover": {
+                "bg": "green"
+            }
+        }
+    },
+
+    "select": {
+
+    },
+
+    "#commander-select": {
+        "width": 100
+    }
+
+}

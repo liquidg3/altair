@@ -1,11 +1,12 @@
+/**
+ * Tells Altair::CommandCentral that you have commanders
+ */
 define(['dojo/_base/declare',
-        'dojo/_base/lang',
-        'dojo/Deferred',
+        'altair/facades/hitch',
         'altair/Lifecycle',
         'altair/events/Emitter'
 ], function (declare,
-             lang,
-             Deferred,
+             hitch,
              Lifecycle,
              Emitter) {
 
@@ -14,18 +15,31 @@ define(['dojo/_base/declare',
 
             startup: function () {
 
-                this.on('Altair:CommandCentral::register-commanders').then(lang.hitch(this, 'registerCommanders'));
+                this.on('Altair:CommandCentral::register-commanders').then(hitch(this, 'registerCommanders'));
 
                 return this.inherited(arguments);
             },
 
             registerCommanders: function (e) {
 
-                var deferred = new Deferred();
+                var def = new this.Deferred();
 
-                this.parseConfig('configs/commanders.json').then(lang.hitch(deferred, 'resolve'));
+                this.parseConfig('configs/commanders.json').then(hitch(this, function (commanders) {
 
-                return deferred;
+                    //resolve relative paths
+                    Object.keys(commanders).forEach(hitch(this, function (alias) {
+
+                        if(commanders[alias].search('::') === -1) {
+                            commanders[alias] = this.name + '::' + commanders[alias];
+                        }
+                    }));
+
+                    def.resolve(commanders);
+
+
+                })).otherwise(hitch(def, 'reject'));
+
+                return def;
             }
 
     });

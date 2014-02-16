@@ -6,7 +6,8 @@
         "altair/cartridges/module/plugins/Deferred",
         "altair/cartridges/module/plugins/Apollo",
         "altair/cartridges/module/plugins/Nexus",
-        "altair/cartridges/module/plugins/Events"
+        "altair/cartridges/module/plugins/Events",
+        "altair/cartridges/module/plugins/Foundry"
     ],
     "modules": "*"
 }

@@ -1,7 +1,7 @@
 {
     "glob": [
-        "altair/modules/adapters/tests/*.js",
-        "core/tests/*.js",
-        "apollo/tests/*.js"
+        "core/vendors/altair/modules/commandcentral/tests/*.js",
+        "missed-core/tests/*.js",
+        "missed-apollo/tests/*.js"
     ]
 }
