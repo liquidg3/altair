@@ -68,7 +68,6 @@ define(['dojo/_base/declare',
 
         }
 
-
     });
 
 });
