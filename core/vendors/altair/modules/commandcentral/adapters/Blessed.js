@@ -43,7 +43,9 @@ define(['dojo/_base/declare',
 
 
             this.screen.append(this.splash);
+            this.splash.focus();
 
+            this.screen.render();
 
         },
 

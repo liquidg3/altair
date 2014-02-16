@@ -8,10 +8,8 @@
  */
 define(['dojo/_base/declare',
         'dojo/Deferred',
-        'dojo/_base/lang',
-            ], function (declare, Deferred, lang) {
-
-
+        'dojo/_base/lang'],
+    function (declare, Deferred, lang) {
 
     return declare('altair/Altair', null, {
 
