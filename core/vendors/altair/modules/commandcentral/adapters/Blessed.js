@@ -37,7 +37,13 @@ define(['dojo/_base/declare',
                 throw "You must create a commanders/styles.json and drop in a style for #splash";
             }
 
-            this.splash = this.splash ||  blessed.box(this._styles['#splash']);
+            this.splash = this.splash ||  blessed.box(mixin({
+                content: 'Splash Screen'
+            }, this._styles['#splash']));
+
+
+            this.screen.append(this.splash);
+
 
         },
 
@@ -104,16 +110,22 @@ define(['dojo/_base/declare',
 
         select: function (question, options, id) {
 
+
             var def = new Deferred(),
                 keys = Object.keys(options),
                 values = keys.map(function (key) {
                     return options[key];
                 });
 
+            return def;
+
+            console.log(this.styles('select, #' + id));
+
             var styles = mixin({
                 parent: this.screen,
-                items: values
-            }, this.styles('select, #' + id));
+                items: values,
+                content: 'wath the?'
+            }, {}, this.styles('select, #' + id));
 
             var list = blessed.list(styles);
 

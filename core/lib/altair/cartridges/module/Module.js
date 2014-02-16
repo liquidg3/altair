@@ -265,7 +265,9 @@ define(['dojo/_base/declare',
                     //lifecycle class gets started up....
                     if(module.isInstanceOf && module.isInstanceOf(Lifecycle)) {
 
-                        module.startup(this.options.moduleOptions[module.name] || undefined).then(hitch(this, function () {
+                        var options = (this.options.moduleOptions && this.options.moduleOptions[module.name]) ? this.options.moduleOptions[module.name] : undefined;
+
+                        module.startup(options).then(hitch(this, function () {
 
                             this.emit('did-startup-module', {
                                 module: module
