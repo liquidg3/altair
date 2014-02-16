@@ -201,7 +201,7 @@ define(['dojo/_base/declare',
                         resolver    = new Resolver(this);
 
                     nexus.addResolver(resolver);
-                    nexus.set('Cartridges/Module', this);
+                    nexus.set('cartridges/Module', this);
 
                 }
 

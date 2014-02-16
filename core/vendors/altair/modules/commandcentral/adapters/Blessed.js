@@ -33,22 +33,24 @@ define(['dojo/_base/declare',
 
         splash: function () {
 
-            if(!this._styles['#splash']) {
+            var styles = this.styles('#splash');
+
+            if(!styles) {
                 throw "You must create a commanders/styles.json and drop in a style for #splash";
             }
 
-            this.splash = this.splash ||  blessed.box(mixin({
-                content: 'Splash Screen'
-            }, this._styles['#splash']));
+            styles = mixin({
+                content: 'Splash Screen',
+                parent:  this.screen
+            }, styles);
 
-
-            this.screen.append(this.splash);
-
+            this.splash = blessed.box(styles);
+            this.screen.render();
 
         },
 
         /**
-         * Should show a progress dialog with a amessage
+         * Should show a progress dialog with a message
          */
         showProgress: function (message) {
 
@@ -110,24 +112,35 @@ define(['dojo/_base/declare',
 
         select: function (question, options, id) {
 
-
             var def = new Deferred(),
                 keys = Object.keys(options),
                 values = keys.map(function (key) {
                     return options[key];
                 });
 
-            return def;
-
-            console.log(this.styles('select, #' + id));
-
+            //defaults
             var styles = mixin({
                 parent: this.screen,
-                items: values,
-                content: 'wath the?'
-            }, {}, this.styles('select, #' + id));
+                items: keys,
+                content: question,
+                width: '50%',
+                height: '50%',
+                top: 'center',
+                left: 'center',
+                align: 'center',
+                fg: 'blue',
+                border: {
+                    type: 'line'
+                },
+                selectedBg: 'green',
+                mouse: true,
+                keys: true,
+                vi: true
+            }, this.styles('select, #' + id));
 
             var list = blessed.list(styles);
+            list.focus();
+            this.screen.render();
 
             return def;
         }

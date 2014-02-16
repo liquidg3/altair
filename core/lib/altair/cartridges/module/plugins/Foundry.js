@@ -72,9 +72,10 @@ define(['dojo/_base/declare',
 
                                 a.name      = this.name + '::' + className;
                                 a.module    = this;
+                                a.nexus     = this.nexus;
 
                                 if(a.startup) {
-                                    a.startup().then(hitch(d, 'resolve')).otherwise(hitch(d, 'reject'));
+                                    a.startup(options).then(hitch(d, 'resolve')).otherwise(hitch(d, 'reject'));
                                 } else {
                                     d.resolve(a);
                                 }

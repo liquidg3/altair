@@ -1,3 +1,15 @@
 {
-    "dashboard": "commanders/Dashboard"
+    "dashboard": {
+        "path": "commanders/Dashboard",
+        "description": "The commander you see when you first log into Altair",
+        "commands": {
+            "menu": {
+                "description": "Renders the main menu."
+            },
+            "help": {
+                "description": "Learn how to command Altair",
+                "aliases": ["h"]
+            }
+        }
+    }
 }

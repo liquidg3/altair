@@ -1,12 +1,7 @@
-/**
- * The event system in Altair (a unique combination of a traditional event system with a query engine twist) is wicked
- * powerful in practice. It actually makes events fun again!
- *
- */
 define(['doh/runner',
-        'altair/events/Deferred',
-        'dojo/Deferred',
-        'altair/facades/hitch'],
+    'altair/Deferred',
+    'dojo/Deferred',
+    'altair/facades/hitch'],
 
     function (doh,
               Deferred,
@@ -16,153 +11,82 @@ define(['doh/runner',
         doh.register('deferred', [
 
             /**
-             * Ensure resolve.then() waits for any deferred returned by any previous then(), chaining then(),s using deferreds
+             * Ensure that calling then().then(), the 2nd then() waits
+             * if the first returns a deferred... but this has happened AFTER the deferred has been resolved
              *
              * @param t
              */
             function (t) {
 
+                var d = new DojoDeferred();
 
-                var def = new Deferred(),
-                    d2  = new DojoDeferred();
+                var mock    = new Deferred(),
+                    didWait = false;
 
-                //we want the value of the LAST then(), the 3rd one should wait 10 mili for the 2nd one
-                def.then(function (num) {
-                    return --num;
-                }).then(function (num) {
-                    var _def = new Deferred();
+                mock.resolve('foo+');
 
-                    setTimeout(function () {
-                        _def.resolve(--num);
-                    }, 10);
+                mock.then(function (foo) {
 
-                    return _def;
-                }).then(function (num) {
-                    return --num;
-                });
-
-                //simple, 1 deferred out of the gate
-                def.then(function (num) {
-                    var _def = new Deferred();
+                    var _d = new Deferred();
 
                     setTimeout(function () {
-                        _def.resolve(++num);
-                    }, 10);
+                        didWait = true;
+                        _d.resolve(foo + 'bar');
+                    },10);
 
-                    return _def;
+                    return _d;
+
+                }).then(function (foo) {
+
+                    t.t(didWait, 'Daisy chained thens() did not wait.');
+                    t.is(foo, 'foo+bar', 'Daisy chained thens() did not pass back results when deferred.');
+
+                    d.resolve(true);
                 });
 
-                //should wait until each "then()" chain is completed, then give us all the results
-                def.resolve(1).then(function (nums) {
-                    t.is(nums[0], -2, 'resolves deferred did not receive result of last then()');
-                    t.is(nums[1], 2, 'resolves deferred did not receive result of last then()');
-                    d2.resolve(true);
-                });
 
-                return d2;
+                return d;
 
             },
 
             /**
-             * Ensure resolve.then() waits for any deferred returned by any previous then()
+             * Ensure that calling then().then(), the 2nd then() waits if the first returns a deferred
              *
              * @param t
              */
             function (t) {
 
+                var d = new DojoDeferred();
 
-                var def = new Deferred(),
-                    d2  = new DojoDeferred();
+                var mock    = new Deferred(),
+                    didWait = false;
 
-                def.then(function (num) {
-                    return --num;
-                }).then(function (num) {
-                    return --num;
-                });
+                mock.then(function (foo) {
 
-                def.then(function (num) {
-                    var _def = new Deferred();
+                    var _d = new Deferred();
 
                     setTimeout(function () {
-                        _def.resolve(++num);
-                    }, 10);
+                        didWait = true;
+                        _d.resolve(foo + 'bar');
+                    },10);
 
-                    return _def;
+                    return _d;
+
+                }).then(function (foo) {
+
+                    t.t(didWait, 'Daisy chained thens() did not wait.');
+                    t.is(foo, 'foo+bar', 'Daisy chained thens() did not pass back results when deferred.');
+
+                    d.resolve(true);
                 });
 
-                def.resolve(1).then(function (nums) {
-                    t.is(nums[0], -1, 'resolves deferred did not receive result of last then()');
-                    t.is(nums[1], 2, 'resolves deferred did not receive result of last then()');
-                    d2.resolve(true);
-                });
-
-                return d2;
-
-            },
-
-            /**
-             * Ensure resolve.then() waits for any deferred returned by any previous then()
-             *
-             * @param t
-             */
-            function (t) {
+                mock.resolve('foo+');
 
 
-                var def = new Deferred(),
-                    d2  = new DojoDeferred();
-
-                def.then(function (num) {
-                    var _def = new Deferred();
-
-                    setTimeout(function () {
-                        _def.resolve(++num);
-                    }, 10);
-
-                    return _def;
-                });
-
-                def.then(function (num) {
-                    return --num;
-                });
-
-                def.resolve(1).then(function (nums) {
-                    t.is(nums[0], 2, 'resolves deferred did not receive result of last then()');
-                    t.is(nums[1], 0, 'resolves deferred did not receive result of last then()');
-                    d2.resolve(true);
-                });
-
-                return d2;
-
-            },
-
-            /**
-             * Ensure that our Deferred's resolve().then() receives the results of last queued listener
-             */
-            function (t) {
-
-
-                var def = new Deferred(),
-                    d2  = new DojoDeferred();
-
-                def.then(function (num) {
-                    return ++num;
-                });
-
-                def.then(function (num) {
-                    return --num;
-                });
-
-                def.resolve(1).then(function (nums) {
-                    t.is(nums[0], 2, 'resolves deferred did not receive result of last then()');
-                    t.is(nums[1], 0, 'resolves deferred did not receive result of last then()');
-                    d2.resolve(true);
-                });
-
-
-                return d2;
-
+                return d;
 
             }
+
 
 
 

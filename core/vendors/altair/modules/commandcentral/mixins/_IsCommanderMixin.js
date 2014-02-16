@@ -1,3 +1,6 @@
+/**
+ * Mixin that gives any class the power to run as a commander.
+ */
 define(['dojo/_base/declare',
         'altair/Lifecycle',
         'altair/facades/hitch',
@@ -11,13 +14,15 @@ define(['dojo/_base/declare',
 
     var Commander = declare('altair/modules/commandcentral/mixins/_HasCommandersMixin', [Lifecycle], {
 
-        adapter: null,
-        _styles: null,
+        adapter:    null,
+        styles:     null,
+        description:  '',
 
         startup: function (options) {
 
-            options         = options || this.options;
-            this.adapter    = (options && options.adapter) ? options.adapter : this.module.adapter();
+            options             = options || this.options;
+            this.adapter        = (options && options.adapter) ? options.adapter : this.module.adapter();
+            this.description    = (options && options.description) ? options.description : this.name;
 
             if(!this.adapter) {
                 throw Error('You must pass your commander an adapter from Altair:CommandCentral');
@@ -28,9 +33,10 @@ define(['dojo/_base/declare',
                 var file        = this.module.resolvePath('commanders/styles.json'),
                     deferred    = new this.module.Deferred();
 
-                this.module.parseConfig(file).then(hitch(this, function (config) {
+                this.module.parseConfig(file).then(hitch(this, function (styles) {
 
-                    this.adapter.setStyles(config);
+                    this.styles = styles;
+
                     deferred.resolve(this);
 
                     return this;
@@ -39,19 +45,41 @@ define(['dojo/_base/declare',
 
 
                 return deferred;
+
             }));
         },
 
+        /**
+         * When this Commander is focused, add its styles to the adapter
+         */
+        focus: function () {
 
-        splash: function () {
-            this.module.adapter().splash();
+            if(this.styles) {
+                this.adapter.addStyles(this.name, this.styles);
+            }
+
+        },
+
+        /**
+         * When blurred, remove our styles
+         */
+        blur: function () {
+
+            if(this.styles) {
+                this.adapter.removeStyles(this.name);
+            }
+
+        },
+
+        help: function () {
+
         }
 
     });
 
 
-    //mixin certain adapter methods
-    var methods = ['notice', 'writeLine', 'readLine', 'form', 'select', 'showProgress', 'hideProgress'],
+    //mix certain adapter methods into the commander for easy access
+    var methods = ['notice', 'writeLine', 'readLine', 'form', 'select', 'showProgress', 'hideProgress', 'splash'],
         sig     = {};
 
     methods.forEach(function (method) {

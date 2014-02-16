@@ -3,13 +3,23 @@ define([
     'altair/events/Emitter',
     'altair/Lifecycle',
     'altair/facades/mixin',
-    'altair/facades/hitch'
-        ], function (declare, Emitter, Lifecycle, mixin, hitch) {
+    'altair/facades/hitch',
+    'dojo/_base/lang'
+        ],
+    function (declare,
+              Emitter,
+              Lifecycle,
+              mixin,
+              hitch,
+              lang) {
 
 
     return declare('altair/modules/commandcentral/adapters/_Base', [Emitter, Lifecycle], {
 
-        _styles: null, /** optional styles your terminal adapter can use
+        _styles: null, /** optional styles your terminal adapter can use **/
+        constructor: function () {
+            this._styles = {};
+        },
 
         /**
          * Not all adapters will implement a notice feature
@@ -47,13 +57,31 @@ define([
         hideProgress: function () {
 
         },
-        setStyles: function (styles) {
-            this._styles = styles;
+
+        /**
+         * Add in styles by key
+         *
+         * @param key
+         * @param styles
+         * @returns {altair|modules|commandcentral|adapters|_Base}
+         */
+        addStyles: function (key, styles) {
+            this._styles[key] = styles;
             return this;
         },
 
         /**
-         * Pass a selector, only basic by #id works for now
+         * Delete those same styles by key
+         * @param key
+         * @returns {altair|modules|commandcentral|adapters|_Base}
+         */
+        removeStyles: function (key) {
+            delete this._styles[key];
+            return this;
+        },
+
+        /**
+         * Pass a selector, only basic by #id works for now.
          * @param id
          * @returns {*}
          */
@@ -61,11 +89,17 @@ define([
 
             var results = {};
 
+            if(!lang.isString(selector)) {
+                return selector;
+            }
+
             selector.split(',').forEach(hitch(this, function (_selector) {
                 _selector = _selector.trim();
-                if( _selector in this._styles) {
-                    results = mixin(results, this._styles[_selector]);
-                }
+                Object.keys(this._styles).forEach(hitch(this, function (key) {
+                    if( _selector in this._styles[key]) {
+                        results = mixin(results, this._styles[key][_selector]);
+                    }
+                }));
             }));
 
             return results;

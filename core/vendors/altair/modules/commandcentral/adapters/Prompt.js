@@ -2,23 +2,19 @@ define(['dojo/_base/declare',
         'altair/facades/hitch',
         'altair/modules/commandcentral/adapters/_Base',
         'dojo/node!prompt',
-        'dojo/node!colors',
+        'dojo/node!chalk',
         'dojo/Deferred'
 ], function (declare,
              hitch,
              _Base,
              prompt,
-             colors,
+             chalk,
              Deferred) {
 
-    /**
-     * We user colors to manage our theme.
-     */
-    colors.setTheme({
-        notice:     'yellow',
-        progress:   'bold',
-        plain:      'grey'
-    });
+
+    prompt.colors       = false;
+//    prompt.message      = 'altair';
+    prompt.delimiter    = ': ';
 
 
     return declare('altair/modules/commandcentral/adapters/Prompt', [_Base], {
@@ -32,37 +28,78 @@ define(['dojo/_base/declare',
         },
 
         splash: function () {
-            console.log('REALLY COOL ALTAIR SPLASH SCREEN'.rainbow);
+            console.log(chalk.bgRed('REALLY COOL ALTAIR SPLASH SCREEN'));
         },
 
         notice: function(str) {
-            console.log('* Notice:', str.inverse, '*');
+            console.log(chalk.red('* Notice:', str, '*'));
         },
 
         writeLine: function (str, options) {
-            console.log(str.notice);
+
+            var styles = this.styles(options);
+
+            console.log(chalk.bgRed(str));
         },
 
         select: function (question, selectOptions, options) {
 
-            var def = new Deferred();
+            var def     = new Deferred(),
+                keys    = Object.keys(selectOptions),
+                styles  = this.styles(options),
+                retry   = (typeof options === 'object' && 'retry' in options) ? options.retry : true;
 
-            prompt.get([{
-                name: 'answer',
-                description: question
+            this.writeLine();
+            this.writeLine('--- ' + question + ' ---');
+            this.writeLine('|');
 
-            }], function (err, results) {
+            keys.forEach(hitch(this, function (key) {
+                this.writeLine('| ' + key + prompt.delimiter + '"' + selectOptions[key] + '"');
+            }));
 
-                def.resolve();
+            this.writeLine('|');
+            this.writeLine('---------------');
 
+
+            var go = hitch(this, function () {
+
+                prompt.get([{
+                    name: 'answer',
+                    type: 'string',
+                    description: 'select option'
+                }], hitch(this, function (err, results) {
+
+                    if(!results.answer || !(results.answer in selectOptions)) {
+
+                        if(!retry) {
+                            def.reject(results.answer);
+                        } else {
+
+                            this.writeLine('Invalid Selection', 'alert');
+                            this.writeLine('Valid options are: ' + keys.join(', '));
+
+                            go();
+
+
+                        }
+
+                    } else {
+
+                        def.resolve(results.answer);
+
+                    }
+
+                }));
             });
+
+            go();
 
 
             return def;
         },
 
         showProgress: function (message) {
-            console.log(message.progress);
+            console.log(chalk.grey(message));
         }
 
     });

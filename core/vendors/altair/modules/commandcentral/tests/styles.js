@@ -81,7 +81,7 @@ define(['doh/runner',
 
                     m.adapter('adapters/Mock').then(function (mock) {
 
-                        mock.setStyles(styles);
+                        mock.addStyles('test', styles);
 
                         var matches = mock.styles('select, #my-select');
                         t.is(matches, {

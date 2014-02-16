@@ -21,12 +21,16 @@
         }
     },
 
+    "alert": {
+        "color": "red"
+    },
+
     "select": {
 
     },
 
     "#commander-select": {
-        "width": 100
+
     }
 
 }

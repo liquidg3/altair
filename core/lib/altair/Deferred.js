@@ -118,7 +118,7 @@ define([
         var canceled = false;
         var waiting = [];
 
-        this.ignoreErrors;
+        this.ignoreErrors = false;
 
         if(!this.ignoreErrors && !has("config-deferredInstrumentation") && Error.captureStackTrace){
             Error.captureStackTrace(deferred, Deferred);

@@ -133,7 +133,7 @@ define(['require',
 
             }
 
-            //load the config using node's require
+            //@TODO move to fs.readFile and JSON.parse
             var config = require.nodeRequire(id);
 
             if(env) {

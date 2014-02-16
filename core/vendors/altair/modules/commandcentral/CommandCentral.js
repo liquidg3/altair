@@ -21,29 +21,35 @@ define(['dojo/_base/declare',
               mixin,
               all) {
 
-
         return declare('altair/modules/commandcentral/CommandCentral', [_HasAdaptersMixin, _HasListenersMixin, _HasCommandersMixin], {
 
-            dashboardCommander: null,
+            _focusedCommander: null,
             _commanders: null,
 
 
             /**
-             * Set the selected terminal interface adapter. Then start the dashboard commander
+             * Set the selected terminal interface adapter. Pull from options if needed. Then start the dashboard commander if autostart is not false
              *
              * @returns {*}
              */
             startup: function (options) {
 
-                this._commanders = {};
+                options = options || this.options;
 
-                if(!process.stdin.isTTY || !process.stdout.isTTY) {
-                    this._selectedAdapter = 'adapters/Prompt';
-                } else {
-                    this._selectedAdapter = 'adapters/Blessed';
+                this._commanders        = {};
+                this._selectedAdapter   = options ? options.adapter : this._selectedAdapter;
+
+                if(!this._selectedAdapter) {
+
+                    if(!process.stdin.isTTY || !process.stdout.isTTY) {
+                        this._selectedAdapter = 'adapters/Prompt';
+                    } else {
+                        this._selectedAdapter = 'adapters/Blessed';
+                    }
+
                 }
 
-                if(!options || options.autostart === true) {
+                if(!options || options.autostart !== false) {
                     return this.inherited(arguments).then(this.hitch('go'));
                 } else {
                     return this.inherited(arguments);
@@ -53,15 +59,37 @@ define(['dojo/_base/declare',
             },
 
             /**
-             * Starts the command central experience through any commander who's key is
+             * Starts the command central experience through any commander whose key is
              * dashboard. If you want to make your own dashboard, make it something like
              * altair-dashboard.
              */
             go: function () {
 
-                this.refreshCommanders().then(function (commanders) {
+                this.refreshCommanders().then(this.hitch(function (commanders) {
+                    this.focus(commanders.dashboard);
                     commanders.dashboard.go();
-                });
+                }));
+
+                return this;
+            },
+
+
+            /**
+             * Focus's a commander
+             *
+             * @param commander
+             * @returns {altair|modules|commandcentral|CommandCentral}
+             */
+            focus: function (commander) {
+
+                //blur last focused commander
+                if(this._focusedCommander) {
+                    this._focusedCommander.blur();
+                }
+
+                this._focusedCommander = commander;
+
+                commander.focus();
 
                 return this;
             },
@@ -81,7 +109,8 @@ define(['dojo/_base/declare',
                 this.emit('register-commanders').then(this.hitch(function (results) {
 
                     var commanders  = {},
-                        list        = [];
+                        list        = [],
+                        adapter     = this.adapter();
 
                     //loop through the results of every listener and flatten them into single object
                     results.forEach(this.hitch(function (_commanders) {
@@ -90,12 +119,24 @@ define(['dojo/_base/declare',
 
                     //now instantiate any commanders not yet instantiated
                     Object.keys(commanders).forEach(this.hitch(function (name) {
+
                         if(!(name in this._commanders)) {
 
-                            list.push(this.foundry(commanders[name]).then(this.hitch(function (commander) {
-                                this._commanders[name] = commander;
+                            var options = commanders[name],
+                                path    = options.path;
+
+                            //we don't need the path, it is replaced by name (which is more a fqn than path is)
+                            delete options.path;
+
+                            //default to our adapter, but one can be passed in (not sure why)
+                            options.adapter = options.adapter || adapter;
+
+                            list.push(this.foundry(path, options).then(this.hitch(function (c) {
+                                this._commanders[name] = c;
                             })));
+
                         }
+
                     }));
 
                     //after all commanders are instantiated and started up, resolve the deferred with them all
