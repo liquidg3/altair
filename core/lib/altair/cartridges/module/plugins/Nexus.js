@@ -11,7 +11,7 @@ define(['dojo/_base/declare', 'dojo/Deferred', './_Base'], function (declare, De
             this.deferred = new Deferred();
 
             //we have to make sure we have our dependent plugins loaded
-            if(!this.cartridge.altair.hasCartridges(['altair/cartridges/nexus/Nexus'])) {
+            if(!this.altair.hasCartridges(['altair/cartridges/nexus/Nexus'])) {
                 this.deferred.reject("The nexus plugin needs the 'altair/cartridges/nexus/Nexus' cartridge enabled.");
                 return this.inherited(arguments);
             }
@@ -20,7 +20,7 @@ define(['dojo/_base/declare', 'dojo/Deferred', './_Base'], function (declare, De
             if(options && options.nexus) {
                 this.nexus = options.nexus;
             } else {
-                this.nexus = this.cartridge.altair.cartridge('altair/cartridges/nexus/Nexus');
+                this.nexus = this.altair.cartridge('altair/cartridges/nexus/Nexus');
             }
 
             this.deferred.resolve();

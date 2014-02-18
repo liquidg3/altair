@@ -6,9 +6,9 @@ define(['dojo/_base/declare',
 
 
 
-    return declare('apollo/fieldtypes/Text', [_Base], {
+    return declare('apollo/fieldtypes/Str', [_Base], {
 
-        key: 'text',
+        key: 'string',
         options: {
             maxLength: {
                 type: 'number',

@@ -1,3 +1,6 @@
+/**
+ * Sets up Apollo for altair. We also add our self to the Nexus cartridge if it's enabled
+ */
 define(['dojo/_base/declare',
         'dojo/_base/lang',
         '../_Base',
@@ -15,9 +18,13 @@ define(['dojo/_base/declare',
 
         return declare('altair/cartridges/apollo/Apollo', [_Base], {
 
-
             apollo: null,
 
+            /**
+             * During startup, setup all the field types
+             * @param options
+             * @returns {*}
+             */
             startup: function (options) {
 
                 options = options || this.options;
@@ -29,7 +36,7 @@ define(['dojo/_base/declare',
 
                     //the base fieldtypes i think we need to get altair to work
                     options.fieldTypes = [
-                        'apollo/fieldtypes/Text',
+                        'apollo/fieldtypes/Str',
                         'apollo/fieldtypes/Bool',
                         'apollo/fieldtypes/Int',
                         'apollo/fieldtypes/Float',
@@ -56,8 +63,32 @@ define(['dojo/_base/declare',
 
                 return this.inherited(arguments);
 
-            }
+            },
 
+            /**
+             * Add ourselves to nexus if it's enabled
+             */
+            execute: function () {
+
+                if(this.altair.hasCartridge('altair/cartridges/nexus/Nexus')) {
+
+                    var nexus = this.altair.cartridge('altair/cartridges/nexus/Nexus');
+                    nexus.set('cartridges/Apollo', this);
+
+                }
+
+                return this.inherited(arguments);
+            },
+
+            /**
+             * Straight passthrough for createSchema on Apollo
+             *
+             * @param data
+             * @returns {*}
+             */
+            createSchema: function (data) {
+                return this.apollo.createSchema(data);
+            }
 
         });
 

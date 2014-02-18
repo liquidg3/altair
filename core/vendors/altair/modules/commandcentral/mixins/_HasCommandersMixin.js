@@ -29,6 +29,10 @@ define(['dojo/_base/declare',
                     //resolve relative paths
                     Object.keys(commanders).forEach(hitch(this, function (alias) {
 
+                        if(!commanders[alias].path) {
+                            throw "You must pass your commander a path";
+                        }
+
                         if(commanders[alias].path.search('::') === -1) {
                             commanders[alias].path = this.name + '::' + commanders[alias].path;
                         }

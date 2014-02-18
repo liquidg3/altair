@@ -1,0 +1,11 @@
+{
+    "elements": {
+        "autostart": {
+            "type": "bool",
+            "options": {
+                "value": true,
+                "label": "Autostart"
+            }
+        }
+    }
+}

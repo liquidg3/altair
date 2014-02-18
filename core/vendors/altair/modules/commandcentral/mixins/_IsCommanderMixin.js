@@ -3,13 +3,11 @@
  */
 define(['dojo/_base/declare',
         'altair/Lifecycle',
-        'altair/facades/hitch',
-        'dojo/node!fs'
+        'altair/facades/hitch'
 
 ], function (declare,
              Lifecycle,
-             hitch,
-             fs) {
+             hitch) {
 
 
     var Commander = declare('altair/modules/commandcentral/mixins/_HasCommandersMixin', [Lifecycle], {
@@ -22,7 +20,8 @@ define(['dojo/_base/declare',
 
             options             = options || this.options;
             this.adapter        = (options && options.adapter) ? options.adapter : this.module.adapter();
-            this.description    = (options && options.description) ? options.description : this.name;
+
+            options.description = (options && options.description) ? options.description : this.name;
 
             if(!this.adapter) {
                 throw Error('You must pass your commander an adapter from Altair:CommandCentral');
@@ -73,6 +72,26 @@ define(['dojo/_base/declare',
 
         help: function () {
 
+        },
+
+        /**
+         * Build an apollo schema for the command
+         *
+         * @param named
+         */
+        schemaForCommand: function (named) {
+
+            var elements = this.options.commands[named].schema;
+
+            if(elements) {
+
+                return this.nexus('cartridges/Apollo').createSchema({
+                   elements: elements
+                });
+
+            }
+
+            return null;
         }
 
     });

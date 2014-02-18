@@ -273,7 +273,7 @@ define(['dojo/_base/declare',
                                 module: module
                             });
 
-                            load();
+                            module.execute().then(load);
 
                         })).otherwise(hitch(deferred, 'reject'));
                     }

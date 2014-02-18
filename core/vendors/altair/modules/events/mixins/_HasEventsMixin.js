@@ -2,11 +2,13 @@
  * Reads package for events described in it
  */
 define(['dojo/_base/declare',
-        'altair/facades/hitch'
+        'altair/facades/hitch',
+        'altair/events/Emitter'
 ], function (declare,
-             hitch) {
+             hitch,
+             Emitter) {
 
-    return declare('altair/modules/events/mixins/_HasEventsMixin', null, {
+    return declare('altair/modules/events/mixins/_HasEventsMixin', [Emitter], {
 
             startup: function () {
 

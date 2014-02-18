@@ -3,7 +3,7 @@ define(['dojo/_base/declare',
         'altair/modules/commandcentral/adapters/_Base',
         'dojo/node!prompt',
         'dojo/node!chalk',
-        'dojo/Deferred'
+        'altair/Deferred'
 ], function (declare,
              hitch,
              _Base,
@@ -15,6 +15,10 @@ define(['dojo/_base/declare',
     prompt.colors       = false;
 //    prompt.message      = 'altair';
     prompt.delimiter    = ': ';
+
+    process.stdin.on('data', function(chunk) {
+        process.stdout.write('data: ' + chunk);
+    });
 
 
     return declare('altair/modules/commandcentral/adapters/Prompt', [_Base], {
@@ -46,7 +50,6 @@ define(['dojo/_base/declare',
 
             var def     = new Deferred(),
                 keys    = Object.keys(selectOptions),
-                styles  = this.styles(options),
                 retry   = (typeof options === 'object' && 'retry' in options) ? options.retry : true;
 
             this.writeLine();
@@ -72,14 +75,15 @@ define(['dojo/_base/declare',
                     if(!results.answer || !(results.answer in selectOptions)) {
 
                         if(!retry) {
-                            def.reject(results.answer);
+
+                            def.reject(results.answer, false);
+
                         } else {
 
                             this.writeLine('Invalid Selection', 'alert');
                             this.writeLine('Valid options are: ' + keys.join(', '));
 
                             go();
-
 
                         }
 
@@ -96,6 +100,38 @@ define(['dojo/_base/declare',
 
 
             return def;
+        },
+
+        /**
+         * Output a bunch of fields at once
+         *
+         * @param schema
+         */
+        form: function (schema) {
+
+            var form = [],
+                d    = new Deferred();
+
+            //map apollo schema to prompt schema, very dumb for now
+            Object.keys(schema.elements()).forEach(hitch(this, function (field) {
+
+                var options = schema.optionsFor(field);
+
+                form.push({
+                    name: field,
+                    type: 'string'
+                });
+
+            }));
+
+            prompt.get(form, function (err, values) {
+
+                console.dir(values);
+
+            });
+
+            return d;
+
         },
 
         showProgress: function (message) {

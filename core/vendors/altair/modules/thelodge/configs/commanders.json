@@ -1,0 +1,12 @@
+{
+    "thelodge": {
+        "path": "commanders/Commander",
+        "description": "Visit the Lodge for all your Altair goodies.",
+        "commands": {
+            "help": {
+                "description": "Learn how to command Altair",
+                "aliases": ["h"]
+            }
+        }
+    }
+}

@@ -4,13 +4,13 @@
 define(['doh/runner',
         'apollo/Schema',
         'apollo/tests/mock/Entity',
-        'apollo/fieldtypes/Text',
+        'apollo/fieldtypes/Str',
         'apollo/fieldtypes/Bool'],
 
     function (doh,
               Schema,
               Entity,
-              Text,
+              Str,
               Bool) {
 
         /**
@@ -22,23 +22,23 @@ define(['doh/runner',
             elements: {
 
                 firstName: {
-                    type: 'text',
+                    type: 'string',
                     options: {
                         'label': 'First Name'
                     }
                 },
 
-                email: {
-                    type: 'email',
+                isVerified: {
+                    type: 'boolean',
                     options: {
-                        'label': 'Email'
+                        'label': 'Is Verified'
                     }
                 }
 
             }
         },
         fieldTypes = [
-            new Text(),
+            new Str(),
             new Bool()
         ];
 
@@ -57,7 +57,7 @@ define(['doh/runner',
 
 
                 mock.set('firstName', 'taylor')
-                    .set('email', 'liquidg3@mac.com');
+                    .set('isVerified', 1);
 
                 doh.assertEqual('taylor', mock.get('firstName'), 'default setter did not work');
                 doh.assertTrue(mock.calledOverriddenSetter, 'overidden setter failed');

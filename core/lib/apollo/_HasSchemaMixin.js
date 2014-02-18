@@ -24,7 +24,7 @@ define(['dojo/_base/declare',
     var _HasSchemaMixin = declare('apollo/_HasSchemaMixin', null, {
 
         schemaPath: 'config/schema.json',
-//        schema:     null,
+        schema:     null,
         values:     null,
 
         /**
@@ -81,6 +81,19 @@ define(['dojo/_base/declare',
         },
 
         /**
+         * Mixes in only matching values, leaving the rest
+         *
+         * @param values
+         * @returns {_HasSchemaMixin}
+         */
+        mixin: function(values) {
+
+            throw "FINISH";
+
+            return this;
+        },
+
+        /**
          * Default setter, just sets values array
          *
          * @param name
@@ -112,7 +125,13 @@ define(['dojo/_base/declare',
          */
         _get: function (name, defaultValue, options, config) {
 
-            return this._schema.applyOnElement(['toJsValue'], name, this.values[name], options, config) || defaultValue;
+            var value = this._schema.applyOnElement(['toJsValue'], name, this.values[name], options, config);
+
+            if(value === null || typeof value === 'undefined') {
+                value = defaultValue;
+            }
+
+            return value;
 
         },
 

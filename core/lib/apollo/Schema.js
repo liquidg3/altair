@@ -64,6 +64,10 @@ define(['dojo/_base/declare',
                 var element = this.data.elements[fieldName],
                     options = element.options;
 
+                if(!options) {
+                    throw fieldName + " has no options. add it to your schema";
+                }
+
                 //if we are doing a simple (lightweight) get of options
                 if(mixinAll === false) {
                     return options;
@@ -91,7 +95,7 @@ define(['dojo/_base/declare',
         /**
          * All the elements on this schema
          *
-         * @returns [];
+         * @returns {};
          */
         elements: function () {
             return this.data.elements;

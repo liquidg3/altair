@@ -3,7 +3,7 @@
  */
 define(['doh/runner',
         'apollo/Apollo',
-        'apollo/fieldtypes/Text',
+        'apollo/fieldtypes/Str',
         'apollo/fieldtypes/Bool',
         'apollo/fieldtypes/Float',
         'apollo/fieldtypes/Int',
@@ -11,7 +11,7 @@ define(['doh/runner',
 
     function (doh,
               Apollo,
-              Text,
+              Str,
               Bool,
               Float,
               Int,
@@ -42,23 +42,23 @@ define(['doh/runner',
             },
 
             firstName: {
-                type: 'text',
+                type: 'string',
                 options: {
-                    'label': 'First Name'
+                    label: 'First Name'
                 }
             },
 
             email: {
-                type: 'email',
+                type: 'string',
                 options: {
-                    'label': 'Email'
+                    label: 'Email'
                 }
             }
 
         }
     },
     fieldTypes = [
-        new Text(),
+        new Str(),
         new Bool(),
         new Float(),
         new Int(),

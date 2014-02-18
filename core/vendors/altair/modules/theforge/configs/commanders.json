@@ -1,0 +1,41 @@
+{
+    "forge": {
+
+        "path":         "commanders/Commander",
+        "description":  "Forge new modules!",
+        "commands": {
+
+            "newModule": {
+                "description": "Begin forging a new module.",
+                "aliases": ["new", "n"],
+
+                "schema": {
+                    "vendor": {
+                        "type": "string",
+                        "options": {
+                            "label": "Vendor name",
+                            "required": true,
+                            "description": "Every module needs to be part of a larger 'Vendor Space.' This keeps module names from conflicting across projects."
+                        }
+                    },
+                    "name": {
+                        "type": "string",
+                        "options": {
+                            "label": "Module name",
+                            "description": "Give your module a classy name"
+                        }
+                    },
+                    "dir": {
+                        "type": "string",
+                        "options": {
+                            "label": "Destination",
+                            "required": true,
+                            "value": "app"
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+}

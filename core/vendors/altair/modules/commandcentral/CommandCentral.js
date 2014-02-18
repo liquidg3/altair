@@ -9,6 +9,7 @@ define(['dojo/_base/declare',
         'altair/modules/adapters/mixins/_HasAdaptersMixin',
         'altair/modules/events/mixins/_HasListenersMixin',
         'altair/modules/commandcentral/mixins/_HasCommandersMixin',
+        'apollo/_HasSchemaMixin',
         'altair/facades/hitch',
         'altair/facades/mixin',
         'dojo/promise/all'],
@@ -17,14 +18,15 @@ define(['dojo/_base/declare',
               _HasAdaptersMixin,
               _HasListenersMixin,
               _HasCommandersMixin,
+              _HasSchemaMixin,
               hitch,
               mixin,
               all) {
 
-        return declare('altair/modules/commandcentral/CommandCentral', [_HasAdaptersMixin, _HasListenersMixin, _HasCommandersMixin], {
+        return declare('altair/modules/commandcentral/CommandCentral', [_HasSchemaMixin, _HasAdaptersMixin, _HasListenersMixin, _HasCommandersMixin], {
 
-            _focusedCommander: null,
-            _commanders: null,
+            _focusedCommander:  null,
+            _commanders:        null,
 
 
             /**
@@ -33,8 +35,6 @@ define(['dojo/_base/declare',
              * @returns {*}
              */
             startup: function (options) {
-
-                options = options || this.options;
 
                 this._commanders        = {};
                 this._selectedAdapter   = options ? options.adapter : this._selectedAdapter;
@@ -49,28 +49,39 @@ define(['dojo/_base/declare',
 
                 }
 
-                if(!options || options.autostart !== false) {
-                    return this.inherited(arguments).then(this.hitch('go'));
-                } else {
-                    return this.inherited(arguments);
-                }
+                return this.inherited(arguments);
 
 
             },
 
             /**
-             * Starts the command central experience through any commander whose key is
-             * dashboard. If you want to make your own dashboard, make it something like
-             * altair-dashboard.
+             * Get a commander by name. If you pass anything but a string, it passes it right back.
+             * This allows you to pass what could be a string or a commander through and get back
+             * a commander.
+             *
+             * @param named
+             * @returns {*}
              */
-            go: function () {
+            commander: function (named) {
+                return (typeof named === 'string') ? this._commanders[named] : named;
+            },
 
-                this.refreshCommanders().then(this.hitch(function (commanders) {
-                    this.focus(commanders.dashboard);
-                    commanders.dashboard.go();
-                }));
+            /**
+             * Starts the command central experience through any commander whose key is
+             * altair.
+             */
+            execute: function () {
 
-                return this;
+                if(this.get('autostart')) {
+
+                    this.refreshCommanders().then(this.hitch(function (commanders) {
+                        this.focus(commanders.altair);
+                        commanders.altair.execute();
+                    }));
+
+                }
+
+                return this.inherited(arguments);
             },
 
 
@@ -94,6 +105,11 @@ define(['dojo/_base/declare',
                 return this;
             },
 
+            /**
+             * All commanders
+             *
+             * @returns {null}
+             */
             commanders: function () {
                 return this._commanders;
             },
@@ -122,7 +138,7 @@ define(['dojo/_base/declare',
 
                         if(!(name in this._commanders)) {
 
-                            var options = commanders[name],
+                            var options = mixin({}, commanders[name]), //copy options
                                 path    = options.path;
 
                             //we don't need the path, it is replaced by name (which is more a fqn than path is)
@@ -131,9 +147,11 @@ define(['dojo/_base/declare',
                             //default to our adapter, but one can be passed in (not sure why)
                             options.adapter = options.adapter || adapter;
 
-                            list.push(this.foundry(path, options).then(this.hitch(function (c) {
+                            this._commanders[name] = this.foundry(path, options).then(this.hitch(function (c) {
                                 this._commanders[name] = c;
-                            })));
+                            }));
+
+                            list.push(this._commanders[name]);
 
                         }
 

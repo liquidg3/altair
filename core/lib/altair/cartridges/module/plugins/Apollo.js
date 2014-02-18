@@ -22,7 +22,7 @@ define(['dojo/_base/declare',
             this.deferred = new Deferred();
 
             //we have to make sure we have our dependent plugins loaded
-            if(!this.cartridge.altair.hasCartridges(['altair/cartridges/apollo/Apollo'])) {
+            if(!this.altair.hasCartridges(['altair/cartridges/apollo/Apollo'])) {
                 this.deferred.reject("You must have the 'altair/cartridges/apollo/Apollo' cartridge enabled.");
             }
             //only 1 error at a time, now check for the config plugin
@@ -32,24 +32,46 @@ define(['dojo/_base/declare',
                 this.deferred.resolve(this);
             }
 
-
             return this.inherited(arguments);
+
         },
 
+        /**
+         *
+         * @param module
+         * @returns {*}
+         */
         execute: function (module) {
 
 
             if(module.isInstanceOf(_HasSchemaMixin)) {
 
+                //override startup to mixin options as values
+                declare.safeMixin(module, {
+
+                    startup: function (options) {
+
+                        if(options) {
+                            this.mixin(options);
+                        }
+
+                        return this.inherited(arguments);
+                    }
+                });
+
                 this.deferred = new Deferred();
 
                 //parse the config, then build the schema
-                module.parseConfig('config/schema').then(lang.hitch(this, function (schemaData) {
+                module.parseConfig('configs/schema.json').then(lang.hitch(this, function (schemaData) {
 
-                    var apollo = this.cartridge.altair.cartridge('altair/cartridges/apollo/Apollo').apollo,
+                    //get apollo off the apollo cartridge
+                    var apollo = this.altair.cartridge('altair/cartridges/apollo/Apollo').apollo,
                         schema = apollo.createSchema(schemaData);
 
+                    //set the schema to the module
                     module.setSchema(schema);
+
+
 
                     this.deferred.resolve(this);
 

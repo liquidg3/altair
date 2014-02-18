@@ -72,7 +72,12 @@ define(['dojo/_base/declare',
 
                                 a.name      = this.name + '::' + className;
                                 a.module    = this;
-                                a.nexus     = this.nexus;
+                                a._nexus    = this._nexus;
+                                declare.safeMixin(a, {
+                                   nexus: function (key ,options, config) {
+                                       return this._nexus.resolve(key, options, config);
+                                   }
+                                });
 
                                 if(a.startup) {
                                     a.startup(options).then(hitch(d, 'resolve')).otherwise(hitch(d, 'reject'));

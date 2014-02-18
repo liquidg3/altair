@@ -1,6 +1,6 @@
 {
-    "dashboard": {
-        "path": "commanders/Dashboard",
+    "altair": {
+        "path": "commanders/Altair",
         "description": "The commander you see when you first log into Altair",
         "commands": {
             "menu": {

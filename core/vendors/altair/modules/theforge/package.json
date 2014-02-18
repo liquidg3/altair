@@ -1,0 +1,8 @@
+{
+    "name": "The Forge",
+    "version": "0.0.1",
+    "description": "Forge new modules and add new functionality to current ones.",
+    "altairDependencies": {
+        "Altair:CommandCentral": ">=0.1.x"
+    }
+}

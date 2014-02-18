@@ -63,10 +63,7 @@ define(['dojo/_base/declare',
 
                     }
 
-
-
                     return deferred;
-
 
                 }
             });

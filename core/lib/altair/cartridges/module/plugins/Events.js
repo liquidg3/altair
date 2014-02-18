@@ -71,7 +71,7 @@ define(['dojo/_base/declare',
 
             return parent[action].apply(parent, args);
 
-        };
+        }
 
     return declare('altair/cartridges/module/plugins/Events',[_Base], {
 

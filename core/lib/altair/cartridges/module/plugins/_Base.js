@@ -6,8 +6,10 @@ define(['dojo/_base/declare', 'altair/Lifecycle'], function (declare, Lifecycle)
     return declare('altair/cartridges/module/plugins/_Base', [Lifecycle], {
 
         cartridge: null,
-        constructor: function (cartridge) {
-            this.cartridge = cartridge;
+        altair:    null,
+        constructor: function (cartridge, altair) {
+            this.cartridge  = cartridge;
+            this.altair     = altair || cartridge.altair;
             if(!cartridge) {
                 throw "You must pass an instance of a Cache Cartridge to constructor of any cache plugin.";
             }

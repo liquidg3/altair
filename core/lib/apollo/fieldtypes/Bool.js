@@ -6,7 +6,18 @@ define(['dojo/_base/declare',
 
     return declare('apollo/fieldtypes/Bool', [_Base], {
 
-        key: 'bool'
+        key: 'bool',
+
+        /**
+         * Anything truthy to an actual boolean.
+         * @param value
+         * @param options
+         * @param config
+         */
+        toJsValue: function (value, options, config) {
+            return (value) ? true : false;
+        }
+
 
     });
 });

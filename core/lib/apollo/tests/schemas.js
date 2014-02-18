@@ -3,12 +3,12 @@
  */
 define(['doh/runner',
         'apollo/Schema',
-        'apollo/fieldtypes/Text',
+        'apollo/fieldtypes/Str',
         'apollo/fieldtypes/Bool'],
 
     function (doh,
               Schema,
-              Text,
+              Str,
               Bool) {
 
         /**
@@ -37,7 +37,7 @@ define(['doh/runner',
             }
         },
         fieldTypes =  [
-            new Text(),
+            new Str(),
             new Bool()
         ];
 
