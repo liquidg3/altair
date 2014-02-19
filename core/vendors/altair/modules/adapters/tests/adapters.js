@@ -48,6 +48,8 @@ define(['doh/runner',
 
                 },
 
+                name: 'should-fail',
+
                 tearDown: function () {
                     has.add("config-deferredInstrumentation", 1, null, true);
                 },
@@ -66,9 +68,9 @@ define(['doh/runner',
 
                             has.add("config-deferredInstrumentation", 1, null, true);
 
-                        }).otherwise(function (err) {
-                            t.is(err, 'Could not find adapter named Altair:Adapters::adapters/Mock3');
-                            setTimeout(hitch(def, 'resolve', true), 10);
+                        }).otherwise(function () {
+                            has.add("config-deferredInstrumentation", 1, null, true);
+                            def.resolve();
                         });
 
                         return def;

@@ -1,3 +1,5 @@
 {
-
+    "#commander-select": {
+        "fg": "green"
+    }
 }

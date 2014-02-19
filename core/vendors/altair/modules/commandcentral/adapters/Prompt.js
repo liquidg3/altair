@@ -16,7 +16,7 @@ define(['dojo/_base/declare',
 //    prompt.message      = 'altair';
     prompt.delimiter    = ': ';
 
-    process.stdin.on('data', function(chunk) {
+    process.stdin.on('readable', function(chunk) {
         process.stdout.write('data: ' + chunk);
     });
 
@@ -33,6 +33,11 @@ define(['dojo/_base/declare',
 
         splash: function () {
             console.log(chalk.bgRed('REALLY COOL ALTAIR SPLASH SCREEN'));
+            var d = new Deferred();
+
+            d.resolve();
+
+            return d;
         },
 
         notice: function(str) {
@@ -46,11 +51,21 @@ define(['dojo/_base/declare',
             console.log(chalk.bgRed(str));
         },
 
+        /**
+         * Show a select
+         *
+         * @param question
+         * @param selectOptions
+         * @param options
+         * @returns {altair.Deferred}
+         */
         select: function (question, selectOptions, options) {
+
+            options = this._normalizeOptions(options);
 
             var def     = new Deferred(),
                 keys    = Object.keys(selectOptions),
-                retry   = (typeof options === 'object' && 'retry' in options) ? options.retry : true;
+                retry   = ('retry' in options) ? options.retry : true;
 
             this.writeLine();
             this.writeLine('--- ' + question + ' ---');
@@ -115,19 +130,24 @@ define(['dojo/_base/declare',
             //map apollo schema to prompt schema, very dumb for now
             Object.keys(schema.elements()).forEach(hitch(this, function (field) {
 
-                var options = schema.optionsFor(field);
+                var options = schema.optionsFor(field),
+                    field   = {
+                        name:       field,
+                        type:       'string',
+                        required:   !!options.required
 
-                form.push({
-                    name: field,
-                    type: 'string'
-                });
+                    };
+
+                if(options.value) {
+                    field['default'] = options.value;
+                }
+
+                form.push(field);
 
             }));
 
             prompt.get(form, function (err, values) {
-
-                console.dir(values);
-
+                d.resolve(values);
             });
 
             return d;

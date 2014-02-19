@@ -1,52 +1,40 @@
 define(['doh/runner',
-        'altair/cartridges/Foundry',
-        'altair/Altair',
-        'altair/facades/hitch'],
+        'core/tests/support/boot'],
     function (doh,
-              CartridgeFoundry,
-              Altair,
-              hitch) {
+              boot) {
 
+        var cartridges = [
+            {
+                path: 'altair/cartridges/nexus/Nexus',
+                options: {
 
-        /**
-         * Bootstraps an altair environment to load your plugins. The deferred will resolve with all the
-         * modules loaded
-         *
-         * @param plugins
-         * @returns {dojo.tests._base.Deferred}
-         */
-        var boot = function (callback) {
-
-            var deferred    = new doh.Deferred(),
-                altair      = new Altair(),
-                foundry     = new CartridgeFoundry(altair);
-
-
-            foundry.build([
-                {
-                    path: 'altair/cartridges/apollo/Apollo',
-                    options: {
-                    }
-                },
-                {
-                    path: 'altair/cartridges/module/Module',
-                    options: {
-                        paths:      ['core/tests/modules/vendors'],
-                        modules:    ['Altair:Mock'],
-                        plugins:    ['altair/cartridges/module/plugins/Paths', 'altair/cartridges/module/plugins/Config', 'altair/cartridges/module/plugins/Apollo']
-                    }
                 }
-            ]).then(deferred.getTestCallback(function (cartridges) {
+            },
+            {
+                path: 'altair/cartridges/apollo/Apollo',
+                options: {
 
-                altair.addCartridges(cartridges).then(function () {
-                    callback(altair.cartridge('altair/cartridges/module/Module').modules);
-                }).otherwise(hitch(deferred, 'reject'));
+                }
+            },
+            {
+                path: 'altair/cartridges/module/Module',
+                options: {
+                    paths: ['core/tests/modules/vendors'],
+                    modules: ['Altair:Mock'],
+                    plugins: [
+                        "altair/cartridges/module/plugins/Paths",
+                        "altair/cartridges/module/plugins/Config",
+                        "altair/cartridges/module/plugins/Package",
+                        "altair/cartridges/module/plugins/Deferred",
+                        "altair/cartridges/module/plugins/Apollo",
+                        "altair/cartridges/module/plugins/Nexus",
+                        "altair/cartridges/module/plugins/Events",
+                        "altair/cartridges/module/plugins/Foundry"
+                    ]
+                }
+            }
+        ];
 
-            })).otherwise(hitch(deferred, 'reject'));
-
-            return deferred;
-
-        };
 
 
         doh.register('module-plugins-apollo', [
@@ -57,9 +45,9 @@ define(['doh/runner',
              */
              function () {
 
-                return boot(function (modules) {
+                return boot(cartridges).then(function (altair) {
 
-                    var module = modules[0];
+                    var module = altair.cartridge('altair/cartridges/module/Module').module('Altair:Mock');
 
                     doh.assertEqual('bar', module.get('foo'), 'Altair:Mock did not get a schema.');
 

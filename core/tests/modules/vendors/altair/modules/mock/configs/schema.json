@@ -1,7 +1,7 @@
 {
     "elements": {
         "foo": {
-            "type": "text",
+            "type": "string",
             "options": {
                 "label": "Foo",
                 "value": "bar"

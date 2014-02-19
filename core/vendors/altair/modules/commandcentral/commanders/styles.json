@@ -2,16 +2,16 @@
     "#splash": {
         "top": "center",
         "left": "center",
-        "width": "50%",
-        "height": "50%",
-        "content": "Welcome to {bold}Altair{/bold}!",
+        "width": "100%",
+        "height": "100%",
+        "content": "Altair {red-fg}Platform{/red-fg}",
+        "align": "center",
         "tags": true,
-        "border": {
-            "type": "line"
-        },
+        "border": false,
+        "padding": 5,
         "style": {
             "fg": "white",
-            "bg": "magenta",
+            "bg": "#00",
             "border": {
                 "fg": "#f0f0f0"
             },
@@ -27,10 +27,34 @@
 
     "select": {
 
+        "width":      "half",
+        "top":        "center",
+        "left":       "center",
+        "align":      "center",
+        "mouse":      true,
+        "clickable":  true,
+        "border": {
+            "type": "ascii",
+            "fg": "#ffffff",
+            "bg": "#000000"
+        },
+        "style": {
+            "fg": "#ffffff",
+            "bg": "#000",
+            "selected": {
+                "blink": true,
+                "fg": "#000000",
+                "bg": "#ffffff"
+            },
+            "label": {
+                "bold": true,
+                "fg": "#ffffff",
+                "bg": "#000000"
+            }
+        }
     },
 
     "#commander-select": {
-
     }
 
 }

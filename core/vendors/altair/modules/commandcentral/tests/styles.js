@@ -27,7 +27,7 @@ define(['doh/runner',
 
         };
 
-        boot.cartridges = [
+        var cartridges = [
             {
                 path: 'altair/cartridges/nexus/Nexus',
                 options: {
@@ -62,10 +62,7 @@ define(['doh/runner',
                     ]
                 }
             }
-        ]
-
-
-
+        ];
 
         doh.register('altair-adapters-module', [
 
@@ -75,7 +72,7 @@ define(['doh/runner',
              */
             function (t) {
 
-                return boot().then(function (altair) {
+                return boot(cartridges).then(function (altair) {
 
                     var m = altair.cartridge('altair/cartridges/module/Module').module('Altair:CommandCentral');
 
@@ -98,13 +95,13 @@ define(['doh/runner',
 
             function (t) {
 
-                return boot().then(function (altair) {
+                return boot(cartridges).then(function (altair) {
 
                     var m = altair.cartridge('altair/cartridges/module/Module').module('Altair:CommandCentral');
 
                     m.adapter('adapters/Mock').then(function (mock) {
 
-                        mock.setStyles(styles);
+                        mock.addStyles('mock', styles);
 
                         var matches = mock.styles('#splash');
                         t.is(matches, styles['#splash'], 'could not match styles on basic id match');

@@ -59,6 +59,32 @@ define([
         },
 
         /**
+         * Takes the options you pass it and returns an object.
+         *
+         * var o = this._normalizeOptions('my-id');
+         * console.log(o) -> { id: 'id' }
+         *
+         * o = this._normalizeOptions({ foo: 'bar'});
+         * console.log(o) -> { foo: 'bar' }
+         *
+         * @param options
+         * @private
+         */
+        _normalizeOptions: function (options) {
+
+            if(typeof options == 'string') {
+                options = {
+                    id: options
+                };
+            } else if(!options) {
+                options = {};
+            }
+
+            return options;
+
+        },
+
+        /**
          * Add in styles by key
          *
          * @param key

@@ -8,7 +8,7 @@ define(['doh/runner',
     function (doh,
               boot) {
 
-        boot.cartridges = [
+        var cartridges = [
             {
                 path: 'altair/cartridges/nexus/Nexus',
                 options: {
@@ -35,7 +35,7 @@ define(['doh/runner',
             function (t) {
 
 
-                return boot().then(function (altair) {
+                return boot(cartridges).then(function (altair) {
 
                     var m   = altair.cartridge('altair/cartridges/module/Module').modules[0],
                         m2  = m.nexus('Altair:MockWithEvents'); //find another module that is currently loaded

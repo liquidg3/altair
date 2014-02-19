@@ -3,13 +3,15 @@ define(['dojo/_base/declare',
         'altair/facades/mixin',
         'dojo/Deferred',
         'altair/modules/commandcentral/adapters/_Base',
-        'dojo/node!blessed'
+        'dojo/node!blessed',
+        'altair/Deferred'
 ], function (declare,
              hitch,
              mixin,
              Deferred,
              _Base,
-             blessed) {
+             blessed,
+             Deferred) {
 
 
     return declare('altair/modules/commandcentral/adapters/Blessed', [_Base], {
@@ -33,7 +35,8 @@ define(['dojo/_base/declare',
 
         splash: function () {
 
-            var styles = this.styles('#splash');
+            var styles = this.styles('#splash'),
+                d      = new Deferred();
 
             if(!styles) {
                 throw "You must create a commanders/styles.json and drop in a style for #splash";
@@ -45,7 +48,17 @@ define(['dojo/_base/declare',
             }, styles);
 
             this.splash = blessed.box(styles);
+            this.splash.focus();
             this.screen.render();
+
+
+            setTimeout(hitch(this, function () {
+
+                d.resolve();
+
+            }), 0);
+
+            return d;
 
         },
 
@@ -110,35 +123,47 @@ define(['dojo/_base/declare',
 
         },
 
-        select: function (question, options, id) {
+        /**
+         * Ouptut a select box
+         *
+         * @param question
+         * @param selectOptions
+         * @param options
+         * @returns {dojo.Deferred}
+         */
+        select: function (question, selectOptions, options) {
 
             var def = new Deferred(),
-                keys = Object.keys(options),
+                keys = Object.keys(selectOptions),
                 values = keys.map(function (key) {
-                    return options[key];
+                    return selectOptions[key];
                 });
+
+            options = this._normalizeOptions(options);
+
+            var selector = 'select';
+             if(options.id) {
+                 selector += ', #' + options.id;
+             }
 
             //defaults
             var styles = mixin({
-                parent: this.screen,
-                items: keys,
-                content: question,
-                width: '50%',
-                height: '50%',
-                top: 'center',
-                left: 'center',
-                align: 'center',
-                fg: 'blue',
-                border: {
-                    type: 'line'
-                },
-                selectedBg: 'green',
-                mouse: true,
-                keys: true,
-                vi: true
-            }, this.styles('select, #' + id));
+                parent:     this.screen,
+                items:      keys.slice(0),
+                label:    question,
+                mouse:  true,
+                keys:   true,
+                vi:     true
+            }, options, this.styles(selector));
 
             var list = blessed.list(styles);
+
+            list.on('select', hitch(this, function (list, selected) {
+                list.detach();
+                this.screen.render();
+                def.resolve(keys[selected]);
+            }));
+
             list.focus();
             this.screen.render();
 

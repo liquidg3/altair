@@ -88,7 +88,7 @@ define(['dojo/_base/declare',
          */
         mixin: function(values) {
 
-            throw "FINISH";
+            lang.mixin(this.values, values);
 
             return this;
         },

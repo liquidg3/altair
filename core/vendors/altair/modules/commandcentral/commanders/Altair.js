@@ -3,15 +3,19 @@
  */
 define(['dojo/_base/declare',
         'altair/facades/hitch',
-        'altair/modules/commandcentral/mixins/_IsCommanderMixin'
+        'altair/modules/commandcentral/mixins/_IsCommanderMixin',
+        'altair/Deferred'
 ], function (declare,
              hitch,
-             _IsCommanderMixin) {
+             _IsCommanderMixin,
+             Deferred) {
 
 
     return declare('altair/modules/commandcentral/commanders/Altair', [_IsCommanderMixin], {
 
-        showingMenu: false,
+        showingMenu:        false,
+        selectedCommander:  null,
+        firstRun:           true,
 
         startup: function (options) {
 
@@ -23,23 +27,50 @@ define(['dojo/_base/declare',
         /**
          * Show splash, then render our main menu
          */
-        execute: function () {
+        execute: function (options) {
 
-            this.splash();
-            this.menu();
+            var d;
+
+            if(this.firstRun) {
+                this.firstRun = false;
+                d = this.splash();
+            } else {
+                d = new Deferred();
+                d.resolve();
+            }
+
+
+            d.then(hitch(this,'commanderSelect'))        //show the commander select
+             .then(hitch(this, function (commander) {    //set the selected commander
+
+                    this.selectedCommander = commander;
+
+                    return commander;
+
+            }))
+              .then(hitch(this, 'commandSelect'))          //show the command select menu
+              .then(hitch(this, function (command) {       //execute the selected command
+
+                    return this.executeCommand(this.selectedCommander, command);
+
+            }))
+              .then(hitch(this, 'execute'));               //start it all over again
+
 
             return this.inherited(arguments);
 
         },
 
+
         /**
          * Render the commander select menu.
          */
-        menu: function () {
+        commanderSelect: function () {
 
             this.showingMenu = true;
 
-            var options    = {};
+            var options    = {},
+                d          = new Deferred();
 
             this.module.refreshCommanders().then(hitch(this, function (commanders) {
 
@@ -51,11 +82,12 @@ define(['dojo/_base/declare',
 
                 this.select('choose commander', options, 'commander-select').then(hitch(this, function (commander) {
                     this.showingMenu = false;
-                    this.selectCommander(commander)
+                    d.resolve(commander);
                 }));
 
             }));
 
+            return d;
 
         },
 
@@ -75,14 +107,15 @@ define(['dojo/_base/declare',
         /**
          * After a commander is selected, show it.
          *
-         * @param named
+         * @param commander
          */
-        selectCommander: function (named) {
+        commandSelect: function (commander) {
 
-            var commander = this.module.commander(named),
+            var commander = this.module.commander(commander),
                 commands  = commander.options.commands,
                 options   = {},
-                aliases   = {};
+                aliases   = {},
+                d         = new Deferred();
 
             //let user select the command they want to run by outputing a
             //simple select box. also get aliases ready to check
@@ -99,21 +132,22 @@ define(['dojo/_base/declare',
 
             }));
 
-
             this.select('choose command', options, { retry: false, id: "command-select"}).then(hitch(this, function (selected) {
 
-                this.selectCommand(commander, selected);
+                d.resolve[selected];
 
             })).otherwise(hitch(this, function (selected) {
 
                 if(selected in aliases) {
-                    this.selectCommand(commander, aliases[selected]);
+                    d.resolve(aliases[selected]);
                 } else {
                     this.writeLine('invalid command selected', 'alert');
-                    this.selectCommander(commander);
+                    this.commandSelect(commander);
                 }
 
             }));
+
+            return d;
 
         },
 
@@ -124,11 +158,12 @@ define(['dojo/_base/declare',
          * @param commander
          * @param command
          */
-        selectCommand: function (commander, command) {
+        executeCommand: function (commander, command) {
 
             commander = this.module.commander(commander);
 
-            var schema = commander.schemaForCommand(command);
+            var schema  = commander.schemaForCommand(command),
+                d       = new Deferred();
 
             if(schema) {
 
@@ -142,9 +177,17 @@ define(['dojo/_base/declare',
 
                 }))
 
-            } else {
-                commander[command]();
             }
+            //no schema tied to the command, run it straight awayn
+            else {
+
+                var r = commander[command]();
+                if(r.then) {
+                    d = r;
+                }
+            }
+
+            return d;
 
         }
 
