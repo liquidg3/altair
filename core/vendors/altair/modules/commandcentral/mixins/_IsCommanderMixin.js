@@ -12,9 +12,8 @@ define(['dojo/_base/declare',
 
     var Commander = declare('altair/modules/commandcentral/mixins/_HasCommandersMixin', [Lifecycle], {
 
-        adapter:    null,
-        styles:     null,
-        description:  '',
+        adapter:        null,
+        styles:         null,
 
         startup: function (options) {
 
@@ -22,6 +21,7 @@ define(['dojo/_base/declare',
             this.adapter        = (options && options.adapter) ? options.adapter : this.module.adapter();
 
             options.description = (options && options.description) ? options.description : this.name;
+            options.label       = (options && options.label) ? options.label : options.description;
 
             if(!this.adapter) {
                 throw Error('You must pass your commander an adapter from Altair:CommandCentral');

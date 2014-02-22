@@ -2,6 +2,7 @@
  * The Adapters module's only real job is registering the adapter resolver with nexus. It uses the has _HasAdaptersMixin,
  * for unit tests
  */
+
 define(['dojo/_base/declare',
         'altair/modules/adapters/mixins/_HasAdaptersMixin',
         'altair/modules/adapters/nexusresolvers/Adapters',

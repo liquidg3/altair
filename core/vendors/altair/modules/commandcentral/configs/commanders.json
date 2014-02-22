@@ -4,9 +4,11 @@
         "description": "The commander you see when you first log into Altair",
         "commands": {
             "menu": {
+                "label": "Main Menu",
                 "description": "Renders the main menu."
             },
             "help": {
+                "label": "Help",
                 "description": "Learn how to command Altair",
                 "aliases": ["h"]
             }

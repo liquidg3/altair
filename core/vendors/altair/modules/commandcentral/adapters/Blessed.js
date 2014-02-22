@@ -1,23 +1,21 @@
 define(['dojo/_base/declare',
         'altair/facades/hitch',
         'altair/facades/mixin',
-        'dojo/Deferred',
         'altair/modules/commandcentral/adapters/_Base',
         'dojo/node!blessed',
         'altair/Deferred'
 ], function (declare,
              hitch,
              mixin,
-             Deferred,
              _Base,
              blessed,
              Deferred) {
-
 
     return declare('altair/modules/commandcentral/adapters/Blessed', [_Base], {
 
         screen:     null,
         noticeBox:  null,
+        longLabels: false,
 
         startup: function () {
 
@@ -43,7 +41,6 @@ define(['dojo/_base/declare',
             }
 
             styles = mixin({
-                content: 'Splash Screen',
                 parent:  this.screen
             }, styles);
 
@@ -54,9 +51,12 @@ define(['dojo/_base/declare',
 
             setTimeout(hitch(this, function () {
 
+                this.splash.setContent('');
+                this.screen.render();
+
                 d.resolve();
 
-            }), 0);
+            }), 1500);
 
             return d;
 
@@ -124,6 +124,34 @@ define(['dojo/_base/declare',
         },
 
         /**
+         * Render a form and resolve the deferred with the results
+         *
+         * @param elements
+         * @param options
+         */
+        form: function (elements, options) {
+
+            options = this._normalizeOptions(options);
+
+            var selector = 'form',
+                d        = new Deferred(),
+                f;
+
+            if(options.id) {
+                selector += ', #' + options.id;
+            }
+
+            blessed.form(mixin({
+                parent: this.screen,
+                keys:   true
+            }, options, this.styles(selector)));
+
+
+            return d;
+
+        },
+
+        /**
          * Ouptut a select box
          *
          * @param question
@@ -134,6 +162,8 @@ define(['dojo/_base/declare',
         select: function (question, selectOptions, options) {
 
             var def = new Deferred(),
+                selector = 'select',
+                list,
                 keys = Object.keys(selectOptions),
                 values = keys.map(function (key) {
                     return selectOptions[key];
@@ -141,22 +171,21 @@ define(['dojo/_base/declare',
 
             options = this._normalizeOptions(options);
 
-            var selector = 'select';
-             if(options.id) {
+            if(options.id) {
                  selector += ', #' + options.id;
-             }
+            }
 
             //defaults
             var styles = mixin({
                 parent:     this.screen,
-                items:      keys.slice(0),
-                label:    question,
-                mouse:  true,
-                keys:   true,
-                vi:     true
+                items:      values.slice(0),
+                label:      question,
+                mouse:      true,
+                keys:       true,
+                vi:         true
             }, options, this.styles(selector));
 
-            var list = blessed.list(styles);
+            list = blessed.list(styles);
 
             list.on('select', hitch(this, function (list, selected) {
                 list.detach();

@@ -17,6 +17,7 @@ define([
     return declare('altair/modules/commandcentral/adapters/_Base', [Emitter, Lifecycle], {
 
         _styles: null, /** optional styles your terminal adapter can use **/
+        longLabels: true, /** should we output descriptions for labels when possible for lists/selects **/
         constructor: function () {
             this._styles = {};
         },
@@ -52,6 +53,10 @@ define([
 
         showProgress: function (message) {
             throw "Let the user know something is loading...";
+        },
+
+        itemToLabel: function () {
+
         },
 
         hideProgress: function () {
