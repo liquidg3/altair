@@ -9,7 +9,6 @@ define([
     'dojo/Deferred',
     "dojo/has!config-deferredInstrumentation?dojo/promise/instrumentation"
 ], function(has, lang, CancelError, Promise, all, hitch, when, DojoDeferred, instrumentation){
-    "use strict";
 
     // module:
     //		dojo/Deferred

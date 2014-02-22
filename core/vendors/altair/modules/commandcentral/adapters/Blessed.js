@@ -11,8 +11,6 @@ define(['dojo/_base/declare',
              blessed,
              Deferred) {
 
-    "use strict";
-
     return declare('altair/modules/commandcentral/adapters/Blessed', [_Base], {
 
         screen:     null,

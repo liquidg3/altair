@@ -12,8 +12,6 @@ define(['dojo/_base/declare',
               Adapters,
               Lifecycle) {
 
-"use strict";
-
     return declare('altair/modules/adapters/Adapters', [_HasAdaptersMixin, Lifecycle], {
 
         /**

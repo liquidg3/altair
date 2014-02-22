@@ -9,8 +9,6 @@ define(['dojo/_base/declare',
      ], function (declare, hitch, _IsCommanderMixin, Deferred) {
 
 
-"use strict";
-
     return declare('altair/modules/commandcentral/commanders/Altair', [_IsCommanderMixin], {
 
         showingMenu:       false,

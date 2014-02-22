@@ -14,10 +14,14 @@ swapped out for altair/Deferred in our code. But, done one at a time with the un
  debugging easier.
 
 4. ***SUPER FUN ONE LOLZ*** I need help from everyone willing on this one. Setup jslint in phpstorm to match what I have
-https://www.dropbox.com/s/p1fv14109xq4skc/Screenshot%202014-02-21%2023.15.41.png and go through each file and fix
+https://www.dropbox.com/s/42du6nwaj120ih7/Screenshot%202014-02-21%2023.29.57.png and go through each file and fix
 the errors. I am devving with these settings now, so it will not be an issue going forward =)
 
-    These are the nails that not many will see. Oh, and some are "use strict", *never* put "use strict" outside of define(...
+    These are the nails that not many will see.
+
+    Note: I can't seem to get the "use strict" errors to stop on mine... ignore them. adding "use strict" blows up dojo =(
+
+5. Find out which "use strict"; rules dojo breaks and investigate why. Share in altair skype chat as you find them
 
 
 
