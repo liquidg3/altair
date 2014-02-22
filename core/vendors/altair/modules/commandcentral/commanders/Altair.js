@@ -3,9 +3,9 @@
  */
 
 define(['dojo/_base/declare',
-    'altair/facades/hitch',
-    'altair/modules/commandcentral/mixins/_IsCommanderMixin',
-    'altair/Deferred'
+        'altair/facades/hitch',
+        'altair/modules/commandcentral/mixins/_IsCommanderMixin',
+        'altair/Deferred'
      ], function (declare, hitch, _IsCommanderMixin, Deferred) {
 
 
@@ -37,22 +37,31 @@ define(['dojo/_base/declare',
                 d.resolve();
             }
 
+            //show the commander select
+            d.then(hitch(this, 'commanderSelect'))
+            //set the selected commander
+            .then(hitch(this, function (commander) {
 
-            d.then(hitch(this, 'commanderSelect'))        //show the commander select
-                .then(hitch(this, function (commander) {    //set the selected commander
+                this.selectedCommander = commander;
+                this.selectedCommander.focus();
 
-                    this.selectedCommander = commander;
+                return commander;
 
-                    return commander;
+            }))
+            //show the command select menu
+            .then(hitch(this, 'commandSelect'))
+            //execute the selected command
+            .then(hitch(this, function (command) {
 
-                }))
-                .then(hitch(this, 'commandSelect'))          //show the command select menu
-                .then(hitch(this, function (command) {       //execute the selected command
+                return this.executeCommand(this.selectedCommander, command);
 
-                    return this.executeCommand(this.selectedCommander, command);
-
-                }))
-                .then(hitch(this, 'execute'));               //start it all over again
+            }))
+            //start it all over again
+            .then(hitch(this, function () {
+                this.selectedCommander.blur();
+                this.selectedCommander = null;
+                this.execute();
+            }));
 
 
             return this.inherited(arguments);
@@ -185,7 +194,7 @@ define(['dojo/_base/declare',
                     }));
 
             }
-            //no schema tied to the command, run it straight awayn
+            //no schema tied to the command, run it straight away
             else {
 
                 results = commander[command]();

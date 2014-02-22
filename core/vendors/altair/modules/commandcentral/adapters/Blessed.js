@@ -129,7 +129,7 @@ define(['dojo/_base/declare',
          * @param elements
          * @param options
          */
-        form: function (elements, options) {
+        form: function (schema, options) {
 
             options = this._normalizeOptions(options);
 
@@ -145,6 +145,10 @@ define(['dojo/_base/declare',
                 parent: this.screen,
                 keys:   true
             }, options, this.styles(selector)));
+
+
+
+            this.screen.render();
 
 
             return d;
