@@ -1,6 +1,7 @@
 {
     "thelodge": {
         "path": "commanders/Commander",
+        "label": "The Lodge",
         "description": "Visit the Lodge for all your Altair goodies.",
         "commands": {
             "help": {

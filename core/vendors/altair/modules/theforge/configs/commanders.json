@@ -3,9 +3,11 @@
 
         "path":         "commanders/Commander",
         "description":  "Forge new modules!",
+        "label":        "The Forge",
         "commands": {
 
             "newModule": {
+                "label": "New Module",
                 "description": "Begin forging a new module.",
                 "aliases": ["new", "n"],
 

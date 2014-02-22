@@ -1,21 +1,21 @@
 /**
  * The dashboard for Command Central. Simply allows you to select a commander, then run that commander, then start it again.
  */
-define(['dojo/_base/declare',
-        'altair/facades/hitch',
-        'altair/modules/commandcentral/mixins/_IsCommanderMixin',
-        'altair/Deferred'
-], function (declare,
-             hitch,
-             _IsCommanderMixin,
-             Deferred) {
 
+define(['dojo/_base/declare',
+    'altair/facades/hitch',
+    'altair/modules/commandcentral/mixins/_IsCommanderMixin',
+    'altair/Deferred'
+     ], function (declare, hitch, _IsCommanderMixin, Deferred) {
+
+
+"use strict";
 
     return declare('altair/modules/commandcentral/commanders/Altair', [_IsCommanderMixin], {
 
-        showingMenu:        false,
-        selectedCommander:  null,
-        firstRun:           true,
+        showingMenu:       false,
+        selectedCommander: null,
+        firstRun:          true,
 
         startup: function (options) {
 
@@ -31,7 +31,7 @@ define(['dojo/_base/declare',
 
             var d;
 
-            if(this.firstRun) {
+            if (this.firstRun) {
                 this.firstRun = false;
                 d = this.splash();
             } else {
@@ -40,21 +40,21 @@ define(['dojo/_base/declare',
             }
 
 
-            d.then(hitch(this,'commanderSelect'))        //show the commander select
-             .then(hitch(this, function (commander) {    //set the selected commander
+            d.then(hitch(this, 'commanderSelect'))        //show the commander select
+                .then(hitch(this, function (commander) {    //set the selected commander
 
                     this.selectedCommander = commander;
 
                     return commander;
 
-            }))
-              .then(hitch(this, 'commandSelect'))          //show the command select menu
-              .then(hitch(this, function (command) {       //execute the selected command
+                }))
+                .then(hitch(this, 'commandSelect'))          //show the command select menu
+                .then(hitch(this, function (command) {       //execute the selected command
 
                     return this.executeCommand(this.selectedCommander, command);
 
-            }))
-              .then(hitch(this, 'execute'));               //start it all over again
+                }))
+                .then(hitch(this, 'execute'));               //start it all over again
 
 
             return this.inherited(arguments);
@@ -69,14 +69,16 @@ define(['dojo/_base/declare',
 
             this.showingMenu = true;
 
-            var options    = {},
-                d          = new Deferred();
+            var options = {},
+                d = new Deferred(),
+                longLabels = this.module.adapter().longLabels;
 
             this.module.refreshCommanders().then(hitch(this, function (commanders) {
 
                 Object.keys(commanders).forEach(function (alias) {
-                    if(alias !== 'dashboard') {
-                        options[alias] = commanders[alias].options.description || commanders[alias].name;
+                    if (alias !== 'altair') {
+                        var label = longLabels ? commanders[alias].options.description : commanders[alias].options.label;
+                        options[alias] = label || commanders[alias].name;
                     }
                 });
 
@@ -96,7 +98,7 @@ define(['dojo/_base/declare',
          */
         refreshMenu: function () {
 
-            if(this.showingMenu) {
+            if (this.showingMenu) {
 
                 throw "FINISH";
 
@@ -111,19 +113,25 @@ define(['dojo/_base/declare',
          */
         commandSelect: function (commander) {
 
-            var commander = this.module.commander(commander),
-                commands  = commander.options.commands,
-                options   = {},
-                aliases   = {},
-                d         = new Deferred();
+            commander = this.module.commander(commander);
+
+            var commands = commander.options.commands,
+                options = {},
+                aliases = {},
+                d = new Deferred(),
+                longLabels = this.module.adapter().longLabels;
 
             //let user select the command they want to run by outputing a
             //simple select box. also get aliases ready to check
             Object.keys(commands).forEach(hitch(this, function (name) {
-                var c           = commands[name];
-                options[name]   = c.description;
 
-                if(c.aliases) {
+                var c = commands[name],
+                    label = longLabels ? c.description : c.label;
+
+                options[name] = label || c.description;
+
+                if (c.aliases && longLabels) {
+
                     options[name] += ' aliases: ' + c.aliases.join(', ');
                     c.aliases.forEach(function (a) {
                         aliases[a] = name;
@@ -134,18 +142,18 @@ define(['dojo/_base/declare',
 
             this.select('choose command', options, { retry: false, id: "command-select"}).then(hitch(this, function (selected) {
 
-                d.resolve[selected];
+                    d.resolve(selected);
 
-            })).otherwise(hitch(this, function (selected) {
+                })).otherwise(hitch(this, function (selected) {
 
-                if(selected in aliases) {
-                    d.resolve(aliases[selected]);
-                } else {
-                    this.writeLine('invalid command selected', 'alert');
-                    this.commandSelect(commander);
-                }
+                    if (aliases.hasOwnProperty(selected)) {
+                        d.resolve(aliases[selected]);
+                    } else {
+                        this.writeLine('invalid command selected', 'alert');
+                        this.commandSelect(commander);
+                    }
 
-            }));
+                }));
 
             return d;
 
@@ -163,27 +171,28 @@ define(['dojo/_base/declare',
             commander = this.module.commander(commander);
 
             var schema  = commander.schemaForCommand(command),
-                d       = new Deferred();
+                d       = new Deferred(),
+                results;
 
-            if(schema) {
+            if (schema) {
 
                 this.form(schema).then(hitch(this, function (values) {
 
-                    console.dir(values);
+                        console.dir(values);
 
-                })).otherwise(hitch(this, function (err) {
+                    })).otherwise(hitch(this, function (err) {
 
-                    console.error(err);
+                        console.error(err);
 
-                }))
+                    }));
 
             }
             //no schema tied to the command, run it straight awayn
             else {
 
-                var r = commander[command]();
-                if(r.then) {
-                    d = r;
+                results = commander[command]();
+                if (results.then) {
+                    d = results;
                 }
             }
 

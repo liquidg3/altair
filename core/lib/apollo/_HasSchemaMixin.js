@@ -24,7 +24,7 @@ define(['dojo/_base/declare',
     var _HasSchemaMixin = declare('apollo/_HasSchemaMixin', null, {
 
         schemaPath: 'config/schema.json',
-        schema:     null,
+        _schema:    null,
         values:     null,
 
         /**
@@ -35,7 +35,7 @@ define(['dojo/_base/declare',
         constructor: function (schema) {
 
             if(schema && schema.isInstanceOf && schema.isInstanceOf(Schema)) {
-                this.schema = schema;
+                this.setSchema(schema);
             }
 
         },
