@@ -129,15 +129,7 @@ define(['dojo/_base/declare',
                             results = results[0];
 
                             if(results !== undefined && (!results.isInstanceOf || !results.isInstanceOf(Event))) {
-
-                                if( results && results.then) {
-                                    results.then(hitch(def, 'resolve')).otherwise(hitch(def, 'reject'));
-                                } else {
-
-                                    def.resolve(results);
-                                }
-
-
+                                when(results).then(hitch(def, 'resolve')).otherwise(hitch(def, 'reject'));
                             } else {
                                 def.resolve();
                             }
@@ -165,7 +157,7 @@ define(['dojo/_base/declare',
          * @private
          */
         _normalizeEvent: function (eventName, data) {
-            return (typeof eventName == 'string') ? new Event(eventName, data, this) : eventName;
+            return (typeof eventName === 'string') ? new Event(eventName, data, this) : eventName;
         }
 
     });

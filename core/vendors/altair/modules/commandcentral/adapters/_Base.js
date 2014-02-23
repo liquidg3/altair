@@ -16,8 +16,11 @@ define([
 
     return declare('altair/modules/commandcentral/adapters/_Base', [Emitter, Lifecycle], {
 
-        _styles: null, /** optional styles your terminal adapter can use **/
-        longLabels: true, /** should we output descriptions for labels when possible for lists/selects **/
+        _styles:        null, /** optional styles your terminal adapter can use **/
+        longLabels:     true, /** should we output descriptions for labels when possible for lists/selects **/
+        focused:        null, /** the commander currently in focus **/
+
+
         constructor: function () {
             this._styles = {};
         },
@@ -55,8 +58,37 @@ define([
             throw "Let the user know something is loading...";
         },
 
-        itemToLabel: function () {
+        /**
+         * Lets you run some custom visuals when a commander is focused
+         *
+         * @param commander
+         * @returns {altair|modules|commandcentral|adapters|_Base}
+         */
+        focus: function (commander) {
 
+            if(commander.styles) {
+                this.addStyles(commander.name, commander.styles);
+            }
+
+            commander.focus();
+
+            return this;
+        },
+
+        /**
+         * Undo anything focus would have done for this commander
+         *
+         * @param commander
+         */
+        blur: function (commander) {
+
+            if(commander.styles) {
+                this.removeStyles(commander.name);
+            }
+
+            commander.blur();
+
+            return this;
         },
 
         hideProgress: function () {
@@ -77,7 +109,7 @@ define([
          */
         _normalizeOptions: function (options) {
 
-            if(typeof options == 'string') {
+            if(typeof options === 'string') {
                 options = {
                     id: options
                 };
@@ -112,8 +144,12 @@ define([
         },
 
         /**
-         * Pass a selector, only basic by #id works for now.
-         * @param id
+         * Pass a selector, only basic exact matches with dumb cascading works for now.
+         *
+         * Note: the order you pass your comma (,) separated selectors is important. They are parsed in the order you
+         * pass them in... so previous styles are overwritten by the next.
+         *
+         * @param selector string that is your css selectors comma separated. only single word selectors are supported.
          * @returns {*}
          */
         styles: function (selector) {
@@ -123,6 +159,9 @@ define([
             if(!lang.isString(selector)) {
                 return selector;
             }
+
+            //mixes in *
+            selector = '*,' + selector;
 
             selector.split(',').forEach(hitch(this, function (_selector) {
                 _selector = _selector.trim();

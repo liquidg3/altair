@@ -3,8 +3,11 @@
     "version": "0.0.1",
     "description": "One of many ways you can interface with Altair.",
     "dependencies": {
-        "prompt": ">=0.2.x",
-        "chalk": ">=0.4.x"
+        "prompt":   ">=0.2.x",
+        "chalk":    ">=0.4.x",
+        "blessed":  ">=0.0.x",
+        "css-parse":">=1.x",
+        "figlet":   ">=1.0.x"
     },
     "altairDependencies": {
         "Altair:Adapters": ">=0.1.x",

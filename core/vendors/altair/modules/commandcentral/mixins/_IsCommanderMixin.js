@@ -3,11 +3,13 @@
  */
 define(['dojo/_base/declare',
         'altair/Lifecycle',
-        'altair/facades/hitch'
+        'altair/facades/hitch',
+        'altair/modules/commandcentral/facades/css'
 
 ], function (declare,
              Lifecycle,
-             hitch) {
+             hitch,
+             css) {
 
 
     var Commander = declare('altair/modules/commandcentral/mixins/_HasCommandersMixin', [Lifecycle], {
@@ -29,10 +31,10 @@ define(['dojo/_base/declare',
 
             return this.inherited(arguments).then(hitch(this, function () {
 
-                var file        = this.module.resolvePath('commanders/styles.json'),
+                var file        = this.module.resolvePath('commanders/styles.css'),
                     deferred    = new this.module.Deferred();
 
-                this.module.parseConfig(file).then(hitch(this, function (styles) {
+                css(file).then(hitch(this, function (styles) {
 
                     this.styles = styles;
 
@@ -49,26 +51,14 @@ define(['dojo/_base/declare',
         },
 
         /**
-         * When this Commander is focused, add its styles to the adapter
+         * When this Commander is focused
          */
-        focus: function () {
-
-            if(this.styles) {
-                this.adapter.addStyles(this.name, this.styles);
-            }
-
-        },
+        focus: function () {},
 
         /**
-         * When blurred, remove our styles
+         * When blurred (another commander is being focused
          */
-        blur: function () {
-
-            if(this.styles) {
-                this.adapter.removeStyles(this.name);
-            }
-
-        },
+        blur: function () {},
 
         help: function () {
 

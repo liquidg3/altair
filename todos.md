@@ -20,8 +20,10 @@ the errors. I am devving with these settings now, so it will not be an issue goi
     These are the nails that not many will see.
 
     Note: I can't seem to get the "use strict" errors to stop on mine... ignore them. adding "use strict" blows up dojo =(
+    because this.inherited(arguments); i will seriously have the child of anyone who can find a work around without touching
+    dojo code (overriding dojo paths *is* allowed).
 
-5. Find out which "use strict"; rules dojo breaks and investigate why. Share in altair skype chat as you find them
 
+5. I18n - we need to make everything translate friendly - we're using resig's i18n-2: https://github.com/jeresig/i18n-node-2
 
 
