@@ -3,11 +3,13 @@
  */
 define(['dojo/_base/declare',
         'altair/Lifecycle',
-        'altair/facades/hitch'
+        'altair/facades/hitch',
+        'altair/modules/commandcentral/facades/css'
 
 ], function (declare,
              Lifecycle,
-             hitch) {
+             hitch,
+             css) {
 
 
     var Commander = declare('altair/modules/commandcentral/mixins/_HasCommandersMixin', [Lifecycle], {
@@ -24,15 +26,17 @@ define(['dojo/_base/declare',
             options.label       = (options && options.label) ? options.label : options.description;
 
             if(!this.adapter) {
-                throw Error('You must pass your commander an adapter from Altair:CommandCentral');
+                this.deferred = new this.module.Deferred();
+                this.deferred.reject('You must pass your commander an adapter from Altair:CommandCentral');
+                return this.deferred;
             }
 
             return this.inherited(arguments).then(hitch(this, function () {
 
-                var file        = this.module.resolvePath('commanders/styles.json'),
+                var file        = this.module.resolvePath('commanders/styles.css'),
                     deferred    = new this.module.Deferred();
 
-                this.module.parseConfig(file).then(hitch(this, function (styles) {
+                css(file).then(hitch(this, function (styles) {
 
                     this.styles = styles;
 
@@ -49,26 +53,14 @@ define(['dojo/_base/declare',
         },
 
         /**
-         * When this Commander is focused, add its styles to the adapter
+         * When this Commander is focused
          */
-        focus: function () {
-
-            if(this.styles) {
-                this.adapter.addStyles(this.name, this.styles);
-            }
-
-        },
+        focus: function () {},
 
         /**
-         * When blurred, remove our styles
+         * When blurred (another commander is being focused
          */
-        blur: function () {
-
-            if(this.styles) {
-                this.adapter.removeStyles(this.name);
-            }
-
-        },
+        blur: function () {},
 
         help: function () {
 
@@ -94,11 +86,12 @@ define(['dojo/_base/declare',
             return null;
         }
 
+
     });
 
 
     //mix certain adapter methods into the commander for easy access
-    var methods = ['notice', 'writeLine', 'readLine', 'form', 'select', 'showProgress', 'hideProgress', 'splash'],
+    var methods = ['notice', 'writeLine', 'readLine', 'select', 'showProgress', 'hideProgress', 'splash'],
         sig     = {};
 
     methods.forEach(function (method) {
