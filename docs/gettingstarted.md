@@ -9,13 +9,13 @@ step 2: paste this into it:
 
     #!/usr/bin/env node
 
-    //Aaaaand go....
-
     require('altair.io');
 
-step 3: create package.json
+Step 3: chmod 755 altair.js 
 
-step 4: paste this into it:
+step 4: create package.json
+
+step 5: paste this into it:
 
     {
         "name": "myproject",
@@ -23,13 +23,13 @@ step 4: paste this into it:
         "description": "New things!",
         "main": "altair.js",
         "dependencies": {
-            "altair":           ">=0.0.x"
+            "altair.io":           ">=0.0.x"
         }
 
     }
-step 5: #npm update
+step 6: #npm update
 
-step 6: ./altair.js
+step 7: ./altair.js
 
 ###what's next?
 
