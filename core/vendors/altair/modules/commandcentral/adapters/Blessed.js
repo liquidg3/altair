@@ -35,7 +35,7 @@ define(['dojo/_base/declare',
          */
         startup: function (options) {
 
-            options = options || this.options;
+//            options = options || this.options;
 
             //we map apollo element types (text, file, bool) to blessed fields the best we can when we are rendering
             //a form. this is the map we use to do our best match on mapping
