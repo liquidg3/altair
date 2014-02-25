@@ -26,17 +26,19 @@ define(['dojo/_base/declare',
         },
 
         /**
-         * Show splash, then render our main menu
+         * See the flow of .then()'s for the script
          */
         execute: function (options) {
 
             var d;
 
+            //give ourselves render time, but we never come unfocused.
+            this.adapter.focus(this);
+
+            this.adapter.addStyles('global', this.styles);
 
             if (this.firstRun) {
 
-                //give ourselves render time, but we never come unfocused.
-                this.adapter.focus(this);
 
                 this.firstRun = false;
                 d = this.adapter.splash();
@@ -45,13 +47,14 @@ define(['dojo/_base/declare',
                 d.resolve();
             }
 
-
             //show the commander select
             d.then(hitch(this, 'commanderSelect'))
             //set the selected commander
             .then(hitch(this, function (commander) {
 
                 this.selectedCommander = commander;
+                this.adapter.blur(this);
+
                 return when(this.adapter.focus(this.selectedCommander)).then(function () {
                     return commander;
                 });

@@ -3,11 +3,18 @@
     background-color: black;
 }
 
+body {
+
+}
+
 #bg {
-    content: "\n\nAltair {bold}Mainframe{/bold}";
+    content: "Altair";
     align: center;
-    padding: 30px;
-    tags: true;
+    font: "AMC Razor";
+    left: 0;
+    right: 0;
+    top: 50;
+
 }
 
 #splash {
@@ -35,4 +42,15 @@ select {
     style-label-fg: #ed7e17;
     style-label-bold: true;
     align:center;
+}
+
+
+#notice {
+
+    border-type: ascii;
+    border-color: green;
+    border-bg: black;
+    color: white;
+    top: 50%;
+
 }

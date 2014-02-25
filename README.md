@@ -63,20 +63,24 @@ See it in action:
     /**
      * Altair has 2 ways to set listeners, the chain'able way is .on(eventName, query).then(...
      */
-    this.on('Altair:Jarvis::DID_GESTURE', { 'gesture.type': 'the-force' }).then(lang.hitch(this, function (e) {
+    this.on('Altair/Jarvis:did-gesture', { 'gesture.type': 'the-force' }).then(hitch(this, function (e) {
 
         //the device that triggered the gesture
         var device = e.get('device');
 
         //cheating =)
-        this.nexus('Altair:Jarvis').device('living-room-lights').toggle();
+        this.nexus('Altair/Jarvis').device('living-room-lights').toggle();
+
+    }).otherwise(function (err) {
+
+        //the Jarvis module is probably not installed
 
     });
 
     /**
      * The normal normal way is on(eventName, callback, query)
      */
-    this.on('Altair:Jarvis::DID_GESTURE', lang.hitch(this, function (e) {
+    this.on('Altair/Jarvis:did-gesture', hitch(this, function (e) {
 
         ....
 
@@ -92,7 +96,7 @@ verbal command send from an imaginary thermostat with a microphone attached to i
 
     {
 
-        "Altair:Jarvis::DID_RECEIVE_VERBAL_COMMAND": {
+        "Altair/Jarvis:did-receive-verbal-command": {
 
             "onDidYellAtThermostat": {
                 "device.tags": "thermostat",
@@ -123,7 +127,7 @@ Now check out how easy it is to control our imaginary thermostat and maybe some 
         if(target) {
 
             //set the temp in fahrenheit because we're 'merican.
-            thermostat.set('tempF', 85).then(lang.hitch(this, function () {
+            thermostat.set('tempF', 85).then(hitch(this, function () {
                 console.info('Temperature now set');
             });
 
@@ -133,7 +137,7 @@ Now check out how easy it is to control our imaginary thermostat and maybe some 
         else {
 
             //it may be a little extreme to do something like this, maybe we should do some text to speech? ;)
-            this.nexus('Altair:Jarvis').devicesByTags(['hallway', 'lights']).pulse({
+            this.nexus('Altair/Jarvis').devicesByTags(['hallway', 'lights']).pulse({
                 duration:   500,
                 loop:       2,
                 colors:     ['ff0000', 'ffffff']

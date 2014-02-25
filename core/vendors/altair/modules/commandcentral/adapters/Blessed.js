@@ -16,54 +16,15 @@ define(['dojo/_base/declare',
              lang) {
 
 
-    //this will need to move out to a higher level
-    var figet = function (styles) {
-
-        var d = new Deferred();
-
-        if(styles.font) {
-            lang.setObject('figlet.font', styles.font, styles);
-        }
-
-        if(styles.figlet && styles.content) {
-
-            if(styles.figlet.font === '?') {
-
-                styles.figlet.font = 'Default';
-                figlet.fonts(function (err, fonts) {
-                    console.dir(fonts);
-
-                });
-
-            }
-
-
-            figlet.text(styles.content, styles.figlet, function (err, data) {
-
-                if(err) {
-                    d.reject(err);
-                } else {
-                    styles.content = data;
-                    d.resolve(data);
-                }
-
-            });
-
-        } else {
-            d.resolve();
-        }
-
-
-        return d;
-
-    };
 
     return declare('altair/modules/commandcentral/adapters/Blessed', [_Base], {
 
         screen:     null,
         noticeBox:  null,
+        splashBox:  null,
         longLabels: false,
         blessed:    blessed,
+        elementTypeMap: null,
         _shouldRedraw: false,
         _redrawTimeout: null,
 
@@ -72,9 +33,23 @@ define(['dojo/_base/declare',
          *
          * @returns {*}
          */
-        startup: function () {
+        startup: function (options) {
 
-            this.screen = blessed.screen({ autoPadding: true });
+            options = options || this.options;
+
+            //we map apollo element types (text, file, bool) to blessed fields the best we can when we are rendering
+            //a form. this is the map we use to do our best match on mapping
+//            if(!options.elementTypeMap) {
+//
+//                options.elementTypeMap = {
+//                    "*":    hitch(blessed, 'textbox'),
+//                    "text": hitch(blessed, 'textbox'),
+//                    "bool": hitch(blessed, 'checkbox')
+//                };
+//
+//            }
+
+            this.screen = blessed.screen({ autoPadding: false });
 
             this.screen.key(['escape', 'q', 'C-c'], function (ch, key) {
                 return process.exit(0);
@@ -95,8 +70,37 @@ define(['dojo/_base/declare',
                 clearTimeout(this._redrawTimeout);
             }
 
+            //splash almost always on top
+            if(this.splashBox) {
+                this.splashBox.detach();
+                this.screen.append(this.splashBox);
+            }
+
+            //make sure notice is always at top of render stack
+            if(this.noticeBox) {
+                this.noticeBox.detach();
+                this.screen.append(this.noticeBox);
+            }
+
             this._redrawTimeout = setTimeout(hitch(this, function () {
+
+                //mak sure body is the very bottom, all the time
+                if(!this.bodyBox) {
+
+                    this.bodyBox = blessed.box(mixin({
+                        left: 'center',
+                        top: 'center',
+                        width: '100%',
+                        height: '100%'
+                    }, this.styles('body')));
+
+                    this.screen.prepend(this.bodyBox);
+                }
+
+
                 this.screen.render();
+
+
             }), 20);
 
 
@@ -112,6 +116,13 @@ define(['dojo/_base/declare',
             var styles = this.styles('#splash'),
                 d      = new Deferred();
 
+            d.resolve();
+            return d;
+
+            /***
+             * NOT SURE IF WE REALLY NEED A SPLASH ANYMORE
+             */
+
             if(!styles) {
                 throw "You must create a commanders/styles.css and drop in a style for #splash";
             }
@@ -121,16 +132,17 @@ define(['dojo/_base/declare',
             }, styles);
 
             //after figlet has done its thing (or not), lets render the splash box
-            figet(styles).then(hitch(this, function () {
+            this.figet(styles).then(hitch(this, function () {
 
-                this.splash = blessed.box(styles);
-                this.splash.focus();
+                this.splashBox = blessed.box(styles);
+                this.splashBox.focus();
                 this.redraw();
 
 
                 setTimeout(hitch(this, function () {
 
-                    this.splash.setContent('');
+                    this.splashBox.detach();
+                    this.splashBox = null;
                     this.redraw();
 
                     d.resolve();
@@ -185,12 +197,15 @@ define(['dojo/_base/declare',
 
             if (!this.noticeBox) {
 
-                this.noticeBox = blessed.box({
+                str = 'notice: ' + str;
+
+                this.noticeBox = blessed.box(mixin({
                     left: 0,
                     bottom: 0,
                     width: "100%",
                     top: "80%",
                     content: str + "\n",
+                    scrollable: true,
                     border: {
                         type: 'line'
                     },
@@ -198,10 +213,9 @@ define(['dojo/_base/declare',
                         fg: 'white',
                         bg: 'black'
                     }
-                });
+                }, this.styles('#notice')));
 
 
-                this.noticeBox.focus();
                 this.screen.append(this.noticeBox);
 
             } else {
@@ -225,7 +239,7 @@ define(['dojo/_base/declare',
 
             var selector = 'form',
                 d        = new Deferred(),
-                f;
+                elements = schema.elements();
 
             if(options.id) {
                 selector += ', #' + options.id;
@@ -236,6 +250,11 @@ define(['dojo/_base/declare',
                 keys:   true
             }, options, this.styles(selector)));
 
+            Object.keys(elements).forEach(hitch(this, function (name) {
+
+
+
+            }));
 
 
             this.redraw();
@@ -313,7 +332,7 @@ define(['dojo/_base/declare',
 
                     d = new Deferred();
 
-                    figet(styles).then(hitch(this, function () {
+                    this.figet(styles).then(hitch(this, function () {
                         var o = mixin({
                             width:  '100%',
                             height: '100%',
@@ -343,6 +362,7 @@ define(['dojo/_base/declare',
         blur: function () {
             if(this.bg) {
                 this.bg.detach();
+                this.bg = null;
                 this.redraw();
             }
 
@@ -404,6 +424,54 @@ define(['dojo/_base/declare',
             modified._original = org;
 
             return modified;
+
+        },
+
+
+        //this will need to move out to a higher level, it will apply figlet.text() whenever the "font" or any "feglet-"
+        //properties are defined
+        figet: function (styles) {
+
+            var d = new Deferred();
+
+            if(styles.font) {
+                lang.setObject('figlet.font', styles.font, styles);
+            }
+
+            if(styles.figlet && styles.content) {
+
+                if(styles.figlet.font === '?') {
+
+                    figlet.fonts(hitch(this, function (err, fonts) {
+
+                        this.notice(fonts);
+                        d.resolve();
+
+                    }));
+
+                } else {
+
+                    figlet.text(styles.content, styles.figlet, function (err, data) {
+
+                        if(err) {
+                            d.reject(err);
+                        } else {
+                            styles.content = data;
+                            d.resolve(data);
+                        }
+
+                    });
+
+                }
+
+
+
+            } else {
+                d.resolve();
+            }
+
+
+            return d;
 
         }
 
