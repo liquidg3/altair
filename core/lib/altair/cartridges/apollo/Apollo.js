@@ -6,7 +6,8 @@ define(['dojo/_base/declare',
         '../_Base',
         'dojo/Deferred',
         'apollo/Apollo',
-        'require'
+        'require',
+        'apollo/Schema'
 ],
 
         function (declare,
@@ -14,9 +15,12 @@ define(['dojo/_base/declare',
               _Base,
               Deferred,
               Apollo,
-              require) {
+              require,
+              Schema) {
 
-        return declare('altair/cartridges/apollo/Apollo', [_Base], {
+        return declare([_Base], {
+
+            declaredClass: 'altair/cartridges/apollo/Apollo',
 
             apollo: null,
 
@@ -82,12 +86,25 @@ define(['dojo/_base/declare',
             },
 
             /**
-             * Straight passthrough for createSchema on Apollo
+             * Create a schema passed on a few options
              *
              * @param data
              * @returns {*}
              */
             createSchema: function (data) {
+
+                //if they pass a schema, pass it back
+                if(data.instanceOf && data.instanceOf(Schema)) {
+                    return data;
+                }
+
+                //if they did not pass something with "elements", assume they meant to
+                if(!data.hasOwnProperty('elements')) {
+                    data = {
+                        elements: data
+                    };
+                }
+
                 return this.apollo.createSchema(data);
 
             }

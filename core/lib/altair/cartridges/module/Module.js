@@ -38,7 +38,9 @@ define(['dojo/_base/declare',
               array,
               Emitter) {
 
-    return declare('altair/cartridges/module/Module', [_Base, Emitter], {
+    return declare([_Base, Emitter], {
+
+        declaredClass: 'altair/cartridges/module/Module',
 
         foundry:        null,
         modules:        null,
@@ -79,7 +81,7 @@ define(['dojo/_base/declare',
             /**
              * Was a foundry passed? if not, lets create one
              */
-            if (!options || !options.foundry) {
+            if (!_options || !_options.foundry) {
                 this.foundry = new Foundry();
 
             } else {
@@ -90,7 +92,7 @@ define(['dojo/_base/declare',
             /**
              * If there is a datastore, we'll use it to get the enabled modules
              */
-            if (options.dataStore) {
+            if (_options.dataStore) {
                 this.deferred.reject("Not finished, need to figure out how to do this one");
 
                 return;
@@ -99,12 +101,12 @@ define(['dojo/_base/declare',
             /**
              * Load all plugins
              */
-            if (options.plugins) {
+            if (_options.plugins) {
 
                 list = [];
                 this.plugins = [];
 
-                options.plugins.forEach(hitch(this, function (path) {
+                _options.plugins.forEach(hitch(this, function (path) {
 
                     var def = new Deferred();
 

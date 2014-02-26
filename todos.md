@@ -14,7 +14,7 @@ swapped out for altair/Deferred in our code. But, done one at a time with the un
  debugging easier.
 
 4. ***SUPER FUN ONE LOLZ*** I need help from everyone willing on this one. Setup jslint in phpstorm to match what I have
-https://www.dropbox.com/s/42du6nwaj120ih7/Screenshot%202014-02-21%2023.29.57.png and go through each file and fix
+https://www.dropbox.com/s/k2z0svz2dd78ovb/Screenshot%202014-02-25%2020.41.31.png and go through each file and fix
 the errors. I am devving with these settings now, so it will not be an issue going forward =)
 
     These are the nails that not many will see.
@@ -27,3 +27,13 @@ the errors. I am devving with these settings now, so it will not be an issue goi
 5. I18n - we need to make everything translate friendly - we're using resig's i18n-2: https://github.com/jeresig/i18n-node-2
 
 
+6. passing the class name as the first param to declare is deprecated... we will remove them. So this;
+
+
+    declare('path/to/my/class', [_Base], function () { ...
+
+    // becomes
+
+    declare([_Base], function () { ...
+
+Notice that we no longer pass the string literal as the first param to declare.

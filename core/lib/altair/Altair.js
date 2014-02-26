@@ -11,6 +11,8 @@ define(['dojo/_base/declare',
         'dojo/_base/lang'],
     function (declare, Deferred, lang) {
 
+        "use strict";
+
     return declare('altair/Altair', null, {
 
         _cartridges:    null,

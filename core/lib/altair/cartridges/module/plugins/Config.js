@@ -15,8 +15,9 @@ define(['dojo/_base/declare',
               require,
               has) {
 
-    return declare('altair/cartridges/module/plugins/Config', [_Base], {
+    return declare([_Base], {
 
+        declaredClass: 'altair/cartridges/module/plugins/Config',
         execute: function (module) {
 
             if(!module.resolvePath) {

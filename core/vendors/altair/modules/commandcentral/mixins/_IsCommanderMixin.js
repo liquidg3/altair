@@ -75,9 +75,9 @@ define(['dojo/_base/declare',
          * @param options
          * @returns altair.Deferred
          */
-        form: function(elements, options) {
+        form: function(elementsOrSchema, options) {
 
-            var apolloSchema = this.module.nexus('cartridges/Apollo').createSchema({ elements: elements });
+            var apolloSchema = this.module.nexus('cartridges/Apollo').createSchema(elementsOrSchema);
 
             return this.adapter.form(apolloSchema, options);
         },
