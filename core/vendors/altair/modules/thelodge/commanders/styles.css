@@ -2,3 +2,6 @@
     content: "\n\nThe Lodge";
     font:  "Stick Letters";
 }
+select {
+    left: 150;
+}

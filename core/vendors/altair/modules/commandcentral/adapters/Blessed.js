@@ -49,7 +49,7 @@ define(['dojo/_base/declare',
 //
 //            }
 
-            this.screen = blessed.screen({ autoPadding: true });
+            this.screen = blessed.screen({ autoPadding: false });
 
             this.screen.key(['escape', 'q', 'C-c'], function (ch, key) {
                 return process.exit(0);
