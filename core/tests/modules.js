@@ -166,7 +166,7 @@ define(['doh/runner',
                         doh.assertEqual('bar', cartridge.modules[0].foo(), 'Mock plugin failed to create foo() method.');
                         doh.assertTrue(cartridge.modules[0].startedUp, 'Mock plugin was not started up.');
 
-                        deferred.resolve(true)
+                        deferred.resolve(true);
 
                     }).otherwise(hitch(deferred, 'reject'));
 

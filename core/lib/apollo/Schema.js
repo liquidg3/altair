@@ -65,7 +65,8 @@ define(['dojo/_base/declare',
          * @returns {boolean}
          */
         has: function (fieldName) {
-            return fieldName in this.data.elements;
+
+            return (this.data.elements.hasOwnProperty(fieldName));
         },
 
         /**

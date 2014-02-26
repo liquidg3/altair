@@ -109,7 +109,7 @@ define(['dojo/_base/declare',
 
             var c;
 
-            if( this._map.hasOwnProperty( 'key' ) ) {
+            if( this._map.hasOwnProperty( key ) ) {
                 return this._map[key];
 
             }

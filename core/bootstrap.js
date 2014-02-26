@@ -5,7 +5,7 @@ require(['altair/Altair',
         'require',
         'altair/cartridges/Foundry',
         'altair/facades/hitch',
-        'altair/plugins/config!core/config/altair.json?env=' + GLOBAL.env],
+        'altair/plugins/config!core/config/altair.json?env=' + global.env],
 
     function (Altair, require, Foundry, hitch, config) {
 
@@ -19,7 +19,9 @@ require(['altair/Altair',
             paths: config.paths
         });
 
-        var paths = [];
+        var paths = [],
+            altair,
+            foundry;
 
         Object.keys(config.paths).forEach(function (name) {
             paths.push(name);
@@ -30,8 +32,8 @@ require(['altair/Altair',
          * Startup the cartridge factory and create the cartridges, then add
          * them to altair.
          */
-        var altair      = new Altair({ paths: paths }),
-            foundry     = new Foundry(altair);
+         altair      = new Altair({ paths: paths });
+         foundry     = new Foundry(altair);
 
         console.log('Creating cartridge foundry. Adding', config.cartridges.length, 'cartridges.');
 

@@ -15,7 +15,8 @@ define(['dojo/_base/declare',
          * @param config
          */
         toJsValue: function (value, options, config) {
-            return (value) ? true : false;
+
+            return value ? true : false;
         }
 
 

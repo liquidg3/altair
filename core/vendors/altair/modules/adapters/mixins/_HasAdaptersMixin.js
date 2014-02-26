@@ -99,14 +99,16 @@ define(['dojo/_base/declare',
                     }));
 
                 } else if(this._selectedAdapter) {
+
                     return this._selectedAdapter;
                 } else {
                     d.reject('No ' + this.name + ' adapter selected.');
+
                 }
 
             }
             //it has been cached
-            else if(named in this._adaptersCache) {
+            else if(this._adaptersCache.hasOwnProperty(named)) {
 
                 d.resolve(this._adaptersCache[named]);
 
@@ -136,8 +138,6 @@ define(['dojo/_base/declare',
 
 
             return d;
-
-
         }
 
     });

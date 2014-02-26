@@ -136,7 +136,7 @@ define(['dojo/_base/declare',
                     //now instantiate any commanders not yet instantiated
                     Object.keys(commanders).forEach(this.hitch(function (name) {
 
-                        if(!(name in this._commanders)) {
+                        if(!(this._commanders.hasOwnProperty(name))) {
 
                             var options = mixin({}, commanders[name]), //copy options
                                 path    = options.path;
