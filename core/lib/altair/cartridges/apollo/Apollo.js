@@ -30,16 +30,15 @@ define(['dojo/_base/declare',
              * @returns {*}
              */
             startup: function (options) {
-
-                options = options || this.options;
+                var _options = options || this.options;
 
                 //do they pass the fieldtypes they want loaded?
-                if('fieldTypes' in options) {
+                if( !_options.hasOwnProperty('fieldTypes') ) {
 
-                } else {
+                //} else { //jsLint complains about the empty if block, flip it and use this else when you want to do some logic here.
 
                     //the base fieldtypes i think we need to get altair to work
-                    options.fieldTypes = [
+                    _options.fieldTypes = [
                         'apollo/fieldtypes/Str',
                         'apollo/fieldtypes/Bool',
                         'apollo/fieldtypes/Int',
@@ -49,23 +48,25 @@ define(['dojo/_base/declare',
 
                 }
 
-                this.deferred   = new Deferred;
+                this.deferred   = new Deferred();
                 this.apollo     = new Apollo();
 
-                require(options.fieldTypes, lang.hitch(this, function () {
+                require( _options.fieldTypes, lang.hitch(this, function () {
 
-                    var types = Array.prototype.slice.call(arguments);
+                    var types = Array.prototype.slice.call(arguments),
+                        i,
+                        type;
 
-                    for(var i = 0; i < types.length; i ++) {
-                        var type = new types[i]();
-                        this.apollo.addType(type);
+                    for( i = 0; i < types.length; i++ ) {
+                        type = new types[i]();
+                        this.apollo.addType( type );
                     }
 
-                    this.deferred.resolve(this);
+                    this.deferred.resolve( this );
 
                 }));
 
-                return this.inherited(arguments);
+                return this.inherited( arguments );
 
             },
 
@@ -74,14 +75,14 @@ define(['dojo/_base/declare',
              */
             execute: function () {
 
-                if(this.altair.hasCartridge('altair/cartridges/nexus/Nexus')) {
+                if( this.altair.hasCartridge( 'altair/cartridges/nexus/Nexus' ) ) {
 
-                    var nexus = this.altair.cartridge('altair/cartridges/nexus/Nexus');
-                    nexus.set('cartridges/Apollo', this);
+                    var nexus = this.altair.cartridge( 'altair/cartridges/nexus/Nexus' );
+                    nexus.set( 'cartridges/Apollo', this );
 
                 }
 
-                return this.inherited(arguments);
+                return this.inherited( arguments );
             },
 
             /**
@@ -105,6 +106,7 @@ define(['dojo/_base/declare',
                 }
 
                 return this.apollo.createSchema(data);
+
             }
 
         });

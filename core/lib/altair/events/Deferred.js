@@ -1,3 +1,8 @@
+/*Skip for jsLint
+ This is a copy/paste of a dojo file
+ it should be rewritten more cleanly
+ */
+
 define([
     "dojo/has",
     "dojo/_base/lang",

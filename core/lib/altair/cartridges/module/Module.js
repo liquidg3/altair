@@ -61,18 +61,20 @@ define(['dojo/_base/declare',
          */
         startup: function (options) {
 
-            options = options || this.options;
+            var _options = options || this.options,
+                list;
 
             //override our deferred
             this.deferred = new Deferred();
 
             //pass through altair if it was passed or fallback to altair's paths
-            this.paths = options.paths;
+            this.paths = _options.paths;
 
             if(!this.paths && this.altair.paths) {
                 this.paths = [];
-                this.altair.paths.forEach(hitch(this, function (path) {
-                    this.paths.push(nodePath.join(path, 'vendors'));
+                this.altair.paths.forEach( hitch( this, function ( path ) {
+                    this.paths.push( nodePath.join(path, 'vendors') );
+
                 }));
             }
 
@@ -81,16 +83,18 @@ define(['dojo/_base/declare',
              */
             if (!options || !options.foundry) {
                 this.foundry = new Foundry();
+
             } else {
                 this.deferred.reject("Not finished, should this set directly or assume something needs to be loaded?");
+
             }
 
             /**
              * If there is a datastore, we'll use it to get the enabled modules
              */
             if (options.dataStore) {
-
                 this.deferred.reject("Not finished, need to figure out how to do this one");
+
                 return;
             }
 
@@ -99,7 +103,7 @@ define(['dojo/_base/declare',
              */
             if (options.plugins) {
 
-                var list = [];
+                list = [];
                 this.plugins = [];
 
                 options.plugins.forEach(hitch(this, function (path) {
@@ -138,13 +142,16 @@ define(['dojo/_base/declare',
          * @returns {*}
          */
         plugin: function (declaredClass) {
-            for(var c = 0; c <= this.plugins.length; c++) {
-                if(this.plugins[c].declaredClass === declaredClass) {
+            var c;
+
+            for( c = 0; c <= this.plugins.length; c++ ) {
+                if( this.plugins[c].declaredClass === declaredClass ) {
+
                     return this.plugins[c];
                 }
             }
-            return null;
 
+            return null;
         },
 
         /**
@@ -153,6 +160,7 @@ define(['dojo/_base/declare',
          * @returns {boolean}
          */
         hasPlugin: function (declaredClass) {
+
             return array.some(this.plugins, function (plugin) { return plugin.declaredClass === declaredClass; });
         },
 
@@ -162,21 +170,26 @@ define(['dojo/_base/declare',
          * @returns {boolean}
          */
         hasPlugins: function (declaredClasses) {
+            var i;
 
-            for(var i = 0; i < declaredClasses.length; i ++) {
+            for( i = 0; i < declaredClasses.length; i++ ) {
                 if(!this.hasPlugin(declaredClasses[i])) {
+
                     return false;
                 }
+
             }
 
             return true;
         },
 
         module: function (named) {
+
             return this.modulesByName[named];
         },
 
         hasModule: function (named) {
+
             return !!this.modulesByName[named];
         },
 
@@ -186,7 +199,6 @@ define(['dojo/_base/declare',
          * @returns {*}
          */
         execute: function () {
-
             this.deferred = new Deferred();
 
             this.buildModules(this.options.modules).then(hitch(this, function (modules) {
@@ -226,7 +238,10 @@ define(['dojo/_base/declare',
 
             //shallow copy
             var _modules    = modules.slice(0),
-                deferred    = new Deferred();
+                deferred    = new Deferred(),
+                list,
+                load,
+                options;
 
             this.modules = this.modules.concat(_modules);
 
@@ -235,7 +250,7 @@ define(['dojo/_base/declare',
                 this.modulesByName[module.name] = module;
             }));
 
-            var list = []; // all our deferreds
+            list = []; // all our deferreds
 
             //run through plugins and execute them on the plugins we have
             if (this.plugins) {
@@ -254,46 +269,50 @@ define(['dojo/_base/declare',
             }
 
             //lets startup all modules, ensuring one is not started until the one before it is
-            var load = hitch(this, function () {
-
+            load = hitch(this, function () {
                 var module = _modules.shift();
 
                 if(module) {
-
                     this.emit('will-startup-module', {
                         module: module
+
                     });
 
                     //lifecycle class gets started up....
                     if(module.isInstanceOf && module.isInstanceOf(Lifecycle)) {
 
-                        var options = (this.options.moduleOptions && this.options.moduleOptions[module.name]) ? this.options.moduleOptions[module.name] : undefined;
+                        options = (this.options.moduleOptions && this.options.moduleOptions[module.name]) ? this.options.moduleOptions[module.name] : undefined;
 
                         module.startup(options).then(hitch(this, function () {
-
                             this.emit('did-startup-module', {
                                 module: module
+
                             });
 
                             module.execute().then(load);
 
                         })).otherwise(hitch(deferred, 'reject'));
+
                     }
                     //...but it's not required
                     else {
 
                         this.emit('did-startup-module', {
                             module: module
+
                         });
 
                         load();
+
                     }
                 } else {
                     deferred.resolve(this);
+
                 }
+
             });
 
-            all(list).then(load).otherwise(hitch(deferred, 'reject'));
+            all( list ).then( load ).otherwise( hitch( deferred, 'reject' ) );
 
             return deferred;
 
@@ -306,23 +325,27 @@ define(['dojo/_base/declare',
          * @returns {*}
          */
         teardown: function () {
+            var list,
+                deferred;
 
             //tear down all the modules
-            var list = [];
+            list = [];
 
             this.modules.forEach(function (module) {
                 list.push(module.teardown());
+
             });
 
             //make sure auto resolved deferred is not returned by Lifecycle parent
             this.deferred = new Deferred();
             this.modules  = [];
 
-            var deferred = new DeferredList(list);
+            deferred = new DeferredList(list);
+
             deferred.on(hitch(this, function() {
                 this.deferred.resolve(this);
-            }));
 
+            }));
 
             return this.inherited(arguments);
         },
@@ -334,7 +357,6 @@ define(['dojo/_base/declare',
          * @returns {*|Promise}
          */
         buildModules: function (modules) {
-
             var deferred = new Deferred();
 
             this.foundry.build({
@@ -347,12 +369,8 @@ define(['dojo/_base/declare',
             })).otherwise(hitch(deferred, 'reject'));
 
             return deferred;
-
         }
 
-
-
     });
-
 
 });

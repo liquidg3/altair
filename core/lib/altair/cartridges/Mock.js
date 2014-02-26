@@ -1,7 +1,10 @@
 /**
  * TEST CARTRIDGE ONLY ** DO NOT USE BECAUSE IT IS REALLY BORING **
  */
-define(['dojo/_base/declare', './_Base'], function (declare, _Base) {
+define(['dojo/_base/declare',
+        './_Base'],
+
+function (declare, _Base) {
 
     return declare('altair/cartridges/Mock', [_Base], {
 
@@ -19,10 +22,10 @@ define(['dojo/_base/declare', './_Base'], function (declare, _Base) {
 
         teardown: function () {
             this.tornDown = true;
+
             return this.inherited(arguments);
         }
 
     });
-
 
 });
