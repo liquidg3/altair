@@ -34,7 +34,14 @@ define(['dojo/_base/declare',
             elements.forEach(function (element) {
 
                 var className,
-                    options = mixin({}, element.options);
+                    styleName,
+                    options = {
+                        name: element.name,
+                        content: element.options.label,
+                        parent: form,
+                        mouse: true,
+                        keys: true
+                    };
 
                 switch (element.type) {
                     case 'path':
@@ -54,7 +61,10 @@ define(['dojo/_base/declare',
 
                 }
 
-                element = new blessed[className]();
+                styleName = className.toLowerCase();
+                options = mixin(adapter.styles(styleName + ', form ' + styleName), options);
+
+                element = new blessed[className](options);
 
 
             });
