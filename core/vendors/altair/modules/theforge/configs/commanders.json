@@ -28,7 +28,7 @@
                         }
                     },
                     "dir": {
-                        "type": "path",
+                        "type": "string",
                         "options": {
                             "label": "Destination",
                             "required": true,

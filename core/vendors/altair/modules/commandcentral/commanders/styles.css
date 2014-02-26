@@ -1,16 +1,13 @@
 * {
-    color: #839496;
 }
 
 body {
-    color: #839496;
     background-color: #000000;
 }
 
 #bg {
     content: "Altair";
     align: center;
-    font: "?";
     left: 0;
     right: 0;
     top: 50;
@@ -47,4 +44,24 @@ select {
     top: center;
     left: center;
     shrink: flex;
+}
+
+form {
+    width: half;
+    height: half;
+    top: center;
+    left: center;
+    border-color: green;
+    color: blue;
+    background-color: black;
+}
+
+textbox {
+    bg: blue;
+    shrink: true;
+    color: blue;
+    height:2px;
+    left: 0px;
+    fg: blue,
+    border-color: green;
 }
