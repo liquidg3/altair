@@ -398,7 +398,7 @@ define(['dojo/_base/declare',
 
                 //drop px
                 if(styles[k].substr(-2) === 'px') {
-                    styles[k] = styles[k].substr(0, styles[k].length -2);
+                    styles[k] = parseInt(styles[k].substr(0, styles[k].length -2), 10);
                 }
 
                 if(k.indexOf('-') > 0) {

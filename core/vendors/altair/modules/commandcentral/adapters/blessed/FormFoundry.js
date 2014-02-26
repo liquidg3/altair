@@ -22,7 +22,8 @@ define(['dojo/_base/declare',
 
             var elements    = schema.elementsAsArray(),
                 form,
-                selector    = 'form';
+                selector    = 'form',
+                top         = 0;
 
 
             if(options.id) {
@@ -62,7 +63,12 @@ define(['dojo/_base/declare',
                 }
 
                 styleName = className.toLowerCase();
-                options = mixin(adapter.styles(styleName + ', form ' + styleName), options);
+                options = mixin({
+                    height: 3,
+                    top: top
+                }, options, adapter.styles(styleName + ', form ' + styleName));
+
+                top = top + options.height;
 
                 element = new blessed[className](options);
 
