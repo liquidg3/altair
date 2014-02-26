@@ -90,8 +90,9 @@ define(['dojo/_base/declare',
          * @returns {boolean}
          */
         hasCartridges: function (declaredClasses) {
+            var i;
 
-            for(var i = 0; i < declaredClasses.length; i ++) {
+            for(i = 0; i < declaredClasses.length; i++) {
                 if(!this.hasCartridge(declaredClasses[i])) {
                     return false;
                 }

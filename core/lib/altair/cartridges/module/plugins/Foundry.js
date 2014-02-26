@@ -42,7 +42,10 @@ define(['dojo/_base/declare',
 
                 foundry: function (className, options, instantiationCallback) {
 
-                    var d = new Deferred();
+                    var d = new Deferred(),
+                        parent,
+                        parts,
+                        path;
 
                     //default callbacks
                     if(!instantiationCallback) {
@@ -50,17 +53,16 @@ define(['dojo/_base/declare',
                     }
 
                     //if the classname can be resolved in nexus
-                    var parent = this;
+                    parent = this;
 
                     if(className.search('::') > 0) {
-
-                        var parts   = className.split('::');
-
+                        parts       = className.split('::');
                         parent      = this.nexus(parts[0]);
                         className   = parts[1];
+
                     }
 
-                    var path = parent.resolvePath(className + '.js');
+                    path = parent.resolvePath(className + '.js');
 
                     fs.exists(path, hitch(parent, function (exists) {
 

@@ -49,11 +49,12 @@ define(['dojo/_base/declare',
          */
         function apply(parent, event, action, args) {
 
-            var orgEvent = event;
+            var orgEvent = event,
+                eventParts,
+                def;                //deferred
 
             if(event.indexOf('::') !== -1) {
-
-                var eventParts = event.split('::');
+                eventParts = event.split('::');
 
                 parent = parent.nexus(eventParts[0]);
                 event  = eventParts[1];
@@ -61,7 +62,7 @@ define(['dojo/_base/declare',
             }
 
             if(!parent) {
-                var def = new Deferred();
+                def = new Deferred();
                 def.reject('Could not ' + action + '(' + orgEvent + ') because it could not be found.');
                 return def;
             }
@@ -73,7 +74,7 @@ define(['dojo/_base/declare',
 
         }
 
-    return declare('altair/cartridges/module/plugins/Events',[_Base], {
+    return declare('altair/cartridges/module/plugins/Events', [_Base], {
 
         startup: function () {
 
@@ -107,21 +108,23 @@ define(['dojo/_base/declare',
                      */
                     on: function (event, callback, query, config) {
 
+                        var _config = config;
+
                         //if we are skipping on the nexus resolution call the
                         //standard emitter's on()
-                        if(config && config.skipNexus) {
-                            return this.inherited(arguments);
+                        if(_config && _config.skipNexus) {
+                            return this.inherited( arguments );
                         }
 
                         //setup config with skipNexus
-                        if(!config) {
-                            config = {};
+                        if( !_config ) {
+                            _config = {};
                         }
 
-                        config.skipNexus = true;
+                        _config.skipNexus = true;
 
 
-                        return apply(this, event, 'on', [callback, query, config]);
+                        return apply( this, event, 'on', [callback, query, _config]);
                     },
 
                     /**
@@ -132,33 +135,33 @@ define(['dojo/_base/declare',
                      * @param callback
                      * @param config
                      */
-                    emit: function(event, data, callback, config) {
-
+                    emit: function( event, data, callback, config ) {
+                        var _config = config;
 
                         //if we are skipping on the nexus resolution call the
                         //standard emitter's emit()
-                        if(config && config.skipNexus) {
+                        if( _config && _config.skipNexus ) {
                             return this.inherited(arguments);
                         }
 
                         //setup config with skipNexus
-                        if(!config) {
-                            config = {};
+                        if( !_config ) {
+                            _config = {};
                         }
 
-                        config.skipNexus = true;
+                        _config.skipNexus = true;
 
-                        return apply(this, event, 'emit', [data, callback, config]);
+                        return apply(this, event, 'emit', [data, callback, _config]);
 
                     }
 
                 });
 
             }
+
             return this.inherited(arguments);
         }
 
     });
-
 
 });

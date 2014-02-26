@@ -9,11 +9,12 @@
  * for a stub class you can mixin.
  *
  */
-define(['dojo/_base/declare',
-        'altair/Lifecycle'],
+define([
+    'dojo/_base/declare',
+    'altair/Lifecycle'],
 
-    function (declare,
-              Lifecycle) {
+function (declare,
+          Lifecycle) {
 
     return declare('altair/cartridges/_Base', [Lifecycle], {
 
@@ -26,14 +27,12 @@ define(['dojo/_base/declare',
             this.options = options || {};
 
             if(!altair) {
-                throw "You must pass an instance of Altair to any cartridge"
+                throw "You must pass an instance of Altair to any cartridge";
+
             }
 
         }
 
-
-
     });
-
 
 });

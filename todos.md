@@ -5,7 +5,7 @@ a lot has progressed. it runs now I think.
 
 1. Review gettingstarted.md
 2. Please try and install it from scratch over and over, think of ways to do it better and better (maybe something
-like curl http;//altair.io/go.js | node or whatever cool shit banana pants we can do).
+like curl http://altair.io/go.js | node or whatever cool shit banana pants we can do).
 
     Getting people up and going quickly is key to adoption.
 

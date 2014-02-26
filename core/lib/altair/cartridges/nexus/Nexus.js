@@ -43,17 +43,16 @@ define(['dojo/_base/declare',
          */
         startup: function (options) {
 
-            options = options || this.options;
+            var _options = options || this.options;
 
             //setup new resolver if one is not passed
-            if (options.resolvers) {
-                options.resolvers.forEach(lang.hitch(this, function (resolver) {
+            if (_options.resolvers) {
+                _options.resolvers.forEach(lang.hitch(this, function (resolver) {
                     this.addResolver(resolver);
                 }));
             }
 
             return this.inherited(arguments);
-
         },
 
         /**
@@ -63,7 +62,7 @@ define(['dojo/_base/declare',
          */
         teardown: function () {
 
-            this._map       = []
+            this._map       = [];
             this._resolvers = [];
 
             return this.inherited(arguments);
@@ -78,6 +77,7 @@ define(['dojo/_base/declare',
          */
         set: function (key, value) {
             this._map[key] = value;
+
             return this;
         },
 
@@ -89,6 +89,7 @@ define(['dojo/_base/declare',
          */
         addResolver: function (resolver) {
             this._resolvers.push(resolver);
+
             return this;
         },
 
@@ -103,23 +104,24 @@ define(['dojo/_base/declare',
          */
         resolve: function (key, options, config) {
 
-            if(key in this._map) {
-                return this._map[key]
+            var c;
+
+            if( this._map.hasOwnProperty( 'key' ) ) {
+                return this._map[key];
+
             }
 
-            for(var c = 0; c < this._resolvers.length; c++) {
+            for( c = 0; c < this._resolvers.length; c++ ) {
                 if(this._resolvers[c].handles(key)) {
-                    return this._resolvers[c].resolve(key, options, config);
+
+                    return this._resolvers[c].resolve( key, options, config );
                 }
+
             }
 
             return null;
-
         }
 
-
-
     });
-
 
 });

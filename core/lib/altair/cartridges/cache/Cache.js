@@ -41,32 +41,32 @@ define(['dojo/_base/declare',
          * @param options
          * @returns {*}
          */
-        startup: function (options) {
+        startup: function ( options ) {
 
-            options = options || this.options;
+            var _options = options || this.options;
 
             this.deferred = new Deferred();
 
-            if(options.plugin) {
+            if(_options.plugin) {
 
-                require([options.plugin.path], lang.hitch(this, function (Plugin) {
-                    this.plugin = new Plugin(this);
-                    this.plugin.startup(options.plugin.options);
-                    this.deferred.resolve(this);
+                require([_options.plugin.path], lang.hitch(this, function ( Plugin ) {
+                    this.plugin = new Plugin( this );
+                    this.plugin.startup( _options.plugin.options );
+                    this.deferred.resolve( this );
                 }));
 
             }
             //plugin is already set
-            else if(this.plugin) {
+            else if( this.plugin ) {
                 this.plugin.startup();
-                this.deferred.resolve(this);
+                this.deferred.resolve( this );
             }
             //no plugin set
             else {
-                this.deferred.resolve(this);
+                this.deferred.resolve( this );
             }
 
-            return this.inherited(arguments);
+            return this.inherited( arguments );
 
         },
 
@@ -76,11 +76,17 @@ define(['dojo/_base/declare',
          * @returns {*}
          */
         teardown: function () {
-            if(this.plugin) {
-                return this.plugin.teardown();
+            var results;
+
+            if( this.plugin ) {
+                results = this.plugin.teardown();
+
             } else {
-                return this.inherited(arguments);
+                results = this.inherited( arguments );
+
             }
+
+            return results;
         }
 
     });

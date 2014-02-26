@@ -67,10 +67,12 @@ define(['require',
              * @param func
              */
             function traverse(o,func, path) {
+                var i;
 
-                for (var i in o) {
+                for ( i in o ) {
                     func.apply(this,[i,o[i], path || i]);
-                    if (o[i] !== null && typeof(o[i])=="object") {
+
+                    if (o[i] !== null && typeof(o[i]) === "object") {
                         var _path = (path) ? path + '.' + i : i;
                         //going on step down in the object tree!!
                         traverse(o[i],func, _path);

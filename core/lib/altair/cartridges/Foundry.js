@@ -4,10 +4,11 @@
 define(['dojo/_base/declare',
         'dojo/_base/lang',
         'dojo/promise/all',
-        'dojo/Deferred'], function (declare,
-                                    lang,
-                                    all,
-                                    Deferred) {
+        'dojo/Deferred'],
+function (declare,
+          lang,
+          all,
+          Deferred) {
 
     return declare('altair/cartridges/Foundry', null, {
 
@@ -45,8 +46,6 @@ define(['dojo/_base/declare',
             var list            = options.map(lang.hitch(this, 'buildOne'));
 
             return all(list);
-
-
         },
 
         /**
@@ -61,10 +60,12 @@ define(['dojo/_base/declare',
 
             require([options.path], lang.hitch(this, function (Cartridge) {
                 def.resolve(new Cartridge(this.altair, options.options));
+
             }));
 
             return def;
         }
 
     });
+
 });

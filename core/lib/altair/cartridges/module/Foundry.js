@@ -56,7 +56,8 @@ define(['dojo/_base/declare',
          */
         build: function (options) {
 
-            var deferred        = new Deferred();
+            var deferred        = new Deferred(),
+                paths;
 
             try {
 
@@ -69,19 +70,21 @@ define(['dojo/_base/declare',
                 }
 
                 //take every path we have received and glob them for our module pattern
-                var paths = options.paths.map(function (_path) {
+                paths = options.paths.map(function (_path) {
+
                     return path.join(require.toUrl(_path), '*/modules/*/*.js');
                 });
 
 
                 //glob all the dirs
-                glob(paths).then(hitch(this, function (files) {
+                glob( paths ).then( hitch( this, function ( files ) {
 
-                    paths = this._filterPaths(files, options.modules);
+                    paths = this._filterPaths( files, options.modules );
 
                     //all modules failed?
-                    if(!paths || paths.length === 0 || (options.modules != '*' && paths.length != options.modules.length)) {
+                    if( !paths || paths.length === 0 || (options.modules !== '*' && paths.length !== options.modules.length)) {
                         deferred.reject("Failed to load all modules: " + options.modules.join(', '));
+
                         return;
                     }
 
@@ -117,7 +120,7 @@ define(['dojo/_base/declare',
          * @private
          */
         _filterPaths: function (paths, moduleNames) {
-            if(moduleNames == '*') {
+            if(moduleNames === '*') {
                 return paths;
             }
 
@@ -138,7 +141,8 @@ define(['dojo/_base/declare',
 
             var list                    = [],
                 pathsByName             = {},
-                deferred                = new Deferred();
+                deferred                = new Deferred(),
+                def;
 
             //build up paths
             paths.forEach(hitch(this, function (_path) {
@@ -154,7 +158,7 @@ define(['dojo/_base/declare',
                 pathsByName[name] = _path;
 
                 //manage our deferreds
-                var def = new Deferred();
+                def = new Deferred();
                 list.push(def);
 
                 require(['altair/plugins/config!' + packagePath], hitch(this, function (config) {
@@ -238,37 +242,34 @@ define(['dojo/_base/declare',
          */
         buildOne: function (modulePath) {
 
-            var deferred = new Deferred();
+            var deferred    = new Deferred(),
 
             //before any module is required, we have to setup some paths in the AMD loader
-            var dir         = path.dirname(modulePath),
+                dir         = path.dirname(modulePath),
                 pathParts   = dir.split('/'),
                 alias       = pathParts.slice(-3).join(path.sep),
-                name        = this._pathToModuleName(modulePath);
+                name        = this._pathToModuleName(modulePath),
+                paths    = {};
 
-
-            var paths    = {};
             paths[alias] = dir;
 
             require({
                 paths: paths
+
             });
 
 
             require([modulePath], hitch(this, function (Module) {
 
                 var module      = new Module();
-
-                module.dir  = dir;
-                module.name = name;
+                    module.dir  = dir;
+                    module.name = name;
 
                 deferred.resolve(module);
 
             }));
 
             return deferred;
-
-
         }
 
     });
