@@ -6,6 +6,36 @@ Start by adding the _HasCommandersMixin into your module. Not sure how to build 
 
 ## blessed
 
+## colors
+
+Base colors
+
+    $base03:    #002b36;
+    $base02:    #073642;
+    $base2:     #eee8d5;
+    $base3:     #fdf6e3;
+
+Content
+
+    $base01:    #586e75;
+    $base00:    #657b83;
+    $base0:     #839496;
+    $base1:     #93a1a1;
+
+Accent
+
+    $yellow:    #b58900;
+    $orange:    #cb4b16;
+    $red:       #d30102;
+    $magenta:   #d33682;
+    $violet:    #6c71c4;
+    $blue:      #268bd2;
+    $cyan:      #2aa198;
+    $green:     #859900;
+
+Color Guide - http://thechangelog.com/solarized-precision-color-scheme-for-multiple-applicatio/
+
+
 ## figlet
 
 For better, more robust documentation, visit [figlet on npm](https://www.npmjs.org/package/figlet). Below is an example
