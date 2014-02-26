@@ -1,9 +1,7 @@
 * {
-    color: #839496;
 }
 
 body {
-    color: #839496;
     background-color: #000000;
 }
 
@@ -11,6 +9,7 @@ body {
     content: "Altair";
     align: center;
     font: "isometric1";
+
     left: 0;
     right: 0;
     top: 50;
@@ -73,4 +72,24 @@ filemanager {
 
 textbox {
 
+}
+
+form {
+    width: half;
+    height: half;
+    top: center;
+    left: center;
+    border-color: green;
+    color: blue;
+    background-color: black;
+}
+
+textbox {
+    bg: blue;
+    shrink: true;
+    color: blue;
+    height:2px;
+    left: 0px;
+    fg: blue,
+    border-color: green;
 }

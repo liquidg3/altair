@@ -23,7 +23,8 @@ define(['dojo/_base/declare',
             var elements    = schema.elementsAsArray(),
                 form,
                 selector    = 'form',
-                top         = 0;
+                top         = 1,
+                first       = true;
 
 
             if(options.id) {
@@ -31,17 +32,27 @@ define(['dojo/_base/declare',
             }
 
             form = new blessed.Form(mixin(adapter.styles(selector), options));
+            form._elements = [];//monkey wrench
+
+            form.key('tab', function() {
+                form.focusNext();
+                adapter.redraw();
+            });
+
 
             elements.forEach(function (element) {
 
                 var className,
                     styleName,
+                    el,
                     options = {
                         name: element.name,
-                        content: element.options.label,
+                        label: element.options.label,
                         parent: form,
+                        shrink: true,
                         mouse: true,
-                        keys: true
+                        keys: true,
+                        vi: false
                     };
 
                 switch (element.type) {
@@ -64,16 +75,46 @@ define(['dojo/_base/declare',
 
                 styleName = className.toLowerCase();
                 options = mixin({
-                    height: 3,
+                    height: 2,
                     top: top
                 }, options, adapter.styles(styleName + ', form ' + styleName));
 
                 top = top + options.height;
 
-                element = new blessed[className](options);
+                el = new blessed[className](options);
+
+                el.key('tab', function () {
+                   form.focusNext();
+                    adapter.redraw();
+                });
+
+                el.on('keypress', function (ch, key) {
+
+                    if(key.name === 'tab') {
+                        return false;
+                    }
+
+                });
+
+                if(className === 'Textbox') {
+                    el.on('focus', function() {
+                        el.readInput();
+                    });
+                }
+
+
+                if(first) {
+                    first = false;
+                }
+
+
+
+                form._elements.push(el);
 
 
             });
+
+            form.focus();
 
             return form;
         }
