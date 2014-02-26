@@ -18,9 +18,8 @@ define(['doh/runner',
              */
             function (t) {
 
-                var d = new DojoDeferred();
-
-                var mock    = new Deferred(),
+                var d = new DojoDeferred(),
+                    mock    = new Deferred(),
                     didWait = false;
 
                 mock.resolve('foo+');
@@ -56,9 +55,8 @@ define(['doh/runner',
              */
             function (t) {
 
-                var d = new DojoDeferred();
-
-                var mock    = new Deferred(),
+                var d = new DojoDeferred(),
+                    mock    = new Deferred(),
                     didWait = false;
 
                 mock.then(function (foo) {

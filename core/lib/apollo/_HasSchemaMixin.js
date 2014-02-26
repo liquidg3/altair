@@ -53,7 +53,8 @@ define(['dojo/_base/declare',
 
             var methodName = toGetter(name);
 
-            if(methodName in this) {
+            if( this.hasOwnProperty(methodName) ) {
+
                 return this[methodName](defaultValue, options, config);
             }
 
@@ -70,14 +71,18 @@ define(['dojo/_base/declare',
          */
         set: function (name, value) {
 
-            var methodName = toSetter(name);
+            var methodName = toSetter(name),
+                results;
 
-            if(methodName in this) {
-                return this[methodName](value);
+            if( this.hasOwnProperty( methodName ) ) {
+
+                results = this[methodName](value);
             } else {
-                return this._set(name, value);
+
+                results = this._set(name, value);
             }
 
+            return results;
         },
 
         /**
@@ -103,14 +108,15 @@ define(['dojo/_base/declare',
          */
         _set: function (name, value) {
 
-            if(name in this.values) {
+            if( this.values.hasOwnProperty( name ) ) {
                 this.values[name] = value;
+
             } else {
                 throw "No field called '" + name + "' exists on this " + this.declaredClass;
+
             }
 
             return this;
-
         },
 
         /**
@@ -127,12 +133,12 @@ define(['dojo/_base/declare',
 
             var value = this._schema.applyOnElement(['toJsValue'], name, this.values[name], options, config);
 
-            if(value === null || typeof value === 'undefined') {
+            if( value === null || value === undefined ) {
                 value = defaultValue;
+
             }
 
             return value;
-
         },
 
         /**
@@ -142,7 +148,6 @@ define(['dojo/_base/declare',
          * @returns {apollo|_HasSchemaMixin}
          */
         setSchema: function (schema) {
-
             this._schema    = schema;
 
             if(!this.values) {
@@ -152,13 +157,13 @@ define(['dojo/_base/declare',
             var elements    = schema.elements();
 
             Object.keys(elements).forEach(lang.hitch(this, function (name) {
-                if(name in this.values) {
+                if( !( this.values.hasOwnProperty(name) ) ) {
 
-                } else {
+                //} else {  //when you're ready to use the if block, flip and uncomment the else.
                     this.values[name] = schema.optionsFor(name, false).value || null;
                 }
-            }));
 
+            }));
 
             return this;
         }

@@ -34,7 +34,6 @@ define(['dojo/_base/declare',
             elements.forEach(function (element) {
 
                 var className,
-                    element,
                     options = mixin({}, element.options);
 
                 switch (element.type) {

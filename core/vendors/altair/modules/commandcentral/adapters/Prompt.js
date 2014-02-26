@@ -65,7 +65,8 @@ define(['dojo/_base/declare',
 
             var def     = new Deferred(),
                 keys    = Object.keys(selectOptions),
-                retry   = ('retry' in options) ? options.retry : true;
+                retry   = (options.hasOwnProperty('retry') ) ? options.retry : true,
+                go;
 
             this.writeLine();
             this.writeLine('--- ' + question + ' ---');
@@ -79,7 +80,7 @@ define(['dojo/_base/declare',
             this.writeLine('---------------');
 
 
-            var go = hitch(this, function () {
+            go = hitch(this, function () {
 
                 prompt.get([{
                     name: 'answer',
@@ -87,7 +88,7 @@ define(['dojo/_base/declare',
                     description: 'select option'
                 }], hitch(this, function (err, results) {
 
-                    if(!results.answer || !(results.answer in selectOptions)) {
+                    if(!results.answer || !(selectOptions.hasOwnProperty(results.answer))) {
 
                         if(!retry) {
 
@@ -130,16 +131,17 @@ define(['dojo/_base/declare',
             //map apollo schema to prompt schema, very dumb for now
             Object.keys(schema.elements()).forEach(hitch(this, function (field) {
 
-                var options = schema.optionsFor(field),
-                    field   = {
-                        name:       field,
-                        type:       'string',
-                        required:   !!options.required
+                var options = schema.optionsFor(field);
 
-                    };
+                field   = {
+                    name:       field,
+                    type:       'string',
+                    required:   !!options.required
+                };
 
                 if(options.value) {
                     field['default'] = options.value;
+
                 }
 
                 form.push(field);
@@ -156,6 +158,7 @@ define(['dojo/_base/declare',
 
         showProgress: function (message) {
             console.log(chalk.grey(message));
+
         }
 
     });

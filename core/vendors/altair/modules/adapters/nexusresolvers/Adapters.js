@@ -23,7 +23,8 @@ define(['dojo/_base/declare',
         constructor: function (nexus) {
             this.nexus = nexus;
             if(!nexus) {
-                throw "The Adapters plugin needs nexus."
+                throw "The Adapters plugin needs nexus.";
+
             }
 
             this.adapterCache = [];
@@ -38,18 +39,16 @@ define(['dojo/_base/declare',
                 d       = new Deferred();
 
 
-            if(key in this.adapterCache) {
+            if( this.adapterCache.hasOwnProperty( key ) ) {
                 d.resolve(this.adapterCache[key]);
+
             } else {
 
                 return module.adapter(adapter);
-
             }
 
 
             return d;
-
-
         },
 
         /**
@@ -59,11 +58,10 @@ define(['dojo/_base/declare',
          * @returns {boolean}
          */
         handles: function (key) {
+
             return key.search('::adapters/') > 0;
         }
 
-
     });
-
 
 });

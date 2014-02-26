@@ -19,15 +19,17 @@ define(['dojo/_base/declare',
 
         startup: function (options) {
 
-            options             = options || this.options;
-            this.adapter        = (options && options.adapter) ? options.adapter : this.module.adapter();
+            var _options             = options || this.options;
 
-            options.description = (options && options.description) ? options.description : this.name;
-            options.label       = (options && options.label) ? options.label : options.description;
+            this.adapter        = (_options && _options.adapter) ? _options.adapter : this.module.adapter();
+
+            _options.description = (_options && _options.description) ? _options.description : this.name;
+            _options.label       = (_options && _options.label) ? _options.label : _options.description;
 
             if(!this.adapter) {
                 this.deferred = new this.module.Deferred();
                 this.deferred.reject('You must pass your commander an adapter from Altair:CommandCentral');
+
                 return this.deferred;
             }
 
@@ -101,12 +103,14 @@ define(['dojo/_base/declare',
         }
 
 
-    });
+    }),
+        methods,
+        sig;
 
 
     //mix certain adapter methods into the commander for easy access
-    var methods = ['notice', 'writeLine', 'readLine', 'select', 'showProgress', 'hideProgress', 'splash'],
-        sig     = {};
+    methods = ['notice', 'writeLine', 'readLine', 'select', 'showProgress', 'hideProgress', 'splash'];
+    sig     = {};
 
     methods.forEach(function (method) {
         sig[method] = function () {

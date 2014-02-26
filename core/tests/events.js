@@ -106,15 +106,17 @@ define(['doh/runner',
         function (t) {
 
             var emitter     = new Emitter(),
-                deferred    = new Deferred()
+                deferred    = new Deferred();
 
             emitter.on('dummy-event', function (e) {
                 t.is('dummy-event', e.name, 'Event was not created as expected.');
                 deferred.resolve(true);
+
             });
 
             emitter.emit('dummy-event', {
                 foo: 'bar'
+
             });
 
             return deferred;
@@ -127,7 +129,7 @@ define(['doh/runner',
         function (t) {
 
             var emitter     = new Emitter(),
-                deferred    = new doh.Deferred()
+                deferred    = new doh.Deferred();
 
             emitter.on('dummy-event-2').then(function (e) {
                 t.is('dummy-event-2', e.name, 'Event was not created as expected.');
@@ -173,7 +175,7 @@ define(['doh/runner',
         function () {
 
             var emitter     = new Emitter(),
-                deferred    = new doh.Deferred()
+                deferred    = new doh.Deferred();
 
             emitter.on('dummy-event-4', { foo: 'bar' }).then(function (e) {
                 doh.assertEqual('dummy-event-4', e.name, 'Event was not created as expected.');

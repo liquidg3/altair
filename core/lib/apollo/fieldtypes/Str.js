@@ -29,20 +29,26 @@ define(['dojo/_base/declare',
          * @returns {*}
          */
         toJsValue: function (value, options, config) {
+            var results;
 
             //get most common check out of the way
-            if(typeof value == 'string' && options.maxLength === -1) {
-                return value;
+            if(typeof value === 'string' && options.maxLength === -1) {
+                results = value;
+
             } else if(typeof value === 'string') {
-                return value.substr(0, options.maxLength);
+                results = value.substr(0, options.maxLength);
+
             } else if(options.maxLength > -1) {
-                return value.toString().substr(0, options.maxLength);
+                results = value.toString().substr(0, options.maxLength);
+
             } else {
-                return value.toString();
+                results = value.toString();
+
             }
 
-
+            return results;
         }
 
     });
+
 });
