@@ -134,7 +134,7 @@ define(['dojo/_base/declare',
             //after figlet has done its thing (or not), lets render the splash box
             this.figet(styles).then(hitch(this, function () {
 
-                this.splashBox = blessed.box(styles);
+                this.splashBox = new blessed.Box(styles);
                 this.splashBox.focus();
                 this.redraw();
 
@@ -160,7 +160,7 @@ define(['dojo/_base/declare',
          */
         showProgress: function (message) {
 
-            this.progress = this.progress || blessed.loading({
+            this.progress = this.progress || new blessed.Loading({
                 parent: this.screen,
                 border: {
                     type: 'ascii'
@@ -199,7 +199,7 @@ define(['dojo/_base/declare',
 
                 str = 'notice: ' + str;
 
-                this.noticeBox = blessed.box(mixin({
+                this.noticeBox = new blessed.Box(mixin({
                     left: 0,
                     bottom: 0,
                     width: "100%",
@@ -224,7 +224,6 @@ define(['dojo/_base/declare',
 
             this.redraw();
 
-
         },
 
         /**
@@ -238,26 +237,16 @@ define(['dojo/_base/declare',
             options = this._normalizeOptions(options);
 
             var selector = 'form',
-                d        = new Deferred(),
-                elements = schema.elements();
+                d        = new Deferred();
 
-            if(options.id) {
-                selector += ', #' + options.id;
-            }
+            this.module.foundry('adapters/blessed/FormFoundry').then(function (foundry) {
 
-            blessed.form(mixin({
-                parent: this.screen,
-                keys:   true
-            }, options, this.styles(selector)));
-
-            Object.keys(elements).forEach(hitch(this, function (name) {
+                var form = foundry.build(this, schema, options);
 
 
 
-            }));
 
-
-            this.redraw();
+            });
 
 
             return d;
@@ -277,6 +266,7 @@ define(['dojo/_base/declare',
             var def = new Deferred(),
                 selector = 'select',
                 list,
+                styles,
                 keys = Object.keys(selectOptions),
                 values = keys.map(function (key) {
                     return selectOptions[key];
@@ -289,7 +279,7 @@ define(['dojo/_base/declare',
             }
 
             //defaults
-            var styles = mixin({
+            styles = mixin({
                 parent:     this.screen,
                 items:      values.slice(0),
                 label:      question,
@@ -298,12 +288,12 @@ define(['dojo/_base/declare',
                 width:      100
             }, options, this.styles(selector));
 
-            list = blessed.list(styles);
+            list = new blessed.List(styles);
 
-            list.on('select', hitch(this, function (list, selected) {
+            list.on('select', hitch(this, function (listItem, index) {
                 list.detach();
                 this.redraw();
-                def.resolve(keys[selected]);
+                def.resolve(keys[index]);
             }));
 
             list.focus();
