@@ -10,11 +10,12 @@ define(['dojo/Deferred',
 
     return function (patterns, options) {
 
-        var deferred = new Deferred();
+        var deferred = new Deferred(),
+            list;
 
         if(patterns instanceof Array) {
 
-            var list = patterns.map(function (path) {
+            list = patterns.map(function (path) {
 
                 var d = new Deferred();
 
@@ -37,8 +38,10 @@ define(['dojo/Deferred',
             glob(patterns, options, function (err, matches) {
                 if(err) {
                     deferred.reject(err);
+
                 } else {
-                    deferred.resolve(matches)
+                    deferred.resolve(matches);
+
                 }
             });
         }

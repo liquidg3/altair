@@ -239,14 +239,14 @@ define(['dojo/_base/declare',
             var selector = 'form',
                 d        = new Deferred();
 
-            this.module.foundry('adapters/blessed/FormFoundry').then(function (foundry) {
+            this.module.foundry('adapters/blessed/FormFoundry').then(hitch(this, function (foundry) {
 
                 var form = foundry.build(this, schema, options);
 
 
 
 
-            });
+            }));
 
 
             return d;

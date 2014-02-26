@@ -15,7 +15,9 @@ define(['dojo/_base/declare',
               _HasSchemaMixin,
               Deferred) {
 
-    return declare('altair/cartridges/module/plugins/Apollo',[_Base], {
+    return declare([_Base], {
+
+        declaredClass: 'altair/cartridges/module/plugins/Apollo',
 
         startup: function () {
 

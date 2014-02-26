@@ -11,8 +11,9 @@ define(['dojo/_base/declare',
               _Base,
               hitch) {
 
-    return declare('altair/cartridges/module/plugins/Package', [_Base], {
+    return declare([_Base], {
 
+        declaredClass: 'altair/cartridges/module/plugins/Package',
         execute: function (module) {
 
             this.deferred = new Deferred();

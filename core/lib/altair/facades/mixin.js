@@ -12,7 +12,6 @@ define(['dojo/_base/lang'], function (lang) {
         this.mixin.apply(this, args);
 
         return arr;
-
-
     });
+
 });

@@ -96,11 +96,12 @@ define(['dojo/_base/declare',
             event = this._normalizeEvent(event, data);
 
             //build a list of results all listeners...
-            var list = [];
+            var list = [],
+                _agent;
 
             if(this._listeners[event.name]) {
 
-                var _agent = (config && config.agent) ? config.agent : this._eventListenerQueryAgent;
+                _agent = (config && config.agent) ? config.agent : this._eventListenerQueryAgent;
 
                 this._listeners[event.name].forEach(hitch(this, function (listener) {
 
@@ -116,6 +117,7 @@ define(['dojo/_base/declare',
 
                             if(results) {
                                 list.push(when(results));
+
                             }
 
                         }

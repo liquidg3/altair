@@ -15,8 +15,9 @@ define(['dojo/_base/declare',
               require,
               has) {
 
-    return declare('altair/cartridges/module/plugins/Config', [_Base], {
+    return declare([_Base], {
 
+        declaredClass: 'altair/cartridges/module/plugins/Config',
         execute: function (module) {
 
             if(!module.resolvePath) {
@@ -34,38 +35,40 @@ define(['dojo/_base/declare',
                  */
                 parseConfig: function (named) {
 
-                    var deferred = new Deferred();
+                    var deferred = new Deferred(),
+                        path;
 
                     if(!this._configs) {
                         this._configs = {};
                     }
 
-                    if(named in this._configs) {
-                        deferred.resolve(this._configs[named]);
+                    if( this._configs.hasOwnProperty( 'named' ) ) {
+                        deferred.resolve( this._configs[named] );
+
                     } else {
 
-                        var path = this.resolvePath(named);
+                        path = this.resolvePath( named );
 
                         try {
 
-                            require(['altair/plugins/config!' + path], lang.hitch(this, function (config) {
+                            require( ['altair/plugins/config!' + path], lang.hitch( this, function ( config ) {
 
                                 this._configs[named] = config;
 
-                                deferred.resolve(config);
+                                deferred.resolve( config );
 
                             }));
 
                         } catch (e) {
-                            deferred.reject(e, false); //reject and suppress error logging
+                            deferred.reject( e, false ); //reject and suppress error logging
                         }
 
 
                     }
 
                     return deferred;
-
                 }
+
             });
 
             return this.inherited(arguments);
