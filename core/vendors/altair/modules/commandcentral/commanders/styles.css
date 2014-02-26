@@ -10,10 +10,11 @@ body {
 #bg {
     content: "Altair";
     align: center;
-    font: "?";
+    font: "isometric1";
     left: 0;
     right: 0;
     top: 50;
+    padding: 1;
     background-color: #002b36;
 
 }
@@ -46,5 +47,30 @@ select {
     width: 500;
     top: center;
     left: center;
-    shrink: flex;
+}
+
+form {
+    width: 200px;
+    top: center;
+    left: center;
+}
+
+dirmanager {
+
+}
+
+checkbox {
+
+}
+
+passbox {
+
+}
+
+filemanager {
+
+}
+
+textbox {
+
 }
