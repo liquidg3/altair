@@ -23,7 +23,7 @@ define(['dojo/_base/declare',
 
 ], function (declare, lang, mixin, hitch) {
 
-    return declare('apollo/Schema', null, {
+    return declare(null, {
 
         data:           null,
         fieldTypes:     null,

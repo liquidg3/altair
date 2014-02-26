@@ -94,7 +94,7 @@ define(['dojo/_base/declare',
             createSchema: function (data) {
 
                 //if they pass a schema, pass it back
-                if(data.instanceOf && data.instanceOf(Schema)) {
+                if(data.isInstanceOf && data.isInstanceOf(Schema)) {
                     return data;
                 }
 
