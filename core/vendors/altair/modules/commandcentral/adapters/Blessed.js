@@ -244,6 +244,8 @@ define(['dojo/_base/declare',
 
                 var form = foundry.build(this, schema, options);
 
+                this.screen.append(form);
+                this.redraw();
 
 
 
