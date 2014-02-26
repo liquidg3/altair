@@ -73,8 +73,9 @@ define(['dojo/_base/declare',
 
         }
 
-    return declare('altair/cartridges/module/plugins/Events',[_Base], {
+    return declare([_Base], {
 
+        declaredClass: 'altair/cartridges/module/plugins/Events',
         startup: function () {
 
             this.deferred = new Deferred();

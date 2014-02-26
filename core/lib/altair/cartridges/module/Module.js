@@ -38,7 +38,9 @@ define(['dojo/_base/declare',
               array,
               Emitter) {
 
-    return declare('altair/cartridges/module/Module', [_Base, Emitter], {
+    return declare([_Base, Emitter], {
+
+        declaredClass: 'altair/cartridges/module/Module',
 
         foundry:        null,
         modules:        null,

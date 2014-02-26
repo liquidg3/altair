@@ -31,7 +31,9 @@ define(['dojo/_base/declare',
               _Base,
               Deferred) {
 
-    return declare('altair/cartridges/cache/Cache', [_Base], {
+    return declare([_Base], {
+
+        declaredClass: 'altair/cartridges/cache/Cache',
 
         plugin: null,
 

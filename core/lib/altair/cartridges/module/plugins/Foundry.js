@@ -33,8 +33,9 @@ define(['dojo/_base/declare',
         return a;
     };
 
-    return declare('altair/cartridges/module/plugins/Foundry',[_Base], {
+    return declare([_Base], {
 
+        declaredClass: 'altair/cartridges/module/plugins/Foundry',
         execute: function (module) {
 
 

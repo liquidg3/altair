@@ -32,8 +32,9 @@ define(['dojo/_base/declare',
               Deferred,
               lang) {
 
-    return declare('altair/cartridges/module/plugins/Deferred',[_Base], {
+    return declare([_Base], {
 
+        declaredClass: 'altair/cartridges/module/plugins/Deferred',
         execute: function (module) {
 
             declare.safeMixin(module, {

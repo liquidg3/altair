@@ -44,7 +44,10 @@ define(['dojo/_base/declare',
          * @returns {altair.io.core.lib.apollo.Schema}
          */
         createSchema: function (data) {
-            return new Schema(data, this.fieldTypes);
+
+            var s = new Schema(data, this.fieldTypes);
+
+            return s;
         }
 
 

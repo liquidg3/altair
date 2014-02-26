@@ -3,8 +3,9 @@
  */
 define(['dojo/_base/declare', 'dojo/Deferred', './_Base'], function (declare, Deferred, _Base) {
 
-    return declare('altair/cartridges/module/plugins/Nexus', [_Base], {
+    return declare([_Base], {
 
+        declaredClass: 'altair/cartridges/module/plugins/Nexus',
         nexus:      null,
         startup: function (options) {
 
