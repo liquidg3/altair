@@ -34,12 +34,11 @@ define(['dojo/_base/declare',
 
                 this.deferred = new Deferred();
 
-                var list         = [];
-
-                options = this.options || options;
+                var list         = [],
+                    _options = this.options || options;
 
                 // No tests to run throw error
-                if(!options || !options.glob) {
+                if(!_options || !_options.glob) {
                     this.deferred.reject("You must pass glob option test runner to parse to look for tests.");
                     return;
                 }
@@ -47,28 +46,30 @@ define(['dojo/_base/declare',
                 doh.debug = console.log;
                 doh.error = function (type, message) {
                     console.error(type, message);
+
                 };
 
-                glob(options.glob.map(lang.hitch(require, 'toUrl')), options.globOptions).then(lang.hitch(this, function (files) {
+                glob(_options.glob.map(lang.hitch(require, 'toUrl')), _options.globOptions).then(lang.hitch(this, function (files) {
                     list.concat(files.map(lang.hitch(this, 'includeTest')));
                     all(list).then(lang.hitch(this.deferred, 'resolve')).otherwise(lang.hitch(this.deferred, 'reject'));
                 })).otherwise(lang.hitch(this.deferred, 'reject'));
 
 
                 return this.inherited(arguments);
-
             },
 
             execute: function () {
-
                 this.deferred = new Deferred();
 
                 doh._onEnd = lang.hitch(this, function () {
                     if(doh._errorCount > 0) {
                         this.deferred.reject(doh._errorCount + ' tests failed.');
+
                     } else {
                         this.deferred.resolve();
+
                     }
+
                 });
 
                 doh.run();
@@ -83,16 +84,15 @@ define(['dojo/_base/declare',
                 require([path], function (t) {
                     if(!t) {
                         deferred.reject('including ' + path + ' failed');
+
                     } else {
                         deferred.resolve(t);
+
                     }
                 });
 
                 return deferred;
-
             }
-
-
 
         });
 

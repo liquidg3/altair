@@ -7,7 +7,6 @@
  * @type {exports}
  */
 
-
 var path = require('path'),
     argv = require('optimist').usage('Altair - Experiences of Everything\n Usage: $0').options('env', {
                 'default': 'dev',
@@ -64,7 +63,7 @@ if(argv.t || argv.test) {
 }
 
 // Only exists to pass env to the bootstrap script (altair does not access any GLOBALS)
-GLOBAL.env =  argv.env;
+global.env =  argv.env;
 
 // Now load the Dojo loader
 require("./core/lib/dojo/dojo.js");

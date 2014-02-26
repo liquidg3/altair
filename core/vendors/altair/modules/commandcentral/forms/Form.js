@@ -27,9 +27,7 @@ define([
 
                 if(!this._schema) {
                     d.reject(i18n.__('%s needs a schema to function.'));
-                } else {
-
-                    
+                //} else {
 
                 }
 

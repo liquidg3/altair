@@ -49,7 +49,7 @@ define(['dojo/_base/declare',
 //
 //            }
 
-            this.screen = blessed.screen({ autoPadding: false });
+            this.screen = blessed.screen({ autoPadding: true });
 
             this.screen.key(['escape', 'q', 'C-c'], function (ch, key) {
                 return process.exit(0);
@@ -117,11 +117,12 @@ define(['dojo/_base/declare',
                 d      = new Deferred();
 
             d.resolve();
+
             return d;
 
-            /***
-             * NOT SURE IF WE REALLY NEED A SPLASH ANYMORE
-             */
+/***
+ * NOT SURE IF WE REALLY NEED A SPLASH ANYMORE
+
 
             if(!styles) {
                 throw "You must create a commanders/styles.css and drop in a style for #splash";
@@ -152,7 +153,7 @@ define(['dojo/_base/declare',
             }));
 
             return d;
-
+*/
         },
 
         /**
@@ -311,12 +312,13 @@ define(['dojo/_base/declare',
 
             this.inherited(arguments); //will mixin styles
 
-            var d; //deferred if we use one
+            var d, //deferred if we use one
+                styles;
 
             //if this commander has styles, lets apply a bg
             if(commander.styles) {
 
-                var styles = this.styles('#bg');
+                styles = this.styles('#bg');
 
                 if(styles) {
 

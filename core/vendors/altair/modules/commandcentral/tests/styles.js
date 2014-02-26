@@ -25,9 +25,9 @@ define(['doh/runner',
                 "width": 150
             }
 
-        };
+        },
 
-        var cartridges = [
+        cartridges = [
             {
                 path: 'altair/cartridges/nexus/Nexus',
                 options: {

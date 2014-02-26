@@ -58,27 +58,24 @@ define(['doh/runner',
 
                     return boot(cartridges).then(function (altair) {
 
-                        var module = altair.cartridge('altair/cartridges/module/Module').module('Altair:Adapters');
-
-                        var def = new Deferred();
+                        var module = altair.cartridge('altair/cartridges/module/Module').module('Altair:Adapters'),
+                            def = new Deferred();
 
                         module.adapter('adapters/Mock3').then(function (adapter) {
-
-                            def.reject('Adapter resolved with bad key')
-
+                            def.reject('Adapter resolved with bad key');
                             has.add("config-deferredInstrumentation", 1, null, true);
 
                         }).otherwise(function () {
                             has.add("config-deferredInstrumentation", 1, null, true);
                             def.resolve();
+
                         });
 
                         return def;
-
                     });
 
-
                 }
+
             },
 
             /**
@@ -88,23 +85,17 @@ define(['doh/runner',
 
                 return boot(cartridges).then(function (altair) {
 
-
                     var module = altair.cartridge('altair/cartridges/module/Module').module('Altair:Adapters');
 
-
                     return module.adapter('adapters/Mock1').then(function (adapter) {
-
-                        t.t('foo' in adapter, 'adapter load failed');
+                        t.t( adapter.hasOwnProperty('foo'), 'adapter load failed' );
                         t.is(adapter.foo(), 'Mock1', 'wrong adapter return');
 
                     });
 
                 });
 
-
             }
-
-
 
         ]);
 

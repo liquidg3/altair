@@ -38,26 +38,27 @@ define(['dojo/_base/declare',
      */
     function parseCallback(parent, callback) {
 
+        var results,
+            parts;
+
         if(callback.search('::') === -1) {
 
-            return hitch(parent, callback);
+            results = hitch(parent, callback);
 
         } else {
 
-            var parts = callback.split('::');
+            parts = callback.split('::');
 
-            return hitch(parent.nexus(parts[0]), parts[1]);
+            results = hitch(parent.nexus(parts[0]), parts[1]);
 
         }
 
-    };
+        return results;
+    }
 
     return declare('altair/modules/events/mixins/_HasListenersMixin', [Lifecycle, Emitter], {
 
-
-
         startup: function () {
-
             var def = new this.Deferred(),
                 sup = hitch(this, 'inherited', arguments);
 
@@ -66,7 +67,6 @@ define(['dojo/_base/declare',
              * Parse listeners config, then set all listeners.
              */
             this.parseConfig('configs/listeners.json').then(hitch(this, function (listeners) {
-
                 var events  = Object.keys(listeners),
                     pass    = true;
 
@@ -87,7 +87,7 @@ define(['dojo/_base/declare',
                             pass = false;
                             def.reject('Failed to set listener to ' + eventName + ' inside of ' + this.name);
 
-                    };
+                    }
 
                 }));
 

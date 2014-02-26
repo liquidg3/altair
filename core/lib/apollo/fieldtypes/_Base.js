@@ -102,8 +102,7 @@ define(['dojo/_base/declare',
             this.defaultOptionValues = {};
 
             Object.keys(this.options).forEach(lang.hitch(this, function (name) {
-
-                this.defaultOptionValues[name] = 'value' in this.options[name].options ? this.options[name].options.value : null;
+                this.defaultOptionValues[name] = this.options[name].options.hasOwnProperty('value') ? this.options[name].options.value : null;
 
             }));
 
@@ -147,27 +146,24 @@ define(['dojo/_base/declare',
             //we have to make sure it's an array if many is truthy
             if(options.many) {
 
-                if(value instanceof Array) {
+                if(!(value instanceof Array)) {
 
-                } else {
+                //} else {      //jsLint doesn't like empty if blocks.  flip the logic and uncomment the else when you're ready.
                     value = [value];
                 }
 
             } else {
-
                 if(value instanceof Array) {
-
                     value = value[0];
 
-                } else {
+                //} else {
                 }
 
             }
 
             return value;
-
         }
 
-
     });
+
 });

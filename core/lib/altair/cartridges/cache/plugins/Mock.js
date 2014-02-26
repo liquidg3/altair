@@ -23,7 +23,7 @@ define(['dojo/_base/declare', 'dojo/Deferred', './_Base'], function (declare, De
         },
         has: function (key) {
             var deferred = new Deferred();
-            deferred.resolve( this.hasOwnProperty( 'key' ) ); 
+            deferred.resolve( this.hasOwnProperty( 'key' ) );
             return deferred;
         },
         unset: function (key) {
