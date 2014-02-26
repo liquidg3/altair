@@ -4,15 +4,17 @@
 
 body {
     color: #839496;
+    background-color: #000000;
 }
 
 #bg {
     content: "Altair";
     align: center;
-    font: "isometric1";
+    font: "?";
     left: 0;
     right: 0;
     top: 50;
+    background-color: #002b36;
 
 }
 
@@ -30,23 +32,19 @@ select {
     top: 50;
     left: 50;
     clickable: true;
-    border-color: #839496;
-    border-bg: #839496;
-    border-type: ascii;
+    border-type: line;
     style-selected-fg: black;
     style-selected-bg: #268bd2;
     style-label-bg: black;
-    style-label-fg: #839496;
     style-label-bold: true;
     align:center;
 }
 
 #notice {
-    border-type: line   ;
-    border-color: #fdf6e3;
-    border-bg: #ffffff;
+    border-type: line;
     align: center;
     width: 500;
     top: center;
     left: center;
+    shrink: flex;
 }
