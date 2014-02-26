@@ -67,7 +67,21 @@ define(['dojo/_base/declare',
         },
 
         /**
-         * Build an apollo schema for the command
+         * Render a complex form of elements, use apollo schema flavor
+         *
+         * @param elements
+         * @param options
+         * @returns altair.Deferred
+         */
+        form: function(elements, options) {
+
+            var apolloSchema = this.module.nexus('cartridges/Apollo').createSchema({ elements: elements });
+
+            return this.adapter.form(apolloSchema, options);
+        },
+
+        /**
+         * Build an apollo schema for the command.
          *
          * @param named
          */

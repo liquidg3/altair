@@ -1,9 +1,27 @@
 /**
  * Apollo schemas are meant to be VERY lightweight.
+ *
+ * In altair
+ *
+ * var schema = this.nexus('cartridges/Apollo').createSchema({
+ *  'elements' => {
+ *      'fieldName' => {
+ *          'type' => 'string',
+ *          'options' => [
+ *              'label'         => 'My cool field',
+ *              'description'   => 'What the eff dude?',
+ *              'required'      => true
+ *          ]
+ *      }
+ * });
+ *
  */
 define(['dojo/_base/declare',
-    'dojo/_base/lang'
-], function (declare, lang) {
+        'dojo/_base/lang',
+        'altair/facades/mixin',
+        'altair/facades/hitch'
+
+], function (declare, lang, mixin, hitch) {
 
     return declare('apollo/Schema', null, {
 
@@ -99,6 +117,29 @@ define(['dojo/_base/declare',
          */
         elements: function () {
             return this.data.elements;
+        },
+
+        /**
+         * Gets all elements in this schema, but returns an array
+         *
+         * @returns {Array}
+         */
+        elementsAsArray: function () {
+
+            var elements = [];
+
+            Object.keys(this.data.elements).forEach(hitch(this, function (name) {
+
+                var element = mixin(this.data.elements[name], {
+                    name: name
+                });
+
+                elements.push(element);
+
+            }));
+
+            return elements;
+
         },
 
         /**
