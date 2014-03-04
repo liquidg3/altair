@@ -9,5 +9,10 @@
         "altair/cartridges/module/plugins/Events",
         "altair/cartridges/module/plugins/Foundry"
     ],
-    "modules": "*"
+    "modules": "*",
+    "moduleOptions": {
+        "Altair:CommandCentral": {
+            "selectedAdapter": "adapters/Prompt"
+        }
+    }
 }

@@ -30,7 +30,14 @@ define(['dojo/_base/declare',
             this.adapterCache = [];
         },
 
-
+        /**
+         * Find the adapter of your choosing.
+         *
+         * @param key
+         * @param options
+         * @param config
+         * @returns {*}
+         */
         resolve: function (key, options, config) {
 
             var parts   = key.split('::'),
@@ -58,7 +65,6 @@ define(['dojo/_base/declare',
          * @returns {boolean}
          */
         handles: function (key) {
-
             return key.search('::adapters/') > 0;
         }
 

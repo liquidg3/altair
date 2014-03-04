@@ -6,7 +6,7 @@ define(['dojo/_base/declare',
 
 
 
-    return declare('apollo/fieldtypes/Str', [_Base], {
+    return declare([_Base], {
 
         key: 'string',
         options: {

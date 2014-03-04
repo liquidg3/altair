@@ -21,11 +21,9 @@ function (declare,
 
         },
         resolve: function (key, options, config) {
-
             return this.moduleCartridge.module(key);
         },
         handles: function (key) {
-
             return this.moduleCartridge.hasModule(key);
         }
 

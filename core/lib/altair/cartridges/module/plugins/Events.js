@@ -15,7 +15,7 @@
  *
  * //or
  *
- * this.on('Altair:Jarvis::DID_GESTURE', lang.hitch(this, function (e) {
+ * this.on('Altair:Jarvis::did-gesture', lang.hitch(this, function (e) {
  *
  *       ....
  *

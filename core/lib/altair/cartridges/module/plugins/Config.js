@@ -6,22 +6,25 @@ define(['dojo/_base/declare',
         './_Base',
         'dojo/_base/lang',
         'require',
-        'dojo/has'],
+        'altair/facades/hitch'],
 
     function (declare,
               Deferred,
               _Base,
               lang,
               require,
-              has) {
+              hitch) {
 
     return declare([_Base], {
 
         declaredClass: 'altair/cartridges/module/plugins/Config',
         execute: function (module) {
 
+            //YUCK
             if(!module.resolvePath) {
-                throw "The Config plugin requires the altair/cartridges/module/plugins/Paths plugin, make sure Paths has been setup.";
+                this.deferred = new Deferred();
+                this.deferred.reject("The Config plugin requires the altair/cartridges/module/plugins/Paths plugin, make sure Paths has been setup.");
+                return this.deferred;
             }
 
             declare.safeMixin(module, {
@@ -31,7 +34,7 @@ define(['dojo/_base/declare',
                 /**
                  * Loads you a config by name, relative to the module's dir
                  *
-                 * @returns {dojo.deferred}
+                 * @returns {dojo.Deferred}
                  */
                 parseConfig: function (named) {
 
@@ -43,6 +46,7 @@ define(['dojo/_base/declare',
                     }
 
                     if( this._configs.hasOwnProperty( 'named' ) ) {
+
                         deferred.resolve( this._configs[named] );
 
                     } else {
@@ -51,11 +55,20 @@ define(['dojo/_base/declare',
 
                         try {
 
-                            require( ['altair/plugins/config!' + path], lang.hitch( this, function ( config ) {
+                            require( ['altair/plugins/config!' + path], hitch( this, function ( config ) {
 
-                                this._configs[named] = config;
 
-                                deferred.resolve( config );
+
+                                if(config === undefined) {
+
+                                    deferred.reject( config, false );
+                                    this._configs[named] = config;
+
+                                } else {
+
+                                    deferred.resolve( config );
+
+                                }
 
                             }));
 

@@ -1,7 +1,7 @@
 {
     "elements": {
-        "autostart": {
-            "type": "bool",
+        "autostart":       {
+            "type":    "bool",
             "options": {
                 "value": true,
                 "label": "Autostart"

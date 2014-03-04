@@ -18,7 +18,7 @@ define(['dojo/_base/declare',
     'dojo/Deferred',
     'dojo/DeferredList',
     'dojo/promise/all',
-    './Resolver',
+    './nexusresolvers/Modules',
     'altair/Lifecycle',
     'dojo/node!path',
     './Foundry',
@@ -31,7 +31,7 @@ define(['dojo/_base/declare',
               Deferred,
               DeferredList,
               all,
-              Resolver,
+              ModulesResolver,
               Lifecycle,
               nodePath,
               Foundry,
@@ -74,7 +74,6 @@ define(['dojo/_base/declare',
                 this.paths = [];
                 this.altair.paths.forEach( hitch( this, function ( path ) {
                     this.paths.push( nodePath.join(path, 'vendors') );
-
                 }));
             }
 
@@ -208,20 +207,21 @@ define(['dojo/_base/declare',
                 //make it easy to access modules by name
                 this.modulesByName = {};
 
-                //if the nexus cartridge is in, register our resolver and ourselves
+                //if the nexus cartridge is in, register our resolver and ourselves so people can find modules
+                //using nexus()
                 if(this.altair.hasCartridge('altair/cartridges/nexus/Nexus')) {
 
                     var nexus       = this.altair.cartridge('altair/cartridges/nexus/Nexus'),
-                        resolver    = new Resolver(this);
+                        resolver    = new ModulesResolver(this);
 
                     nexus.addResolver(resolver);
-                    nexus.set('cartridges/Module', this);
-
                 }
 
-                this.addModules(modules).then(hitch(this, function () {
+
+                //startup all modules, then return ourselves to the deferred
+                this.addModules(modules).then(hitch(this, function (modules) {
                     this.deferred.resolve(this);
-                }));
+                })).otherwise(hitch(this.deferred, 'reject'));
 
             })).otherwise(hitch(this.deferred, 'reject'));
 
@@ -236,7 +236,7 @@ define(['dojo/_base/declare',
          */
         addModules: function (modules) {
 
-            //shallow copy
+            //intentional shallow copy
             var _modules    = modules.slice(0),
                 deferred    = new Deferred(),
                 list,
@@ -273,9 +273,9 @@ define(['dojo/_base/declare',
                 var module = _modules.shift();
 
                 if(module) {
+
                     this.emit('will-startup-module', {
                         module: module
-
                     });
 
                     //lifecycle class gets started up....
@@ -284,12 +284,12 @@ define(['dojo/_base/declare',
                         options = (this.options.moduleOptions && this.options.moduleOptions[module.name]) ? this.options.moduleOptions[module.name] : undefined;
 
                         module.startup(options).then(hitch(this, function () {
+
                             this.emit('did-startup-module', {
                                 module: module
-
                             });
 
-                            module.execute().then(load);
+                            module.execute().then(load).otherwise(hitch(deferred, 'reject'));
 
                         })).otherwise(hitch(deferred, 'reject'));
 
@@ -299,7 +299,6 @@ define(['dojo/_base/declare',
 
                         this.emit('did-startup-module', {
                             module: module
-
                         });
 
                         load();
@@ -344,7 +343,6 @@ define(['dojo/_base/declare',
 
             deferred.on(hitch(this, function() {
                 this.deferred.resolve(this);
-
             }));
 
             return this.inherited(arguments);
@@ -362,11 +360,7 @@ define(['dojo/_base/declare',
             this.foundry.build({
                 paths: this.paths,
                 modules: modules
-            }).then(hitch(this, function (modules) {
-
-                deferred.resolve(modules);
-
-            })).otherwise(hitch(deferred, 'reject'));
+            }).then(hitch(deferred, 'resolve')).otherwise(hitch(deferred, 'reject'));
 
             return deferred;
         }

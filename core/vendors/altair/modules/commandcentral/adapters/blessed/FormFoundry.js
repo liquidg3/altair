@@ -31,7 +31,11 @@ define(['dojo/_base/declare',
                 selector += ', #' + options.id;
             }
 
-            form = new blessed.Form(mixin(adapter.styles(selector), options));
+            form = new blessed.Form({
+                keys: true,
+                vi: true,
+                scrollable: true
+            },mixin(adapter.styles(selector), options));
             form._elements = [];//monkey wrench
 
             form.key('tab', function() {
@@ -47,12 +51,11 @@ define(['dojo/_base/declare',
                     el,
                     options = {
                         name: element.name,
-                        label: element.options.label,
+                        content: element.name,
                         parent: form,
                         shrink: true,
                         mouse: true,
-                        keys: true,
-                        vi: false
+                        keys: true
                     };
 
                 switch (element.type) {
@@ -74,12 +77,9 @@ define(['dojo/_base/declare',
                 }
 
                 styleName = className.toLowerCase();
-                options = mixin({
-                    height: 2,
-                    top: top
-                }, options, adapter.styles(styleName + ', form ' + styleName));
+                options = mixin(options, adapter.styles(styleName + ', form ' + styleName));
 
-                top = top + options.height;
+                top = top + options.height + 1;
 
                 el = new blessed[className](options);
 

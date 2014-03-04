@@ -17,8 +17,7 @@ define(['dojo/_base/declare', 'altair/Lifecycle'], function (declare, Lifecycle)
             if(!cartridge) {
                 throw "You must pass an instance of a Cache Cartridge to constructor of any cache plugin.";
             }
-        },
-
+        }
 
     });
 

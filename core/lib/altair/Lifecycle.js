@@ -39,7 +39,7 @@
  */
 define(['dojo/_base/declare',
         'altair/facades/hitch',
-        'dojo/Deferred'],
+        'altair/Deferred'],
                         function (declare,
                                   hitch,
                                   Deferred) {
@@ -51,13 +51,13 @@ define(['dojo/_base/declare',
 
             setTimeout(function () {
 
-                if(scope.deferred === def) {
+                if(scope.deferred === def && scope.deferred.isResolved()) {
                     scope.deferred = null;
                 }
 
             }, 0);
         };
-    }
+    };
 
     return declare('altair/Lifecycle', null, {
 

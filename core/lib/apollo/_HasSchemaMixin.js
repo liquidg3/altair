@@ -53,7 +53,7 @@ define(['dojo/_base/declare',
 
             var methodName = toGetter(name);
 
-            if( this.hasOwnProperty(methodName) ) {
+            if( typeof this[methodName] === 'function') {
 
                 return this[methodName](defaultValue, options, config);
             }
@@ -74,9 +74,10 @@ define(['dojo/_base/declare',
             var methodName = toSetter(name),
                 results;
 
-            if( this.hasOwnProperty( methodName ) ) {
+            if( typeof this[methodName] === 'function') {
 
                 results = this[methodName](value);
+
             } else {
 
                 results = this._set(name, value);
@@ -93,7 +94,9 @@ define(['dojo/_base/declare',
          */
         mixin: function(values) {
 
-            lang.mixin(this.values, values);
+            Object.keys(values).forEach(lang.hitch(this, function (name) {
+                this.set(name, values[name]);
+            }));
 
             return this;
         },
@@ -112,7 +115,7 @@ define(['dojo/_base/declare',
                 this.values[name] = value;
 
             } else {
-                throw "No field called '" + name + "' exists on this " + this.declaredClass;
+                throw "No element called '" + name + "' exists on this " + this.declaredClass;
 
             }
 
@@ -148,6 +151,7 @@ define(['dojo/_base/declare',
          * @returns {apollo|_HasSchemaMixin}
          */
         setSchema: function (schema) {
+
             this._schema    = schema;
 
             if(!this.values) {
@@ -157,10 +161,14 @@ define(['dojo/_base/declare',
             var elements    = schema.elements();
 
             Object.keys(elements).forEach(lang.hitch(this, function (name) {
+
+                //only set values on ourselves that do not already exist
+                //this is to ensure that values has a key for every element in the schema
                 if( !( this.values.hasOwnProperty(name) ) ) {
 
-                //} else {  //when you're ready to use the if block, flip and uncomment the else.
-                    this.values[name] = schema.optionsFor(name, false).value || null;
+                    this.values[name] = '';//so the .set doesn't give us "element does not exist"
+                    this.set(name, schema.optionsFor(name, false).value || null);
+
                 }
 
             }));
@@ -168,18 +176,6 @@ define(['dojo/_base/declare',
             return this;
         }
 
-    });
-
-    /**
-     * Schema getter/setter
-     */
-    Object.defineProperty(_HasSchemaMixin.prototype, 'schema', {
-        set: function (value) {
-            this.setSchema(value);
-        },
-        get: function () {
-            return this._schema;
-        }
     });
 
     return _HasSchemaMixin;

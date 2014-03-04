@@ -2,7 +2,7 @@
  * Bootstrap Altair contexts based on a config
  */
 require(['altair/TestRunner',
-         'altair/plugins/config!core/config/test.json'], function (TestRunner, config) {
+         'altair/plugins/config!core/config/test'], function (TestRunner, config) {
 
 
     var runner = new TestRunner();

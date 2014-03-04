@@ -137,7 +137,7 @@ Now check out how easy it is to control our imaginary thermostat and maybe some 
         else {
 
             //it may be a little extreme to do something like this, maybe we should do some text to speech? ;)
-            this.nexus('Altair/Jarvis').devicesByTags(['hallway', 'lights']).pulse({
+            this.nexus('Altair:Jarvis').devicesByTags(['hallway', 'lights']).pulse({
                 duration:   500,
                 loop:       2,
                 colors:     ['ff0000', 'ffffff']

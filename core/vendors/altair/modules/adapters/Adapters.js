@@ -15,14 +15,23 @@ define(['dojo/_base/declare',
     return declare('altair/modules/adapters/Adapters', [_HasAdaptersMixin, Lifecycle], {
 
         /**
-         * On startup, add Adapter Resolver to nexus
+         * On startup, add Adapter Resolver to nexus. Also add the adapter field type to Apollo
          *
          * @returns {*}
          */
         startup: function () {
 
-            var resolver = new Adapters(this._nexus);
-            this._nexus.addResolver(resolver);
+            //nexus resolve for adapters, e.g. Altair:Commander::adapters/Prompt or Altair:Commander::adapters/Blessed
+            var resolver            = new Adapters(this._nexus),
+                apolloCartridge     = this.nexus('cartridges/Apollo');
+
+            if(!apolloCartridge) {
+                this.deferred = new this.Deferred();
+                this.deferred.reject('You need the Apollo cartridge enabled to use adapters.');
+            } else {
+                this._nexus.addResolver(resolver);
+            }
+
 
             return this.inherited(arguments);
         }

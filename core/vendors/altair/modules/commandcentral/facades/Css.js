@@ -24,6 +24,10 @@ define(['dojo/node!css-parse',
 
     "use strict";
 
+    function isNumber(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+
     return function(filepath) {
 
         var d = new Deferred();
@@ -53,8 +57,12 @@ define(['dojo/node!css-parse',
                         //build property list
                         rule.declarations.forEach(function (d) {
 
+                            //help numbers come through as numbers
+                            if(isNumber(d.value)) {
+                                d.value = parseFloat(d.value);
+                            }
                             //quoted property values come with quotes from the parser, i just remove them
-                            if(d.value[0] === '"') {
+                            else if(d.value[0] === '"') {
                                 d.value = d.value.substr(1, d.value.length - 2);
                             }
                             properties[d.property] = d.value;

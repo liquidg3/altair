@@ -1,10 +1,10 @@
 Altair Core
 ===
 
-The core directory contains the minimum amount of libraries that are needed to bootstrap the platform.
-An argument is to be made against how far we've diverged from colloquial app conventions in Nodejs. But,
+The core directory contains the minimum amount of libraries that are needed to bootstrap the platform and to make it
+useful. An argument is to be made against how far we've diverged from colloquial app conventions for Nodejs. But,
 the way Altair is structured is no accident. It's designed to facilitate the building of massive, complex
-systems without growing the complexity of & the difficulty in managing the code.
+systems without growing the complexity of and the difficulty in managing the code.
 
 We know it works because we've used it before with great success, having completed projects with < 5 engineers
 where our competition has needed 30+. Now, not all this can be attributed to the layout of the filesystem, but

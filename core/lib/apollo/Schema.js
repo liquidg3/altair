@@ -17,42 +17,45 @@
  *
  */
 define(['dojo/_base/declare',
-        'dojo/_base/lang',
-        'altair/facades/mixin',
-        'altair/facades/hitch'
+        'dojo/_base/lang'
 
-], function (declare, lang, mixin, hitch) {
+], function (declare, lang) {
 
     return declare(null, {
 
-        data:           null,
-        fieldTypes:     null,
-        optionsByField: null,
-        typeCache:      null,
+        _data:           null,
+        _elementTypes:   null,
+        _optionsByField: null,
+        _typeCache:      null,
 
         /**
          * Pass through straight config... assume its setup how we like it.
          *
          * @param schema
          */
-        constructor: function (schema, fieldTypes) {
+        constructor: function (schema, elementTypes) {
 
-            if (!schema || !fieldTypes) {
+            if (!schema || !elementTypes) {
                 throw "You must pass a schema literal and an array of apollo/fieldtypes/_Base instances";
             }
 
-            this.fieldTypes     = {};
-            this.data           = schema;
-            this.optionsByField = {};
-            this.typeCache      = {};
+            this._elementTypes      = {};
+            this._data              = schema;
+            this._optionsByField    = {};
+            this._typeCache         = {};
 
-            if(fieldTypes instanceof Array) {
+            if(!this._data.elements) {
+                this._data.elements = {};
+            }
 
-                fieldTypes.forEach(lang.hitch(this, function (type) {
-                    this.fieldTypes[type.key] = type;
+            if (elementTypes instanceof Array) {
+
+                elementTypes.forEach(lang.hitch(this, function (type) {
+                    this._elementTypes[type.key] = type;
                 }));
+
             } else {
-                this.fieldTypes = fieldTypes;
+                this._elementTypes = elementTypes;
             }
 
 
@@ -61,53 +64,52 @@ define(['dojo/_base/declare',
         /**
          * Does a schema have a field by this name?
          *
-         * @param fieldName
+         * @param elementName
          * @returns {boolean}
          */
-        has: function (fieldName) {
+        has: function (elementName) {
 
-            return (this.data.elements.hasOwnProperty(fieldName));
+            return (this._data.elements.hasOwnProperty(elementName));
         },
 
         /**
          * Get you all the options for this field mixed in with all options for the field type.
          *
-         * @param fieldName
+         * @param elementName
          * @param mixinAll optional
          * @returns {} all options for that field type
          */
-        optionsFor: function (fieldName, mixinAll) {
+        optionsFor: function (elementName, mixinAll) {
 
-            if(fieldName in this.data.elements) {
+            if (elementName in this._data.elements) {
 
-                var element = this.data.elements[fieldName],
+                var element = this._data.elements[elementName],
                     options = element.options;
 
-                if(!options) {
-                    throw fieldName + " has no options. add it to your schema";
+                if (!options) {
+                    throw elementName + " has no options. add it to your schema";
                 }
 
                 //if we are doing a simple (lightweight) get of options
-                if(mixinAll === false) {
+                if (mixinAll === false) {
                     return options;
                 }
 
-                if(!this.optionsByField[fieldName]) {
+                if (!this._optionsByField[elementName]) {
 
-                    var type = this.fieldType(element.type);
-                    this.optionsByField[fieldName]  = type.normalizeOptions(options);
+                    var type = this.elementType(element.type);
+                    this._optionsByField[elementName] = type.normalizeOptions(options);
 
                 }
 
 
             } else {
 
-                throw fieldName + ' does not exist on ' + this.declaredClass;
+                throw elementName + ' does not exist on ' + this.declaredClass;
             }
 
+            return this._optionsByField[elementName];
 
-
-            return this.optionsByField[fieldName];
         },
 
 
@@ -117,7 +119,7 @@ define(['dojo/_base/declare',
          * @returns {};
          */
         elements: function () {
-            return this.data.elements;
+            return this._data.elements;
         },
 
         /**
@@ -129,9 +131,9 @@ define(['dojo/_base/declare',
 
             var elements = [];
 
-            Object.keys(this.data.elements).forEach(hitch(this, function (name) {
+            Object.keys(this._data.elements).forEach(lang.hitch(this, function (name) {
 
-                var element = mixin(this.data.elements[name], {
+                var element = lang.mixin({}, this._data.elements[name], {
                     name: name
                 });
 
@@ -144,26 +146,25 @@ define(['dojo/_base/declare',
         },
 
         /**
-         * Returns you a field by a particular type
+         * Returns you a elementtype by a particular key, e.g. string, email, bool
          *
          * @param key
          * @returns {*}
          */
-        fieldType: function (key) {
+        elementType: function (key) {
 
-            if(!(key in this.fieldTypes)) {
+            if (!(key in this._elementTypes)) {
                 throw 'No field type of ' + key + ' found in schema.';
             }
 
-            return this.fieldTypes[key];
+            return this._elementTypes[key];
 
         },
 
         /**
-         * Tries all the methods passed on the element fieldType, first one wins.
+         * Tries all the methods passed on the element elementType, first one wins.
          *
          * Example:
-         *
          *
          *  schema.applyOnElement(['toSolrValue', 'toStringValue'], 'firstName', 'Taylo®™', { maxLength: 35 }
          *
@@ -173,36 +174,36 @@ define(['dojo/_base/declare',
         applyOnElement: function (methodNames, elementName, value, options, config) {
 
             //by convention, these are null and will not be casted
-            if(value === null || value === undefined) {
+            if (value === null || value === undefined) {
                 return null;
             }
 
-            var element     = this.data.elements[elementName],
-                type        = element.type,
-                fieldType   = this.fieldType(type),
+            var element = this._data.elements[elementName],
+                type = element.type,
+                elementType = this.elementType(type),
                 c,
                 methodName;
 
 
             //normalize options
-            options = fieldType.normalizeOptions(options || {});
+            options = elementType.normalizeOptions(options || {});
 
             //normalize for many
-            value   = fieldType.normalizeMany(value, options, config);
+            value = elementType.normalizeMany(value, options, config);
 
 
-            for(c = 0; c < methodNames.length; c++) {
+            for (c = 0; c < methodNames.length; c++) {
 
                 methodName = methodNames[c];
 
-                if(methodName in fieldType) {
+                if (methodName in elementType) {
 
                     //make sure it's not an array when {{methodName}} is called
-                    if(fieldType.makeValuesSingular) {
+                    if (elementType.makeValuesSingular) {
 
                         var wasArray = false;
 
-                        if(value instanceof Array) {
+                        if (value instanceof Array) {
 
                             wasArray = true;
 
@@ -215,20 +216,18 @@ define(['dojo/_base/declare',
                         var finalValue = [];
 
                         value.forEach(function (_value) {
-                            finalValue.push(fieldType[methodName](_value, options, config));
+                            finalValue.push(elementType[methodName](_value, options, config));
                         });
 
                         return wasArray ? finalValue : finalValue[0];
-
 
                     }
                     //we want the raw value passed to method name
                     else {
 
-                        return fieldType[methodName](value, options, config);
+                        return elementType[methodName](value, options, config);
 
                     }
-
 
 
                 }
@@ -237,6 +236,23 @@ define(['dojo/_base/declare',
 
             throw 'Could not find methods on element named ' + elementName + '.';
 
+        },
+
+        /**
+         * Add a new element to this schema.
+         *
+         * @param name
+         * @param type
+         * @param options
+         */
+        append: function (name, type, options) {
+            
+            this._data.elements[name] = {
+                type:       type,
+                options:    options
+            };
+
+            return this;
         }
 
     });

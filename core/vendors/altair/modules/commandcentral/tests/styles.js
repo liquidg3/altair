@@ -64,7 +64,7 @@ define(['doh/runner',
             }
         ];
 
-        doh.register('altair-adapters-module', [
+        doh.register('command-central', [
 
 
             /**

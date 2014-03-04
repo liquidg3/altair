@@ -65,6 +65,7 @@ define(['dojo/_base/declare',
 
                     path = parent.resolvePath(className + '.js');
 
+                    //nodejs says fs.exists is deprecated, should we just do the require() right out the gate?
                     fs.exists(path, hitch(parent, function (exists) {
 
                         if(exists) {
@@ -80,6 +81,12 @@ define(['dojo/_base/declare',
                                 declare.safeMixin(a, {
                                    nexus: function (key ,options, config) {
                                        return this._nexus.resolve(key, options, config);
+                                   },
+                                   on: function() {
+                                        return this.module.on.apply(this.module, arguments);
+                                   },
+                                   emit: function() {
+                                        return this.module.emit.apply(this.module, arguments);
                                    }
                                 });
 

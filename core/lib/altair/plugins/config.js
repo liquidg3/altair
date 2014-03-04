@@ -120,8 +120,10 @@ define(['require',
         load: function(id, require, load){
 
 
-            var env = null;
+            var env = null,
+                config;
 
+            //they passed ?env=
             if(id.search(/\?/) > 0) {
 
                 var query = querystring.parse(id.split('?').pop());
@@ -136,7 +138,12 @@ define(['require',
             }
 
             //@TODO move to fs.readFile and JSON.parse
-            var config = require.nodeRequire(id);
+            try {
+                config = require.nodeRequire(id);
+            } catch (e) {
+                load(undefined);
+            }
+
 
             if(env) {
 
@@ -166,7 +173,12 @@ define(['require',
 
         normalize: function(id, toAbsMid){
 
-            return require.toUrl(id)
+            //no file extension, assume .json for now
+            if(id.search('.json') === -1) {
+                id = id + '.json';
+            }
+
+            return require.toUrl(id);
 
         }};
 });

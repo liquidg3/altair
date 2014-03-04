@@ -5,13 +5,13 @@
  */
 define(['dojo/_base/declare',
          './_Base',
-         'dojo/_base/lang',
+         'altair/facades/hitch',
          'apollo/_HasSchemaMixin',
          'dojo/Deferred'],
 
     function (declare,
               _Base,
-              lang,
+              hitch,
               _HasSchemaMixin,
               Deferred) {
 
@@ -39,6 +39,7 @@ define(['dojo/_base/declare',
         },
 
         /**
+         * Called once for each module.
          *
          * @param module
          * @returns {*}
@@ -64,23 +65,29 @@ define(['dojo/_base/declare',
                 this.deferred = new Deferred();
 
                 //parse the config, then build the schema
-                module.parseConfig('configs/schema.json').then(lang.hitch(this, function (schemaData) {
+                module.parseConfig('configs/schema').then(hitch(this, function (schemaData) {
 
-                    //get apollo off the apollo cartridge
+                    //use apollo to create the schema
                     var apollo = this.altair.cartridge('altair/cartridges/apollo/Apollo').apollo,
                         schema = apollo.createSchema(schemaData);
 
                     //set the schema to the module
                     module.setSchema(schema);
 
+                    this.deferred.resolve(this);
 
+                }), hitch(this, function (err) {
+
+                    //since the schema is optional, create one that is empty
+                    var apollo = this.altair.cartridge('altair/cartridges/apollo/Apollo').apollo,
+                        schema = apollo.createSchema({});
+
+                    //set the schema to the module
+                    module.setSchema(schema);
 
                     this.deferred.resolve(this);
 
-
-                }), function (err) {
-                    throw err;
-                });
+                }));
 
             }
 

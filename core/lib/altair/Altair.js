@@ -8,12 +8,13 @@
  */
 define(['dojo/_base/declare',
         'dojo/Deferred',
-        'dojo/_base/lang'],
+        'dojo/_base/lang',
+        'dojo/has'],
     function (declare, Deferred, lang) {
 
         "use strict";
 
-    return declare('altair/Altair', null, {
+    return declare(null, {
 
         _cartridges:    null,
         env:            'dev',
@@ -62,6 +63,15 @@ define(['dojo/_base/declare',
 
             return def;
 
+        },
+
+        /**
+         * All the cartridges by declaredClass.
+         *
+         * @returns {object}
+         */
+        cartridges: function () {
+            return this._cartridges;
         },
 
         /**

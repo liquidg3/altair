@@ -16,19 +16,25 @@ define(['dojo/_base/declare',
 
     return declare('apollo/Apollo', null, {
 
-        fieldTypes: null,
+        elementTypes: null,
 
         constructor: function () {
-            this.fieldTypes = {};
+            this.elementTypes = {};
         },
 
+        /**
+         * Add a new type of element
+         * @param fieldType {apollo.elementtypes._Base}
+         * @returns {apollo.Apollo}
+         */
         addType: function (fieldType) {
-            this.fieldTypes[fieldType.key] = fieldType;
+            this.elementTypes[fieldType.key] = fieldType;
             return this;
         },
 
         /**
-         * Add many field types at once.
+         * Add many element types at once.
+         *
          * @param types
          */
         addTypes: function (types) {
@@ -45,7 +51,7 @@ define(['dojo/_base/declare',
          */
         createSchema: function (data) {
 
-            var s = new Schema(data, this.fieldTypes);
+            var s = new Schema(data, this.elementTypes);
 
             return s;
         }

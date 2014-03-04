@@ -237,8 +237,7 @@ define(['dojo/_base/declare',
 
             options = this._normalizeOptions(options);
 
-            var selector = 'form',
-                d        = new Deferred();
+            var d        = new Deferred();
 
             this.module.foundry('adapters/blessed/FormFoundry').then(hitch(this, function (foundry) {
 
@@ -372,37 +371,13 @@ define(['dojo/_base/declare',
         styles: function (selector) {
 
             var styles = this.inherited(arguments),
-                org      = mixin({}, styles), // make copy for backup
-                modified = {},
-                map      = { //how we map normal css to blessed for ones where replacing - with . will not cut it
-                    'color':            'style.fg',
-                    'background-color': 'style.bg',
-                    'border-color':     'border.fg',
-                    'text-align':       'align'
-                };
+                modified = {};
 
-
-
-            //copy the things i know i need to move based on the map, delete them, but save the remainder
-            Object.keys(map).forEach(function (k) {
-
-                if(styles[k]) {
-                    lang.setObject(map[k], styles[k], modified);
-                    delete styles[k]; //so there are no duplicate looking selectors (we pass original back with results, so it's ok)
-                }
-            });
-
-
-            //lastly, replace any - with . and drop any px
+            //lastly, replace any - with .
             Object.keys(styles).forEach(function (k) {
 
-                //drop px
-                if(styles[k].substr(-2) === 'px') {
-                    styles[k] = parseInt(styles[k].substr(0, styles[k].length -2), 10);
-                }
-
                 if(k.indexOf('-') > 0) {
-                    lang.setObject(k.replace(/-/g, '.'), styles[k], modified);
+                    lang.setObject(k.replace(/-/g, '.'), styles[k], styles);
                     delete styles[k];
                 }
 
@@ -413,11 +388,7 @@ define(['dojo/_base/declare',
                 styles.content = styles.content.replace(/\\n/g, '\n');
             }
 
-            modified = mixin(styles, modified); //mix back in what remains unmapped of styles to our modified ones
-
-            modified._original = org;
-
-            return modified;
+            return styles;
 
         },
 

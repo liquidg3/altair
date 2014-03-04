@@ -9,7 +9,7 @@ define(['dojo/_base/declare',
              Deferred,
              lang) {
 
-    return declare('apollo/fieldtypes/_Base', null, {
+    return declare(null, {
 
         /**
          * Your field type should define its own options
@@ -147,16 +147,13 @@ define(['dojo/_base/declare',
             if(options.many) {
 
                 if(!(value instanceof Array)) {
-
-                //} else {      //jsLint doesn't like empty if blocks.  flip the logic and uncomment the else when you're ready.
                     value = [value];
                 }
 
             } else {
+
                 if(value instanceof Array) {
                     value = value[0];
-
-                //} else {
                 }
 
             }

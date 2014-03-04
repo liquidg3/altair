@@ -1419,7 +1419,7 @@ doh._runRegFixture = function(/*String*/ groupName, /*Object*/ fixture){
 			doh._handleFailure(groupName, fixture, new Error("test timeout in " + fixture.name.toString()));
 			threw = true;
 			retEnd();
-		}, fixture["timeout"]||1000);
+		}, fixture["timeout"]||100000);
 
 		ret.always(function(){
 			clearTimeout(timer);

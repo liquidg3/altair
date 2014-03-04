@@ -23,13 +23,16 @@ if(argv.help) {
 
 var base = path.join('node_modules', 'altair.io');
 
+GLOBAL.window = {
+    setTimeout: setTimeout
+};
+
 // Configuration Object for Dojo Loader:
 dojoConfig = {
     baseUrl: path.resolve(__dirname, '../../'), // Where we will put our packages
     async: 1, // We want to make sure we are using the "modern" loader
-    hasCache: {
-        "host-node": 1, // Ensure we "force" the loader into Node.js mode
-        "dom": 0 // Ensure that none of the code assumes we have a DOM
+    has: {
+        "dojo-timeout-api": 1
     },
     packages: [
         {

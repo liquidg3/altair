@@ -33,17 +33,17 @@ define(['dojo/_base/declare',
                 var _options = options || this.options;
 
                 //do they pass the fieldtypes they want loaded?
-                if( !_options.hasOwnProperty('fieldTypes') ) {
+                if( !_options.hasOwnProperty('elementTypes') ) {
 
                 //} else { //jsLint complains about the empty if block, flip it and use this else when you want to do some logic here.
 
                     //the base fieldtypes i think we need to get altair to work
-                    _options.fieldTypes = [
-                        'apollo/fieldtypes/Str',
-                        'apollo/fieldtypes/Bool',
-                        'apollo/fieldtypes/Int',
-                        'apollo/fieldtypes/Float',
-                        'apollo/fieldtypes/Date'
+                    _options.elementTypes = [
+                        'apollo/elementTypes/Str',
+                        'apollo/elementTypes/Bool',
+                        'apollo/elementTypes/Int',
+                        'apollo/elementTypes/Float',
+                        'apollo/elementTypes/Date'
                     ];
 
                 }
@@ -51,7 +51,7 @@ define(['dojo/_base/declare',
                 this.deferred   = new Deferred();
                 this.apollo     = new Apollo();
 
-                require( _options.fieldTypes, lang.hitch(this, function () {
+                require( _options.elementTypes, lang.hitch(this, function () {
 
                     var types = Array.prototype.slice.call(arguments),
                         i,
@@ -71,22 +71,7 @@ define(['dojo/_base/declare',
             },
 
             /**
-             * Add ourselves to nexus if it's enabled
-             */
-            execute: function () {
-
-                if( this.altair.hasCartridge( 'altair/cartridges/nexus/Nexus' ) ) {
-
-                    var nexus = this.altair.cartridge( 'altair/cartridges/nexus/Nexus' );
-                    nexus.set( 'cartridges/Apollo', this );
-
-                }
-
-                return this.inherited( arguments );
-            },
-
-            /**
-             * Create a schema passed on a few options
+             * Create a schema passed on a few options.
              *
              * @param data
              * @returns {*}
@@ -98,7 +83,8 @@ define(['dojo/_base/declare',
                     return data;
                 }
 
-                //if they did not pass something with "elements", assume they meant to
+                //if they did not pass something with "elements", assume they meant to and that they passed
+                //an object where the keys are the element names and everything else is as expected
                 if(!data.hasOwnProperty('elements')) {
                     data = {
                         elements: data

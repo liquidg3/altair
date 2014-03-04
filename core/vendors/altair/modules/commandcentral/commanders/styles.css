@@ -1,58 +1,50 @@
 * {
+    style-fg: magenta;
+    style-bg: #000000;
 }
 
 body {
-    background-color: #000000;
 }
 
 #bg {
     content: "Altair";
     align: center;
-    font: "isometric1";
-
+    font: "Swamp Land";
     left: 0;
     right: 0;
-    top: 50;
-    padding: 1;
-    background-color: #002b36;
-
-}
-
-#splash {
-    width: 400px;
-    height: 550px;
-    align: center;
-    top: center;
-    left: center;
-    content: "               `:+shdmNMMMMNmdhs+:`               \n           `/smMMMMMMMMMMMMMMMMMMMMms/`           \n         :hMMMMMMMMMMMMMMMMMMMMMMMMMMMMy:         \n       +mMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMm+       \n     /mMMMMMMMMMMMMMMMNddNMMMMMMMMMMMMMMMMMm:     \n   `yMMMMMMMMMMMMMMMd-    `oMMMMMMMMMMMMMMMMMy`   \n  `dMMMMMMMMMMMMMMMMMNs     -mMMMMMMMMMMMMMMMMd`  \n `mMMMMMMMMMMMMMMMMMMMo .    .mMMMMMMMMMMMMMMMMm` \n yMMMMMMMMMMMMMMMMMMMh sm`    .NMMMMMMMMMMMMMMMMy \n:MMMMMMMMMMy.  ./ymMm`/MMh     :MMMMMMMMMMMMMMMMM:\nyMMMMMMMMMd        -..NMMMo     oMMMMMMMMMMMMMMMMy\nNMMMMMMMMMs           :yMMM.     dMMMMMMMMMMMMMMMN\nMMMMMMMMMMy://:-.`      `+md     .NMMMMMMMMMMMMMMM\nNMMMMMMMMMMMMMMMM+ :y+:`   :-     /MMMMMMMMMMMMMMN\nyMMMMMMMMMMNy++N/ `NMMMMmy+-       yMMMMMMMMMMMMMy\n:MMMMMMMMMy`      hMMMMMMMMMNh`    `mMMMMMMMMMMMM:\n yMMMMMMMM.      sMMMMMMMMMMMMd`    .dymMMMMMMMMy \n `mMMMMMMMy`   -hMMMMMMMMMMMMMMd`      -MMMMMMMm` \n  `dMMMMMMMMNmNMMMMMMMMMMMMMMMMMN+`   `sMMMMMMd`  \n   `yMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNdhdNMMMMMMy`   \n     :mMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMm:     \n       +mMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMm+       \n         :yMMMMMMMMMMMMMMMMMMMMMMMMMMMMy:         \n           `/smMMMMMMMMMMMMMMMMMMMMms/`           \n       `:+shdmNMMMMNmdhs+:`     ";
-}
-
-select {
-    width: 100px;
-    top: 50;
-    left: 50;
-    clickable: true;
-    border-type: line;
-    style-selected-fg: black;
-    style-selected-bg: #268bd2;
-    style-label-bg: black;
-    style-label-bold: true;
-    align:center;
+    top: 1;
 }
 
 #notice {
-    border-type: line;
-    align: center;
-    width: 500;
-    top: center;
-    left: center;
+    height: 40;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 form {
-    width: 200px;
+    left:center;
     top: center;
-    left: center;
+    width: 50%;
+    height: 50%;
+    style-bg: cyan;
+    bg: yellow;
 }
+
+
+select {
+    left: center;
+    top: center;
+    style-bg: blue;
+    width: 50%;
+    height: 50%;
+    clickable: true;
+    border-type: bg;
+    border-ch: *;
+    padding:1;
+    style-focus-bg: red;
+}
+
 
 dirmanager {
 
@@ -71,25 +63,11 @@ filemanager {
 }
 
 textbox {
-
-}
-
-form {
-    width: half;
-    height: half;
-    top: center;
-    left: center;
-    border-color: green;
-    color: blue;
-    background-color: black;
-}
-
-textbox {
-    bg: blue;
+    style-focus-bg: red;
+    style-bg: black;
     shrink: true;
-    color: blue;
-    height:2px;
-    left: 0px;
-    fg: blue,
-    border-color: green;
+    style-fg: blue;
+    height:2;
+    left: 0;
+    width: 100;
 }

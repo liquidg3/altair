@@ -10,17 +10,20 @@
  *
  */
 define(['dojo/_base/declare',
-    'dojo/_base/lang',
-    '../_Base'],
+        'dojo/_base/lang',
+        '../_Base',
+        './resolvers/Cartridge',
+        './elementtypes/Nexus'],
                 function (declare,
                           lang,
-                          _Base) {
+                          _Base,
+                          CartridgeResolver,
+                          NexusElementType) {
 
 
     return declare([_Base], {
 
         declaredClass: 'altair/cartridges/nexus/Nexus',
-
 
         _resolvers: null,
         _map:       null,
@@ -48,7 +51,7 @@ define(['dojo/_base/declare',
 
             var _options = options || this.options;
 
-            //setup new resolver if one is not passed
+            //setup new resolver if one is passed
             if (_options.resolvers) {
                 _options.resolvers.forEach(lang.hitch(this, function (resolver) {
                     this.addResolver(resolver);
@@ -69,6 +72,29 @@ define(['dojo/_base/declare',
             this._resolvers = [];
 
             return this.inherited(arguments);
+        },
+
+        /**
+         * Setup the Cartridge resolver so people can access all cartridges using nexus('cartridges/{*}') and also
+         * add awesome element type to apollo
+         */
+        execute: function () {
+
+            //resolver
+            var resolver = new CartridgeResolver(this);
+            this.addResolver(resolver);
+
+            //create and add the element type
+            var apolloCartridge = this.resolve('cartridges/Apollo');
+            if(apolloCartridge) {
+
+                var type = new NexusElementType(this);
+                apolloCartridge.apollo.addType(type);
+
+            }
+
+            return this.inherited(arguments);
+
         },
 
         /**

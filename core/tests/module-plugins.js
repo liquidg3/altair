@@ -47,7 +47,7 @@ define(['doh/runner',
                     var module = modules[0];
 
                     doh.assertTrue(!!module.resolvePath, 'Resolve path not added to module by Paths plugin.');
-                    doh.assertEqual(module.resolvePath('public/js/test.js'), path.join(module.dir, 'public', 'js', 'test.js'), 'resolvePpath failed');
+                    doh.assertEqual(module.resolvePath('public/js/test.js'), path.join(module.dir, 'public', 'js', 'test.js'), 'resolvePath failed');
 
                 }));
 
@@ -61,7 +61,7 @@ define(['doh/runner',
              * @returns {dojo.tests._base.Deferred}
              */
             {
-                name: 'configPluginTest',
+                name: 'config-plugin',
                 runTest: function () {
 
                     var deferred = new doh.Deferred();
@@ -72,7 +72,7 @@ define(['doh/runner',
 
                         doh.assertTrue(!!module.parseConfig, 'parseConfig not added to module by Config plugin.');
 
-                        module.parseConfig('config/test.json').then(function (config) {
+                        module.parseConfig('config/test').then(function (config) {
                             doh.assertEqual('bar', config.foo, 'Config loading failed');
                         });
 
