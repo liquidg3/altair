@@ -11,8 +11,8 @@ define([
 	//		dojo/Deferred
 
 	var PROGRESS = 0,
-        RESOLVED = 1,
-        REJECTED = 2;
+			RESOLVED = 1,
+			REJECTED = 2;
 	var FULFILLED_ERROR_MESSAGE = "This deferred has already been fulfilled.";
 
 	var freezeObject = Object.freeze || function(){};

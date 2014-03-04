@@ -250,12 +250,12 @@ define([
 
 
 		// calling error will indicate that the promise failed
-		this.reject = this.errback = function(error, report){
+		this.reject = this.errback = function(error){
 			// summary:
 			//		Fulfills the Deferred instance as an error with the provided error
 			isError = true;
 			this.fired = fired = 1;
-			if(has("config-useDeferredInstrumentation") && (report || typeof report === 'undefined')){
+			if(has("config-useDeferredInstrumentation")){
 				if(NewDeferred.instrumentRejected){
 					NewDeferred.instrumentRejected(error, !!nextListener);
 				}
