@@ -36,9 +36,10 @@ We do everything in our power to enhance each others productivity while minimizi
 can't get our time back, so lets maximize what we can get done in that time.
 
 1. **The difficulties in managing the code should not increase with lines of code.** We chose
-[dojo's very powerful AMD implementation](http://dojotoolkit.org/documentation/tutorials/1.9/modules/) to
-keep code management from becoming a problem we have to solve). We also rely on a strict file and config structure.
-It's proven very successful for us and we only intend on making it better.
+[dojo's very powerful AMD implementation](http://dojotoolkit.org/documentation/tutorials/1.9/modules/) for 2 reasons.
+Firstly, its declare implementation conforms to the [C3 Method Resolution Order.](http://www.python.org/download/releases/2.3/mro/)
+and if you're a python fan, you'll appreciate it as well. Secondly, we rely heavily on dojo's Deferred approach to promises. We
+plan on removing dojo eventually and you'll never interface with it directly.
 
 1. **One should focus on the problem they are trying to solve and forget all else.** We are trying to solve the problem
 of how to connect and control many devices as elegantly and simply as possible, not whether or not Ember.js is cooler

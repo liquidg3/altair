@@ -8,7 +8,7 @@ define(['dojo/_base/declare',
              _HasEventsMixin,
              Emitter) {
 
-    return declare('altair/modules/events/Events', [_HasEventsMixin, Emitter], {
+    return declare([_HasEventsMixin, Emitter], {
 
         startup: function () {
             return this.inherited(arguments);

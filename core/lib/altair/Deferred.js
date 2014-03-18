@@ -1,3 +1,8 @@
+/**
+ * What this class does differently than dojo/Deferred:
+ *   * supports optional error logging suppression is reject()
+ *   • step() alias to make for pretty codez
+ */
 define([
     "dojo/has",
     "dojo/_base/lang",
@@ -245,6 +250,8 @@ define([
             return waiting.length > 0;
         };
 
+
+
         this.then = promise.then = function(callback, errback, progback){
             // summary:
             //		Add new callbacks to the deferred.
@@ -283,6 +290,10 @@ define([
                 waiting.push(listener);
             }
             return listener.deferred.promise;
+        };
+
+        this.step = promise.step = function (progback, callback ,errback) {
+            return this.then(callback, errback, progback);
         };
 
         this.cancel = promise.cancel = function(reason, strict){

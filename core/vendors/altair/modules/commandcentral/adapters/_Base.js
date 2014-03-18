@@ -1,5 +1,5 @@
 define([
-    'dojo/_base/declare',
+    'altair/declare',
     'altair/events/Emitter',
     'altair/Lifecycle',
     'altair/facades/mixin',
@@ -14,7 +14,7 @@ define([
               lang) {
 
 
-    return declare('altair/modules/commandcentral/adapters/_Base', [Emitter, Lifecycle], {
+    return declare([Emitter, Lifecycle], {
 
         _styles:        null, /** optional styles your terminal adapter can use **/
         longLabels:     true, /** should we output descriptions for labels when possible for lists/selects **/
@@ -98,21 +98,21 @@ define([
         /**
          * Takes the options you pass it and returns an object.
          *
-         * var o = this._normalizeOptions('my-id');
-         * console.log(o) -> { id: 'id' }
          *
-         * o = this._normalizeOptions({ foo: 'bar'});
-         * console.log(o) -> { foo: 'bar' }
          *
          * @param options
          * @private
          */
-        _normalizeOptions: function (options) {
+        normalizeDefaultAndOptions: function (defaultValue, options) {
 
-            if(typeof options === 'string') {
-                options = {
-                    id: options
-                };
+            if(!options) {
+                options = {};
+            }
+
+            if(typeof defaultValue === 'string') {
+                options = mixin(options, {
+                    default: options
+                });
             } else if(!options) {
                 options = {};
             }

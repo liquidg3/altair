@@ -21,6 +21,8 @@ define(['dojo/_base/declare',
 
 ], function (declare, lang) {
 
+    "use strict";
+
     return declare(null, {
 
         _data:           null,
@@ -73,11 +75,21 @@ define(['dojo/_base/declare',
         },
 
         /**
+         * Tells you the type of a particular element (firstName would return string)
+         *
+         * @param elementName
+         * @returns {string}
+         */
+        typeFor: function (elementName) {
+            return this._data.elements[elementName].type;
+        },
+
+        /**
          * Get you all the options for this field mixed in with all options for the field type.
          *
          * @param elementName
          * @param mixinAll optional
-         * @returns {} all options for that field type
+         * @returns {string} all options for that field type
          */
         optionsFor: function (elementName, mixinAll) {
 

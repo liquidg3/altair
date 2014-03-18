@@ -1,37 +1,45 @@
 /**
  * Mixin that gives any class the power to run as a commander.
  */
-define(['dojo/_base/declare',
+define(['altair/declare',
+        'altair/facades/mixin',
         'altair/Lifecycle',
         'altair/facades/hitch',
         'altair/modules/commandcentral/facades/css'
 
 ], function (declare,
+             mixin,
              Lifecycle,
              hitch,
              css) {
 
 
-    var Commander = declare('altair/modules/commandcentral/mixins/_HasCommandersMixin', [Lifecycle], {
+    var Commander = declare([Lifecycle], {
 
         adapter:        null,
         styles:         null,
 
         startup: function (options) {
 
-            var _options             = options || this.options;
+            var _options         = mixin(this.options || {}, options || {});
 
-            this.adapter        = (_options && _options.adapter) ? _options.adapter : this.module.adapter();
+            this.adapter         = (_options && _options.adapter) ? _options.adapter : this.module.adapter();
 
             _options.description = (_options && _options.description) ? _options.description : this.name;
             _options.label       = (_options && _options.label) ? _options.label : _options.description;
+            _options.foo         = 'bar';
 
+            //error, no adapter set
             if(!this.adapter) {
+
                 this.deferred = new this.module.Deferred();
                 this.deferred.reject('You must pass your commander an adapter from Altair:CommandCentral');
 
                 return this.deferred;
             }
+
+            //new options
+            arguments[0] = _options;
 
             return this.inherited(arguments).then(hitch(this, function () {
 
@@ -103,9 +111,9 @@ define(['dojo/_base/declare',
         }
 
 
-    }),
-        methods,
-        sig;
+    });
+    var methods;
+    var sig;
 
 
     //mix certain adapter methods into the commander for easy access

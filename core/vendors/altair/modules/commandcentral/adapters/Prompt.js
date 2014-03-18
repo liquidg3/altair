@@ -1,71 +1,120 @@
-define(['dojo/_base/declare',
+define(['altair/declare',
         'altair/facades/hitch',
+        'altair/facades/__',
+        'dojo/when',
+        'altair/facades/partial',
         'altair/modules/commandcentral/adapters/_Base',
         'dojo/node!prompt',
-        'dojo/node!chalk',
-        'altair/Deferred'
+        'dojo/node!chalk'
 ], function (declare,
              hitch,
+             __,
+             when,
+             partial,
              _Base,
              prompt,
-             chalk,
-             Deferred) {
+             chalk) {
 
 
     prompt.colors       = false;
-//    prompt.message      = 'altair';
+    prompt.message      = 'altair';
     prompt.delimiter    = ': ';
 
-    process.stdin.on('readable', function(chunk) {
-        process.stdout.write('data: ' + chunk);
-    });
 
+    return declare([_Base], {
 
-    return declare('altair/modules/commandcentral/adapters/Prompt', [_Base], {
-
+        /**
+         * Startup prompt
+         *
+         * @returns {*}
+         */
         startup: function () {
 
             prompt.start();
-
             return this.inherited(arguments);
 
         },
 
+        /**
+         * Self resolving splash
+         *
+         * @returns {Deferred}
+         */
         splash: function () {
             console.log(chalk.bgRed('REALLY COOL ALTAIR SPLASH SCREEN'));
-            var d = new Deferred();
-
+            var d = new this.module.Deferred();
             d.resolve();
-
             return d;
         },
 
+        /**
+         * Output a notice for users
+         *
+         * @param str
+         */
         notice: function(str) {
-            console.log(chalk.red('* Notice:', str, '*'));
+            this.writeLine(chalk.red('* Notice:', str, '*'));
         },
 
+        /**
+         * Write a simple line to the screen
+         *
+         * @param str
+         * @param options
+         */
         writeLine: function (str, options) {
+            this.writeLine(chalk.bgRed(str));
+        },
 
-            var styles = this.styles(options);
+        /**
+         * Read a line from the user, possible default value, and then other options.
+         *
+         * @param str
+         * @param defaultValue
+         * @param options
+         */
+        readLine: function (question, defaultValue, options) {
 
-            console.log(chalk.bgRed(str));
+            var def         = new this.module.Deferred();
+
+            prompt.get([{
+                name: 'answer',
+                type: 'string',
+                description: question
+            }], hitch(this, function (err, results) {
+
+                if(err) {
+                    def.reject(err);
+                } else {
+                    def.resolve(results);
+                }
+
+            }));
+
+
+
+
+
+            return def;
         },
 
         /**
          * Show a select
          *
-         * @param question
-         * @param selectOptions
-         * @param options
+         * @param question the text that will output before showing all the options
+         * @param defaultValue
+         * @param options if a multiOptions key exists
          * @returns {altair.Deferred}
          */
-        select: function (question, selectOptions, options) {
+        select: function (question, defaultValue, options) {
 
-            options = this._normalizeOptions(options);
-
-            var def     = new Deferred(),
-                keys    = Object.keys(selectOptions),
-                retry   = (options.hasOwnProperty('retry') ) ? options.retry : true,
+            var def             = new this.module.Deferred(),
+                _options        = options.hasOwnProperty('multiOptions') ? options : { multiOptions: options },
+                required        = _options.hasOwnProperty('required') ? _options.required : true,
+                aliases         = _options.hasOwnProperty('aliases') ? _options.aliases : {},
+                multiOptions    = _options.multiOptions,
+                keys            = Object.keys(multiOptions),
+                aliasesReversed = {},
                 go;
 
             this.writeLine();
@@ -73,7 +122,19 @@ define(['dojo/_base/declare',
             this.writeLine('|');
 
             keys.forEach(hitch(this, function (key) {
-                this.writeLine('| ' + key + prompt.delimiter + '"' + selectOptions[key] + '"');
+                var line = '| ' + key;
+
+                if(aliases.hasOwnProperty(key)) {
+                    aliases[key].forEach(function (a) {
+                        aliasesReversed[a] = key;
+                    });
+
+                    line += ' (' + aliases[key].join(', ') + ')';
+                }
+
+                line += prompt.delimiter + '"' + multiOptions[key] + '"';
+
+                this.writeLine(line);
             }));
 
             this.writeLine('|');
@@ -82,20 +143,24 @@ define(['dojo/_base/declare',
 
             go = hitch(this, function () {
 
-                prompt.get([{
-                    name: 'answer',
-                    type: 'string',
-                    description: 'select option'
-                }], hitch(this, function (err, results) {
+                this.readLine(__('select option'), defaultValue, options).then(hitch(this, function (results) {
 
-                    if(!results.answer || !(selectOptions.hasOwnProperty(results.answer))) {
+                    //was this an alias?
+                    if(aliasesReversed.hasOwnProperty(results.answer)) {
+                        results.answer = aliasesReversed[results.answer];
+                    }
 
-                        if(!retry) {
+                    //did they select a valid option?
+                    if(!results.answer || !(multiOptions.hasOwnProperty(results.answer))) {
+
+                        //are we going to force them to select an option?
+                        if(!required) {
 
                             def.reject(results.answer, false);
 
                         } else {
 
+                            //help them out a bit
                             this.writeLine('Invalid Selection', 'alert');
                             this.writeLine('Valid options are: ' + keys.join(', '));
 
@@ -109,6 +174,9 @@ define(['dojo/_base/declare',
 
                     }
 
+                })).otherwise(hitch(this, function () {
+                        "use strict";
+                        go();
                 }));
             });
 
@@ -125,32 +193,41 @@ define(['dojo/_base/declare',
          */
         form: function (schema) {
 
-            var form = [],
-                d    = new Deferred();
+            var d       = new this.module.Deferred(),
+                values  = {},
+                elements= schema.elements(),
+                keys    = Object.keys(elements),
+                total   = keys.length;
 
-            //map apollo schema to prompt schema, very dumb for now
-            Object.keys(schema.elements()).forEach(hitch(this, function (field) {
+            var next = hitch(this, function (index) {
 
-                var options = schema.optionsFor(field);
+                if(index === total) {
+                    d.resolve(values);
+                } else {
 
-                field   = {
-                    name:       field,
-                    type:       'string',
-                    required:   !!options.required
-                };
+                    var name    = keys[index],
+                        type    = schema.typeFor(name),
+                        options = schema.optionsFor(name);
 
-                if(options.value) {
-                    field['default'] = options.value;
+
+                    //see if we have a function by the name of type
+                    if(!this.hasOwnProperty(type)) {
+                        type = 'readLine';
+                    }
+
+                    index = index + 1;
+
+                    when(this[type](options.label, options.default, options)).then(function (answer) {
+                        values[name] = answer;
+                        next(index);
+                    }).otherwise(hitch(d, 'reject'));
 
                 }
 
-                form.push(field);
-
-            }));
-
-            prompt.get(form, function (err, values) {
-                d.resolve(values);
             });
+
+
+            setTimeout(partial(next, 0), 0);
 
             return d;
 
@@ -158,7 +235,6 @@ define(['dojo/_base/declare',
 
         showProgress: function (message) {
             console.log(chalk.grey(message));
-
         }
 
     });
