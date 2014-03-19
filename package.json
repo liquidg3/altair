@@ -5,7 +5,7 @@
     "main": "altair.js",
     "repository": {
         "type": "git",
-        "url": "https://altair-admin@bitbucket.org/altair-admin/altair.git"
+        "url": "git@github.com:liquidg3/altair.git"
     },
     "scripts": {
         "test": "Altair --test"

@@ -2,6 +2,7 @@
     "glob": [
         "missed-core/vendors/*/modules/*/tests/*.js",
         "missed-core/tests/*.js",
+        "missed-core/tests/events.js",
         "core/tests/statemachine.js",
         "missed-apollo/tests/*.js"
     ]

@@ -292,6 +292,10 @@ define([
             return listener.deferred.promise;
         };
 
+        this.otherwise = promise.step = function (errback, callback, progback) {
+            return this.then(callback, errback, progback);
+        };
+
         this.step = promise.step = function (progback, callback ,errback) {
             return this.then(callback, errback, progback);
         };

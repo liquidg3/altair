@@ -157,7 +157,7 @@ define(['altair/declare',
                     }));
 
                     //after all commanders are instantiated and started up, resolve the deferred with them all
-                    all(list).then(hitch(def, 'resolve', this._commanders)).otherwise(hitch(console,'error'));
+                    all(list).then(hitch(def, 'resolve', this._commanders)).otherwise(hitch(def,'reject'));
 
                 })).otherwise(hitch(console,'error'));
 
