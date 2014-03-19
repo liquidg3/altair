@@ -13,14 +13,13 @@
     "dependencies": {
         "underscore":       ">=1.1.x",
         "underscore-query": ">=0.4.x",
+        "underscore.string":">=2.3.x",
         "optimist":         ">=0.6.x",
         "prompt":           ">=0.2.x",
         "glob":             ">=3.2.x",
-        "blessed":          ">=0.0.x",
         "chalk":            ">=0.4.x",
-        "css-parse":        ">=1.x",
         "i18n-2":           ">=0.4.x",
-        "figlet":           ">=1.0.x"
+        "sprintf-js":       ">=0.0.x"
     },
 
     "license": "MIT"

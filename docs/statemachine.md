@@ -13,19 +13,22 @@ we can keep our code super thin and clean.
 define(['altair/declare',
         'altair/facades/hitch',
         'altair/modules/commandcentral/mixins/_HasCommandersMixin',
-        'altair/when'
+        'altair/when',
+        'altair/plugins/node!underscore
 ], function (declare,
              hitch,
              _IsCommanderMixin, //mixes in Lifecycle for us
-             when) {
+             when,
+             _) {
 
 
     return declare([_IsCommanderMixin], {
 
         fsm:    null, //finite state machine
 
-        //support
+        //start-support
         activeCommander: null,
+        activeCommand:   null,
         //end-support
 
 
@@ -36,7 +39,7 @@ define(['altair/declare',
             //State Machines are altair/events/Emitters, but setting up a hundred listeners is tedious, so we use the "delegate"
             //pattern to lend us a hand. The state machine will check if a method exists before setting the listener.
             this.fsm = new StateMachine({
-                state:  _options.hasOwnProperty('startingState') ? _options.startingState : 'firstrun'
+                state:  _.has(_options, 'startingState') ? _options.startingState : 'firstrun'
                 states: ['firstRun', 'selectCommander', 'selectCommand', 'executeCommand'],
                 delegate: this //convenient way to have all your listeners set for you, will detect if method exists, then setup listener
             });
@@ -61,7 +64,7 @@ define(['altair/declare',
             }));
 
             //or i can completely control state management by jumping to states manually
-            def = this.fsm.jumpToState('selectingcommand', ['should be what selectCommander would return']).then(function (newState, results) {
+            def = this.fsm.transitionToState('selectcommand', ['input for selectcommand state']).then(function (newState, results) {
 
             });
 
@@ -93,9 +96,9 @@ define(['altair/declare',
 
          onStateMachineDidEnterSelectCommand: function ($e) {
 
-            //by returning a Deferred, we will stay in this state until we resolve() the it.
+            //by returning a Deferred, we will stay in this state until we resolve() it.
             var d   = new this.module.Deferred(),
-                foo = $e->get('foo'); //i get this because the previous state returned it (it may not be here)
+                foo = $e->get('foo'); //i get this because the previous state returned it (it may not be here if we jumped to this state)
 
 
             if(foo) {
@@ -115,7 +118,7 @@ define(['altair/declare',
          },
 
 
-         //I am making sure my executeCommand state always has a "commander" if I can offer one up, this allows us
+         //I am making sure my executeCommand state always has a "commander" if I can offer one up. the following allows us
          //to jump to the executeCommand state and have it be like it was previously
          onStateMachineWillEnterExecuteCommand: function ($e) {
 
@@ -128,6 +131,7 @@ define(['altair/declare',
                 this->activeCommander = $e->get('commander');
 
             }
+
          },
 
 

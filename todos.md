@@ -24,7 +24,14 @@ the errors. I am devving with these settings now, so it will not be an issue goi
     dojo code (overriding dojo paths *is* allowed).
 
 
-5. I18n - we need to make everything translate friendly - we're using resig's i18n-2: https://github.com/jeresig/i18n-node-2
+5. I18n - we need to make everything translate friendly - we're using resig's i18n-2: https://github.com/jeresig/i18n-node-2.
+Use it like this:
+
+    require(['altair/facades/__'], function (__) {
+
+        console.log(__('foo = %s', $foo));
+
+    });
 
 
 6. passing the class name as the first param to declare is deprecated... we will remove them. So this;

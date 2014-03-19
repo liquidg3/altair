@@ -1,7 +1,8 @@
 {
     "glob": [
-        "core/vendors/*/modules/*/tests/*.js",
-        "core/tests/*.js",
+        "missed-core/vendors/*/modules/*/tests/*.js",
+        "missed-core/tests/*.js",
+        "core/tests/statemachine.js",
         "missed-apollo/tests/*.js"
     ]
 }
