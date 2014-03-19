@@ -3,11 +3,11 @@
  */
 define(['doh/runner',
         'apollo/Apollo',
-        'apollo/fieldtypes/Str',
-        'apollo/fieldtypes/Bool',
-        'apollo/fieldtypes/Float',
-        'apollo/fieldtypes/Int',
-        'apollo/fieldtypes/Date'],
+        'apollo/elementtypes/Str',
+        'apollo/elementtypes/Bool',
+        'apollo/elementtypes/Float',
+        'apollo/elementtypes/Int',
+        'apollo/elementtypes/Date'],
 
     function (doh,
               Apollo,

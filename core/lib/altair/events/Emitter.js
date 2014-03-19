@@ -115,6 +115,8 @@ define(['altair/declare',
 
             //build a list of results all listeners...
             var list = [],
+                deferred = new BaseDeferred(),
+                toRemove = [],
                 _agent;
 
             if(this._listeners[event.name]) {
@@ -126,7 +128,8 @@ define(['altair/declare',
                     if(_agent.matches(event, listener.query)) {
 
                         var def,
-                            results;
+                            results,
+                            hasValue = false;
 
                         //if the listener was passed as the callback, or 2nd param, of on()
                         if(listener.callback) {
@@ -135,7 +138,7 @@ define(['altair/declare',
 
                             if(results) {
                                 list.push(when(results));
-
+                                hasValue = true;
                             }
 
                         }
@@ -144,18 +147,37 @@ define(['altair/declare',
                         def = new BaseDeferred();
                         list.push(def);
 
-                        listener.deferred.resolve(event).then(function (results) {
+                        listener.deferred.resolve(event).then(function (i) {
 
-                            results = results[0];
+                            return function (results) {
 
-                            if(results !== undefined && (!results.isInstanceOf || !results.isInstanceOf(Event))) {
-                                when(results).then(hitch(def, 'resolve')).otherwise(hitch(def, 'reject'));
-                            } else {
-                                def.resolve();
-                            }
+                                results = results[0];
 
-                        //should we stop looping after first error?
-                        }).otherwise(hitch(def, 'reject'));
+                                if(results !== undefined && (!results.isInstanceOf || !results.isInstanceOf(Event))) {
+                                    when(results).then(function (results) {
+
+                                        //if we already have a value and this listener did not return anything, remove it
+                                        if(hasValue && !results) {
+                                            toRemove.push(i);
+                                        }
+
+                                        def.resolve(results);
+
+                                    }).otherwise(hitch(def, 'reject'));
+                                } else {
+
+                                    //do not pass this back if we already have at least 1 return value for this event
+                                    if(hasValue) {
+                                        toRemove.push(i);
+                                    }
+                                    def.resolve();
+                                }
+
+                            };
+
+                            //should we stop looping after first error?
+                        }(list.length - 1)).otherwise(hitch(def, 'reject'));
+
 
 
                     }
@@ -164,7 +186,22 @@ define(['altair/declare',
 
             }
 
-            return all(list);
+            all(list).then(function (results) {
+
+                var cleaned = [];
+
+                results.forEach(function (value, index) {
+                    if(_.indexOf(toRemove, index) === -1) {
+                        cleaned.push(value);
+                    }
+
+                });
+
+                deferred.resolve(cleaned);
+
+            }).otherwise(hitch(deferred, 'reject'));
+
+            return deferred;
         },
 
         /**

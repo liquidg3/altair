@@ -3,8 +3,8 @@
  */
 define(['doh/runner',
         'apollo/Schema',
-        'apollo/fieldtypes/Str',
-        'apollo/fieldtypes/Bool'],
+        'apollo/elementtypes/Str',
+        'apollo/elementtypes/Bool'],
 
     function (doh,
               Schema,
@@ -20,7 +20,7 @@ define(['doh/runner',
             elements: {
 
                 firstName: {
-                    type: 'text',
+                    type: 'string',
                     options: {
                         label: 'First Name',
                         value:   'Taylor'
@@ -47,7 +47,7 @@ define(['doh/runner',
 
                 var schema = new Schema(schemaLiteral, fieldTypes);
 
-                doh.assertTrue('text' in schema.elementTypes, 'Email field not added to fieldtypes of schema.');
+                doh.assertTrue('string' in schema._elementTypes, 'String field not added to fieldtypes of schema.');
 
             },
 

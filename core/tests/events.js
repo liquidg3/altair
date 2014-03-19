@@ -319,8 +319,75 @@ define(['doh/runner',
 
             return deferred;
 
-        }
+        },
 
+        /**
+         * Emitter doesn't double up results if i use addEventListener
+         */
+         function (t) {
+
+
+            var emitter     = new Emitter(),
+                deferred    = new doh.Deferred();
+
+            emitter.on('dummy-event-4', function (e) {
+                return 'yay';
+            });
+
+            emitter.emit('dummy-event-4', {
+                foo: 'bar'
+            }).then(function (results) {
+
+                t.t(results.length === 1, 'too many results gathered from event');
+                t.is(results[0], 'yay');
+                deferred.resolve();
+
+            }).otherwise(hitch(deferred, 'reject'));
+
+            return deferred;
+
+        },
+
+        function (t) {
+
+            var emitter     = new Emitter(),
+                deferred    = new Deferred();
+
+            emitter.on('dummy-event-4', function (e) {
+                return 'yay';
+            });
+
+            emitter.on('dummy-event-4').then(function (e) {
+                return 'hey';
+            });
+
+
+            emitter.on('dummy-event-4').then(function (e) {
+
+                var d = new Deferred();
+
+                setTimeout(function () {
+                    d.resolve('stay');
+                }, 10);
+
+                return d;
+
+            });
+
+
+            emitter.emit('dummy-event-4').then(function (results) {
+
+                t.t(results.length === 3, 'wrong amount of results gathered from event');
+                t.is(results[0], 'yay');
+                t.is(results[1], 'hey');
+                t.is(results[2], 'stay');
+                deferred.resolve();
+
+            }).otherwise(hitch(deferred, 'reject'));
+
+            return deferred;
+
+        }
 
     ]);
 

@@ -4,8 +4,8 @@
 define(['doh/runner',
         'apollo/Schema',
         'apollo/tests/mock/Entity',
-        'apollo/fieldtypes/Str',
-        'apollo/fieldtypes/Bool'],
+        'apollo/elementtypes/Str',
+        'apollo/elementtypes/Bool'],
 
     function (doh,
               Schema,

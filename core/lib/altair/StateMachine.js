@@ -6,6 +6,7 @@ define(['altair/declare',
         'altair/events/Emitter',
         'altair/events/Event',
         'altair/Deferred',
+        'altair/facades/__',
         'altair/plugins/node!underscore.string',
         'altair/plugins/node!underscore'
         ],
@@ -14,6 +15,7 @@ define(['altair/declare',
               Emitter,
               Event,
               Deferred,
+              __,
               _str,
               _) {
 
@@ -63,7 +65,7 @@ define(['altair/declare',
 
                     //does the delegate have the name? if so, lets add a listener for it
                     if(_.has(delegate, methodName)) {
-                        listeners.push(this.on(eventName, hitch(delegate, methodName)));
+                        listeners.push(this.on(eventName, hitch(delegate, methodName), { state: state }));
                     }
 
                 }));
@@ -92,27 +94,48 @@ define(['altair/declare',
          */
         execute: function (options) {
 
-            var d       = new Deferred(),
-                lastResponse,
-                fire    = hitch(this, function (i) {
+            //lastResponse is is in form [state, data]... if no state, we're done
+            var d               = new Deferred(),
+                lastResponse    = [this.states[0], {}],
+                fire            = hitch(this, function (i) {
 
-                    if(i === this.states.length) {
-                        d.resolve(lastResponse);
+                    if(!lastResponse[0]) {
+                        d.resolve(lastResponse[1]);
                         return;
                     }
 
-                    var state = this.states[i];
-
-                    this.transitionTo(state, lastResponse).then(function (response) {
+                    this.transitionTo(lastResponse[0], lastResponse[1]).then(function (response) {
                         lastResponse = response;
-                        fire(++i);
+                        fire();
                     }).otherwise(hitch(d, 'reject'));
 
                 });
 
-            fire(0);
+            fire();
 
             return d;
+        },
+
+        /**
+         * Pass me a state and I'll let you know which state is next... if you on the last state, i'll pass back the first
+         *
+         * @param state
+         * @param backToFirst
+         *
+         * @returns {*}
+         */
+        nextState: function (state, backToFirst) {
+
+            var i = _.indexOf(this.states, state) + 1,
+                next = '';
+
+            if(i < this.states.length) {
+                next = this.states[i];
+            } else if(backToFirst === true){
+                next = this.states[0];
+            }
+
+            return next;
         },
 
         /**
@@ -123,24 +146,54 @@ define(['altair/declare',
          */
         transitionTo: function (state, data) {
 
-            var d       = new Deferred(),
-                events  = Object.keys(this._listenerMap),
+            var d           = new Deferred(),
+                eventData   = data,
+                events      = Object.keys(this._listenerMap),
                 lastResponse,
-                fire    = hitch(this, function (i) {
+                nextState   = this.nextState(state),
+                fire        = hitch(this, function (i) {
 
                     //are we on the last event?
                     if(i === events.length) {
-                        d.resolve(lastResponse);
+                        d.resolve([nextState, lastResponse]);
                         return;
                     }
 
-                    var e = new Event(events[i], data, this);
+                    //make sure our event data is an object
+                    if(!_.isObject(eventData)) {
+                        eventData = {};
+                    }
+
+                    //make sure we at least have the state
+                    eventData.state = state;
+
+                    var e = new Event(events[i], eventData, this);
 
                     //emit this event
                     this.emit(e).then(hitch(this, function (results) {
 
-                        //get the results from the last event listener
-                        lastResponse = results.pop();
+                        //get the results from the last event listener if any listeners are set
+                        if(results.length > 0) {
+
+                            lastResponse = results.pop();
+
+                            if(_.isArray(lastResponse)) {
+
+                                var _state = lastResponse[0];
+
+                                if(_.indexOf(this.states, _state) === 0) {
+                                    d.reject(__('State "%s" does not exist on this state machine.', _state));
+                                }
+
+                                nextState = _state;
+                                eventData = lastResponse[1];
+                                lastResponse = lastResponse[1];
+                            } else if(_.isObject(lastResponse)) {
+                                eventData = lastResponse;
+                            }
+
+                        }
+
                         fire(++i);
 
                     })).otherwise(hitch(d, 'reject'));

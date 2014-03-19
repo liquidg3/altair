@@ -64,7 +64,7 @@ define(['altair/declare',
             }));
 
             //or i can completely control state management by jumping to states manually
-            def = this.fsm.transitionToState('selectcommand', ['input for selectcommand state']).then(function (newState, results) {
+            def = this.fsm.transitionToState('selectcommand', { foo: 'bar' }).then(function (newState, results) {
 
             });
 
@@ -98,7 +98,7 @@ define(['altair/declare',
 
             //by returning a Deferred, we will stay in this state until we resolve() it.
             var d   = new this.module.Deferred(),
-                foo = $e->get('foo'); //i get this because the previous state returned it (it may not be here if we jumped to this state)
+                foo = e.get('foo'); //i get this because the previous state returned it (it may not be here if we jumped to this state)
 
 
             if(foo) {
@@ -120,15 +120,14 @@ define(['altair/declare',
 
          //I am making sure my executeCommand state always has a "commander" if I can offer one up. the following allows us
          //to jump to the executeCommand state and have it be like it was previously
-         onStateMachineWillEnterExecuteCommand: function ($e) {
+         onStateMachineWillEnterExecuteCommand: function (e) {
 
-            if(!$e->get('commander')) {
+            if(!e.get('commander')) {
 
-                $e->set('commander', this->activeCommander);
+                e.set('commander', this->activeCommander);
 
             } else {
-
-                this->activeCommander = $e->get('commander');
+                this.activeCommander = e.get('commander');
 
             }
 
