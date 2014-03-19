@@ -92,6 +92,22 @@ define(['altair/declare',
 
             var d = new Deferred();
 
+            d.forEach(hitch(this, function (state) {
+
+                //then our listener map
+                Object.keys(this._listenerMap).forEach(hitch(this, function (eventName) {
+
+                    //construct the callbacks name
+                    var methodName = this._stateAndEventNameToCallbackName(state, eventName);
+
+                    //does the delegate have the name? if so, lets add a listener for it
+                    if(_.has(delegate, methodName)) {
+                        listeners.push(this.transitionTo(state, eventName.data));
+                    }
+
+                }));
+
+            }));
 
             return d;
         },
@@ -106,7 +122,18 @@ define(['altair/declare',
 
             var d = new Deferred();
 
+            //then our listener map
+            Object.keys(this._listenerMap).forEach(hitch(this, function (eventName) {
 
+                //construct the callbacks name
+                var methodName = this._stateAndEventNameToCallbackName(state, eventName);
+
+                //does the delegate have the name? if so, lets add a listener for it
+
+                if(_.has(delegate, methodName)) {
+                    listeners.push(this.execute(state));
+                }
+            }));
             return d;
 
         }
