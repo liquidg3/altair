@@ -55,6 +55,7 @@ define(['doh/runner',
                             def.resolve(true);
                         }
                     },  sm    = new StateMachine({
+                        delegate: delegate,
                         state: 'start',
                         states: ['start', 'end']
                     });
@@ -78,6 +79,7 @@ define(['doh/runner',
                         def.resolve(true);
                     }
                 },  sm    = new StateMachine({
+                        delegate: delegate,
                         state: 'start',
                         states: ['start', 'end']
                     });
@@ -108,6 +110,7 @@ define(['doh/runner',
                             t.is(e.get('foo'), 'bar', 'states did not pass outputs/inputs');
                         }
                     },  sm    = new StateMachine({
+                        delegate: delegate,
                         state: 'start',
                         states: ['start', 'end']
                     });
