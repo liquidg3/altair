@@ -7,7 +7,7 @@ define(['doh/runner',
         'altair/events/Emitter',
         'altair/events/QueryAgent',
         'altair/events/Event',
-        'dojo/Deferred',
+        'altair/Deferred',
         'altair/facades/hitch'],
 
     function (doh,
@@ -220,7 +220,6 @@ define(['doh/runner',
          */
         function (t) {
 
-
             var emitter     = new Emitter(),
                 deferred    = new doh.Deferred();
 
@@ -260,7 +259,6 @@ define(['doh/runner',
                 foo: 'bar'
             }).then(function (results) {
 
-
                 t.is(results[0], 1, 'Event was not created as expected.');
                 t.is(results[1], 2, 'Event was not created as expected.');
                 t.is(results[2], 3, 'Event was not created as expected.');
@@ -273,7 +271,56 @@ define(['doh/runner',
             return deferred;
 
 
+        },
+
+        /**
+         * emitted events can be rejected
+         */
+        function (t) {
+
+
+            var emitter     = new Emitter(),
+                deferred    = new doh.Deferred();
+
+            emitter.on('dummy-event-4').then(function (e) {
+                return 1;
+            });
+
+            emitter.on('dummy-event-4').then(function (e) {
+                return 2;
+            });
+
+            emitter.on('dummy-event-4').then(function (e) {
+                return 2;
+            }).then(function (two) {
+                return two + 1;
+            });
+
+
+            emitter.on('dummy-event-4').then(function (e) {
+
+                var d = new Deferred();
+
+                setTimeout(function () {
+                    d.reject(4);
+                }, 10);
+
+                return d;
+            });
+
+            emitter.emit('dummy-event-4', {
+                foo: 'bar'
+            }).then(function (r) {
+                deferred.reject();
+            }).otherwise(function (e) {
+                t.is(e, 4, 'event rejection failed to pass back value');
+                deferred.resolve();
+            });
+
+            return deferred;
+
         }
+
 
     ]);
 

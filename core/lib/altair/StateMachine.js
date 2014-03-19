@@ -4,6 +4,7 @@
 define(['altair/declare',
         'altair/facades/hitch',
         'altair/events/Emitter',
+        'altair/events/Event',
         'altair/Deferred',
         'altair/plugins/node!underscore.string',
         'altair/plugins/node!underscore'
@@ -11,6 +12,7 @@ define(['altair/declare',
     function (declare,
               hitch,
               Emitter,
+              Event,
               Deferred,
               _str,
               _) {
@@ -85,13 +87,30 @@ define(['altair/declare',
 
         /**
          * Loops through every state, emitting all events along the way. If an event listener returns a deferred, we
-         * wait until it is resolved before continuing. When we resolve our deferred, we will pass the return value
+         * wait until it is resolved before continuing. When we resolbvthwve our deferred, we will pass the return value
          * of the last state we transitionedTo
          */
         execute: function (options) {
 
-            var d = new Deferred();
+            var d       = new Deferred(),
+                lastResponse,
+                fire    = hitch(this, function (i) {
 
+                    if(i === this.states.length) {
+                        d.resolve(lastResponse);
+                        return;
+                    }
+
+                    var state = this.states[i];
+
+                    this.transitionTo(state, lastResponse).then(function (response) {
+                        lastResponse = response;
+                        fire(++i);
+                    }).otherwise(hitch(d, 'reject'));
+
+                });
+
+            fire(0);
 
             return d;
         },
@@ -104,8 +123,31 @@ define(['altair/declare',
          */
         transitionTo: function (state, data) {
 
-            var d = new Deferred();
+            var d       = new Deferred(),
+                events  = Object.keys(this._listenerMap),
+                lastResponse,
+                fire    = hitch(this, function (i) {
 
+                    //are we on the last event?
+                    if(i === events.length) {
+                        d.resolve(lastResponse);
+                        return;
+                    }
+
+                    var e = new Event(events[i], data, this);
+
+                    //emit this event
+                    this.emit(e).then(hitch(this, function (results) {
+
+                        //get the results from the last event listener
+                        lastResponse = results.pop();
+                        fire(++i);
+
+                    })).otherwise(hitch(d, 'reject'));
+
+                });
+
+            fire(0);
 
             return d;
 

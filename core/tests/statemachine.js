@@ -46,7 +46,7 @@ define(['doh/runner',
             },
 
 
-            "executing state machine can transition to state and pass data": function (t) {
+            "state machine can transition to state and pass data": function (t) {
 
                 var def         = new Deferred(),
                     delegate    = {
@@ -66,6 +66,30 @@ define(['doh/runner',
 
             },
 
+            "state machine can transition to state and handle reject": function (t) {
+
+                var def         = new Deferred(),
+                    delegate    = {
+                        onStateMachineDidEnterStart: function (e) {
+                            t.is(e.get('foo'), 'bar', 'states did not pass outputs/inputs');
+                            var d = new Deferred();
+                            d.reject(['end', { foo: 'bar' }]);
+                            return d;
+                        }
+                    },  sm    = new StateMachine({
+                        delegate: delegate,
+                        state: 'start',
+                        states: ['start', 'end']
+                    });
+
+                sm.transitionTo('end', {foo: 'bar'}).otherwise(function (err) {
+                    t.is(err[0], 'end', 'error passthrough failed');
+                    def.resolve();
+                });
+
+                return def;
+
+            },
 
             "executing state machine runs states in order": function (t) {
 
@@ -91,7 +115,7 @@ define(['doh/runner',
 
             },
 
-            "executing state machine runs states (waits for deferred)": function (t) {
+            "executing state machine runs states and waits for deferred": function (t) {
 
                 var def         = new Deferred(),
                     delegate    = {

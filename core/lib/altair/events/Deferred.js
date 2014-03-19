@@ -222,11 +222,20 @@ define([
                 //build a fake promise to stop recursion
                 newPromise     = {
                     callback: null,
+                    errCallback: null,
                     then: function (callback) {
                         this.callback = callback;
                         if(finished) {
                             callback(results);
                         }
+                        return this;
+                    },
+                    otherwise: function (callback) {
+                        this.errCallback = callback;
+                        if(finished && fulfilled === REJECTED) {
+                            callback(results);
+                        }
+                        return this;
                     }
                 };
 
@@ -262,6 +271,12 @@ define([
 
 
 
+                            }).otherwise(function (err) {
+                                _waiting = [];//no more waiting, entire operation canceled
+                                finished = true;
+                                if(newPromise.errCallback) {
+                                    newPromise.errCallback(err);
+                                }
                             });
 
                         } else {
@@ -269,6 +284,12 @@ define([
                             when(newResult).then(function (_result) {
                                 results.push(_result);
                                 fire();
+                            }).otherwise(function (err) {
+                                _waiting = [];//no more waiting, entire operation canceled
+                                finished = true;
+                                if(newPromise.errCallback) {
+                                    newPromise.errCallback(err);
+                                }
                             });
 
                         }

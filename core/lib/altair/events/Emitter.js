@@ -154,7 +154,8 @@ define(['altair/declare',
                                 def.resolve();
                             }
 
-                        });
+                        //should we stop looping after first error?
+                        }).otherwise(hitch(def, 'reject'));
 
 
                     }
@@ -164,7 +165,6 @@ define(['altair/declare',
             }
 
             return all(list);
-
         },
 
         /**
