@@ -90,7 +90,7 @@ define(['altair/declare',
             this.writeLine('Welcome Friend!');
 
             //state machine expects listeners to return ['nextState', { any: data, you: want }];
-            return ['selectCommander', { foo: 'bar' }];
+            return { foo: 'bar' }; //this data becomes available in the event for the next command
 
          },
 
@@ -109,7 +109,7 @@ define(['altair/declare',
             this.readLine('enter commander name').then(function (named) {
 
                 //resolve the deferred, unblocking the state machine, finish off this stage
-                d.resolve(['selectCommand', { commander: named }]);
+                d.resolve({ commander: named });
 
             });
 
@@ -117,6 +117,23 @@ define(['altair/declare',
 
          },
 
+         onStateMachineDidEnterExecuteCommand: function (e) {
+
+            if(!this.someErrorCheck()) {
+                //if returning an array, the 1st value is the next state you want to transition to, the 2nd value is an
+                //object mixed into the event, just like previous examples
+                return ['selectCommand', { commander: e.get('commander') }];
+            }
+
+            var d = new this.module.Deferred();
+
+            setTimeout(function () {
+                d.resolve(['firstRun', {}]); //will start the whole thing over since firstRun is our first state
+            }, 10);
+
+            return d;
+
+         },
 
          //I am making sure my executeCommand state always has a "commander" if I can offer one up. the following allows us
          //to jump to the executeCommand state and have it be like it was previously
