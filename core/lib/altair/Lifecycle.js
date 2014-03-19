@@ -59,7 +59,7 @@ define(['dojo/_base/declare',
         };
     };
 
-    return declare('altair/Lifecycle', null, {
+    return declare(null, {
 
         deferred:       null,
         options:        null,

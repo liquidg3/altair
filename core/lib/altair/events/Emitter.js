@@ -2,30 +2,30 @@
  * Altair's Event/Emitter is a little twist on the original NodeJs EventEmitter implementation. The event system has been
  * augmented with a query engine to allow for much more sophisticated listening. Take a look at the ReadMe.md or someshit.
  */
-define(['dojo/_base/declare',
-        'dojo/_base/lang',
+define(['altair/declare',
         './Event',
         'altair/facades/hitch',
         'altair/events/Deferred',
-        'dojo/Deferred',
+        'altair/Deferred',
         './QueryAgent',
         'dojo/promise/all',
-        'dojo/when'
+        'altair/when',
+        'altair/plugins/node!underscore'
 
 ], function (declare,
-             lang,
              Event,
              hitch,
              Deferred,
-             DojoDeferred,
+             BaseDeferred,
              QueryAgent,
              all,
-             when) {
+             when,
+             _) {
 
 
     var agent = new QueryAgent();
 
-    return declare('altair/events/Emitter', null, {
+    return declare(null, {
 
         _eventListenerQueryAgent: agent,
         _listeners: null,
@@ -64,7 +64,7 @@ define(['dojo/_base/declare',
             }
 
             //if they passed a query as the 2nd argument
-            if(callback && !lang.isFunction(callback)) {
+            if(callback && !_.isFunction(callback)) {
                 query       = callback;
                 callback    = null;
             }
@@ -85,6 +85,24 @@ define(['dojo/_base/declare',
         },
 
         /**
+         * Remove a listener by its deferred
+         *
+         * @param event string, name of the event
+         * @param deferred, the deferred that was returned from "on"
+         * @returns {null}
+         */
+        removeEventListener: function (event, deferred) {
+            if(this._listeners[event]) {
+                this._listeners[event] = _.filter(function (listener) {
+                    return listener.deferred !== deferred;
+                });
+            }
+
+            return this;
+        },
+
+        /**
+         * Emit an event by name passing along data. Customize it with config.
          *
          * @param event
          * @param data
@@ -123,7 +141,7 @@ define(['dojo/_base/declare',
                         }
 
                         //the cool cats are using derrrferrrrds
-                        def = new DojoDeferred();
+                        def = new BaseDeferred();
                         list.push(def);
 
                         listener.deferred.resolve(event).then(function (results) {
