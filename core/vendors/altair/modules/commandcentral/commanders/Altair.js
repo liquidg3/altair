@@ -1,6 +1,8 @@
 /**
  * The dashboard for Command Central. Simply allows you to select a commander, then run that commander, then start it again.
- * Behaves like a simple state machine
+ * It manages a state machine with the following states
+ *
+ * firstRun, selectCommander, selectCommand, executeCommand
  */
 
 define(['dojo/_base/declare',
@@ -100,7 +102,7 @@ define(['dojo/_base/declare',
 
                 this.select('choose commander', null, options).then(hitch(this, function (commander) {
                     this.showingMenu        = false;
-                    d.resolve(commanders[commander]);
+                    d.resolve(['selectCommand', { commander: commanders[commander]});
                 }));
 
             }));
@@ -127,9 +129,9 @@ define(['dojo/_base/declare',
          *
          * @param commander
          */
-        commandSelect: function (commander) {
+        commandSelect: function (e) {
 
-            commander = this.module.commander(commander);
+            commander = this.module.commander(e.get('commander'));
 
             var commands = commander.options.commands,
                 options = {},
