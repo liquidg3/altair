@@ -1,6 +1,7 @@
 define(['altair/declare',
         'altair/facades/hitch',
         'altair/facades/__',
+        'altair/plugins/node!underscore',
         'dojo/when',
         'altair/facades/partial',
         'altair/modules/commandcentral/adapters/_Base',
@@ -9,6 +10,7 @@ define(['altair/declare',
 ], function (declare,
              hitch,
              __,
+             _,
              when,
              partial,
              _Base,
@@ -54,6 +56,7 @@ define(['altair/declare',
          */
         notice: function(str) {
             this.writeLine(chalk.red('* Notice:', str, '*'));
+            return this;
         },
 
         /**
@@ -63,7 +66,8 @@ define(['altair/declare',
          * @param options
          */
         writeLine: function (str, options) {
-            this.writeLine(chalk.bgRed(str));
+            console.log(chalk.bgRed(str));
+            return this;
         },
 
         /**
@@ -86,7 +90,7 @@ define(['altair/declare',
                 if(err) {
                     def.reject(err);
                 } else {
-                    def.resolve(results);
+                    def.resolve(results.answer);
                 }
 
             }));
@@ -110,16 +114,16 @@ define(['altair/declare',
 
             var def             = new this.module.Deferred(),
                 _options        = options.hasOwnProperty('multiOptions') ? options : { multiOptions: options },
-                required        = _options.hasOwnProperty('required') ? _options.required : true,
-                aliases         = _options.hasOwnProperty('aliases') ? _options.aliases : {},
+                required        = _.has(_options, 'required') ? _options.required : true,
+                aliases         = _.has(_options, 'aliases') ? _options.aliases : {},
                 multiOptions    = _options.multiOptions,
                 keys            = Object.keys(multiOptions),
                 aliasesReversed = {},
                 go;
 
-            this.writeLine();
-            this.writeLine('--- ' + question + ' ---');
-            this.writeLine('|');
+            this.writeLine()
+                .writeLine('--- ' + question + ' ---')
+                .writeLine('|');
 
             keys.forEach(hitch(this, function (key) {
                 var line = '| ' + key;
@@ -137,8 +141,8 @@ define(['altair/declare',
                 this.writeLine(line);
             }));
 
-            this.writeLine('|');
-            this.writeLine('---------------');
+            this.writeLine('|')
+                .writeLine('---------------');
 
 
             go = hitch(this, function () {
@@ -146,17 +150,17 @@ define(['altair/declare',
                 this.readLine(__('select option'), defaultValue, options).then(hitch(this, function (results) {
 
                     //was this an alias?
-                    if(aliasesReversed.hasOwnProperty(results.answer)) {
-                        results.answer = aliasesReversed[results.answer];
+                    if(aliasesReversed.hasOwnProperty(results)) {
+                        results = aliasesReversed[results];
                     }
 
                     //did they select a valid option?
-                    if(!results.answer || !(multiOptions.hasOwnProperty(results.answer))) {
+                    if(!results || !(multiOptions.hasOwnProperty(results))) {
 
                         //are we going to force them to select an option?
                         if(!required) {
 
-                            def.reject(results.answer, false);
+                            def.reject(results, false);
 
                         } else {
 
@@ -170,7 +174,7 @@ define(['altair/declare',
 
                     } else {
 
-                        def.resolve(results.answer);
+                        def.resolve(results);
 
                     }
 
@@ -211,7 +215,7 @@ define(['altair/declare',
 
 
                     //see if we have a function by the name of type
-                    if(!this.hasOwnProperty(type)) {
+                    if(!this[type]) {
                         type = 'readLine';
                     }
 
@@ -227,7 +231,7 @@ define(['altair/declare',
             });
 
 
-            setTimeout(partial(next, 0), 0);
+           next(0);
 
             return d;
 

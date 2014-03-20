@@ -9,13 +9,14 @@
  *
  * Altair likes to call the folder "vendors," but it does not need to be
  */
-define(['dojo/_base/declare',
+define(['altair/declare',
         'dojo/_base/lang',
         'altair/facades/hitch',
         'dojo/promise/all',
-        'dojo/Deferred',
+        'altair/Deferred',
         'altair/facades/glob',
-        'dojo/node!path',
+        'altair/plugins/node!path',
+        'altair/facades/__',
         'require'],
                          function (declare,
                                    lang,
@@ -24,6 +25,7 @@ define(['dojo/_base/declare',
                                    Deferred,
                                    glob,
                                    path,
+                                   __,
                                    require) {
 
 
@@ -162,6 +164,12 @@ define(['dojo/_base/declare',
                 list.push(def);
 
                 require(['altair/plugins/config!' + packagePath], hitch(this, function (config) {
+
+                    if(!config) {
+                        def.reject(__('could not find config at %s', packagePath));
+                        return;
+                    }
+
                     if(config.altairDependencies) {
                         module.dependencies = Object.keys(config.altairDependencies);
                         module.dependencies.forEach(function (dep) {

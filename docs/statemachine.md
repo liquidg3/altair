@@ -39,10 +39,12 @@ define(['altair/declare',
             //State Machines are altair/events/Emitters, but setting up a hundred listeners is tedious, so we use the "delegate"
             //pattern to lend us a hand. The state machine will check if a method exists before setting the listener.
             this.fsm = new StateMachine({
-                state:  _.has(_options, 'startingState') ? _options.startingState : 'firstrun'
+                state:  _.has(_options, 'startingState') ? _options.startingState : 'firstRun'
                 states: ['firstRun', 'selectCommander', 'selectCommand', 'executeCommand'],
                 delegate: this //convenient way to have all your listeners set for you, will detect if method exists, then setup listener
             });
+
+            return this.inherited();
 
         },
 

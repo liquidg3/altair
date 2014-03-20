@@ -5,22 +5,34 @@
  * firstRun, selectCommander, selectCommand, executeCommand
  */
 
-define(['dojo/_base/declare',
-    'altair/facades/hitch',
-    'altair/modules/commandcentral/mixins/_IsCommanderMixin',
-    'dojo/when'
-], function (declare, hitch, _IsCommanderMixin, when) {
+define(['altair/declare',
+        'altair/facades/hitch',
+        'altair/modules/commandcentral/mixins/_IsCommanderMixin',
+        'altair/when',
+        'altair/StateMachine',
+        'altair/plugins/node!underscore'
+        ], function (declare,
+                     hitch,
+                     _IsCommanderMixin,
+                     when,
+                     StateMachine,
+                     _) {
 
 
     return declare([_IsCommanderMixin], {
 
-        showingMenu:       false,
-        selectedCommander: null,
-        firstRun:          true,
+        //state
+        activeCommand:     '',
+        activeCommander:   null,
+        sm:                null, //state machine
 
         startup: function (options) {
 
-            this.module.on('cartridges/Module::did-startup-module').then(hitch(this, 'refreshMenu'));
+            this.sm = new StateMachine({
+                state:      _.has(options, 'state') ? options.state : 'firstRun',
+                states:     ['firstRun', 'selectCommander', 'selectCommand', 'executeCommand'],
+                delegate:   this
+            });
 
             return this.inherited(arguments);
         },
@@ -30,66 +42,32 @@ define(['dojo/_base/declare',
          */
         execute: function (options) {
 
-            var d;
-
-            //give ourselves render time, but we never come unfocused.
-            this.adapter.focus(this);
-
-            this.adapter.addStyles('global', this.styles);
-
-            if (this.firstRun) {
-                this.firstRun = false;
-                d = this.adapter.splash();
-            } else {
-                d = new this.module.Deferred();
-                d.resolve();
-            }
-
-            //show the commander select
-            d.then(hitch(this, 'commanderSelect'))
-                //set the selected commander
-                .then(hitch(this, function (commander) {
-
-                    this.selectedCommander  = commander;
-
-                    this.adapter.blur(this);
-
-                    return when(this.adapter.focus(this.selectedCommander)).then(function () {
-                        return commander;
-                    });
-
-                }))
-                //show the command select menu
-                .then(hitch(this, 'commandSelect'))
-                //execute the selected command
-                .then(hitch(this, function (command) {
-
-                    return this.executeCommand(this.selectedCommander, command);
-
-                }))
-                //start it all over again
-                .then(hitch(this, function () {
-                    this.adapter.blur(this.selectedCommander);
-                    this.selectedCommander = null;
-                    this.execute();
-                }));
-
-
-            return this.inherited(arguments);
+            return this.sm.execute({
+                repeat: true
+            });
 
         },
 
-
         /**
-         * Render the commander select menu.
+         * State machine delegate methods
          */
-        commanderSelect: function () {
 
-            this.showingMenu = true;
+        //show the splash screen on first run
+        onStateMachineDidEnterFirstRun: function (e) {
+            return this.adapter.splash();
+        },
 
-            var options = {},
-                d = new this.module.Deferred(),
-                longLabels = this.module.adapter().longLabels;
+        //after exiting first run, lets drop first run from available states
+        onStateMachineDidExitFirstRun: function (e) {
+            this.sm.states = this.sm.states.slice(1); //drop firstRun state
+        },
+
+        //select a commander
+        onStateMachineDidEnterSelectCommander: function (e) {
+
+            var options         = {}, //options for the select
+                d               = new this.module.Deferred(),
+                longLabels      = this.module.adapter().longLabels;
 
             this.module.refreshCommanders().then(hitch(this, function (commanders) {
 
@@ -101,8 +79,8 @@ define(['dojo/_base/declare',
                 });
 
                 this.select('choose commander', null, options).then(hitch(this, function (commander) {
-                    this.showingMenu        = false;
-                    d.resolve(['selectCommand', { commander: commanders[commander]});
+                    this.activeCommander = this.module.commander(commanders[commander]);
+                    d.resolve({ commander: this.activeCommander });
                 }));
 
             }));
@@ -111,44 +89,26 @@ define(['dojo/_base/declare',
 
         },
 
-        /**
-         * Refresh the menu if it is currently showing
-         */
-        refreshMenu: function () {
+        //select a command (assuming commander is set
+        onStateMachineDidEnterSelectCommand: function (e) {
 
-            if (this.showingMenu) {
-
-                throw "FINISH";
-
-            }
-
-        },
-
-        /**
-         * After a commander is selected, show it.
-         *
-         * @param commander
-         */
-        commandSelect: function (e) {
-
-            commander = this.module.commander(e.get('commander'));
-
-            var commands = commander.options.commands,
-                options = {},
-                aliases = {},
-                d = new this.module.Deferred(),
-                longLabels = this.module.adapter().longLabels;
+            var commander   = e.get('commander'),
+                commands    = commander.options.commands,
+                options     = {},
+                aliases     = {},
+                d           = new this.module.Deferred(),
+                longLabels  = this.module.adapter().longLabels;
 
             //let user select the command they want to run by outputing a
             //simple select box. also get aliases ready to check
             Object.keys(commands).forEach(hitch(this, function (name) {
 
-                var c = commands[name],
-                    label = longLabels ? c.description : c.label;
+                var c       = commands[name],
+                    label   = longLabels ? c.description : c.label;
 
                 options[name] = label || c.description;
 
-                if (c.aliases && longLabels) {
+                if (c.aliases) {
 
                     if(!aliases[name]) {
                         aliases[name] = [];
@@ -161,38 +121,45 @@ define(['dojo/_base/declare',
 
             }));
 
-            this.select('choose command', options, { aliases: aliases, id: "command-select"}).then(hitch(d, 'resolve'));
+            //show select
+            this.select('choose command', null, { multiOptions: options, aliases: aliases, id: "command-select"}).then(function (command) {
+
+                //save active adapter in-case we transition to another state prematurely or out of order
+                this.activeCommand = command;
+
+                //pass command and commander onto next state
+                d.resolve({
+                    commander:  commander,
+                    command:    this.activeCommand
+                });
+
+            });
 
             return d;
 
         },
 
-        /**
-         * Runs a command on a commander. Tries to do this by seeing if a schema is defined. if one is, it outputs a form, then passes it as the values
-         * to the callback.
-         *
-         * @param commander
-         * @param command
-         */
-        executeCommand: function (commander, command) {
+        //we need to execute the command
+        onStateMachineDidEnterExecuteCommand: function (e) {
 
-            commander = this.module.commander(commander);
-
-            var schema = commander.schemaForCommand(command),
-                d = new this.module.Deferred(),
+            var commander   = e.get('commander'),
+                command     = e.get('command'),
+                schema      = commander.schemaForCommand(command),
+                d           = new this.module.Deferred(),
                 results;
 
             if (schema) {
 
                 this.form(schema).then(hitch(this, function (values) {
 
-                        console.dir(values);
+                    console.dir(values);
+                    d.resolve();
 
-                    })).otherwise(hitch(this, function (err) {
+                })).otherwise(hitch(this, function (err) {
 
-                        console.error(err);
+                    console.error(err);
 
-                    }));
+                }));
 
             }
             //no schema tied to the command, run it straight away

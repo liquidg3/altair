@@ -1,8 +1,8 @@
 /**
  * Loads every modules' package.json so it
  */
-define(['dojo/_base/declare',
-        'dojo/Deferred',
+define(['altair/declare',
+        'altair/Deferred',
         './_Base',
         'altair/facades/hitch'],
 
@@ -19,7 +19,7 @@ define(['dojo/_base/declare',
             this.deferred = new Deferred();
 
             if(!module.parseConfig) {
-                throw "The Package plugin depends on the Config plugin, make sure it's loaded and try again.";
+                this.reject("The Package plugin depends on the Config plugin, make sure it's loaded and try again.");
             }
 
             module.parseConfig('package.json').then(hitch(this, function (parsedPackage) {
@@ -30,7 +30,7 @@ define(['dojo/_base/declare',
 
                 this.deferred.resolve(this);
 
-            }));
+            })).otherwise(hitch(this.deferred, 'reject'));
 
 
             return this.inherited(arguments);

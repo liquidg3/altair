@@ -64,7 +64,7 @@ define(['altair/declare',
                     var methodName = this._stateAndEventNameToCallbackName(state, eventName);
 
                     //does the delegate have the name? if so, lets add a listener for it
-                    if(_.has(delegate, methodName)) {
+                    if(delegate[methodName] !== undefined) {
                         listeners.push(this.on(eventName, hitch(delegate, methodName), { state: state }));
                     }
 
@@ -91,6 +91,9 @@ define(['altair/declare',
          * Loops through every state, emitting all events along the way. If an event listener returns a deferred, we
          * wait until it is resolved before continuing. When we resolbvthwve our deferred, we will pass the return value
          * of the last state we transitionedTo
+         *
+         * @param options  - repeat: loop back on itself?
+         * @returns {altair.Deferred}
          */
         execute: function (options) {
 
@@ -104,7 +107,7 @@ define(['altair/declare',
                         return;
                     }
 
-                    this.transitionTo(lastResponse[0], lastResponse[1]).then(function (response) {
+                    this.transitionTo(lastResponse[0], lastResponse[1], options).then(function (response) {
                         lastResponse = response;
                         fire();
                     }).otherwise(hitch(d, 'reject'));
@@ -144,13 +147,13 @@ define(['altair/declare',
          * @param state the state (must match something in this.states)
          * @param data object passed through to event (usually whatever was returned from previous state)
          */
-        transitionTo: function (state, data) {
+        transitionTo: function (state, data, options) {
 
             var d           = new Deferred(),
                 eventData   = data,
                 events      = Object.keys(this._listenerMap),
                 lastResponse,
-                nextState   = this.nextState(state),
+                nextState   = this.nextState(state, _.has(options, 'repeat') ? options.repeat : false),
                 fire        = hitch(this, function (i) {
 
                     //are we on the last event?
