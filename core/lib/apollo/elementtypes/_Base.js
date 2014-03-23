@@ -47,15 +47,22 @@ define(['dojo/_base/declare',
                 options: {
                     label:          'Required',
                     description:    'If this field is required, set to true.',
-                    value:          false
+                    defaultValue:    false
+                }
+            },
+            pattern: {
+                type: 'string',
+                options: {
+                    label: 'Pattern',
+                    description: 'Ensure the value set matches this regex'
                 }
             },
             many: {
                 type: 'bool',
                 options: {
-                    label:       'Many',
-                    description: 'Whether this element should allow more than one value to be attached to it.',
-                    value:       false
+                    label:          'Many',
+                    description:    'Whether this element should allow more than one value to be attached to it.',
+                    defaultValue:   false
                 }
             },
 
@@ -86,7 +93,7 @@ define(['dojo/_base/declare',
         constructor: function () {
 
             if(!this.key) {
-                throw 'You must set a key for your field type ( ' + this.declaredClass + ' ), something like "text" or "bool" or "email".';
+                throw new Error('You must set a key for your element type ( ' + this.declaredClass + ' ), something like "text" or "bool" or "email".', 'el');
             }
 
             //mixin options with default options
@@ -102,7 +109,7 @@ define(['dojo/_base/declare',
             this.defaultOptionValues = {};
 
             Object.keys(this.options).forEach(lang.hitch(this, function (name) {
-                this.defaultOptionValues[name] = this.options[name].options.hasOwnProperty('value') ? this.options[name].options.value : null;
+                this.defaultOptionValues[name] = this.options[name].options.hasOwnProperty('defaultValue') ? this.options[name].options.defaultValue : null;
 
             }));
 

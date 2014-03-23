@@ -3,6 +3,6 @@
     "version": "0.0.1",
     "description": "We are testing this out, you better love it",
     "altaiDependencies": {
-        "Altair:MockWithEvents": "0.0.1"
+        "altair:MockWithEvents": "0.0.1"
     }
 }

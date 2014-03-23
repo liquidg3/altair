@@ -3,7 +3,7 @@
         "autostart":       {
             "type":    "bool",
             "options": {
-                "value": true,
+                "defaultValue": true,
                 "label": "Autostart"
             }
         }

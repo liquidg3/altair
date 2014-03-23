@@ -44,7 +44,7 @@ define(['dojo/Deferred',
                 path: 'altair/cartridges/module/Module',
                 options: {
                     paths: ['core/tests/modules/vendors', 'core/vendors'],
-                    modules: ['Altair:MockWithEvents', 'Altair:MockWithEvents2', 'Altair:Events'],
+                    modules: ['altair:MockWithEvents', 'altair:MockWithEvents2', 'altair:Events'],
                     plugins: ['altair/cartridges/module/plugins/Nexus', 'altair/cartridges/module/plugins/Events']
                 }
             }

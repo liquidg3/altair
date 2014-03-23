@@ -167,7 +167,7 @@ define(['dojo/_base/declare',
                 if( !( this.values.hasOwnProperty(name) ) ) {
 
                     this.values[name] = '';//so the .set doesn't give us "element does not exist"
-                    this.set(name, schema.optionsFor(name, false).value || null);
+                    this.set(name, schema.optionsFor(name, false).defaultValue || null);
 
                 }
 

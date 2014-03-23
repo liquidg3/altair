@@ -36,10 +36,10 @@ define(['altair/declare',
 
         constructor: function (options) {
 
-            this.state  = _.has(options, 'state') ? options.state : null; //starting state is optional
+            this.state  = options && _.has(options, 'state') ? options.state : null; //starting state is optional
             this.states = options.states;
 
-            if(_.has(options, 'delegate')) {
+            if(options && _.has(options, 'delegate')) {
                 this.attachListeners(options.delegate);
             }
 
@@ -99,7 +99,8 @@ define(['altair/declare',
 
             //lastResponse is is in form [state, data]... if no state, we're done
             var d               = new Deferred(),
-                lastResponse    = [this.states[0], {}],
+                state           = options && _.has(options, 'state') ? options.state : this.states[0], //optionally override starting state
+                lastResponse    = [state, {}],
                 fire            = hitch(this, function (i) {
 
                     if(!lastResponse[0]) {
@@ -142,6 +143,26 @@ define(['altair/declare',
         },
 
         /**
+         * Same as above, but opposite order
+         * @param state
+         * @param backToLast
+         * @returns {string}
+         */
+        previousState: function (state, backToLast) {
+
+            var i = _.indexOf(this.states, state) - 1,
+                next = '';
+
+            if(i > 0) {
+                next = this.states[i];
+            } else if(backToLast === true){
+                next = this.states[this.states.length-1];
+            }
+
+            return next;
+        },
+
+        /**
          * Transition to a particular state (which involves emitting all events that are the lifecycle of the state.
          *
          * @param state the state (must match something in this.states)
@@ -149,11 +170,13 @@ define(['altair/declare',
          */
         transitionTo: function (state, data, options) {
 
+            this.state = state;//probably should wait until didEnterState before setting this, yeah?
+
             var d           = new Deferred(),
                 eventData   = data,
                 events      = Object.keys(this._listenerMap),
                 lastResponse,
-                nextState   = this.nextState(state, _.has(options, 'repeat') ? options.repeat : false),
+                nextState   = this.nextState(state, options && _.has(options, 'repeat') ? options.repeat : false),
                 fire        = hitch(this, function (i) {
 
                     //are we on the last event?

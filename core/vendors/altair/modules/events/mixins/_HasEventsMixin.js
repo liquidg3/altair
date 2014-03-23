@@ -13,7 +13,7 @@ define(['dojo/_base/declare',
             startup: function () {
 
                 if(this.package.events) {
-                    this.on('Altair:Events::register-events').then(hitch(this, 'registerEvents'));
+                    this.on('altair:Events::register-events').then(hitch(this, 'registerEvents'));
                 }
 
                 return this.inherited(arguments);

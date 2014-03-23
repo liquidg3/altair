@@ -1,5 +1,5 @@
 /**
- * Test module, depends on Altair:Events module
+ * Test module, depends on altair:Events module
  */
 define(['dojo/_base/declare',
         'dojo/_base/lang',

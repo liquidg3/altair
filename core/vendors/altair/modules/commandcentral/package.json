@@ -10,8 +10,8 @@
         "figlet":   ">=1.0.x"
     },
     "altairDependencies": {
-        "Altair:Adapters": ">=0.1.x",
-        "Altair:Events": ">=0.1.x"
+        "altair:Adapters": ">=0.1.x",
+        "altair:Events": ">=0.1.x"
     },
     "events": {
         "register-commanders": "Use with the _HasCommandersMixin and the _IsCommanderMixin to give yourself a command line interface."

@@ -8,7 +8,7 @@ the ability to trigger event listeners selectively.
     /**
      * Altair has 2 ways to set listeners, the chain'able way is .on(eventName, query).then(...
      */
-    this.on('Altair:Jarvis::DID_GESTURE', { 'gesture.type': 'the-force' }).then(function (e) {
+    this.on('altair:Jarvis::DID_GESTURE', { 'gesture.type': 'the-force' }).then(function (e) {
 
         //the device that triggered the gesture
         var device = e.get('device');
@@ -18,7 +18,7 @@ the ability to trigger event listeners selectively.
     /**
      * The normal normal way is on(eventName, callback, query)
      */
-    this.on('Altair:Jarvis::DID_GESTURE', function (e) {
+    this.on('altair:Jarvis::DID_GESTURE', function (e) {
 
         //the device that triggered the gesture
         var device = e.get('device');

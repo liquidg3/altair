@@ -11,7 +11,7 @@
     ],
     "modules": "*",
     "moduleOptions": {
-        "Altair:CommandCentral": {
+        "altair:CommandCentral": {
             "selectedAdapter": "adapters/Prompt"
         }
     }

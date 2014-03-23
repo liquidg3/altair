@@ -21,7 +21,7 @@ define(['dojo/_base/declare',
          */
         startup: function () {
 
-            //nexus resolve for adapters, e.g. Altair:Commander::adapters/Prompt or Altair:Commander::adapters/Blessed
+            //nexus resolve for adapters, e.g. altair:Commander::adapters/Prompt or altair:Commander::adapters/Blessed
             var resolver            = new Adapters(this._nexus),
                 apolloCartridge     = this.nexus('cartridges/Apollo');
 

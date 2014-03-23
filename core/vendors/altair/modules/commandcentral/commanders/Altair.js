@@ -7,12 +7,14 @@
 
 define(['altair/declare',
         'altair/facades/hitch',
+        'altair/facades/mixin',
         'altair/modules/commandcentral/mixins/_IsCommanderMixin',
         'altair/when',
         'altair/StateMachine',
         'altair/plugins/node!underscore'
         ], function (declare,
                      hitch,
+                     mixin,
                      _IsCommanderMixin,
                      when,
                      StateMachine,
@@ -25,6 +27,7 @@ define(['altair/declare',
         activeCommand:     '',
         activeCommander:   null,
         sm:                null, //state machine
+        startState:       'firstRun',
 
         startup: function (options) {
 
@@ -42,9 +45,56 @@ define(['altair/declare',
          */
         execute: function (options) {
 
-            return this.sm.execute({
-                repeat: true
-            });
+            var def = new this.module.Deferred(),
+                run = hitch(this, function () {
+
+                    this.sm.execute({
+                        repeat: true,
+                        state: this.startState
+                    }).otherwise(hitch(this, function (err) {
+
+                        if(err instanceof Error) {
+                            err = err.message;
+                        }
+
+
+                        this.writeLine(err, 'error');
+
+                        //jump to my best guess of what to do now (jump to last state on error, or first state if all else fails)
+                        this.startState = this.sm.state && this.sm.previousState(this.sm.state) ? this.sm.previousState(this.sm.state) : this.sm.states[0];
+
+                        //run again
+                        run();
+
+
+                    }));
+                });
+
+
+            //try and determine starting state from adapter (which can read input)
+            this.activeCommander = this.adapter.initialCommander();
+            this.activeCommand   = this.adapter.initialCommand();
+
+            //if there is an active commander, lets wai till it loads
+            if(this.activeCommander && this.activeCommander.then) {
+
+                this.activeCommander.then(hitch(this, function (commander) {
+
+                    if(commander) {
+                        this.activeCommander = commander;
+                        this.startState        = (this.activeCommand) ? 'executeCommand' : 'selectCommand';
+                    }
+
+                    run();
+
+                })).otherwise(hitch(def, 'reject'));
+
+            } else {
+                run();
+            }
+
+
+            return def;
 
         },
 
@@ -65,31 +115,37 @@ define(['altair/declare',
         //select a commander
         onStateMachineDidEnterSelectCommander: function (e) {
 
-            var options         = {}, //options for the select
-                d               = new this.module.Deferred(),
-                longLabels      = this.module.adapter().longLabels;
+            var multiOptions    = {}, //options for the select
+                d               = new this.module.Deferred();
 
             this.module.refreshCommanders().then(hitch(this, function (commanders) {
 
-                Object.keys(commanders).forEach(function (alias) {
-                    if (alias !== 'altair') {
-                        var label = longLabels ? commanders[alias].options.description : commanders[alias].options.label;
-                        options[alias] = label || commanders[alias].name;
+                Object.keys(commanders).forEach(function (name) {
+                    if (name !== 'altair') {
+                        multiOptions[name]              = commanders[name].options.description;
                     }
                 });
 
-                this.select('choose commander', null, options).then(hitch(this, function (commander) {
+                this.select('choose commander', null, multiOptions).then(hitch(this, function (commander) {
                     this.activeCommander = this.module.commander(commanders[commander]);
                     d.resolve({ commander: this.activeCommander });
                 }));
 
-            }));
+            })).otherwise(hitch(d, 'reject'));
 
             return d;
 
         },
 
-        //select a command (assuming commander is set
+        //try and ensure a commander is always passed to selectCommand state
+        onStateMachineWillEnterSelectCommand: function (e) {
+
+            return mixin({
+                commander: this.activeCommander
+            },e.data);
+        },
+
+        //select a command (assuming commander is set)
         onStateMachineDidEnterSelectCommand: function (e) {
 
             var commander   = e.get('commander'),
@@ -99,7 +155,7 @@ define(['altair/declare',
                 d           = new this.module.Deferred(),
                 longLabels  = this.module.adapter().longLabels;
 
-            //let user select the command they want to run by outputing a
+            //let user select the command they want to run by outputting a
             //simple select box. also get aliases ready to check
             Object.keys(commands).forEach(hitch(this, function (name) {
 
@@ -122,7 +178,7 @@ define(['altair/declare',
             }));
 
             //show select
-            this.select('choose command', null, { multiOptions: options, aliases: aliases, id: "command-select"}).then(function (command) {
+            this.select('choose command', null, { multiOptions: options, aliases: aliases, id: "command-select"}).then(hitch(this, function (command) {
 
                 //save active adapter in-case we transition to another state prematurely or out of order
                 this.activeCommand = command;
@@ -133,9 +189,19 @@ define(['altair/declare',
                     command:    this.activeCommand
                 });
 
-            });
+            })).otherwise(hitch(d, 'reject'));
 
             return d;
+
+        },
+
+        //before we execute our command, make sure we have our commander and command (our best attempt)
+        onStateMachineWillEnterExecuteCommand: function (e) {
+
+            return mixin({
+                commander:  this.activeCommander,
+                command:    this.activeCommand
+            },e.data);
 
         },
 
@@ -144,31 +210,29 @@ define(['altair/declare',
 
             var commander   = e.get('commander'),
                 command     = e.get('command'),
+                results,
                 schema      = commander.schemaForCommand(command),
                 d           = new this.module.Deferred(),
-                results;
+                done        = function (values) {
+                    results = commander[command](values);
+                    if (results.then) {
+                        results.then(hitch(d, 'resolve')).otherwise(hitch(d, 'reject'));
+                    } else {
+                        d.resolve(results);
+                    }
+
+                };
+
 
             if (schema) {
 
-                this.form(schema).then(hitch(this, function (values) {
-
-                    console.dir(values);
-                    d.resolve();
-
-                })).otherwise(hitch(this, function (err) {
-
-                    console.error(err);
-
-                }));
+                //write the description of the command if there is one
+                this.form(schema).then(done).otherwise(hitch(d, 'reject'));
 
             }
             //no schema tied to the command, run it straight away
             else {
-
-                results = commander[command]();
-                if (results.then) {
-                    d = results;
-                }
+                done();
             }
 
             return d;

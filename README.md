@@ -18,7 +18,7 @@ connecting to devices: it's orchestrating complex interactions between those dev
 so beautifully into our lives that we don't even know that it's there. Not only that, but we should quickly begin to question
 how we ever lived without it.
 
-Controlling devices is only one of many things Altair can do (through the Altair:Jarvis module). You can download and
+Controlling devices is only one of many things Altair can do (through the altair:Jarvis module). You can download and
 enable the Titan:Alfred module to have web server functionality through [express](http://expressjs.com/) or any other
 web application framework that exists for node. Then, have your webpage update in real time as sensors are triggered and
 switches are flipped.
@@ -64,13 +64,13 @@ See it in action:
     /**
      * Altair has 2 ways to set listeners, the chain'able way is .on(eventName, query).then(...
      */
-    this.on('Altair/Jarvis:did-gesture', { 'gesture.type': 'the-force' }).then(hitch(this, function (e) {
+    this.on('liquidfire:Jarvis::did-gesture', { 'gesture.type': 'the-force' }).then(hitch(this, function (e) {
 
         //the device that triggered the gesture
         var device = e.get('device');
 
         //cheating =)
-        this.nexus('Altair/Jarvis').device('living-room-lights').toggle();
+        this.nexus('liquidfire:Jarvis').device('living-room-lights').toggle();
 
     }).otherwise(function (err) {
 
@@ -79,9 +79,9 @@ See it in action:
     });
 
     /**
-     * The normal normal way is on(eventName, callback, query)
+     * The normal normal way: on(eventName, callback, query)
      */
-    this.on('Altair/Jarvis:did-gesture', hitch(this, function (e) {
+    this.on('liquidfire:Jarvis::did-gesture', hitch(this, function (e) {
 
         ....
 
@@ -97,7 +97,7 @@ verbal command send from an imaginary thermostat with a microphone attached to i
 
     {
 
-        "Altair/Jarvis:did-receive-verbal-command": {
+        "liquidfire:Jarvis::did-receive-verbal-command": {
 
             "onDidYellAtThermostat": {
                 "device.tags": "thermostat",
@@ -138,7 +138,7 @@ Now check out how easy it is to control our imaginary thermostat and maybe some 
         else {
 
             //it may be a little extreme to do something like this, maybe we should do some text to speech? ;)
-            this.nexus('Altair:Jarvis').devicesByTags(['hallway', 'lights']).pulse({
+            this.nexus('liquidfire:Jarvis').devicesByTags(['hallway', 'lights']).pulse({
                 duration:   500,
                 loop:       2,
                 colors:     ['ff0000', 'ffffff']
@@ -147,7 +147,6 @@ Now check out how easy it is to control our imaginary thermostat and maybe some 
             ));
 
         }
-
 
     }
 

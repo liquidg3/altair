@@ -1,5 +1,5 @@
 /**
- * Tells Altair::CommandCentral that you have commanders
+ * Tells altair::CommandCentral that you have commanders
  */
 define(['dojo/_base/declare',
         'altair/facades/hitch',
@@ -15,7 +15,7 @@ define(['dojo/_base/declare',
 
             startup: function () {
 
-                this.on('Altair:CommandCentral::register-commanders').then(hitch(this, 'registerCommanders'));
+                this.on('altair:CommandCentral::register-commanders').then(hitch(this, 'registerCommanders'));
 
                 return this.inherited(arguments);
             },

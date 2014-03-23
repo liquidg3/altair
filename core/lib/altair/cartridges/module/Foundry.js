@@ -237,7 +237,7 @@ define(['altair/declare',
                 moduleName  = pathParts.pop().split('.')[0],
                 junk        = pathParts.pop(),
                 junk2       = pathParts.pop(),
-                vendorName  = ucfirst(pathParts.pop());
+                vendorName  = pathParts.pop();
 
 
             return vendorName + ':' + moduleName;

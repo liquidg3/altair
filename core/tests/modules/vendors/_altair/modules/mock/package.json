@@ -2,6 +2,6 @@
     "name": "Mock Module For Testing Cross Vendor Dependencies",
     "version": "0.0.1",
     "altairDependencies": {
-        "Altair:Mock": ">=0.0.1"
+        "altair:Mock": ">=0.0.1"
     }
 }

@@ -33,7 +33,7 @@ define(['altair/declare',
             if(!this.adapter) {
 
                 this.deferred = new this.module.Deferred();
-                this.deferred.reject('You must pass your commander an adapter from Altair:CommandCentral');
+                this.deferred.reject('You must pass your commander an adapter from altair:CommandCentral');
 
                 return this.deferred;
             }
@@ -91,7 +91,7 @@ define(['altair/declare',
         },
 
         /**
-         * Build an apollo schema for the command.
+         * Build an apollo schema for the command. (TODO handle aliases)
          *
          * @param named
          */

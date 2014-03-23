@@ -23,7 +23,7 @@ define(['doh/runner',
         },
 
         /**
-         * Test dependencies, the dependent module (Altair:Mock) is passed second to the foundry... when we get the
+         * Test dependencies, the dependent module (altair:Mock) is passed second to the foundry... when we get the
          * modules back, it should be in front. This could crash hard if it does not work (meaning it may not trigger
          * the failure callback).
          */
@@ -37,9 +37,9 @@ define(['doh/runner',
                 paths: [
                     'core/tests/modules/vendors'
                 ],
-                modules: [ "_altair:Mock", "Altair:Mock"]
+                modules: [ "_altair:Mock", "altair:Mock"]
             }).then(function (modules) {
-                t.is(modules[0].name, 'Altair:Mock', 'Passing modules to foundry did not produce expected results.');
+                t.is(modules[0].name, 'altair:Mock', 'Passing modules to foundry did not produce expected results.');
                 t.is(modules[1].name, '_altair:Mock', 'Passing modules to foundry did not produce expected results.');
                 deferred.resolve(true);
             }).otherwise(hitch(deferred, 'reject'));

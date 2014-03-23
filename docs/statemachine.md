@@ -1,6 +1,8 @@
 ### Lifecycle Object managing a simple State Machine
-A State Machine is, in our context, an object that has a this.state; It can be in of any of this.states = ['state1', 'state2'];
-In Altair, when the states transition (state1 -> state2), we'll fire some events, executed callbacks you have configured . By
+A StateMachine is an object that has a this.state, can be one of any this.states = ['state1', 'state2'],
+and can transition between states;
+
+In altair/StateMachine, when the states transition (state1 -> state2), we'll fire some events, executed callbacks you have configured . By
 using the Altair/Lifecycle (modules, commanders, etc) to manage your State Machine, you get a great way to configure state
 machines at run time. This flexibility allows you to do some pretty cool things (like optimization). Note that altair/StateMachines
 are not linear, we can transition to any state in any order at any time, so your callbacks must take it into consideration.

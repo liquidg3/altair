@@ -8,7 +8,7 @@
  */
 
 var path = require('path'),
-    argv = require('optimist').usage('Altair - Experiences of Everything\n Usage: $0').options('env', {
+    argv = require('yargs').usage('Altair - Experiences of Everything\n Usage: $0').options('env', {
                 'default': 'dev',
                 describe: 'specify the environment you want to run'
             }).options('bootstrap', {
@@ -17,7 +17,7 @@ var path = require('path'),
             }).boolean('help').alias('help', 'h').describe('help', 'display help').boolean('test').describe('test', 'run our unit tests').argv;
 
 if(argv.help) {
-    require('optimist').showHelp();
+    require('yargs').showHelp();
     return;
 }
 

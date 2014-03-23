@@ -183,13 +183,11 @@ define(['dojo/_base/declare',
         },
 
         module: function (named) {
-
-            return this.modulesByName[named];
+            return this.modulesByName[named.toLowerCase()];
         },
 
         hasModule: function (named) {
-
-            return !!this.modulesByName[named];
+            return !!this.modulesByName[named.toLowerCase()];
         },
 
         /**
@@ -247,7 +245,7 @@ define(['dojo/_base/declare',
 
             //add to local store of modules by name
             _modules.forEach(hitch(this, function (module) {
-                this.modulesByName[module.name] = module;
+                this.modulesByName[module.name.toLowerCase()] = module;
             }));
 
             list = []; // all our deferreds

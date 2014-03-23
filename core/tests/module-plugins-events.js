@@ -40,7 +40,7 @@ function (doh,
                 path: 'altair/cartridges/module/Module',
                 options: {
                     paths:      ['core/tests/modules/vendors', 'core/vendors'],
-                    modules:    ['Altair:MockWithEvents', 'Altair:MockWithEvents2', 'Altair:Events'],
+                    modules:    ['altair:MockWithEvents', 'altair:MockWithEvents2', 'altair:Events'],
                     plugins:    ['altair/cartridges/module/plugins/Nexus', 'altair/cartridges/module/plugins/Events']
                 }
             }
@@ -74,9 +74,9 @@ function (doh,
 
                 var m   = modules[0],
                     d   = new Deferred(),
-                    m2  = m.nexus('Altair:MockWithEvents2');
+                    m2  = m.nexus('altair:MockWithEvents2');
 
-                m.on('Altair:MockWithEvents2::DOING_TEST').then(function (e) {
+                m.on('altair:MockWithEvents2::DOING_TEST').then(function (e) {
                     t.is(e.get('foo'), 'bar', 'Events through module.on failed');
                     d.resolve();
                 }).otherwise(hitch(d, 'reject'));
@@ -103,12 +103,12 @@ function (doh,
                 var m   = modules[0],
                     d   = new Deferred();
 
-                m.on('Altair:MockWithEvents2::DOING_TEST').then(function (e) {
+                m.on('altair:MockWithEvents2::DOING_TEST').then(function (e) {
                     t.assertEqual(e.get('foo'), 'bar', 'Events through module.on failed');
                     d.resolve();
                 }).otherwise(hitch(d, 'reject'));
 
-                m.emit('Altair:MockWithEvents2::DOING_TEST', {
+                m.emit('altair:MockWithEvents2::DOING_TEST', {
                     foo: 'bar'
                 });
 
@@ -130,18 +130,18 @@ function (doh,
                 var m   = modules[0],
                     d   = new Deferred();
 
-                m.on('Altair:MockWithtEvents2::DOING_TEST').then(function (e) {
+                m.on('altair:MockWithtEvents2::DOING_TEST').then(function (e) {
 
                     d.reject('Should not have been called');
 
                 }).otherwise(function (err) {
 
-                    t.is(err, 'Could not on(Altair:MockWithtEvents2::DOING_TEST) because it could not be found.');
+                    t.is(err, 'Could not on(altair:MockWithtEvents2::DOING_TEST) because it could not be found.');
                     d.resolve();
 
                 });
 
-                m.emit('Altair:MockWithEvents2::DOING_TEST', {
+                m.emit('altair:MockWithEvents2::DOING_TEST', {
                     foo: 'bar'
                 });
 

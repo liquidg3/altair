@@ -2,11 +2,12 @@ define(['altair/declare',
         'altair/facades/hitch',
         'altair/facades/__',
         'altair/plugins/node!underscore',
-        'dojo/when',
+        'altair/when',
         'altair/facades/partial',
         'altair/modules/commandcentral/adapters/_Base',
-        'dojo/node!prompt',
-        'dojo/node!chalk'
+        'altair/plugins/node!prompt',
+        'altair/plugins/node!chalk',
+        'altair/plugins/node!yargs'
 ], function (declare,
              hitch,
              __,
@@ -15,9 +16,11 @@ define(['altair/declare',
              partial,
              _Base,
              prompt,
-             chalk) {
+             chalk,
+             yargs) {
 
 
+    prompt.override     = yargs.argv;
     prompt.colors       = false;
     prompt.message      = 'altair';
     prompt.delimiter    = ': ';
@@ -66,8 +69,45 @@ define(['altair/declare',
          * @param options
          */
         writeLine: function (str, options) {
-            console.log(chalk.bgRed(str));
+
+            if(_.isString(options)) {
+
+                switch(options) {
+                    case 'error':
+                        str = 'error: ' + chalk.white.bgRed(str);
+                        break;
+                }
+
+            }
+
+            console.log(str);
             return this;
+        },
+
+        /**
+         * If altair was loaded with an argument
+         *
+         * @returns {null}
+         */
+        initialCommander: function () {
+
+            var d = new this.module.Deferred();
+
+            if(yargs.argv._[0]) {
+                this.module.refreshCommanders().then(function (commanders) {
+                    d.resolve(commanders[yargs.argv._[0]]);
+                }).otherwise(hitch(d, 'reject'));
+            } else {
+                d.resolve(undefined);
+            }
+
+
+            return d;
+        },
+
+        //if we can autoload the current command, return it here
+        initialCommand: function () {
+            return yargs.argv._[1];
         },
 
         /**
@@ -79,10 +119,26 @@ define(['altair/declare',
          */
         readLine: function (question, defaultValue, options) {
 
-            var def         = new this.module.Deferred();
+            var def         = new this.module.Deferred(),
+                name        = (options && _.has(options, 'override')) ? options.override : 'answer';
+
+            //it's been overridden
+            if(!prompt.override[name]) {
+
+                //output a description
+                if(options && _.has(options, 'description')) {
+                    console.log(chalk.italic(options.description));
+                }
+
+                //help user by outputing pattern
+                if(options && _.has(options, 'pattern') && options.pattern) {
+                    question = question + " " + options.pattern;
+                }
+
+            }
 
             prompt.get([{
-                name: 'answer',
+                name: name,
                 type: 'string',
                 description: question
             }], hitch(this, function (err, results) {
@@ -90,16 +146,13 @@ define(['altair/declare',
                 if(err) {
                     def.reject(err);
                 } else {
-                    def.resolve(results.answer);
+                    def.resolve(results[name]);
                 }
 
             }));
 
-
-
-
-
             return def;
+
         },
 
         /**
@@ -113,36 +166,47 @@ define(['altair/declare',
         select: function (question, defaultValue, options) {
 
             var def             = new this.module.Deferred(),
-                _options        = options.hasOwnProperty('multiOptions') ? options : { multiOptions: options },
+                _options        = _.has(options, 'multiOptions') ? options : { multiOptions: options },
                 required        = _.has(_options, 'required') ? _options.required : true,
                 aliases         = _.has(_options, 'aliases') ? _options.aliases : {},
                 multiOptions    = _options.multiOptions,
-                keys            = Object.keys(multiOptions),
+                name            = (options && _.has(options, 'override')) ? options.override : 'answer';
+
+            if(!multiOptions) {
+                def.reject(new Error('you must supply multiOptions to your select "' + question + '"', 234));
+                return def;
+            }
+
+            var keys            = Object.keys(multiOptions),
                 aliasesReversed = {},
                 go;
 
-            this.writeLine()
-                .writeLine('--- ' + question + ' ---')
-                .writeLine('|');
+            if(!prompt.override[name]) {
 
-            keys.forEach(hitch(this, function (key) {
-                var line = '| ' + key;
+                this.writeLine('')
+                    .writeLine('--- ' + question + ' ---')
+                    .writeLine('|');
 
-                if(aliases.hasOwnProperty(key)) {
-                    aliases[key].forEach(function (a) {
-                        aliasesReversed[a] = key;
-                    });
+                keys.forEach(hitch(this, function (key) {
+                    var line = '| ' + key;
 
-                    line += ' (' + aliases[key].join(', ') + ')';
-                }
+                    if(aliases.hasOwnProperty(key)) {
+                        aliases[key].forEach(function (a) {
+                            aliasesReversed[a] = key;
+                        });
 
-                line += prompt.delimiter + '"' + multiOptions[key] + '"';
+                        line += ' (' + aliases[key].join(', ') + ')';
+                    }
 
-                this.writeLine(line);
-            }));
+                    line += prompt.delimiter + '"' + multiOptions[key] + '"';
 
-            this.writeLine('|')
-                .writeLine('---------------');
+                    this.writeLine(line);
+                }));
+
+                this.writeLine('|')
+                    .writeLine('---------------');
+
+            }
 
 
             go = hitch(this, function () {
@@ -179,8 +243,8 @@ define(['altair/declare',
                     }
 
                 })).otherwise(hitch(this, function () {
-                        "use strict";
-                        go();
+                    //if the whole thing crashes, try again (bad idea?)
+                    go();
                 }));
             });
 
@@ -201,9 +265,8 @@ define(['altair/declare',
                 values  = {},
                 elements= schema.elements(),
                 keys    = Object.keys(elements),
-                total   = keys.length;
-
-            var next = hitch(this, function (index) {
+                total   = keys.length,
+                next    = hitch(this, function (index) {
 
                 if(index === total) {
                     d.resolve(values);
@@ -213,6 +276,8 @@ define(['altair/declare',
                         type    = schema.typeFor(name),
                         options = schema.optionsFor(name);
 
+                    //to allow for arguments to be passed through
+                    options.override = name;
 
                     //see if we have a function by the name of type
                     if(!this[type]) {

@@ -2,7 +2,10 @@
     "name": "The Forge",
     "version": "0.0.1",
     "description": "Forge new modules and add new functionality to current ones.",
+    "dependencies": {
+      "mkdirp": ">=0.3.x"
+    },
     "altairDependencies": {
-        "Altair:CommandCentral": ">=0.1.x"
+        "altair:CommandCentral": ">=0.1.x"
     }
 }

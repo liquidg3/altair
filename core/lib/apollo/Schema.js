@@ -84,6 +84,11 @@ define(['dojo/_base/declare',
             return this._data.elements[elementName].type;
         },
 
+        setOptionFor: function (elementName, optionName, optionValue) {
+            this._data.elements[elementName].options[optionName] = optionValue;
+            return this;
+        },
+
         /**
          * Get you all the options for this field mixed in with all options for the field type.
          *

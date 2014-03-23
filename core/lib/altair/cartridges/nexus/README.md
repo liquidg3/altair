@@ -10,7 +10,7 @@ core/tests/nexus.js):
     onUserDidLogin: function (e) {
 
         var user    = e->get('user'),
-            home    = this.nexus('Altair:Locations/Place/Model').findOne({
+            home    = this.nexus('altair:Locations/Place/Model').findOne({
                 'tags':     'home',
                 'owners':   user
             });
@@ -19,7 +19,7 @@ core/tests/nexus.js):
         //if the user has no home, lets create one
         if(!home) {
 
-            home = this.nexus('Altair:Locations/Place/Model').create({
+            home = this.nexus('altair:Locations/Place/Model').create({
                 'tags': ['home'],
                 'owners': user
             });
@@ -32,10 +32,10 @@ core/tests/nexus.js):
 
     }
 
-In the example above, this.nexus('Altair:Locations/Place/Model') is returning an object that has findOne() and create()
-methods. Lets dive into the string 'Altair:Locations/Place/Model' and see what is happening.
+In the example above, this.nexus('altair:Locations/Place/Model') is returning an object that has findOne() and create()
+methods. Lets dive into the string 'altair:Locations/Place/Model' and see what is happening.
 
-First, the Nexus object will check a local \_map to see if there is a property on it called 'Altair:Locations/Place/Model'.
+First, the Nexus object will check a local \_map to see if there is a property on it called 'altair:Locations/Place/Model'.
 Chances are, it will not.
 
 Next it will look through all its register Resolvers by calling handles(name) on each one. The first one to match to

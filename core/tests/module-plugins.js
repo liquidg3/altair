@@ -14,7 +14,7 @@ define(['doh/runner',
                 altair      = new Altair(),
                 cartridge   = new ModuleCartridge(altair, {
                     paths:      ['core/tests/modules/vendors'],
-                    modules:    ['Altair:Mock'],
+                    modules:    ['altair:Mock'],
                     plugins:    plugins
                 });
 

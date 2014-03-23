@@ -20,7 +20,7 @@ define(['doh/runner',
                 path: 'altair/cartridges/module/Module',
                 options: {
                     paths: ['core/tests/modules/vendors'],
-                    modules: ['Altair:Mock'],
+                    modules: ['altair:Mock'],
                     plugins: [
                         "altair/cartridges/module/plugins/Paths",
                         "altair/cartridges/module/plugins/Config",
@@ -47,9 +47,9 @@ define(['doh/runner',
 
                 return boot(cartridges).then(function (altair) {
 
-                    var module = altair.cartridge('altair/cartridges/module/Module').module('Altair:Mock');
+                    var module = altair.cartridge('altair/cartridges/module/Module').module('altair:Mock');
 
-                    doh.assertEqual('bar', module.get('foo'), 'Altair:Mock did not get a schema.');
+                    doh.assertEqual('bar', module.get('foo'), 'altair:Mock did not get a schema.');
 
 
                 });

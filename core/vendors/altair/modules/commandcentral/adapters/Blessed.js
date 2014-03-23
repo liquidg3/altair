@@ -55,7 +55,7 @@ define(['dojo/_base/declare',
                 return process.exit(0);
             });
 
-            process.title = 'Altair:CommandCentral';
+            process.title = 'altair:CommandCentral';
 
             return this.inherited(arguments);
 

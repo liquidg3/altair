@@ -28,7 +28,7 @@ define(['doh/runner',
                 path: 'altair/cartridges/module/Module',
                 options: {
                     paths: ['core/vendors'],
-                    modules: ['Altair:Adapters'],
+                    modules: ['altair:Adapters'],
                     plugins: [
                         'altair/cartridges/module/plugins/Nexus',
                         'altair/cartridges/module/plugins/Deferred',
@@ -55,10 +55,10 @@ define(['doh/runner',
 
                 return boot(cartridges).then(function (altair) {
 
-                    var module = altair.cartridge('altair/cartridges/module/Module').module('Altair:Adapters'),
+                    var module = altair.cartridge('altair/cartridges/module/Module').module('altair:Adapters'),
                         def    = new Deferred();
 
-                    module.set('selectedAdapter', 'Altair:Adapters::adapters/Mock2');
+                    module.set('selectedAdapter', 'altair:Adapters::adapters/Mock2');
 
                     return module.get('selectedAdapter').then(function (adapter) {
                         t.t(!!adapter, 'selected adapter failed.');
@@ -95,7 +95,7 @@ define(['doh/runner',
 
                     return boot(cartridges).then(function (altair) {
 
-                        var module = altair.cartridge('altair/cartridges/module/Module').module('Altair:Adapters'),
+                        var module = altair.cartridge('altair/cartridges/module/Module').module('altair:Adapters'),
                             def = new Deferred();
 
                         module.adapter('adapters/Mock3').then(function (adapter) {
@@ -121,7 +121,7 @@ define(['doh/runner',
 
                 return boot(cartridges).then(function (altair) {
 
-                    var module = altair.cartridge('altair/cartridges/module/Module').module('Altair:Adapters');
+                    var module = altair.cartridge('altair/cartridges/module/Module').module('altair:Adapters');
 
                     return module.adapter('adapters/Mock1').then(function (adapter) {
                         t.t( typeof adapter.foo === 'function', 'adapter load failed' );
@@ -146,15 +146,15 @@ define(['doh/runner',
 
                 _cartridges[2].options = mixin({
                     moduleOptions: {
-                        'Altair:Adapters': {
-                            'selectedAdapter': 'Altair:Adapters::adapters/Mock2'
+                        'altair:Adapters': {
+                            'selectedAdapter': 'altair:Adapters::adapters/Mock2'
                         }
                     }
                 }, _cartridges[2].options);
 
                 return boot(_cartridges).then(function (altair) {
 
-                    var module = altair.cartridge('altair/cartridges/module/Module').module('Altair:Adapters');
+                    var module = altair.cartridge('altair/cartridges/module/Module').module('altair:Adapters');
 
                     var adapter = module.adapter();
 

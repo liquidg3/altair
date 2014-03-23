@@ -51,11 +51,11 @@ define(['doh/runner',
 
             foundry.build({
                 paths: testPaths,
-                modules: ['Altair:Mock']
+                modules: ['altair:Mock']
             }).then(deferred.getTestCallback(function (modules) {
 
                 var altair = modules[0];
-                doh.assertEqual('Altair:Mock', altair.name, 'Module name did not work right yo.');
+                doh.assertEqual('altair:Mock', altair.name, 'Module name did not work right yo.');
 
             })).otherwise(hitch(deferred, 'reject'));
 
@@ -73,11 +73,11 @@ define(['doh/runner',
 
             foundry.build({
                 paths: testPaths,
-                modules: ["Altair:NeverFound"]
+                modules: ["altair:NeverFound"]
             }).then(function () {
                 throw "SHOULD NEVER BE CALLED";
             },deferred.getTestCallback(function (err) {
-                doh.assertEqual('Failed to load all modules: Altair:NeverFound', err);
+                doh.assertEqual('Failed to load all modules: altair:NeverFound', err);
 
             }));
 
@@ -95,7 +95,7 @@ define(['doh/runner',
 
             foundry.build({
                 paths: testPaths,
-                modules: ["Altair:Mock"]
+                modules: ["altair:Mock"]
             }).then(deferred.getTestCallback(function (modules) {
                 doh.assertEqual(1, modules.length, 'Passing modules to foundry did not produce expected results.');
             }));
@@ -151,7 +151,7 @@ define(['doh/runner',
                     altair      = new Altair(),
                     cartridge   = new ModuleCartridge(altair, {
                         paths: testPaths,
-                        modules: ["Altair:Mock"],
+                        modules: ["altair:Mock"],
                         plugins: [
                             'altair/cartridges/module/plugins/Mock'
                         ]
@@ -187,14 +187,14 @@ define(['doh/runner',
                 altair      = new Altair(),
                 cartridge   = new ModuleCartridge(altair, {
                     paths: testPaths,
-                    modules: ["Altair:Mock"]
+                    modules: ["altair:Mock"]
                 });
 
 
             altair.addCartridge(cartridge).then(deferred.getTestCallback(function () {
 
                 doh.assertEqual(1, cartridge.modules.length, 'Module creation failed through Altair and the ModuleCartridge');
-                doh.assertEqual('Altair:Mock', cartridge.modules[0].name, 'Module name was not set.');
+                doh.assertEqual('altair:Mock', cartridge.modules[0].name, 'Module name was not set.');
 
             })).otherwise(hitch(deferred, 'reject'));
 
@@ -210,13 +210,13 @@ define(['doh/runner',
                 altair      = new Altair(),
                 cartridge   = new ModuleCartridge(altair, {
                     paths: testPaths,
-                    modules: ['Altair:Mock', 'Altair:Mock2']
+                    modules: ['altair:Mock', 'altair:Mock2']
                 });
 
 
             altair.addCartridge(cartridge).then(deferred.getTestCallback(function () {
 
-                var mock2 = cartridge.module('Altair:Mock2');
+                var mock2 = cartridge.module('altair:Mock2');
 
                 doh.assertTrue(mock2.mockMixinSuccess, '_MockMixin failed to mixin');
 
@@ -236,15 +236,15 @@ define(['doh/runner',
                 nexus       = new NexusCartridge(altair),
                 modules     = new ModuleCartridge(altair, {
                     paths: testPaths,
-                    modules: ["Altair:Mock"]
+                    modules: ["altair:Mock"]
                 });
 
 
             altair.addCartridges([nexus, modules]).then(deferred.getTestCallback(function () {
 
-                var mock = nexus.resolve('Altair:Mock');
+                var mock = nexus.resolve('altair:Mock');
 
-                doh.assertTrue(!!mock, 'nexus could not resolve Altair:Mock');
+                doh.assertTrue(!!mock, 'nexus could not resolve altair:Mock');
 
             })).otherwise(hitch(deferred, 'reject'));
 
@@ -262,13 +262,13 @@ define(['doh/runner',
                     paths: altairTestPaths
                 }),
                 cartridge   = new ModuleCartridge(altair, {
-                    modules: ['Altair:Mock', 'Altair:Mock2']
+                    modules: ['altair:Mock', 'altair:Mock2']
                 });
 
 
             altair.addCartridge(cartridge).then(deferred.getTestCallback(function () {
 
-                var mock2 = cartridge.module('Altair:Mock2');
+                var mock2 = cartridge.module('altair:Mock2');
 
                 doh.assertTrue(!!mock2, 'Module cartridge did not fallback to use altair\'s paths.');
 

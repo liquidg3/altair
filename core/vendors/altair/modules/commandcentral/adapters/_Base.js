@@ -17,9 +17,7 @@ define([
     return declare([Emitter, Lifecycle], {
 
         _styles:        null, /** optional styles your terminal adapter can use **/
-        longLabels:     true, /** should we output descriptions for labels when possible for lists/selects **/
         focused:        null, /** the commander currently in focus **/
-
 
         constructor: function () {
             this._styles = {};
@@ -31,7 +29,7 @@ define([
         notice: function (msg) {},
 
         splash: function () {
-            throw "This should output a cool logo or background or something for when Altair:CommandCentral boots.";
+            throw "This should output a cool logo or background or something for when altair:CommandCentral boots.";
         },
 
         writeLine: function(str, options) {
@@ -40,6 +38,16 @@ define([
 
         readLine: function(question, options) {
             throw "Must output question, return a deferred, wait for a response, resolve deferred with response. Must take into account options.";
+        },
+
+        //if we can autoload the current commander, return it here (see ./Prompt)
+        initialCommander: function () {
+           return null;
+        },
+
+        //if we can autoload the current command, return it here
+        initialCommand: function () {
+            return null;
         },
 
         form: function(elements, options) {

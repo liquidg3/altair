@@ -3,6 +3,6 @@
     "version": "0.0.1",
     "description": "Visit The Lodge to get all your Altair goodies =)",
     "altairDependencies": {
-        "Altair:CommandCentral": ">=0.1.x"
+        "altair:CommandCentral": ">=0.1.x"
     }
 }

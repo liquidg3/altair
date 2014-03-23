@@ -43,7 +43,8 @@ define(['dojo/_base/declare',
                         'apollo/elementTypes/Bool',
                         'apollo/elementTypes/Int',
                         'apollo/elementTypes/Float',
-                        'apollo/elementTypes/Date'
+                        'apollo/elementTypes/Date',
+                        'apollo/elementTypes/Select'
                     ];
 
                 }

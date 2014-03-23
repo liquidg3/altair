@@ -7,7 +7,7 @@ to the world at large.
 To get all the events everyone has registered in Altair, you can do something like this:
 
     //js
-    this.nexus('Altair:Events').getAllEvents().then(function (events) {
+    this.nexus('altair:Events').getAllEvents().then(function (events) {
 
         //will output every event in every module in Altair
         console.log(events);

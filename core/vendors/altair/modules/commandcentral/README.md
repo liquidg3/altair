@@ -1,5 +1,10 @@
 ### Command Central
 
+We make it easy to create command line interfaces for your Altair apps.
+
+
+### Experimental
+
 This is cool. You can build command line apps with stylesheets!
 
 Start by adding the _HasCommandersMixin into your module. Not sure how to build a module? It's easy, start (here)

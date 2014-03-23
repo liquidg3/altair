@@ -44,9 +44,9 @@ define(['doh/runner',
                 path: 'altair/cartridges/module/Module',
                 options: {
                     paths: ['core/vendors'],
-                    modules: ['Altair:Events', 'Altair:Adapters', 'Altair:CommandCentral' ],
+                    modules: ['altair:Events', 'altair:Adapters', 'altair:CommandCentral' ],
                     moduleOptions: {
-                        "Altair:CommandCentral": {
+                        "altair:CommandCentral": {
                             "autostart": false
                         }
                     },
@@ -74,7 +74,7 @@ define(['doh/runner',
 
                 return boot(cartridges).then(function (altair) {
 
-                    var m = altair.cartridge('altair/cartridges/module/Module').module('Altair:CommandCentral');
+                    var m = altair.cartridge('altair/cartridges/module/Module').module('altair:CommandCentral');
 
                     m.adapter('adapters/Mock').then(function (mock) {
 
@@ -97,7 +97,7 @@ define(['doh/runner',
 
                 return boot(cartridges).then(function (altair) {
 
-                    var m = altair.cartridge('altair/cartridges/module/Module').module('Altair:CommandCentral');
+                    var m = altair.cartridge('altair/cartridges/module/Module').module('altair:CommandCentral');
 
                     m.adapter('adapters/Mock').then(function (mock) {
 

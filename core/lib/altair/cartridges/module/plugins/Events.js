@@ -3,19 +3,19 @@
  *
  * It has 2 supported interfaces
  *
- * this.on('Altair:Jarvis::DID_GESTURE', { 'gesture.type': 'the-force' }).then(lang.hitch(this, function (e) {
+ * this.on('altair:Jarvis::DID_GESTURE', { 'gesture.type': 'the-force' }).then(lang.hitch(this, function (e) {
  *
  *       //the device that triggered the gesture
  *       var device = e.get('device');
  *
  *       //cheating =)
- *       this.nexus('Altair:Jarvis').device('living-room-lights').toggle();
+ *       this.nexus('altair:Jarvis').device('living-room-lights').toggle();
  *
  *   });
  *
  * //or
  *
- * this.on('Altair:Jarvis::did-gesture', lang.hitch(this, function (e) {
+ * this.on('altair:Jarvis::did-gesture', lang.hitch(this, function (e) {
  *
  *       ....
  *
