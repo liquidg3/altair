@@ -4,27 +4,40 @@
 
 step 1: create altair.js
 step 2: paste this into it:
+``` js
+#!/usr/bin/env node
 
-    #!/usr/bin/env node
+require('altair.io');
+```
+step 3:
+``` bash
+$ chmod 755 altair.js
+```
 
-    require('altair.io');
-
-Step 3: #chmod 755 altair.js
 step 4: create package.json
 step 5: paste this into it:
-
-    {
-        "name": "myproject",
-        "version": "0.0.1",
-        "description": "New things!",
-        "main": "altair.js",
-        "dependencies": {
-            "altair.io":           ">=0.0.x"
-        }
-
+``` js
+{
+    "name": "myproject",
+    "version": "0.0.1",
+    "description": "New things!",
+    "main": "altair.js",
+    "dependencies": {
+        "altair.io":           ">=0.0.x"
     }
-step 6: #npm update
-step 7: #./altair.js
+
+}
+```
+
+step 6:
+``` bash
+$ npm update
+```
+
+step 7:
+``` bash
+./altair.js
+```
 
 ###what's next?
 
