@@ -2,20 +2,27 @@
 
 **help me come up with something easier**
 
-step 1: create altair.js
-step 2: paste this into it:
+###step 1
+create altair.js
+
+###step 2
+paste this into it:
 ``` js
 #!/usr/bin/env node
 
 require('altair.io');
 ```
-step 3:
+
+###step 3
 ``` bash
 $ chmod 755 altair.js
 ```
 
-step 4: create package.json
-step 5: paste this into it:
+###step 4
+create package.json
+
+###step 5
+paste this into it:
 ``` js
 {
     "name": "myproject",
@@ -29,12 +36,12 @@ step 5: paste this into it:
 }
 ```
 
-step 6:
+###step 6
 ``` bash
 $ npm update
 ```
 
-step 7:
+###step 7
 ``` bash
 ./altair.js
 ```
