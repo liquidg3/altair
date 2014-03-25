@@ -6,7 +6,7 @@ Welcome to the IoE. Before you get started, you should read this whole thing. It
 **UNSTABLE**
 
 View the [Getting Started Guide](https://github.com/liquidg3/altair/blob/master/docs/gettingstarted.md) if you've already
-read the important bits **below**
+read the important bits **below**.
 
 ##Value Proposition
 
@@ -15,8 +15,8 @@ connecting to devices: it's orchestrating complex interactions between those dev
 so beautifully into our lives that we don't even know that it's there. Not only that, but we should quickly begin to question
 how we ever lived without it.
 
-Controlling devices is only one of many things Altair can do (through the altair:Jarvis module). You can download and
-enable the Titan:Alfred module to have web server functionality through [express](http://expressjs.com/) or any other
+Controlling devices is only one of many things Altair can do (through the liquidfire:Jarvis module). You can download and
+enable the titan:Alfred module to have web server functionality through [express](http://expressjs.com/) or any other
 web application framework that exists for node. Then, have your webpage update in real time as sensors are triggered and
 switches are flipped.
 
@@ -51,7 +51,7 @@ to start full time enterprises.
 
 1. **Commit on a convention, not on an implementation.** By wrapping complex systems in simple and consistent API's, we
 are able to break the coupling between us and our 3rd party choices. Example, don't like how the express handles its web
-requests, fine, use Titan:Alfred's adapter engine to drop in another one. Hell, don't like how the Titan:Alfred module
+requests, fine, use titan:Alfred's adapter engine to drop in another one. Hell, don't like how the titan:Alfred module
 normalizes web experiences, then create a new module to do it your way.
 
 ##Events++
