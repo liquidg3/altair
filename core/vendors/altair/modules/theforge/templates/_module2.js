@@ -13,8 +13,9 @@
  * 2. Building a Commander: altair.io/core/vendors/altair/modules/commandcentral/README.md
  * 3. The Adapter Pattern:  altair.io/core/vendors/altair/modules/adapters/README.md
  *
- *
  */
+
+// To add custom node_modules into altair define the path using 'altair/plugins/node!{{module}}'
 define(['altair/facades/declare',
         'altair/Lifecycle',
         'altair/facades/hitch'
