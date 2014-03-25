@@ -2,14 +2,14 @@
  * Altair's Event/Emitter is a little twist on the original NodeJs EventEmitter implementation. The event system has been
  * augmented with a query engine to allow for much more sophisticated listening. Take a look at the ReadMe.md or someshit.
  */
-define(['altair/declare',
+define(['altair/facades/declare',
         './Event',
         'altair/facades/hitch',
         'altair/events/Deferred',
         'altair/Deferred',
         './QueryAgent',
         'dojo/promise/all',
-        'altair/when',
+        'altair/facades/when',
         'altair/plugins/node!underscore'
 
 ], function (declare,

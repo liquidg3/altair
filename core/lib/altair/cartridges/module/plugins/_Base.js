@@ -3,7 +3,7 @@
  */
 define(['dojo/_base/declare', 'altair/Lifecycle'], function (declare, Lifecycle) {
 
-    return declare('altair/cartridges/module/plugins/_Base', [Lifecycle], {
+    return declare([Lifecycle], {
 
         cartridge: null,
         altair:    null,

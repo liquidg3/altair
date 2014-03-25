@@ -1,4 +1,4 @@
-### Lifecycle Object managing a simple State Machine
+# Lifecycle Object managing a simple State Machine
 A StateMachine is an object that has a this.state, can be one of any this.states = ['state1', 'state2'],
 and can transition between states;
 
@@ -12,10 +12,10 @@ with if you have ever used Altair. By using a State Machine to independently man
 we can keep our code super thin and clean.
 
 
-define(['altair/declare',
+define(['altair/facades/declare',
         'altair/facades/hitch',
         'altair/modules/commandcentral/mixins/_HasCommandersMixin',
-        'altair/when',
+        'altair/facades/when',
         'altair/plugins/node!underscore
 ], function (declare,
              hitch,

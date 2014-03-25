@@ -1,20 +1,16 @@
-#running altair is easy yo
+# Getting Started
 
-
-**lets come up with something even easier!!!!!
+**help me come up with something easier**
 
 step 1: create altair.js
-
 step 2: paste this into it:
 
     #!/usr/bin/env node
 
     require('altair.io');
 
-Step 3: chmod 755 altair.js 
-
+Step 3: #chmod 755 altair.js
 step 4: create package.json
-
 step 5: paste this into it:
 
     {
@@ -28,8 +24,7 @@ step 5: paste this into it:
 
     }
 step 6: #npm update
-
-step 7: ./altair.js
+step 7: #./altair.js
 
 ###what's next?
 

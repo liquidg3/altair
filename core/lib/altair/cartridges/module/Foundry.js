@@ -9,7 +9,7 @@
  *
  * Altair likes to call the folder "vendors," but it does not need to be
  */
-define(['altair/declare',
+define(['altair/facades/declare',
         'dojo/_base/lang',
         'altair/facades/hitch',
         'dojo/promise/all',

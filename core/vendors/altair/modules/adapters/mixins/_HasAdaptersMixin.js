@@ -19,7 +19,7 @@
  * }));
  *
  */
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         'altair/facades/hitch',
         'altair/facades/mixin',
         'altair/Lifecycle',
@@ -36,9 +36,8 @@ define(['dojo/_base/declare',
               _HasSchemaMixin) {
 
 
-    return declare('altair/modules/adapters/mixins/_HasAdaptersMixin', [Lifecycle, Emitter, _HasSchemaMixin], {
+    return declare([Lifecycle, Emitter, _HasSchemaMixin], {
 
-        _manyAdapters:      false,  //can we have many adapters?
         _adaptersConfig:    null,   //cache for our adapter's config
         _adaptersCache:     null,   //stores adapters for retrieval later
 
@@ -71,7 +70,7 @@ define(['dojo/_base/declare',
          * We only read our configs/adapters.json for now, but @TODO is to decide what should go in that json
          *
          * @param e
-         * @returns {dojo.Deferred}
+         * @returns {altair.Deferred}
          */
         registerAdapters: function (e) {
             return this.parseConfig('configs/adapters.json');
@@ -88,16 +87,15 @@ define(['dojo/_base/declare',
 
             var d = new this.Deferred();
 
+            //no name was passed, assuming selectedAdapter (only works *after* startup)
             if(!named) {
 
                 if(this.values.selectedAdapters && this.values.selectedAdapters[0]) {
 
-                    //eeeewww, but it beats a mid function return... perhaps restructure this function?
                     d = this.values.selectedAdapters[0];
 
                 } else {
                     d.reject('No ' + this.name + ' adapter selected.');
-
                 }
 
             }
@@ -124,7 +122,7 @@ define(['dojo/_base/declare',
         /**
          * Gets you all adapters registered in the system for your module.
          *
-         * @returns {Deferred}
+         * @returns {altair.Deferred}
          */
         adapters: function () {
 
@@ -154,7 +152,6 @@ define(['dojo/_base/declare',
             if(!schema.has('selectedAdapters')) {
 
                 //we will fake the singular version,  get('selectedAdapter'), but always save them as an array
-                //this makes it easy for someone do decide later to switch between many true & false =)
                 schema.append('selectedAdapters', 'nexus', {
                     label: 'Selected Adapters',
                     many:  true
@@ -179,10 +176,10 @@ define(['dojo/_base/declare',
         /**
          * Alias for getSelectedAdapters (always returns the first)
          *
-         * @param defaultValue
-         * @param options
-         * @param config
-         * @returns {*|Array|Any|Window|Anything|CSS2Properties|String|Number}
+         * @param defaultValue if no adapter(s) set, return default
+         * @param options { many: true|false - if results should be an array or not }
+         * @param config reserved for future use
+         * @returns {*}
          */
         getSelectedAdapter: function (defaultValue, options, config) {
 

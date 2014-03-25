@@ -1,7 +1,7 @@
 /**
  * Simple State Machine.
  */
-define(['altair/declare',
+define(['altair/facades/declare',
         'altair/facades/hitch',
         'altair/events/Emitter',
         'altair/events/Event',
@@ -73,6 +73,16 @@ define(['altair/declare',
             }));
 
             return listeners;
+        },
+
+        /**
+         * Start me over!
+         *
+         * @returns {altair.events.Emitter}
+         */
+        reset: function () {
+            this.state = this.states[0];
+            return this;
         },
 
         /**
@@ -203,6 +213,7 @@ define(['altair/declare',
 
                             lastResponse = results.pop();
 
+                            //if lastResponse is in the form of [ nextState, { event: data } ]
                             if(_.isArray(lastResponse)) {
 
                                 var _state = lastResponse[0];
@@ -211,9 +222,10 @@ define(['altair/declare',
                                     d.reject(__('State "%s" does not exist on this state machine.', _state));
                                 }
 
-                                nextState = _state;
-                                eventData = lastResponse[1];
-                                lastResponse = lastResponse[1];
+                                nextState       = _state;
+                                eventData       = lastResponse[1];
+                                lastResponse    = lastResponse[1];
+
                             } else if(_.isObject(lastResponse)) {
                                 eventData = lastResponse;
                             }

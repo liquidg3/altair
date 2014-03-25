@@ -1,5 +1,5 @@
 define([
-    'altair/declare',
+    'altair/facades/declare',
     'altair/events/Emitter',
     'altair/Lifecycle',
     'altair/facades/mixin',

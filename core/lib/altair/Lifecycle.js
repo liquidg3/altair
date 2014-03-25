@@ -37,12 +37,10 @@
  * is to ensure execute() has everything it needs to do its job. Don't abuse startup().
  *
  */
-define(['dojo/_base/declare',
-        'altair/facades/hitch',
+define(['altair/declare',
         'altair/Deferred'],
-                        function (declare,
-                                  hitch,
-                                  Deferred) {
+            function (declare,
+                      Deferred) {
 
 
     var resolve = function (scope, def) {

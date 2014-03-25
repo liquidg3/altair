@@ -15,7 +15,7 @@
  *
  *
  */
-define(['altair/declare',
+define(['altair/facades/declare',
         'altair/Lifecycle',
         'altair/facades/hitch'
 ], function (declare,

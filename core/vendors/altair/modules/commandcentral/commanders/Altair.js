@@ -5,11 +5,11 @@
  * firstRun, selectCommander, selectCommand, executeCommand
  */
 
-define(['altair/declare',
+define(['altair/facades/declare',
         'altair/facades/hitch',
         'altair/facades/mixin',
         'altair/modules/commandcentral/mixins/_IsCommanderMixin',
-        'altair/when',
+        'altair/facades/when',
         'altair/StateMachine',
         'altair/plugins/node!underscore'
         ], function (declare,

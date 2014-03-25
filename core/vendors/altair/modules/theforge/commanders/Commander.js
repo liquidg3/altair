@@ -1,4 +1,4 @@
-define(['altair/declare',
+define(['altair/facades/declare',
         'altair/modules/commandcentral/mixins/_IsCommanderMixin',
         'altair/facades/hitch',
         'require',

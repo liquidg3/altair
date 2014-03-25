@@ -1,7 +1,7 @@
 /**
  * Gives every module a config(named) method so other people can easily get configs
  */
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         'altair/Deferred',
         './_Base',
         'dojo/_base/lang',
@@ -34,7 +34,7 @@ define(['dojo/_base/declare',
                 /**
                  * Loads you a config by name, relative to the module's dir
                  *
-                 * @returns {dojo.Deferred}
+                 * @returns {altair.Deferred}
                  */
                 parseConfig: function (named) {
 

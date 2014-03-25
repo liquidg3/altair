@@ -1,5 +1,4 @@
-Modules
-===
+# Module Cartridge
 
 Dependencies: [ 'altair/cartridges/nexus/Nexus']
 

@@ -3,15 +3,12 @@
 
 Welcome to the IoE. Before you get started, you should read this whole thing. It's worth it and we'll keep it short!
 
-**UNSTABLE - ONLY TESTS RUN**
+**UNSTABLE**
 
-After you add altair.io to you package.json and run npm update, you can do the following:
-
-    #node node_modules/altair.io/altair.js -h
-
+View the [Getting Started Guide](https://github.com/liquidg3/altair/blob/master/docs/gettingstarted.md) if you've already
+read the important bits **below**
 
 ##Value Proposition
-
 
 Altair was build with the vision of creating what we've coined as, "experiences of everything." This is more than just
 connecting to devices: it's orchestrating complex interactions between those devices in such a way as to blend the technology
@@ -35,10 +32,11 @@ we do. Sometimes we come up short, but we push each other to our limits and keep
 We do everything in our power to enhance each others productivity while minimizing the complexities added to our lives. We
 can't get our time back, so lets maximize what we can get done in that time.
 
-1. **The difficulties in managing the code should not increase with lines of code.** We chose
-[dojo's very powerful AMD implementation](http://dojotoolkit.org/documentation/tutorials/1.9/modules/) for 2 reasons.
-Firstly, its declare implementation conforms to the [C3 Method Resolution Order.](http://www.python.org/download/releases/2.3/mro/)
-and if you're a python fan, you'll appreciate it as well. Secondly, we rely heavily on dojo's Deferred approach to promises. We
+1. **The difficulties in managing the code should not increase with lines of code.** We found that AMD facilitates this better
+than common.js. As far as implementation, we chose [dojo's very powerful AMD
+implementation](http://dojotoolkit.org/documentation/tutorials/1.9/modules/) for 2 reasons. Firstly, its declare
+implementation conforms to the [C3 Method Resolution Order.](http://www.python.org/download/releases/2.3/mro/) and if
+you're a python fan, you'll appreciate that. Secondly, we rely heavily on dojo's Deferred approach to promises. We
 plan on removing dojo eventually and you'll never interface with it directly.
 
 1. **One should focus on the problem they are trying to solve and forget all else.** We are trying to solve the problem

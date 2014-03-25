@@ -5,7 +5,7 @@
  * flavors of terminal. It uses _HasListenersMixin to listen into every module as it starts up so it can check for new
  * commanders. It uses _HasCommandersMixin because it has the Dashboard commander, which is the main dashboard for Altair.
  */
-define(['altair/declare',
+define(['altair/facades/declare',
         'altair/modules/adapters/mixins/_HasAdaptersMixin',
         'altair/modules/events/mixins/_HasListenersMixin',
         'altair/modules/commandcentral/mixins/_HasCommandersMixin',

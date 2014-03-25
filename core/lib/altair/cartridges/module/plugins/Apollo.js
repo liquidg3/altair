@@ -3,7 +3,7 @@
  *  put the schema inside of path/to/module/config/schema.json. Is that a dick move? Nah, everyone will think that's
  *  "just how Apollo works." But, we'll know it's really the Apollo Cartridge that makes it work that way ;)
  */
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
          './_Base',
          'altair/facades/hitch',
          'apollo/_HasSchemaMixin',

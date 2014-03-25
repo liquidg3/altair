@@ -1,7 +1,7 @@
 /**
  * Mixin that gives any class the power to run as a commander.
  */
-define(['altair/declare',
+define(['altair/facades/declare',
         'altair/facades/mixin',
         'altair/Lifecycle',
         'altair/facades/hitch',

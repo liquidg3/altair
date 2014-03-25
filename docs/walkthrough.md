@@ -15,7 +15,7 @@ if included, the -test flag will tell altair that we want to load our framework 
 
 ***
 
-####bootstrap-test.js
+###bootstrap-test.js
 
 
 Our bootstrap requires the altair/TestRunner module, and a configuration file (test.json), instantiates a TestRunner, starts it with the loaded configuration file of path strings, then executes each test in each provided directory, on it's execution phase.

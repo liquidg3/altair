@@ -1,7 +1,7 @@
 /**
  * Loads every modules' package.json so it
  */
-define(['altair/declare',
+define(['altair/facades/declare',
         'altair/Deferred',
         './_Base',
         'altair/facades/hitch'],
