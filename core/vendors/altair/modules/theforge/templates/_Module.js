@@ -64,7 +64,7 @@ define(['altair/facades/declare',
          *
          * @returns {*}
          */
-        shutdown: function () {
+        teardown: function () {
             return this.inherited(arguments);
         }
 

@@ -77,9 +77,6 @@ define(['altair/facades/declare',
 
         },
 
-        shutdown: function () {
-        },
-
         /**
          * StateMachine delegate methods (callbacks for state change events). They use the following pattern;
          *

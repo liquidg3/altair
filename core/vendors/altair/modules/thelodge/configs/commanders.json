@@ -4,9 +4,9 @@
         "label": "The Lodge",
         "description": "Visit the Lodge for all your Altair goodies.",
         "commands": {
-            "help": {
-                "description": "Learn how to command Altair",
-                "aliases": ["h"]
+            "search": {
+                "description": "Search the lodge for any modules that are published",
+                "aliases": ["s", "find "]
             }
         }
     }

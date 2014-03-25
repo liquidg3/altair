@@ -37,11 +37,12 @@
  * is to ensure execute() has everything it needs to do its job. Don't abuse startup().
  *
  */
-define(['altair/declare',
+define(['altair/facades/declare',
         'altair/Deferred'],
             function (declare,
                       Deferred) {
 
+    "use strict";
 
     var resolve = function (scope, def) {
 
@@ -58,7 +59,7 @@ define(['altair/declare',
     };
 
     return declare(null, {
-
+        Deferred:       Deferred,
         deferred:       null,
         options:        null,
 
@@ -69,11 +70,12 @@ define(['altair/declare',
         /**
          * Put anything that needs to be done (configuring, setup, etc.) before your lifecycle is executed.
          *
-         * Startup always returns a dojo/Deferred. If one does not exist (meaning you did not set this.deferred = new Deferred
-         * in your child class) then I will make on and resolve it immediately. This will make it synchronise in behavior,
+         * Startup always returns an altair/Deferred. If one does not exist (meaning you did not set this.deferred = new Deferred
+         * in your child class) then I will make one and resolve it immediately. This makes the operation synchronise,
          * but will allow us to always use the startup().then(... syntax.
          *
-         * @param options every object is expected to come up with their own config
+         * @param options simply copied to local this.options
+         * @return {altair.Deferred}
          */
         startup: function (options) {
 
@@ -82,7 +84,7 @@ define(['altair/declare',
             }
 
             if(!this.deferred) {
-                this.deferred = new Deferred;
+                this.deferred = new this.Deferred();
                 this.deferred.resolve(this);
             }
 
@@ -96,12 +98,12 @@ define(['altair/declare',
         /**
          * Do your work in here.
          *
-         * @returns {null}
+         * @returns {altair.Deferred}
          */
         execute: function () {
 
             if(!this.deferred) {
-                this.deferred = new Deferred;
+                this.deferred = new this.Deferred();
                 this.deferred.resolve(this);
             }
 
@@ -115,14 +117,12 @@ define(['altair/declare',
         /**
          * Clean up so it's like you never existed.
          *
-         * Always returns a dojo/Deferred.
-         *
-         * @returns dojo/Deferred
+         * @returns {altair.Deferred}
          */
         teardown: function () {
 
             if(!this.deferred) {
-                this.deferred = new Deferred;
+                this.deferred = new this.Deferred();
                 this.deferred.resolve(this);
             }
 
