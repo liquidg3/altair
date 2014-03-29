@@ -57,6 +57,7 @@ define(['altair/declare'], function (declare) {
 Lifecycles are used throughout Altair because of how often you need to be able to setup an environment before executing
 some logic inside of it. Using a Lifecycle is as easy as mixing it into your class.
 
+```js
 define(['altair/facades/declare',
         'altair/facades/hitch',
         'altair/Lifecycle'],
