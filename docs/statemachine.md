@@ -38,12 +38,13 @@ define(['altair/facades/declare',
 
             var _options = options || this.options;
 
-            //State Machines are altair/events/Emitters, but setting up a hundred listeners is tedious, so we use the "delegate"
-            //pattern to lend us a hand. The state machine will check if a method exists before setting the listener.
+            //State Machines are altair/events/Emitters, but setting up a hundred listeners is tedious,
+            //so we use the "delegate" pattern to lend us a hand. The state machine will check if a
+            //method exists before setting the listener.
             this.fsm = new StateMachine({
                 state:  _.has(_options, 'startingState') ? _options.startingState : 'firstRun'
                 states: ['firstRun', 'selectCommander', 'selectCommand', 'executeCommand'],
-                delegate: this //convenient way to have all your listeners set for you, will detect if method exists, then setup listener
+                delegate: this //convenient way to have all your listeners set for you for callbacks that exist
             });
 
             return this.inherited();
@@ -68,8 +69,8 @@ define(['altair/facades/declare',
             }));
 
             //or i can completely control state management by jumping to states manually
-            def = this.fsm.transitionToState('selectcommand', { foo: 'bar' }).then(function (newState, results) {
-
+            def = this.fsm.transitionToState('selectcommand', { foo: 'bar' }).then(function (results) {
+                console.log(results); //[ "nextState", { state: data } ]
             });
 
             //this will keep force Altair to wait until the State Machine is shutdown, make sure you want this behavior
@@ -103,7 +104,7 @@ define(['altair/facades/declare',
 
 
             if(foo) {
-                console.log('you were in first run before this, weren't you?');
+                console.log('you were in first run before this, weren\'t you?');
             }
 
             //some async process (waiting for input? showing graphix? animation?)

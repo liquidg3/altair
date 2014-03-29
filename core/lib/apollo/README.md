@@ -2,8 +2,8 @@ Apollo
 ===
 
 Apollo is a lightweight ORM written in JS for dojo/amd. Apollo is different than other ORM's in that it is intended to be used
-without a database (though it can be used with any) and is not attached to any document or model system. Also, unlike
-other ORM's, Apollo was built with UI support in mind. These 2 differences make Apollo something totally unique. Using
+without a database (though it can be used with one) and is not attached to any document or model system. Also, unlike
+other ORM's, Apollo was built with UI (web, mobile, cli) support in mind. These 2 differences make Apollo something totally unique. Using
 Apollo, you can give any object structure and immediately expose that schema via a web form or a rest endpoint giving
 users the ability to customize your objects in a myriad of ways.
 
