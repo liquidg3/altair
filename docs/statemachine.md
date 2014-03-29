@@ -16,7 +16,7 @@ define(['altair/facades/declare',
         'altair/facades/hitch',
         'altair/modules/commandcentral/mixins/_HasCommandersMixin',
         'altair/facades/when',
-        'altair/plugins/node!underscore
+        'altair/plugins/node!underscore'
 ], function (declare,
              hitch,
              _IsCommanderMixin, //mixes in Lifecycle for us

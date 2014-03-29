@@ -45,7 +45,7 @@ define(['altair/declare'], function (declare) {
          */
         teardown: function () {
             ...
-            return this.inherited(arguments);
+            return this.deferred;
         }
     });
 });
@@ -78,7 +78,7 @@ define(['altair/facades/declare',
                 //simulating async process
                 setTimeout(hitch(this, function () {
 
-                    //anyone
+                    //any callback passed .startup().then(...) will now be executed
                     this.deferred.resolve();
 
                 }), 500);
