@@ -4,17 +4,17 @@ Apollo
 Apollo is a lightweight ORM written in JS for dojo/amd. Apollo is different than other ORM's in that it is intended to be used
 without a database (though it can be used with one) and is not attached to any document or model system. Also, unlike
 other ORM's, Apollo was built with UI (web, mobile, cli) support in mind. These 2 differences make Apollo something totally unique. Using
-Apollo, you can give any object structure and immediately expose that schema via a web form or a rest endpoint giving
+Apollo, you can give any object 'structure' and immediately expose it via a web form or a rest endpoint. This gives
 users the ability to customize your objects in a myriad of ways.
 
-Schemas in Apollo are powerful creatures. Because they contain inside themselves (through various components) the ability
+Schemas in Apollo are powerful creatures. Because they contain (through various components) the ability
 to normalize and validate data, they work great for things besides generic objects. Using a schema to validate a rest
-endpoint is a great way to ensure your data is consistent and valid.
+endpoint and to normalize the incoming data is a great way to ensure your data is consistent and valid.
 
 Apollo has several components:
 
 - Apollo is where you configure your available field types
-- Schema houses you structure, usually pulled from a .json file so it can be cached =)
+- Schema houses your structure, usually pulled from a .json file so it can be cached =)
 - FieldTypes facilitate data normalization (date, number, string, relationship, etc.) to and from environments
 - Renderers get attached to FieldTypes to allow them to be rendered as web forms (among other things)
 - Validators get attached to FieldTypes to do, you guessed it, validation.
@@ -74,38 +74,42 @@ The Module
 ---
 This can be any .js file.
 
-    define(['apollo/_HasSchemaMixin', 'dojo/declare'], function (_HasSchemaMixin, declare) {
+``` js
+define(['apollo/_HasSchemaMixin', 'dojo/declare'], function (_HasSchemaMixin, declare) {
 
-        return declare([_HasSchemaMixin], {
+    return declare([_HasSchemaMixin], {
 
-            startup: function () {
+        startup: function () {
 
-                //any field in the schema is retrieved via get(name, default, options, config)
-                var endpoint = this.get('restEndpoint');
+            //any field in the schema is retrieved via get(name, default, options, config)
+            var endpoint = this.get('restEndpoint');
 
-                if(!endpoint) {
+            if(!endpoint) {
 
-                    //you can also set()
-
-
-                }
-
-                this.set('restEndpoint', endpoint);
-
-                //or if you want to check if a field is valid
-                this.isValid('restEndpoint')
-
-                //perhaps check if we are valid
-                this.valid();
-
+                //you can also set()
 
 
             }
 
+            this.set('restEndpoint', endpoint);
+
+            //or if you want to check if a field is valid
+            this.isValid('restEndpoint')
+
+            //perhaps check if we are valid
+            this.valid();
 
 
 
-        });
+        }
+
+
 
 
     });
+
+
+});
+```
+
+## More docs coming soon

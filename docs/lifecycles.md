@@ -50,6 +50,8 @@ define(['altair/declare'], function (declare) {
     });
 });
 
+```
+
 ## Creating a Lifecycle subclass
 
 Lifecycles are used throughout Altair because of how often you need to be able to setup an environment before executing

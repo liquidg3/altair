@@ -3,7 +3,7 @@
 
 Welcome to the IoE. Before you get started, you should read this whole thing. It's worth it and we'll keep it short!
 
-**UNSTABLE**
+#Altair is currently unstable and in active development.
 
 View the [Getting Started Guide](https://github.com/liquidg3/altair/blob/master/docs/gettingstarted.md) if you've already
 read the important bits **below**.
