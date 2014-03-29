@@ -1,0 +1,14 @@
+{
+    "name":    "Altair Core Menu",
+    "website": "http://altair.io",
+    "modules": [
+        {
+            "name":       "liquidfire:Jarvis",
+            "repository": {
+                "type": "git",
+                "url":  "git@github.com/liquidfire/Jarvis"
+            }
+        }
+    ]
+
+}

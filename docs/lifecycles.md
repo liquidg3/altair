@@ -54,11 +54,13 @@ for altair/Lifecycle
 Lifecycles are used throughout Altair because of how often you need to be able to setup an environment before executing
 some logic inside of it. Using a Lifecycle is as easy as mixing it into your class.
 
-    define(['altair/declare',
+    define(['altair/facades/declare',
+            'altair/facades/hitch',
             'altair/Lifecycle'],
 
         function (declare,
-                  Lifecycle) {
+                  Lifecycle,
+                  hitch) {
 
             return declare([Lifecycle], {
 
@@ -72,6 +74,13 @@ some logic inside of it. Using a Lifecycle is as easy as mixing it into your cla
                     //for convenience, this.Deferred is a reference to altair/Deferred and is ready to instantiate.
                     this.deferred = new this.Deferred();
 
+                    //simulating async process
+                    setTimeout(hitch(this, function () {
+
+                        //anyone
+                        this.deferred.resolve();
+
+                    }), 500);
 
                     return this.inherited(arguments);
 

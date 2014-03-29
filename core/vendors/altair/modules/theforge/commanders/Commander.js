@@ -132,6 +132,7 @@ define(['altair/facades/declare',
 
             var schema = this.inherited(arguments);
 
+            //the newModule command has some multiOptions that need updating (destination dir)
             if(named === 'newModule') {
 
                 //get the 'paths' we have set in altair

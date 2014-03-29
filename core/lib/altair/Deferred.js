@@ -1,7 +1,8 @@
 /**
  * What this class does differently than dojo/Deferred:
  *   * supports optional error logging suppression is reject()
- *   • step() alias to make for pretty codez
+ *   * step() alias to make for pretty codez
+ *   * hasWaiting()
  */
 define([
     "dojo/has",

@@ -13,7 +13,6 @@ about Altair, having at least some familiarity with these terms will make life e
 - Started up after Altair is booted
 - Executed after all other modules are started up
 
-
 ## Lifecycle
 - An object with 3 states, startup, execute, teardown
 - Execute may be called many times

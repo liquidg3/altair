@@ -11,7 +11,7 @@ In this example, I'm going to show you how I built commandcentral/commanders/Alt
 with if you have ever used Altair. By using a State Machine to independently manage the state of a user's CLI session,
 we can keep our code super thin and clean.
 
-
+```js
 define(['altair/facades/declare',
         'altair/facades/hitch',
         'altair/modules/commandcentral/mixins/_HasCommandersMixin',
@@ -155,3 +155,4 @@ define(['altair/facades/declare',
     });
 
 });
+```
