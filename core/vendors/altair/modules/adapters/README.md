@@ -3,10 +3,7 @@
 The Adapters module is comes with a handy altair/modules/adaptens/mixins/\_HasAdaptersMixin that makes it easy for your
 Lifecycle object to utilize the adapter pattern to solve the problem of normalizing input/output/etc.
 
-Anytime you are working with any input/output where the source or format can change (databases or credit card
-processors are a great examples) then you should use the \_HasAdaptersMixin.
-
-## mixin _HasAdaptersMixin
+##_HasAdaptersMixin Usage
 ``` js
 define(['altair/facades/declare',
         'altair/modules/adapters/mixins/_HasAdaptersMixin'
@@ -22,7 +19,7 @@ define(['altair/facades/declare',
 
 ## The _HasAdaptersMixin API
 The _HasAdaptersMixin depends on Apollo for its schema support. This means you'll be using get/set like you're used to,
-which is nice.
+which is nice. All the methods below call be called from the module that has the mixin.
 
 ``` js
 /**
@@ -104,16 +101,13 @@ An adapter is really just a standard AMD module. Adapters are built using the [f
 plugin](../../../../../docs/moduleplugins.md). By convention, they are put in an "adapters" dir inside your
 module's dir.
 
-Paste this into path/to/your/module/adapters/ClassName.js to get yourself started. You should make sure all your adapters
+Paste this into path/to/your/module/adapters/AdapterName.js to get yourself started. You should make sure all your adapters
 have the same API or you will run into issues.
 
 ``` js
-define(['altair/facades/declare',
-        'altair/modules/commandcentral/adapters/_Base'
-], function (declare,
-             _Base) {
+define(['altair/facades/declare'], function (declare) {
 
-    return declare([_Base], {
+    return declare(null, {
 
         doSomeWork: function () {
             return 'foo';
@@ -127,5 +121,13 @@ define(['altair/facades/declare',
 Then, anywhere in your module you can call;
 
 ``` js
-this.adapter('adapters/ClassName').then(function (adapter) {}).otherwise(hitch(console, 'log'));
+this.adapter('adapters/ClassName').then(function (adapter) { ... }).otherwise(hitch(console, 'log'));
 ```
+
+To get an adapter off another module, you would pass the full Nexus identifier to .adapter(). You should probably
+never do this, but knowing you can may save your ass someday.
+
+``` js
+this.adapter('altair:CommandCentral::adapters/Prompt').then(hitch(this, function (prompt) {
+    prompt.writeLine('yay adapters are cool');
+)});
