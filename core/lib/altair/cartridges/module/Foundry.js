@@ -198,7 +198,7 @@ define(['altair/facades/declare',
                             var p = pathsByName[dep];
 
                             if(!p) {
-                                deferred.reject("Dependent module " + dep + " is missing. Make sure it exists in your 'paths' and is enabled. The module is in question is " + m.name);
+                                deferred.reject("Dependent module " + dep + " is missing. Make sure it exists in your 'paths' and is enabled. The module in question is " + m.name);
                             }
 
                             if(sorted.indexOf(p) === -1) {

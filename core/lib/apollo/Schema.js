@@ -203,7 +203,7 @@ define(['dojo/_base/declare',
 
 
             //normalize options
-            options = elementType.normalizeOptions(options || {});
+            options = lang.mixin({}, this.optionsFor(elementName), options || {});
 
             //normalize for many
             value = elementType.normalizeMany(value, options, config);

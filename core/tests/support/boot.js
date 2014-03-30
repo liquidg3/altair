@@ -3,7 +3,7 @@
  *
  *
  */
-define(['dojo/Deferred',
+define(['altair/Deferred',
         'altair/facades/hitch',
         'altair/cartridges/Foundry',
         'altair/Altair'],
@@ -31,6 +31,21 @@ define(['dojo/Deferred',
 
         };
 
+        boot.nexus = function (cartridges) {
+            var d = new Deferred();
+            boot(cartridges).then(function (altair) {
+
+                var n = altair.cartridge('altair/cartridges/nexus/Nexus');
+
+                if(!n) {
+                    d.reject(new Error('tests/support/boot.js has to be configured with the Nexus cartridge for boot.nexus to work.'));
+                } else {
+                    d.resolve(hitch(n, n.resolve));
+                }
+
+            }).otherwise(hitch(d, 'reject'));
+            return d;
+        };
 
 
         boot.cartridges = [

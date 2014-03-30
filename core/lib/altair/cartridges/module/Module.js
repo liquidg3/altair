@@ -12,24 +12,22 @@
  * @required Nexus cartridge
  *
  */
-define(['dojo/_base/declare',
-    'altair/facades/hitch',
-    '../_Base',
-    'dojo/Deferred',
-    'dojo/DeferredList',
-    'dojo/promise/all',
-    './nexusresolvers/Modules',
-    'altair/Lifecycle',
-    'dojo/node!path',
-    './Foundry',
-    'dojo/_base/array',
-    'altair/events/Emitter'],
+define(['altair/facades/declare',
+        'altair/facades/hitch',
+        '../_Base',
+        'altair/Deferred',
+        'altair/facades/all',
+        './nexusresolvers/Modules',
+        'altair/Lifecycle',
+        'altair/plugins/node!path',
+        './Foundry',
+        'dojo/_base/array',
+        'altair/events/Emitter'],
 
     function (declare,
               hitch,
               _Base,
               Deferred,
-              DeferredList,
               all,
               ModulesResolver,
               Lifecycle,
@@ -334,14 +332,8 @@ define(['dojo/_base/declare',
             });
 
             //make sure auto resolved deferred is not returned by Lifecycle parent
-            this.deferred = new Deferred();
             this.modules  = [];
-
-            deferred = new DeferredList(list);
-
-            deferred.on(hitch(this, function() {
-                this.deferred.resolve(this);
-            }));
+            this.deferred = all(list);
 
             return this.inherited(arguments);
         },

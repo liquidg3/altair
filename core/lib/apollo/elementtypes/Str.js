@@ -13,7 +13,7 @@ define(['dojo/_base/declare',
             maxLength: {
                 type: 'number',
                 options: {
-                    value: -1,
+                    defaultValue: -1,
                     label: 'Truncate the length of this string to anything you want.'
                 }
             }
