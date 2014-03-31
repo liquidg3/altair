@@ -7,11 +7,11 @@ define(['altair/facades/declare',
     return declare([Lifecycle], {
 
         checkout: function (options) {
-            throw new Error('You must implement checkout');
+            throw new Error('You must implement checkout(options)');
         },
 
         update: function (options) {
-            throw new Error('You must implement update');
+            throw new Error('You must implement update(options)');
         }
     });
 

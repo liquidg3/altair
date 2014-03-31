@@ -48,7 +48,7 @@ $ ./altair.js
 
 ###what's next?
 
-* get familar with the [terms](terms.md)
+* get familiar with the [terms](terms.md)
 * download modules at [the lodge](../core/vendors/altair/modules/thelodge/README.md)
 * build a module at [the forge](firstmodule.md)
 * build a commander at [command central](../core/vendors/altair/modules/commandcentral/README.md)

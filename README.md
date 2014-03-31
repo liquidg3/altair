@@ -140,7 +140,7 @@ Now check out how easy it is to control our imaginary thermostat and maybe some 
                 duration:   500,
                 loop:       2,
                 colors:     ['ff0000', 'ffffff']
-            }).execute().then(lang.hitch(this, function () {
+            }).execute().then(hitch(this, function () {
 
             ));
 

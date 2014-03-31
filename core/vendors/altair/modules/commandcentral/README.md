@@ -1,7 +1,8 @@
-### Command Central
+# Command Central
 
 We make it easy to create command line interfaces for your Altair apps.
 
+## NOT FINISHED
 
 ### Experimental
 

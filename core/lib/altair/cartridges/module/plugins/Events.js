@@ -62,7 +62,7 @@ define(['dojo/_base/declare',
 
             if(!parent) {
                 var def = new Deferred();
-                def.reject('Could not ' + action + '(' + orgEvent + ') because it could not be found.');
+                def.reject('Could not execute ' + action + '(' + orgEvent + ') because it could not be found.');
                 return def;
             }
 

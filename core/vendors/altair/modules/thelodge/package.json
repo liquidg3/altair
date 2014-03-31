@@ -1,8 +1,13 @@
 {
-    "name": "The Lodge",
-    "version": "0.0.1",
-    "description": "Visit The Lodge to get all your Altair goodies =)",
+    "name":               "The Lodge",
+    "version":            "0.0.1",
+    "description":        "Visit The Lodge to get all your Altair goodies =)",
     "altairDependencies": {
         "altair:CommandCentral": ">=0.1.x"
+    },
+    "dependencies":       {
+        "rimraf": ">=2.2.x",
+        "gift":   ">=0.3.x",
+        "semver": ">=2.2.x"
     }
 }

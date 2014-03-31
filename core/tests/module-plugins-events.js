@@ -136,7 +136,7 @@ function (doh,
 
                 }).otherwise(function (err) {
 
-                    t.is(err, 'Could not on(altair:MockWithtEvents2::DOING_TEST) because it could not be found.');
+                    t.is(err, 'Could not execute on(altair:MockWithtEvents2::DOING_TEST) because it could not be found.');
                     d.resolve();
 
                 });
