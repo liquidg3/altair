@@ -1,5 +1,10 @@
 #Altair
 
+What if your coffee machine could start brewing your coffee as soon as you left your bedroom first thing in the morning?
+How about having a garage door that opens when your car (and only your car) pulls up to it? What if your fitbit could
+send a signal to your entertainment center whenever you fall asleep, shutting the whole thing down?
+
+What would you do if you were able to make devices that were never meant to work together do so with elegance and ease?
 
 Welcome to the IoE. Before you get started, you should read this whole thing. It's worth it and we'll keep it short!
 
