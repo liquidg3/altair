@@ -6,8 +6,8 @@ define(['altair/facades/declare',
     "use strict";
     return declare([Lifecycle], {
 
-        checkout: function (options) {
-            throw new Error('You must implement checkout(options)');
+        clone: function (options) {
+            throw new Error('You must implement clone(options)');
         },
 
         update: function (options) {

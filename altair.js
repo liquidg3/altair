@@ -28,6 +28,7 @@ dojoConfig = {
     baseUrl: path.resolve(__dirname, '../../'), // Where we will put our packages
     async: 1, // We want to make sure we are using the "modern" loader
     has: {
+        'config-tlmSiblingOfDojo': 0 //for relative path resolution from require() - setting to true breaks it, dojo.js 944
     },
     packages: [
         {

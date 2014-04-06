@@ -8,6 +8,7 @@
     "dependencies":       {
         "rimraf": ">=2.2.x",
         "gift":   ">=0.3.x",
-        "semver": ">=2.2.x"
+        "semver": ">=2.2.x",
+        "lunr":   ">=0.5.x"
     }
 }

@@ -1,0 +1,34 @@
+[
+    {
+        "path": "altair/cartridges/nexus/Nexus",
+        "options": {
+        }
+    },
+    {
+        "path": "altair/cartridges/apollo/Apollo",
+        "options": {
+        }
+    },
+    {
+        "path": "altair/cartridges/module/Module",
+        "options": {
+            "plugins": [
+                "altair/cartridges/module/plugins/Paths",
+                "altair/cartridges/module/plugins/Config",
+                "altair/cartridges/module/plugins/Package",
+                "altair/cartridges/module/plugins/Deferred",
+                "altair/cartridges/module/plugins/Apollo",
+                "altair/cartridges/module/plugins/Nexus",
+                "altair/cartridges/module/plugins/Events",
+                "altair/cartridges/module/plugins/Foundry"
+            ],
+            "paths":    ["core/vendors"],
+            "modules":  ["altair:Events", "altair:CommandCentral", "altair:Adapters", "altair:TheLodge"],
+            "moduleOptions": {
+                "altair:CommandCentral": {
+                    "autostart": false
+                }
+            }
+        }
+    }
+]

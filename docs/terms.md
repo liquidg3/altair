@@ -11,11 +11,12 @@ about Altair, having at least some familiarity with these terms will make life e
 ## Nexus Id
 - A string in the form of "altair:CommandCentral" - {{vendor}}:{{Module}}
 - Also can contain additional data, such as a relative path, e.g. "altair:CommandCentral::adapters/Prompt"
+- Remember, no ID is valid unless there is a resolver to handle it
 
 ## Module
 - An AMD module inside vendors/{{vendor}}/modules/{{module}}/{{Module}}.js
-- If mixes in Lifecycle; .startup() is called on each module, sorted by dependency, right after the Module Cartridge is started
-- If mixes in Lifecycle; .execute() is called on each module after all .startup()'s have been called
+- If mixes in Lifecycle; .startup() is executed on each module, sorted by dependency, right after the Module Cartridge is started
+- If mixes in Lifecycle; .execute() is executed on each module after all .startup()'s have been finished
 
 ## Lifecycle
 - An object with 3 states, startup, execute, teardown
@@ -27,3 +28,11 @@ about Altair, having at least some familiarity with these terms will make life e
 - Used to handle async operations
 - Example; d = new Deferred(cancelCallback); d.then(callback).otherwise(errCallback); d.resolve(dataPassedToCallbacks);
 
+## Facades
+- Facades are AMD modules that behave like behave like functions
+- Always in a "facades" dir, e.g. altair/facades/declare
+- Done this way so you know when you're including a library if you should instantiate (new operator) it or not
+
+## Plugins
+- Standard AMD flavored plugins that require a ! (bang) in the path
+- Always in a "plugins" dir, e.g. altair/plugins/node!underscore, altair/plugins/config!path/to/config

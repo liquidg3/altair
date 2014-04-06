@@ -14,17 +14,17 @@ define(['altair/Deferred',
 
         var boot = function (cartridges) {
 
-            var deferred = new Deferred(),
-                altair = new Altair(),
-                foundry = new Foundry(altair);
+            var deferred    = new Deferred(),
+                altair      = new Altair(),
+                foundry     = new Foundry(altair);
 
             foundry.build(cartridges || boot.cartridges).then(function (cartridges) {
 
-                    altair.addCartridges(cartridges).then(function () {
-                        deferred.resolve(altair);
-                    }).otherwise(hitch(deferred, 'reject'));
+                altair.addCartridges(cartridges).then(function () {
+                    deferred.resolve(altair);
+                }).otherwise(hitch(deferred, 'reject'));
 
-                });
+            });
 
 
             return deferred;
@@ -44,6 +44,7 @@ define(['altair/Deferred',
                 }
 
             }).otherwise(hitch(d, 'reject'));
+
             return d;
         };
 

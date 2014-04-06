@@ -99,7 +99,7 @@ define(['altair/facades/declare',
          onStateMachineDidEnterSelectCommand: function ($e) {
 
             //by returning a Deferred, we will stay in this state until we resolve() it.
-            var d   = new this.module.Deferred(),
+            var d   = new this.Deferred(),
                 foo = e.get('foo'); //i get this because the previous state returned it (it may not be here if we jumped to this state)
 
 

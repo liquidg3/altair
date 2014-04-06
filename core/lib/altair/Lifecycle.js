@@ -59,6 +59,7 @@ define(['altair/facades/declare',
     };
 
     return declare(null, {
+
         Deferred:       Deferred,
         deferred:       null,
         options:        null,

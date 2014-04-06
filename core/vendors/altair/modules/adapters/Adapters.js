@@ -4,8 +4,8 @@
  */
 
 define(['dojo/_base/declare',
-        'altair/modules/adapters/mixins/_HasAdaptersMixin',
-        'altair/modules/adapters/nexusresolvers/Adapters',
+        './mixins/_HasAdaptersMixin',
+        './nexusresolvers/Adapters',
         'altair/Lifecycle'],
     function (declare,
               _HasAdaptersMixin,

@@ -6,9 +6,9 @@
  * commanders. It uses _HasCommandersMixin because it has the Dashboard commander, which is the main dashboard for Altair.
  */
 define(['altair/facades/declare',
-        'altair/modules/adapters/mixins/_HasAdaptersMixin',
-        'altair/modules/events/mixins/_HasListenersMixin',
-        'altair/modules/commandcentral/mixins/_HasCommandersMixin',
+        '../adapters/mixins/_HasAdaptersMixin',
+        '../events/mixins/_HasListenersMixin',
+        './mixins/_HasCommandersMixin',
         'apollo/_HasSchemaMixin',
         'altair/facades/hitch',
         'altair/facades/mixin',
@@ -159,7 +159,7 @@ define(['altair/facades/declare',
                     //after all commanders are instantiated and started up, resolve the deferred with them all
                     all(list).then(hitch(def, 'resolve', this._commanders)).otherwise(hitch(def,'reject'));
 
-                })).otherwise(hitch(console,'error'));
+                })).otherwise(hitch(def,'reject'));
 
                 return def;
             }

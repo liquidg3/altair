@@ -45,7 +45,7 @@ define(['altair/facades/declare',
          */
         execute: function (options) {
 
-            var def = new this.module.Deferred(),
+            var def = new this.Deferred(),
                 run = hitch(this, function () {
 
                     this.sm.execute({
@@ -116,7 +116,7 @@ define(['altair/facades/declare',
         onStateMachineDidEnterSelectCommander: function (e) {
 
             var multiOptions    = {}, //options for the select
-                d               = new this.module.Deferred();
+                d               = new this.Deferred();
 
             this.module.refreshCommanders().then(hitch(this, function (commanders) {
 
@@ -152,7 +152,7 @@ define(['altair/facades/declare',
                 commands    = commander.options.commands,
                 options     = {},
                 aliases     = {},
-                d           = new this.module.Deferred(),
+                d           = new this.Deferred(),
                 longLabels  = this.module.adapter().longLabels;
 
             //let user select the command they want to run by outputting a
@@ -212,7 +212,7 @@ define(['altair/facades/declare',
                 command     = e.get('command'),
                 results,
                 schema      = commander.schemaForCommand(command),
-                d           = new this.module.Deferred(),
+                d           = new this.Deferred(),
                 done        = function (values) {
                     results = commander[command](values);
                     if (results.then) {

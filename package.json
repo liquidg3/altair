@@ -1,6 +1,6 @@
 {
     "name":         "altair.io",
-    "version":      "0.0.35",
+    "version":      "0.0.36",
     "description":  "A platform to facilitate the building of experiences in the Internet of Everything.",
     "main":         "altair.js",
     "repository":   {
@@ -8,7 +8,7 @@
         "url":  "git@github.com:liquidg3/altair.git"
     },
     "scripts":      {
-        "test": "Altair --test"
+        "test": "node altair --test"
     },
     "dependencies": {
         "underscore":        ">=1.1.x",
@@ -24,9 +24,8 @@
         "css-parse":         ">=1.x",
         "rimraf":            ">=2.2.x",
         "gift":              ">=0.3.x",
-        "semver":            ">=2.2.x"
-
+        "semver":            ">=2.2.x",
+        "lunr":              ">=0.5.x"
     },
-
     "license": "MIT"
 }

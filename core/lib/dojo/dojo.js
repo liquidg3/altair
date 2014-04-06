@@ -1954,7 +1954,7 @@
 			"dojo-test-sniff":1,
 			"config-deferredInstrumentation":1,
 			"config-useDeferredInstrumentation":"report-unhandled-rejections",
-			"config-tlmSiblingOfDojo":1
+			"config-tlmSiblingOfDojo":0
 		},
 		packages:[{
 			// note: like v1.6-, this bootstrap computes baseUrl to be the dojo directory
