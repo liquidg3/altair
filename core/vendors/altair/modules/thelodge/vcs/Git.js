@@ -22,7 +22,7 @@ define(['altair/facades/declare',
          */
         clone: function (options) {
 
-            var d           = new this.module.Deferred(),
+            var d           = new this.Deferred(),
                 url         = options.url,
                 destination = options.destination,
                 version     = options.version;
@@ -39,34 +39,8 @@ define(['altair/facades/declare',
                     if(err) {
                         d.reject(err);
                     } else {
-
-                        if(version) {
-
-                            //find a tag that matches this version
-                            repo.tags(hitch(this, function (err, tags) {
-
-                                var tag = this._firstTagThatMatchesVersion(tags, version);
-
-                                if(!tag) {
-                                    d.reject(new Error('Could not find version ' + version + ' in ' + url));
-                                } else {
-                                    repo.checkout(tag.commit.id, hitch(this, function (err, results) {
-                                        if(err) {
-                                            d.reject(new Error(err));
-                                        } else {
-                                            d.resolve(repo.path);
-                                        }
-                                    }));
-                                }
-
-                            }));
-
-                        } else {
-                            d.resolve(repo.path);
-                        }
-
-
-
+                        //make sure we're on the latest version (or the one passed)
+                        this.update(options).then(hitch(d, 'resolve')).otherwise(hitch(d, 'reject'));
                     }
 
                 }));
@@ -86,6 +60,11 @@ define(['altair/facades/declare',
          */
         _firstTagThatMatchesVersion: function(tags, version) {
 
+            //if no version is passed, use the last one
+            if(!version) {
+                return tags.pop();
+            }
+
             return _.find(tags, function (tag) {
                 var tagVersion = tag.name.replace(/[^0-9\.]/, '');
                 return semver.satisfies(tagVersion, version);
@@ -94,13 +73,55 @@ define(['altair/facades/declare',
         },
 
         /**
-         * Alias for clone so it matches signature of _Base and other vcs's
+         * Update a repo to a particular version (or latest if no version is set).
          *
          * @param options
-         * @returns {Deferred}
          */
-        checkout: function (options) {
-           return this.clone(options);
+        update: function (options) {
+
+            var d           = new this.module.Deferred(),
+                destination = options.destination,
+                version     = options.version,
+                repo;
+
+
+            if(!destination) {
+
+                d.reject(new Error('You must pass both a url (git@github.com/liquidfire/Jarvis) and a destination (app)'));
+
+            } else {
+
+                repo = gift(destination);
+
+                //find a tag that matches this version
+                repo.tags(hitch(this, function (err, tags) {
+
+                    var tag = this._firstTagThatMatchesVersion(tags, version);
+
+                    if(!tag) {
+                        if(version) {
+                            d.reject(new Error('Could not find version ' + version));
+                        } else {
+                            d.reject(new Error('You must have at least 1 tag in your repo'));
+                        }
+                    } else {
+                        repo.checkout(tag.commit.id, hitch(this, function (err, results) {
+                            if(err) {
+                                d.reject(new Error(err));
+                            } else {
+                                d.resolve(repo.path);
+                            }
+                        }));
+                    }
+
+                }));
+
+
+
+            }
+
+            return d;
+
         }
 
     });

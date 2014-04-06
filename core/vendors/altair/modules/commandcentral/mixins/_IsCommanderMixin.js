@@ -5,7 +5,7 @@ define(['altair/facades/declare',
         'altair/facades/mixin',
         'altair/Lifecycle',
         'altair/facades/hitch',
-        'altair/modules/commandcentral/facades/css'
+        '../facades/css'
 
 ], function (declare,
              mixin,
@@ -32,7 +32,7 @@ define(['altair/facades/declare',
             //error, no adapter set
             if(!this.adapter) {
 
-                this.deferred = new this.module.Deferred();
+                this.deferred = new this.Deferred();
                 this.deferred.reject('You must pass your commander an adapter from altair:CommandCentral');
 
                 return this.deferred;
@@ -44,7 +44,7 @@ define(['altair/facades/declare',
             return this.inherited(arguments).then(hitch(this, function () {
 
                 var file        = this.module.resolvePath('commanders/styles.css'),
-                    deferred    = new this.module.Deferred();
+                    deferred    = new this.Deferred();
 
                 css(file).then(hitch(this, function (styles) {
 

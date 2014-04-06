@@ -1,11 +1,11 @@
 ### Lifecycles in Altair
 
 An altair/Lifecycle is a simple base class that has 3 important methods, startup, execute, teardown. They are called in
-order and each one returns an altair/Deferred giving you chance to do some asynchronous operations. Below is interface
-for altair/Lifecycle
+order and each one returns an altair/Deferred giving you chance to do some asynchronous operations. Anytime your component
+needs to do setup in an asynchronous fashion, use a Lifecycle. Below is interface:
 
 ```js
-define(['altair/declare'], function (declare) {
+define(['altair/facades/declare'], function (declare) {
 
     return declare(null, {
 
@@ -55,7 +55,7 @@ define(['altair/declare'], function (declare) {
 ## Creating a Lifecycle subclass
 
 Lifecycles are used throughout Altair because of how often you need to be able to setup an environment before executing
-some logic inside of it. Using a Lifecycle is as easy as mixing it into your class.
+some logic inside of it. Using a Lifecycle is as easy as mixing it into your module.
 
 ```js
 define(['altair/facades/declare',

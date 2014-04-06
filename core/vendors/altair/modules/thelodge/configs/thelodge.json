@@ -1,0 +1,8 @@
+{
+    "installers": [
+        {
+            "type": "modules",
+            "path": "installers/Module"
+        }
+    ]
+}

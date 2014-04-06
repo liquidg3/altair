@@ -33,7 +33,7 @@ define(['altair/facades/declare',
             this.writeLine('forging new module..');
 
             //setup context
-            var d       = new this.module.Deferred(),
+            var d       = new this.Deferred(),
                 vendor  = values.vendor,
                 name    = str.capitalize(values.name),
                 full    = vendor + ':' + name,
@@ -70,7 +70,7 @@ define(['altair/facades/declare',
                             //read template
                             fs.readFile(template, hitch(this, function (err, results) {
 
-                                var def = new this.module.Deferred();
+                                var def = new this.Deferred();
                                 list.push(def);
 
                                 if(err) {

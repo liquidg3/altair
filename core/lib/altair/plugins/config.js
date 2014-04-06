@@ -142,6 +142,7 @@ define(['require',
                 config = require.nodeRequire(id);
             } catch (e) {
                 load(undefined);
+                return;
             }
 
 

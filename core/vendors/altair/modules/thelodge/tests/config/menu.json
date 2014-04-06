@@ -1,0 +1,29 @@
+{
+    "name":    "Altair Test Menu",
+    "website": "http://altair.io",
+    "description": "A list of modules used for testing",
+    "modules": [
+        {
+            "name":       "liquidfire:Jarvis",
+            "description": "Connect to and control devices",
+            "keywords": ["ioe", "iot", "connected", "devices"],
+            "repository": {
+                "type": "git",
+                "url":  "git@github.com/liquidfire/Jarvis"
+            }
+        },
+        {
+            "name":       "titan:Alfred",
+            "description": "Build yourself an Express powered website wicked fast",
+            "keywords": ["webpage", "web", "express"],
+            "repository": {
+                "type": "git",
+                "url":  "git@github.com/titan/Alfred"
+            }
+        }
+    ],
+    "themes": [
+
+    ]
+
+}

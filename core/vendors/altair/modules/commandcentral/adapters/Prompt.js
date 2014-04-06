@@ -47,7 +47,7 @@ define(['altair/facades/declare',
          */
         splash: function () {
             console.log(chalk.bgRed('REALLY COOL ALTAIR SPLASH SCREEN'));
-            var d = new this.module.Deferred();
+            var d = new this.Deferred();
             d.resolve();
             return d;
         },
@@ -119,7 +119,7 @@ define(['altair/facades/declare',
          */
         readLine: function (question, defaultValue, options) {
 
-            var def         = new this.module.Deferred(),
+            var def         = new this.Deferred(),
                 name        = (options && _.has(options, 'override')) ? options.override : 'answer';
 
             //it's been overridden
@@ -165,7 +165,7 @@ define(['altair/facades/declare',
          */
         select: function (question, defaultValue, options) {
 
-            var def             = new this.module.Deferred(),
+            var def             = new this.Deferred(),
                 _options        = _.has(options, 'multiOptions') ? options : { multiOptions: options },
                 required        = _.has(_options, 'required') ? _options.required : true,
                 aliases         = _.has(_options, 'aliases') ? _options.aliases : {},
@@ -261,7 +261,7 @@ define(['altair/facades/declare',
          */
         form: function (schema) {
 
-            var d       = new this.module.Deferred(),
+            var d       = new this.Deferred(),
                 values  = {},
                 elements= schema.elements(),
                 keys    = Object.keys(elements),
