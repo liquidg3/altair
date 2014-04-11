@@ -134,7 +134,8 @@ define(['altair/facades/declare',
 
         /**
          * Will read every module's package.json to read its dependencies, then tries to sort the list accordingly. Currently
-         * is stupid, does not handle versions, and only handles altairDepenencies as an object
+         * is stupid, does not handle versions, and only handles altairDepenencies as an object (meaning you must set a
+         * version).
          *
          * @param paths
          * @private

@@ -22,7 +22,7 @@ define(['altair/facades/declare',
         _installers: null,
 
         /**
-         * Choose a version control strategy (look inside vcs for an avaible startegies)
+         * Choose a version control strategy (look inside vcs for an available strategies)
          *
          * @param type
          * @param options
@@ -47,6 +47,17 @@ define(['altair/facades/declare',
             return this.refreshInstallers().then(hitch(this, function () {
                 return this;
             }));
+        },
+
+        /**
+         * Returns an installer by a particular type. Make sure you call this.refreshInstallers to get the latest list.
+         *
+         * @param type
+         * @returns {*}
+         */
+        installer: function (type) {
+            return this._installers[type];
+
         },
 
         /**
@@ -83,7 +94,7 @@ define(['altair/facades/declare',
 
             })).then(hitch(this, function (installers) {
 
-                //set type as key
+                //populate local _installers, key is the type (modules, themes, widgets)
                 installers.forEach(hitch(this, function (installer) {
                     this._installers[installer.type] = installer;
                 }));
