@@ -39,7 +39,7 @@ define(['altair/facades/declare',
             //use the options that were passed in, or the ones we have by default; avoid mutating options
             var _options = options || this.options;
 
-            console.log('Executing startup for %(full)s');
+            console.log('go %(full)s!');
 
 //            //if your startup is going to take a moment, you should a Deferred. This is functionality provided to us
 //            //by Lifecycle. By overriding this.deferred we are telling Lifecycle to wait until we manually call
