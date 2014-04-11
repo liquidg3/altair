@@ -32,24 +32,26 @@ define(['altair/facades/declare',
          * you have specified in your package.json as altairDependencies.
          *
          * @param options
-         * @returns {*}
+         * @returns {altair.Deferred}
          */
         startup: function (options) {
 
             //use the options that were passed in, or the ones we have by default; avoid mutating options
             var _options = options || this.options;
 
-            console.log('go %(full)s!');
+            console.log('Executing startup() for %(full)s');
 
-//            //if your startup is going to take a moment, you should a Deferred. This is functionality provided to us
-//            //by Lifecycle. By overriding this.deferred we are telling Lifecycle to wait until we manually call
-//            //this.deferred.resolve();
+
+//            //if your startup is going to take a moment, you should instantiate a Deferred. This is functionality
+//            //provided to us by Lifecycle. By overriding this.deferred we are telling Lifecycle to wait until we
+//            //manually call this.deferred.resolve();
+//
 //            this.deferred = new this.Deferred();
 //
 //            //use the hitch facade to bind any function to any scope
 //            setTimeout(hitch(this, function () {
 //
-//                //once our long running setup is complete
+//                //once our long running setup is complete, resolve the deferred
 //                this.deferred.resolve(this);
 //
 //            }), 250);
@@ -59,10 +61,23 @@ define(['altair/facades/declare',
         },
 
         /**
+         * Execute is called after every modules' startup() is triggered. You can be certain that the environment is as
+         * setup as it can possibly be by this point. execute()s are fired in the same order as startup()s and follow the
+         * same deferred pattern. Simply this.deferred = new this.Deferred() just like in startup().
+         *
+         * @returns {altair.Deferred}
+         */
+        execute: function () {
+
+            return this.inherited(arguments);
+
+        },
+
+        /**
          * Make sure anything you setup in startup gets torn down here. A module in Altair *must* be able capable of
          * starting up and shutting down while Altair is running and it should not create any artifacts.
          *
-         * @returns {*}
+         * @returns {altair.Deferred}
          */
         teardown: function () {
             return this.inherited(arguments);

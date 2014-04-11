@@ -22,7 +22,7 @@
                 "altair/cartridges/module/plugins/Events",
                 "altair/cartridges/module/plugins/Foundry"
             ],
-            "paths":    ["core/vendors"],
+            "paths":    ["core/vendors", "community/vendors"],
             "modules":  ["altair:Events", "altair:CommandCentral", "altair:Adapters", "altair:TheLodge"],
             "moduleOptions": {
                 "altair:CommandCentral": {

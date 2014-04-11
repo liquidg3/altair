@@ -30,8 +30,20 @@ define(['doh/runner',
 
 
                 });
+            },
+
+            "test installing module": function (t) {
+
+                //boot altair
+                return boot.nexus(cartridges).then(function (nexus) {
+
+                    //create a kitchen
+                    return nexus('altair:TheLodge').refreshInstallers().then(function (installers) {
+                        t.t(!!installers.modules, 'The lodge failed to register the module installer.');
+                    });
 
 
+                });
             }
 
         });

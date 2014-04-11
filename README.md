@@ -61,11 +61,13 @@ normalizes web experiences, then create a new module to do it your way.
 
 ##Events++
 
-One thing that makes Altair different is its event engine. We have taken the observer pattern and added a query engine.
+One thing that makes Altair different is its event engine. We have taken the observer pattern and added a query engine, then
+plopped in a promise architecture.
+
 See it in action:
 
     /**
-     * Altair has 2 ways to set listeners, the chain'able way is .on(eventName, query).then(...
+     * Altair has 2 ways to set listeners, the chain'able (promise based) way is .on(eventName, query).then(...
      */
     this.on('liquidfire:Jarvis::did-gesture', { 'gesture.type': 'the-force' }).then(hitch(this, function (e) {
 

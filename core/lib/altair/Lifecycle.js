@@ -44,19 +44,6 @@ define(['altair/facades/declare',
 
     "use strict";
 
-    var resolve = function (scope, def) {
-
-        return function () {
-
-            setTimeout(function () {
-
-                if(scope.deferred === def && scope.deferred.isResolved()) {
-                    scope.deferred = null;
-                }
-
-            }, 0);
-        };
-    };
 
     return declare(null, {
 
@@ -90,7 +77,7 @@ define(['altair/facades/declare',
             }
 
             //remove the deferred after it's been resolved
-            this.deferred.promise.always(resolve(this, this.deferred));
+            this.deferred.promise.always(this._deferredAutoRemover(this.deferred));
 
             return this.deferred;
 
@@ -109,7 +96,7 @@ define(['altair/facades/declare',
             }
 
             //remove the deferred after it's been resolved
-            this.deferred.promise.always(resolve(this, this.deferred));
+            this.deferred.promise.always(this._deferredAutoRemover(this.deferred));
 
             return this.deferred;
 
@@ -128,10 +115,25 @@ define(['altair/facades/declare',
             }
 
             //remove the deferred after it's been resolved
-            this.deferred.promise.always(resolve(this, this.deferred));
+            this.deferred.promise.always(this._deferredAutoRemover(this.deferred));
 
             return this.deferred;
 
+        },
+
+        _deferredAutoRemover: function(def) {
+
+            var scope = this;
+            return function () {
+
+                setTimeout(function () {
+
+                    if(scope.deferred === def && scope.deferred.isResolved()) {
+                        scope.deferred = null;
+                    }
+
+                }, 0);
+            };
         }
     });
 });

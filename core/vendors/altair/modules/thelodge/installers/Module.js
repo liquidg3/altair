@@ -9,6 +9,11 @@ define(['altair/facades/declare',
     return declare([_IsInstallerMixin], {
 
 
+        execute: function () {
+
+
+        }
+
     });
 
 });

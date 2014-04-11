@@ -67,11 +67,11 @@ define(['altair/facades/declare',
                         //load the templates and write them
                         Object.keys(files).forEach(hitch(this, function (template) {
 
+                            var def = new this.Deferred();
+                            list.push(def);
+
                             //read template
                             fs.readFile(template, hitch(this, function (err, results) {
-
-                                var def = new this.Deferred();
-                                list.push(def);
 
                                 if(err) {
                                     def.reject(new Error(err));
@@ -109,6 +109,7 @@ define(['altair/facades/declare',
                         all(list).then(hitch(this, function (results) {
 
                             this.writeLine('forging complete, created ' + results.length + ' files.');
+                            d.resolve();
 
                         })).otherwise(hitch(d, 'reject'));
 
