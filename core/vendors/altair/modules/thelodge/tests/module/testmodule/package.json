@@ -1,0 +1,8 @@
+{
+    "name": "altair:TestModule",
+    "version": "0.0.1",
+    "description": "Put your description in here!",
+    "dependencies": {
+        "test-test": ">=0.0.1"
+    }
+}

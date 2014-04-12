@@ -1,5 +1,5 @@
 {
-    "name": "%(name)s",
-    "version": "0.0.1",
-    "description": "Put your description in here!"
+    "name":         "%(vendor)s:%(name)s",
+    "version":      "0.0.1",
+    "description":  "Put your description in here!"
 }

@@ -1,5 +1,5 @@
 {
-    "name": "Adapters",
+    "name": "altair:Adapters",
     "version": "0.0.1",
-    "description": "Introduces a lot of helpers to implement the adapter pattern into your module."
+    "description": "Introduces a helpful mixin to implement the adapter pattern into your module."
 }

@@ -1,7 +1,7 @@
 {
-    "name": "Altair Command Line Interface (CLI)",
+    "name": "altair:CommandCentral",
     "version": "0.0.1",
-    "description": "One of many ways you can interface with Altair.",
+    "description": "Command line engine. One of many ways you can interface with Altair.",
     "dependencies": {
         "prompt":   ">=0.2.x",
         "chalk":    ">=0.4.x",

@@ -15,11 +15,12 @@
  *
  */
 
-// To add custom node_modules into altair define the path using 'altair/plugins/node!{{module}}'
-define(['altair/facades/declare',
+define(['altair/facades/declare', //take a look at terms.md
+        'altair/facades/hitch',
         'altair/Lifecycle',
-        'altair/facades/hitch'
+        'altair/plugins/node!fs'
 ], function (declare,
+             hitch,
              Lifecycle,
              hitch) {
 

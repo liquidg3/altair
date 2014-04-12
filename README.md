@@ -37,12 +37,14 @@ we do. Sometimes we come up short, but we push each other to our limits and keep
 We do everything in our power to enhance each others productivity while minimizing the complexities added to our lives. We
 can't get our time back, so lets maximize what we can get done in that time.
 
-1. **The difficulties in managing the code should not increase with lines of code.** We found that AMD facilitates this better
-than common.js. As far as implementation, we chose [dojo's very powerful AMD
-implementation](http://dojotoolkit.org/documentation/tutorials/1.9/modules/) for 2 reasons. Firstly, its declare
-implementation conforms to the [C3 Method Resolution Order.](http://www.python.org/download/releases/2.3/mro/) and if
-you're a python fan, you'll appreciate that. Secondly, we rely heavily on dojo's Deferred approach to promises. We
-plan on removing dojo eventually and you'll never interface with it directly.
+1. **The difficulties in managing the code should not increase with lines of code.**
+The 2 main distinctions between Altair and the colloquial approach to nodejs development will undoubtedly trip up most coming
+in for the first time. But, the reward will be more powerful, more extensible, and much, much easier to maintain systems.
+**Difference 1**: We chose (AMD)[http://addyosmani.com/writing-modular-js/]. As far as implementation, we chose [dojo's very powerful AMD implementation]
+(http://dojotoolkit.org/documentation/tutorials/1.9/modules/) because its declare implementation conforms to the
+[C3 Method Resolution Order.](http://www.python.org/download/releases/2.3/mro/) and if you're a python fan, you'll appreciate that.
+**Difference 2**: We take a [promise](http://www.html5rocks.com/en/tutorials/es6/promises/) to async operations. Any comparison
+of callback and promise based code shows the true elegance of the solution.
 
 1. **One should focus on the problem they are trying to solve and forget all else.** We are trying to solve the problem
 of how to connect and control many devices as elegantly and simply as possible, not whether or not Ember.js is cooler
@@ -62,12 +64,12 @@ normalizes web experiences, then create a new module to do it your way.
 ##Events++
 
 One thing that makes Altair different is its event engine. We have taken the observer pattern and added a query engine, then
-plopped in a promise architecture.
+plopped in a promises!
 
 See it in action:
 
     /**
-     * Altair has 2 ways to set listeners, the chain'able (promise based) way is .on(eventName, query).then(...
+     * Altair has 2 ways to set listeners, the "promise based" way is .on(eventName, query).then(...
      */
     this.on('liquidfire:Jarvis::did-gesture', { 'gesture.type': 'the-force' }).then(hitch(this, function (e) {
 

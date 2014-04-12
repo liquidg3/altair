@@ -1,5 +1,5 @@
 {
-    "name":               "The Lodge",
+    "name":               "altair:TheLodge",
     "version":            "0.0.1",
     "description":        "Visit The Lodge to get all your Altair goodies =)",
     "altairDependencies": {
@@ -9,6 +9,7 @@
         "rimraf": ">=2.2.x",
         "gift":   ">=0.3.x",
         "semver": ">=2.2.x",
-        "lunr":   ">=0.5.x"
+        "lunr":   ">=0.5.x",
+        "ncp":    ">=0.5.x"
     }
 }

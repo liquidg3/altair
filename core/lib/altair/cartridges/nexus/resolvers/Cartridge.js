@@ -24,9 +24,9 @@ define(['dojo/_base/declare',
         },
 
         /**
-         * Find a cartridge using a simple match
+         * Find a cartridge using a simple match (cartridges/Nexus)
          *
-         * @param key
+         * @param key a string that is the last parts of the cartridge.declaredClass, e.g. cartridges/Apollo
          * @param options
          * @param config
          * @returns {*}

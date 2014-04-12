@@ -83,7 +83,7 @@ define(['altair/facades/declare',
 
             } else {
                 this.deferred.reject("Not finished, should this set directly or assume something needs to be loaded?");
-
+                return;
             }
 
             /**
@@ -162,6 +162,7 @@ define(['altair/facades/declare',
         },
 
         /**
+         * Tells us whether or not we have all the plugins
          *
          * @param declaredClasses
          * @returns {boolean}
@@ -215,9 +216,9 @@ define(['altair/facades/declare',
 
 
                 //startup all modules, then return ourselves to the deferred
-                this.addModules(modules).then(hitch(this, function (modules) {
+                return this.addModules(modules).then(hitch(this, function (modules) {
                     this.deferred.resolve(this);
-                })).otherwise(hitch(this.deferred, 'reject'));
+                }));
 
             })).otherwise(hitch(this.deferred, 'reject'));
 
@@ -339,20 +340,18 @@ define(['altair/facades/declare',
         },
 
         /**
-         * Build modules against our local path settings
+         * Build modules against our local path settings using the foundry
          *
          * @param modules
-         * @returns {*|Promise}
+         * @returns {altair.Deferred}
          */
         buildModules: function (modules) {
-            var deferred = new Deferred();
 
-            this.foundry.build({
+            return this.foundry.build({
                 paths: this.paths,
                 modules: modules
-            }).then(hitch(deferred, 'resolve')).otherwise(hitch(deferred, 'reject'));
+            });
 
-            return deferred;
         }
 
     });

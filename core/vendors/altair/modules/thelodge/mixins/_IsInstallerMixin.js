@@ -26,32 +26,12 @@ define(['altair/facades/declare',
         },
 
         install: function (from, to) {
-
-            if(!this.deferred) {
-                this.deferred = new this.Deferred();
-                this.deferred.resolve(this);
-            }
-
-            //remove the deferred after it's been resolved
-            this.deferred.promise.always(this._deferredAutoRemover(this.deferred));
-
-            return this.deferred;
-
+            throw new Error('Your installer must implement install(from, to).');
         },
 
 
-        unInstall: function (from) {
-
-            if(!this.deferred) {
-                this.deferred = new this.Deferred();
-                this.deferred.resolve(this);
-            }
-
-            //remove the deferred after it's been resolved
-            this.deferred.promise.always(this._deferredAutoRemover(this.deferred));
-
-            return this.deferred;
-
+        unInstall: function (obj) {
+            throw new Error('Your installer must implement unInstall(obj).');
         }
 
 

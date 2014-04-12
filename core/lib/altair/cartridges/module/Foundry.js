@@ -50,7 +50,7 @@ define(['altair/facades/declare',
          *
          * @param options - {
          *      paths:      ['array', 'of', 'dirs', 'to', 'search', 'against'],
-         *      modules:    ['array','of','modules','to','instantiate'], //if missing, all modules will be created
+         *      modules:    ['vendor:ModuleOne','vendor:Module2'], //if missing, all modules will be created
          *      loadDependencies: true|false //defaults to true
          * }
          *
@@ -86,29 +86,26 @@ define(['altair/facades/declare',
                     //all modules failed?
                     if( !paths || paths.length === 0 || (options.modules !== '*' && paths.length !== options.modules.length)) {
                         deferred.reject("Failed to load all modules: " + options.modules.join(', '));
-
                         return;
                     }
 
-                    this._sortByDependencies(paths).then(hitch(this, function (sorted) {
+                    return this._sortByDependencies(paths);
+
+
+                })).then(hitch(this, function (sorted) {
 
                         //we have our sorted list, lets build each module
-                        var list    = sorted.map(hitch(this, 'buildOne'));
+                    var list    = sorted.map(hitch(this, 'buildOne'));
 
-                        all(list).then(hitch(deferred, 'resolve')).otherwise(hitch(deferred, 'reject'));
+                    return all(list);
 
-                    })).otherwise(hitch(deferred, 'reject'));
-
-
-                })).otherwise(hitch(deferred, 'reject'));
+                })).then(hitch(deferred, 'resolve')).otherwise(hitch(deferred, 'reject'));
 
             } catch (e) {
 
                 deferred.reject(e);
 
             }
-
-
 
             return deferred;
 
@@ -127,7 +124,7 @@ define(['altair/facades/declare',
             }
 
             return paths.filter(hitch(this, function (path) {
-                var name = this._pathToModuleName(path);
+                var name = this.pathToModuleName(path);
                 return moduleNames.indexOf(name) > -1;
             }));
         },
@@ -150,7 +147,7 @@ define(['altair/facades/declare',
             //build up paths
             paths.forEach(hitch(this, function (_path) {
 
-                var name        = this._pathToModuleName(_path),
+                var name        = this.pathToModuleName(_path),
                     packagePath = path.resolve(require.toUrl(_path), '../', 'package.json'),
                     module      = {
                         name: name,
@@ -229,9 +226,8 @@ define(['altair/facades/declare',
          *
          * @param modulePath
          * @returns {string}
-         * @private
          */
-        _pathToModuleName: function (modulePath) {
+        pathToModuleName: function (modulePath) {
 
             var dir         = path.resolve(modulePath),
                 pathParts   = dir.split(path.sep),
@@ -240,12 +236,25 @@ define(['altair/facades/declare',
                 junk2       = pathParts.pop(),
                 vendorName  = pathParts.pop();
 
-
             return vendorName + ':' + moduleName;
         },
 
         /**
-         * Pass path/to/Module.js and I'll load it up
+         * The inverse of above
+         *
+         * @param name the name of any module name returned from this.pathToModuleName
+         * @returns {string}
+         */
+        moduleNameToPath: function (name) {
+
+            var parts = name.split(':');
+
+            return path.join(parts[0],'modules', parts[1].toLowerCase());
+
+        },
+
+        /**
+         * Pass /absolute/path/to/Module.js and I'll load it up
          *
          * @param path
          */
@@ -253,20 +262,18 @@ define(['altair/facades/declare',
 
             var deferred    = new Deferred(),
 
-            //before any module is required, we have to setup some paths in the AMD loader
+                //before any module is required, we have to setup some paths in the AMD loader
                 dir         = path.dirname(modulePath),
                 pathParts   = dir.split('/'),
                 alias       = pathParts.slice(-3).join(path.sep),
-                name        = this._pathToModuleName(modulePath),
+                name        = this.pathToModuleName(modulePath),
                 paths    = {};
 
             paths[alias] = dir;
 
             require({
                 paths: paths
-
             });
-
 
             require([modulePath], hitch(this, function (Module) {
 

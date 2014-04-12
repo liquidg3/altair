@@ -24,7 +24,7 @@ about Altair, having at least some familiarity with these terms will make life e
 - For every startup, you must call teardown
 
 ## Deferred
-- A promise to take action later
+- [A promise to take action later](http://www.html5rocks.com/en/tutorials/es6/promises/)
 - Used to handle async operations
 - Example; d = new Deferred(cancelCallback); d.then(callback).otherwise(errCallback); d.resolve(dataPassedToCallbacks);
 

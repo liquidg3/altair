@@ -32,6 +32,11 @@ dojoConfig = {
     },
     packages: [
         {
+            name: 'lodash',
+            location: path.join(base, "core/lib/lodash"),
+            main: 'lodash'
+        },
+        {
             name: "dojo",
             location: path.join(base, "core/lib/dojo")
         },

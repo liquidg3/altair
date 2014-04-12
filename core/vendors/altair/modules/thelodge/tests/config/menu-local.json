@@ -1,0 +1,21 @@
+{
+    "name":    "Altair Local Test Menu",
+    "website": "http://altair.io",
+    "description": "A list of modules used for testing, but these ones are local",
+    "modules": [
+        {
+            "name":       "altair:TestModule",
+            "description": "Connect to and control devices",
+            "keywords": ["ioe", "iot", "connected", "devices"],
+            "repository": {
+                "type": "local",
+                "path":  "core/vendors/altair/modules/thelodge/tests/module"
+            }
+        }
+
+    ],
+    "themes": [
+
+    ]
+
+}

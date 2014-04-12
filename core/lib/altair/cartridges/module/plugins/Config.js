@@ -57,11 +57,9 @@ define(['altair/facades/declare',
 
                             require( ['altair/plugins/config!' + path], hitch( this, function ( config ) {
 
-
-
                                 if(config === undefined) {
 
-                                    deferred.reject( config, false );
+                                    deferred.reject( new Error('Could not read ' + path), false );
                                     this._configs[named] = config;
 
                                 } else {

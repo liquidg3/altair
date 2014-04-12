@@ -39,21 +39,10 @@ define(['altair/facades/declare',
         },
 
         /**
-         * On execute, refresh our installers so we have them available jic.
-         *
-         * @returns {altair.Deferred}
-         */
-        execute: function () {
-            return this.refreshInstallers().then(hitch(this, function () {
-                return this;
-            }));
-        },
-
-        /**
          * Returns an installer by a particular type. Make sure you call this.refreshInstallers to get the latest list.
          *
-         * @param type
-         * @returns {*}
+         * @param type modules, themes, etc.
+         * @returns {*} the installer
          */
         installer: function (type) {
             return this._installers[type];

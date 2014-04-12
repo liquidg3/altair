@@ -1,0 +1,63 @@
+language: node_js
+node_js:
+  - "0.6"
+  - "0.8"
+  - "0.10"
+env:
+  global:
+    - BIN="node" BUILD="compat" ISTANBUL=false OPTION="" SAUCE_LABS=false SAUCE_USERNAME="lodash"
+    - secure: "tg1JFsIFnxzLaTboFPOnm+aJCuMm5+JdhLlESlqg9x3fwro++7KCnwHKLNovhchaPe4otC43ZMB/nfWhDnDm11dKbm/V6HlTkED+dadTsaLxVDg6J+7yK41QhokBPJOxLV78iDaNaAQVYEirAgZ0yn8kFubxmNKV+bpCGQNc9yU="
+  matrix:
+    - BUILD="compat"
+    - BUILD="modern"
+matrix:
+  include:
+    - node_js: "0.10"
+      env: ISTANBUL=true   BUILD="modern"
+    - node_js: "0.10"
+      env: BIN="phantomjs" BUILD="compat"
+    - node_js: "0.10"
+      env: BIN="narwhal"   BUILD="compat"
+    - node_js: "0.10"
+      env: BIN="rhino"     BUILD="compat"
+    - node_js: "0.10"
+      env: BIN="rhino"     BUILD="compat" OPTION="-require"
+    - node_js: "0.10"
+      env: BIN="ringo"     BUILD="compat"
+    - node_js: "0.10"
+      env: SAUCE_LABS=true BUILD="compat"
+    - node_js: "0.10"
+      env: SAUCE_LABS=true BUILD="modern"
+    - node_js: "0.10"
+      env: SAUCE_LABS=true BUILD="underscore"
+git:
+  depth: 10
+branches:
+  only:
+    - master
+before_install:
+  - "[ $SAUCE_LABS == false ] || npm i chalk@\"~0.4.0\" ecstatic@\"~0.4.0\" request@\"~2.34.0\" sauce-tunnel@\"~1.1.0\""
+  - "[ $ISTANBUL == false ]   || (npm i -g coveralls@\"~2.10.0\" && npm i istanbul@\"~0.2.0\")"
+  - "[ $BIN != 'narwhal' ] || (wget https://github.com/280north/narwhal/archive/v0.3.2.zip && sudo unzip v0.3.2 -d /opt/ && rm v0.3.2.zip)"
+  - "[ $BIN != 'narwhal' ] || (sudo ln -s /opt/narwhal-0.3.2/bin/narwhal /usr/local/bin/narwhal && sudo chmod +x /usr/local/bin/narwhal)"
+  - "[ $BIN != 'rhino' ] || (sudo mkdir /opt/rhino-1.7R5 && sudo wget -O /opt/rhino-1.7R5/js.jar https://oss.sonatype.org/content/repositories/snapshots/org/mozilla/rhino/1.7R5-SNAPSHOT/rhino-1.7R5-20120629.144839-4.jar)"
+  - "[ $BIN != 'rhino' ] || (echo -e '#!/bin/sh\\njava -jar /opt/rhino-1.7R5/js.jar $@' | sudo tee /usr/local/bin/rhino && sudo chmod +x /usr/local/bin/rhino)"
+  - "[ $BIN != 'ringo' ] || (wget http://ringojs.org/downloads/ringojs-0.9.zip && sudo unzip ringojs-0.9 -d /opt && rm ringojs-0.9.zip)"
+  - "[ $BIN != 'ringo' ] || (sudo ln -s /opt/ringojs-0.9/bin/ringo /usr/local/bin/ringo && sudo chmod +x /usr/local/bin/ringo)"
+  - "git clone --depth=10 --branch=master git://github.com/lodash/lodash-cli.git ./node_modules/lodash-cli"
+  - "mkdir ./node_modules/lodash-cli/node_modules && cd ./node_modules/lodash-cli/node_modules/ && ln -s ../../../ ./lodash && cd ../ && npm i . && cd ../../"
+  - "node ./node_modules/lodash-cli/bin/lodash $BUILD -o ./dist/lodash.$BUILD.js"
+script:
+  - "[ $ISTANBUL == false ]    || (nvm use 0.11 && $BIN --harmony ./node_modules/istanbul/lib/cli.js cover -x \"**/vendor/**\" --report lcovonly ./test/test.js -- ./dist/lodash.$BUILD.js)"
+  - "[ $ISTANBUL == true ] && [ $TRAVIS_PULL_REQUEST == false ] && nvm use 0.10 && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage || true"
+  - "([ $SAUCE_LABS == true ]  || [ $ISTANBUL == true ]) || cd ./test"
+  - "([ $SAUCE_LABS == true ]  || [ $ISTANBUL == true ]) || $BIN $OPTION ./test.js ../dist/lodash.$BUILD.js"
+  - "([ $SAUCE_LABS == true ]  || [ $ISTANBUL == true ]) || $BIN $OPTION ./test.js ../dist/lodash.$BUILD.min.js"
+  - "([ $SAUCE_LABS == false ] || [ $BUILD == 'underscore' ]) || $BIN ./test/saucelabs.js name=\"lodash tests\" runner=\"test/index.html?build=../dist/lodash.$BUILD.min.js&noglobals=true\" tags=\"$BUILD,production\""
+  - "([ $SAUCE_LABS == false ] || [ $BUILD != 'compat' ])     || $BIN ./test/saucelabs.js name=\"lodash tests\" runner=\"test/index.html?build=../dist/lodash.$BUILD.min.js\" tags=\"$BUILD,production,ie-compat\" compatMode=7"
+  - "([ $SAUCE_LABS == false ] || [ $BUILD == 'underscore' ]) || $BIN ./test/saucelabs.js name=\"lodash tests\" runner=\"test/index.html?build=../dist/lodash.$BUILD.js&noglobals=true\" tags=\"$BUILD,development\""
+  - "([ $SAUCE_LABS == false ] || [ $BUILD != 'compat' ])     || $BIN ./test/saucelabs.js name=\"lodash tests\" runner=\"test/index.html?build=../dist/lodash.$BUILD.js\" tags=\"$BUILD,development,ie-compat\" compatMode=7"
+  - "[ $SAUCE_LABS == false ]  || $BIN ./test/saucelabs.js name=\"backbone tests\"   runner=\"test/backbone.html?build=../dist/lodash.$BUILD.min.js\" tags=\"$BUILD,production,backbone\""
+  - "[ $SAUCE_LABS == false ]  || $BIN ./test/saucelabs.js name=\"backbone tests\"   runner=\"test/backbone.html?build=../dist/lodash.$BUILD.js\" tags=\"$BUILD,development,backbone\""
+  - "[ $SAUCE_LABS == false ]  || $BIN ./test/saucelabs.js name=\"underscore tests\" runner=\"test/underscore.html?build=../dist/lodash.$BUILD.min.js\" tags=\"$BUILD,production,underscore\""
+  - "[ $SAUCE_LABS == false ]  || $BIN ./test/saucelabs.js name=\"underscore tests\" runner=\"test/underscore.html?build=../dist/lodash.$BUILD.js\" tags=\"$BUILD,development,underscore\""

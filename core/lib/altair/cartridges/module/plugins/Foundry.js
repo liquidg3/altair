@@ -15,11 +15,11 @@
  *
  *
  */
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         './_Base',
         'altair/facades/hitch',
-        'dojo/Deferred',
-        'dojo/node!fs'
+        'altair/Deferred',
+        'altair/plugins/node!fs'
 ], function (declare,
              _Base,
              hitch,

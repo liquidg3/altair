@@ -1,5 +1,5 @@
 {
-    "name": "The Forge",
+    "name": "altair:TheForge",
     "version": "0.0.1",
     "description": "Forge new modules and add new functionality to current ones.",
     "dependencies": {
