@@ -40,7 +40,7 @@ can't get our time back, so lets maximize what we can get done in that time.
 1. **The difficulties in managing the code should not increase with lines of code.**
 The 2 main distinctions between Altair and the colloquial approach to nodejs development will undoubtedly trip up most coming
 in for the first time. But, the reward will be more powerful, more extensible, and much, much easier to maintain systems.
-**Difference 1**: We chose (AMD)[http://addyosmani.com/writing-modular-js/]. As far as implementation, we chose [dojo's very powerful AMD implementation]
+**Difference 1**: We chose [AMD](http://addyosmani.com/writing-modular-js). As far as implementation, we chose [dojo's very powerful AMD implementation]
 (http://dojotoolkit.org/documentation/tutorials/1.9/modules/) because its declare implementation conforms to the
 [C3 Method Resolution Order.](http://www.python.org/download/releases/2.3/mro/) and if you're a python fan, you'll appreciate that.
 **Difference 2**: We take a [promise](http://www.html5rocks.com/en/tutorials/es6/promises/) to async operations. Any comparison
