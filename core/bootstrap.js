@@ -5,9 +5,15 @@ require(['altair/Altair',
         'require',
         'altair/cartridges/Foundry',
         'altair/facades/hitch',
+        'altair/facades/mixin',
         'altair/plugins/config!core/config/altair.json?env=' + global.env],
 
-    function (Altair, require, Foundry, hitch, config) {
+    function (Altair,
+              require,
+              Foundry,
+              hitch,
+              mixin,
+              config) {
 
 
         /**
@@ -19,37 +25,52 @@ require(['altair/Altair',
             paths: config.paths
         });
 
-        var paths = [],
-            altair,
-            foundry;
-
-        Object.keys(config.paths).forEach(function (name) {
-            paths.push(name);
-        });
-
-
         /**
-         * Startup the cartridge factory and create the cartridges, then add
-         * them to altair.
+         * Mixin config from app/config/altair.json if there is one
          */
-         altair      = new Altair({ paths: paths });
-         foundry     = new Foundry(altair);
+        require([
+            'altair/plugins/config!app/config/altair.json?env' + global.env
+        ], function (_config) {
 
-        console.log('Creating cartridge foundry. Adding', config.cartridges.length, 'cartridges.');
+            var paths = [],
+                altair,
+                foundry;
 
-        foundry.build(config.cartridges).then(function (cartridges) {
 
-            console.log('Cartridges created. Adding to Altair for startup.');
+            //one was found, mix it in
+            if(_config) {
+                config = mixin(config, _config);
+            }
+
+            Object.keys(config.paths).forEach(function (name) {
+                paths.push(name);
+            });
 
             /**
-             * Add cartridges
+             * Startup the cartridge factory and create the cartridges, then add
+             * them to altair.
              */
-            altair.addCartridges(cartridges).then(function () {
+            altair      = new Altair({ paths: paths });
+            foundry     = new Foundry(altair);
 
-                console.log('Cartridges started.  ');
+            console.log('Creating cartridge foundry. Adding', config.cartridges.length, 'cartridges.');
+
+            foundry.build(config.cartridges).then(function (cartridges) {
+
+                console.log('Cartridges created. Adding to Altair for startup.');
+
+                /**
+                 * Add cartridges
+                 */
+                altair.addCartridges(cartridges).then(function () {
+
+                    console.log('Cartridges started.  ');
+
+                }).otherwise(hitch(console, 'error'));
 
             }).otherwise(hitch(console, 'error'));
 
-        }).otherwise(hitch(console, 'error'));
+        });
+
 
     });

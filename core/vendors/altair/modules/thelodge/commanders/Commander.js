@@ -1,14 +1,24 @@
 define(['dojo/_base/declare',
-    'altair/modules/commandcentral/mixins/_IsCommanderMixin',
-    'altair/facades/hitch'
+        '../commandcentral/mixins/_IsCommanderMixin',
+        'altair/facades/hitch'
 
 ], function (declare,
              _IsCommanderMixin,
              hitch) {
 
-    return declare('altair/modules/thelodge/commanders/Commander', [_IsCommanderMixin], {
+    return declare([_IsCommanderMixin], {
 
 
+        search: function () {
+
+            throw new Error('Not finished');
+
+        },
+
+        npm: function () {
+
+
+        }
 
 
 

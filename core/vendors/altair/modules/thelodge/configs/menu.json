@@ -13,7 +13,7 @@
             }
         },
         {
-            "name":       "liquidfire:Alfred",
+            "name":       "titan:Alfred",
             "description": "Build yourself an Express powered website wicked fast",
             "keywords": ["webpage", "web", "express"],
             "repository": {

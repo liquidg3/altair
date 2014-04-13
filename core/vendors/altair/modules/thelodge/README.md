@@ -8,7 +8,7 @@ people are sharing.
 ## Important Terms
 
 • **menu** - a directory of modules, widgets, themes, or any type of object you could possibly want to share in Altair.
-• **kitchen** - the storage place
+• **kitchen** - the storage place for menus and the staff
 
 ## Creating your own installer
 

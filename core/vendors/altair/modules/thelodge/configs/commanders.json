@@ -5,7 +5,7 @@
         "description": "Visit the Lodge for all your Altair goodies.",
         "commands": {
             "search": {
-                "description": "Search the lodge for any modules that are published",
+                "description": "Search all menus available for a specific module, theme, etc",
                 "aliases": ["s", "find "]
             }
         }

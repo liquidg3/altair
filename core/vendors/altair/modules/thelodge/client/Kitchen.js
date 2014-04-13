@@ -3,7 +3,7 @@ define(['altair/facades/declare',
         'altair/facades/hitch',
         'altair/facades/when',
         'altair/facades/all',
-        'altair/plugins/node!underscore'
+        'lodash'
 ], function (declare,
              Lifecycle,
              hitch,

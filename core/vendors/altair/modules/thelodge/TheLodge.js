@@ -3,21 +3,21 @@ define(['altair/facades/declare',
         'altair/facades/all',
         'altair/facades/mixin',
         '../events/mixins/_HasEventsMixin',
+        '../events/mixins/_HasListenersMixin',
         '../commandcentral/mixins/_HasCommandersMixin',
         './mixins/_HasInstallersMixin',
-        'altair/plugins/node!underscore.string',
-        'altair/plugins/node!underscore'
+        'lodash'
 ], function (declare,
              hitch,
              all,
              mixin,
              _HasEventsMixin,
+             _HasListenersMixin,
              _HasCommandersMixin,
              _HasInstallersMixin,
-             str,
              _) {
 
-    return declare([_HasEventsMixin, _HasCommandersMixin, _HasInstallersMixin], {
+    return declare([_HasEventsMixin, _HasCommandersMixin, _HasInstallersMixin, _HasListenersMixin], {
 
         _installers: null,
 
@@ -31,7 +31,7 @@ define(['altair/facades/declare',
         vcs: function (type, options) {
 
             if(type.search('/') === -1) {
-                type = 'vcs/' + str.capitalize(type);
+                type = 'vcs/' + _.capitalize(type);
             }
 
             return this.foundry(type, options);
@@ -46,6 +46,23 @@ define(['altair/facades/declare',
          */
         installer: function (type) {
             return this._installers[type];
+        },
+
+
+        /**
+         * Refresh all menus registered in the system. Each listener is expected to return an array of menus (see
+         * this.registerMenus)
+         *
+         * @returns {altair.Deferred}
+         */
+        refreshMenus: function () {
+            return this.emit('register-menus').then(hitch(this, function (menus) {
+                return _.flatten(_.flatten(menus)); //each listener is expected to return an array of menus
+            }));
+        },
+
+        registerMenus: function () {
+
 
         },
 

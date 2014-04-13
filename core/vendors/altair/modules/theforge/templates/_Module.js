@@ -22,7 +22,7 @@ define(['altair/facades/declare', //take a look at terms.md
 ], function (declare,
              hitch,
              Lifecycle,
-             hitch) {
+             fs) {
 
     //by mixing in Lifecycle, we get startup(options), execute(options), and shutdown()
     return declare([Lifecycle], {

@@ -1,7 +1,7 @@
 define(['dojo/_base/declare',
         'altair/facades/hitch',
         'altair/facades/mixin',
-        'altair/modules/commandcentral/adapters/_Base',
+        './_Base',
         'dojo/node!blessed',
         'dojo/node!figlet',
         'altair/Deferred',
@@ -17,7 +17,7 @@ define(['dojo/_base/declare',
 
 
 
-    return declare('altair/modules/commandcentral/adapters/Blessed', [_Base], {
+    return declare([_Base], {
 
         screen:     null,
         noticeBox:  null,

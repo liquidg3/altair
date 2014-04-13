@@ -1,10 +1,10 @@
 define(['altair/facades/declare',
         'altair/facades/hitch',
         'altair/facades/__',
-        'altair/plugins/node!underscore',
+        'lodash',
         'altair/facades/when',
         'altair/facades/partial',
-        'altair/modules/commandcentral/adapters/_Base',
+        './_Base',
         'altair/plugins/node!prompt',
         'altair/plugins/node!chalk',
         'altair/plugins/node!yargs'
