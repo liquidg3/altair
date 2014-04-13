@@ -8,7 +8,7 @@
 define(['altair/facades/declare',
         'altair/facades/hitch',
         'altair/facades/mixin',
-        'altair/modules/commandcentral/mixins/_IsCommanderMixin',
+        '../mixins/_IsCommanderMixin',
         'altair/facades/when',
         'altair/StateMachine',
         'lodash'
