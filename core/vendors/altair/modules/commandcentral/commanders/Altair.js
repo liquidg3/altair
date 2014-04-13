@@ -3,8 +3,8 @@
  * It manages a state machine with the following states
  *
  * firstRun, selectCommander, selectCommand, executeCommand
+ *
  */
-
 define(['altair/facades/declare',
         'altair/facades/hitch',
         'altair/facades/mixin',
@@ -41,7 +41,8 @@ define(['altair/facades/declare',
         },
 
         /**
-         * See the flow of .then()'s for the script
+         * Kick of the state machine. We will stay in execute() until the state machine dies. Also attempts to read
+         * arguments passed it to jump to a particular state.
          */
         execute: function (options) {
 
@@ -75,7 +76,7 @@ define(['altair/facades/declare',
             this.activeCommander = this.adapter.initialCommander();
             this.activeCommand   = this.adapter.initialCommand();
 
-            //if there is an active commander, lets wai till it loads
+            //if there is an active commander, lets wait till it loads
             if(this.activeCommander && this.activeCommander.then) {
 
                 this.activeCommander.then(hitch(this, function (commander) {
@@ -89,7 +90,9 @@ define(['altair/facades/declare',
 
                 })).otherwise(hitch(def, 'reject'));
 
-            } else {
+            }
+            //if no initial arguments were passed, start from square one.
+            else {
                 run();
             }
 

@@ -50,7 +50,7 @@ define(['altair/facades/declare',
                 delegate: this //convenient way to have all your listeners set for you for callbacks that exist
             });
 
-            return this.inherited();
+            return this.inherited(arguments);
 
         },
 
