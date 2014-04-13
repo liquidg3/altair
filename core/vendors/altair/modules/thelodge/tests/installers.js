@@ -50,9 +50,9 @@ define(['doh/runner',
 
                     return installers.modules.install(testModule1, 'test');
 
-                }).then(function (results) {
+                }).then(function (modules) {
 
-                    t.is(results.installed, 2);
+                    t.is(modules.length, 1, 'module installer did not create the proper amount of modules');
 
                 });
             }

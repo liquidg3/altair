@@ -66,7 +66,7 @@ define(['doh/runner',
         /**
          * Foundry directory parsing with list of enabled modules to go with it.
          */
-        function () {
+        function (t) {
 
             var foundry = new Foundry(),
                 deferred = new doh.Deferred();
@@ -77,7 +77,7 @@ define(['doh/runner',
             }).then(function () {
                 throw "SHOULD NEVER BE CALLED";
             },deferred.getTestCallback(function (err) {
-                doh.assertEqual('Failed to load all modules: altair:NeverFound', err);
+                t.t(err.search('Failed to load one or more modules: altair:NeverFound') > -1, err);
 
             }));
 

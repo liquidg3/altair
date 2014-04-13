@@ -49,7 +49,7 @@ define(['altair/facades/declare',
          * Build modules by looking in paths you pass. The modules that come back will *not* be started up.
          *
          * @param options - {
-         *      paths:      ['array', 'of', 'dirs', 'to', 'search', 'against'],
+         *      paths:      ['app', 'community', 'local', 'core', 'test', 'etc.'], //i will add {{vendorName}}/modules/{{modulename}} to each path
          *      modules:    ['vendor:ModuleOne','vendor:Module2'], //if missing, all modules will be created
          *      loadDependencies: true|false //defaults to true
          * }
@@ -73,7 +73,6 @@ define(['altair/facades/declare',
 
                 //take every path we have received and glob them for our module pattern
                 paths = options.paths.map(function (_path) {
-
                     return path.join(require.toUrl(_path), '*/modules/*/*.js');
                 });
 
@@ -81,23 +80,30 @@ define(['altair/facades/declare',
                 //glob all the dirs
                 glob( paths ).then( hitch( this, function ( files ) {
 
-                    paths = this._filterPaths( files, options.modules );
+                    var _paths = this._filterPaths( files, options.modules );
 
                     //all modules failed?
-                    if( !paths || paths.length === 0 || (options.modules !== '*' && paths.length !== options.modules.length)) {
-                        deferred.reject("Failed to load all modules: " + options.modules.join(', '));
+                    if( !_paths || _paths.length === 0 || (options.modules !== '*' && _paths.length !== options.modules.length)) {
+                        deferred.reject("Failed to load one or more modules: " + options.modules.join(', ') + ' from paths: ' + paths.join(', '));
                         return;
                     }
 
-                    return this._sortByDependencies(paths);
+                    return this._sortByDependencies(_paths);
 
 
                 })).then(hitch(this, function (sorted) {
 
-                        //we have our sorted list, lets build each module
-                    var list    = sorted.map(hitch(this, 'buildOne'));
+                    if(!sorted) {
+                        deferred.reject(new Error('No modules found to build in Foundry. Checked ' + paths));
+                    } else {
 
-                    return all(list);
+                        //we have our sorted list, lets build each module
+                        var list    = sorted.map(hitch(this, 'buildOne'));
+
+                        return all(list);
+
+                    }
+
 
                 })).then(hitch(deferred, 'resolve')).otherwise(hitch(deferred, 'reject'));
 

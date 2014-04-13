@@ -195,6 +195,7 @@ define(['altair/facades/declare',
          * @returns {*}
          */
         execute: function () {
+
             this.deferred = new Deferred();
 
             this.buildModules(this.options.modules).then(hitch(this, function (modules) {
@@ -216,7 +217,7 @@ define(['altair/facades/declare',
 
 
                 //startup all modules, then return ourselves to the deferred
-                return this.addModules(modules).then(hitch(this, function (modules) {
+                return this.injectModules(modules).then(hitch(this, function (modules) {
                     this.deferred.resolve(this);
                 }));
 
@@ -226,12 +227,12 @@ define(['altair/facades/declare',
         },
 
         /**
-         * Add modules to the cartridge
+         * Inject modules into the Altair runtime
          *
          * @param modules
          * @returns {dojo.Deferred}
          */
-        addModules: function (modules) {
+        injectModules: function (modules) {
 
             //intentional shallow copy
             var _modules    = modules.slice(0),
@@ -302,7 +303,7 @@ define(['altair/facades/declare',
 
                     }
                 } else {
-                    deferred.resolve(this);
+                    deferred.resolve(modules);
 
                 }
 

@@ -16,7 +16,7 @@ about Altair, having at least some familiarity with these terms will make life e
 ## Module
 - An AMD module inside vendors/{{vendor}}/modules/{{module}}/{{Module}}.js
 - If mixes in Lifecycle; .startup() is executed on each module, sorted by dependency, right after the Module Cartridge is started
-- If mixes in Lifecycle; .execute() is executed on each module after all .startup()'s have been finished
+- If mixes in Lifecycle; .execute() is excuted right after startup() on each module
 
 ## Lifecycle
 - An object with 3 states, startup, execute, teardown

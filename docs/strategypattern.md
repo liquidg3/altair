@@ -7,3 +7,4 @@ system (vcs). Currently TheLodge only supports Git repos, but adding new ones wo
 Rather than hard coding your strategies, you should use the event system in Altair to 'register' them. This allows your
 repertoire of strategies to grow as your requirements grow. This also allows 3rd parties to supply strategies with ease.
 
+**coming soon***

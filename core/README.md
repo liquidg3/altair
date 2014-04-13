@@ -12,7 +12,7 @@ what we can credit it for is taking code management out of the equation. A prope
 project can grow without adding to the amount of the system you need to have loaded in your brain.
 
 Because your code will be very cohesive, you will have very little trouble locating any piece you are trying to find.
-You should never have to search your project for an anonymous function that contains the random piece of logic
+You should never have to search your project for an anonymous function that contains the random procedure
 you need to manipulate to fulfill some business requirements.
 
 Keep your code cohesive, couple it as intelligently as possible, and you will find that with very little effort, you can
@@ -21,6 +21,6 @@ accomplish incredible things.
 Altair, at its heart, is a simple "Cartridge Loader." There is a core/lib/cartridges/README.md available for more
 information about cartridges.
 
-If you are looking to add a new fancy piece of functionality to Altair, chances are you want to create a Module. Module's
+If you are looking to add a new fancy piece of functionality to Altair, chances are you want to create a Module. Modules
 are loaded after the system is bootstrapped, database connections are made, and caches are primed.
 

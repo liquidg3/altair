@@ -118,7 +118,7 @@ define(['altair/facades/declare',
             var multiOptions    = {}, //options for the select
                 d               = new this.Deferred();
 
-            this.module.refreshCommanders().then(hitch(this, function (commanders) {
+            return this.module.refreshCommanders().then(hitch(this, function (commanders) {
 
                 Object.keys(commanders).forEach(function (name) {
                     if (name !== 'altair') {
@@ -126,10 +126,14 @@ define(['altair/facades/declare',
                     }
                 });
 
-                this.select('choose commander', null, multiOptions).then(hitch(this, function (commander) {
-                    this.activeCommander = this.module.commander(commanders[commander]);
-                    d.resolve({ commander: this.activeCommander });
+                return this.select('choose commander', null, multiOptions).then(hitch(this, function (commander) {
+                    return this.module.commander(commanders[commander]);
                 }));
+
+            })).then(hitch(this, function (commander) {
+
+                this.activeCommander = commander;
+                return { commander: this.activeCommander };
 
             })).otherwise(hitch(d, 'reject'));
 
@@ -152,7 +156,6 @@ define(['altair/facades/declare',
                 commands    = commander.options.commands,
                 options     = {},
                 aliases     = {},
-                d           = new this.Deferred(),
                 longLabels  = this.module.adapter().longLabels;
 
             //let user select the command they want to run by outputting a
@@ -178,20 +181,19 @@ define(['altair/facades/declare',
             }));
 
             //show select
-            this.select('choose command', null, { multiOptions: options, aliases: aliases, id: "command-select"}).then(hitch(this, function (command) {
+            return this.select('choose command', null, { multiOptions: options, aliases: aliases, id: "command-select"}).then(hitch(this, function (command) {
 
                 //save active adapter in-case we transition to another state prematurely or out of order
                 this.activeCommand = command;
 
                 //pass command and commander onto next state
-                d.resolve({
+                return {
                     commander:  commander,
                     command:    this.activeCommand
-                });
+                };
 
-            })).otherwise(hitch(d, 'reject'));
+            }));
 
-            return d;
 
         },
 
@@ -226,7 +228,7 @@ define(['altair/facades/declare',
 
             if (schema) {
 
-                //write the description of the command if there is one
+                //if there is as chema, render a form
                 this.form(schema).then(done).otherwise(hitch(d, 'reject'));
 
             }

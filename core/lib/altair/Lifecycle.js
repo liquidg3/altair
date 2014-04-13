@@ -51,6 +51,9 @@ define(['altair/facades/declare',
         deferred:       null,
         options:        null,
 
+        //deferred tracking
+        _startupDeferred: null,
+
         constructor: function (options) {
             this.options = options;
         },
@@ -79,6 +82,9 @@ define(['altair/facades/declare',
             //remove the deferred after it's been resolved
             this.deferred.promise.always(this._deferredAutoRemover(this.deferred));
 
+            //tracking
+            this._startupDeferred = this.deferred;
+
             return this.deferred;
 
         },
@@ -90,10 +96,18 @@ define(['altair/facades/declare',
          */
         execute: function () {
 
+            //make sure startup deferred is still not active (can happen when someone goes life.startup().then(life.execute())
+            //and deferreds are autoresolved (which makes the whole process syncronise)
+            if(this.deferred && this.deferred === this._startupDeferred) {
+                this.deferred = null;
+            }
+
             if(!this.deferred) {
                 this.deferred = new this.Deferred();
                 this.deferred.resolve(this);
             }
+
+            this._startupDeferred = null;
 
             //remove the deferred after it's been resolved
             this.deferred.promise.always(this._deferredAutoRemover(this.deferred));

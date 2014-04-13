@@ -71,7 +71,7 @@ define(['altair/facades/declare',
          *
          * @param from the source file path
          * @param to the destination (should most likely be something like app or community)
-         * @returns {altair.Deferred}
+         * @returns {altair.Deferred} - will resolve with array of live modules
          */
         install: function (from, to) {
 
@@ -161,13 +161,19 @@ define(['altair/facades/declare',
 
                 //step 8 - pass the module to the foundry for creation
                 return foundry.build({
-                    paths:      [destination],
+                    paths:      [to],
                     modules:    [package.name]
                 });
 
             })).then(hitch(this, function (modules) {
 
-                console.log('holy shit really?', modules);
+                //step 9 - inject new modules into altair's runtime via the module cartridge
+                return cartridge.injectModules(modules);
+
+            })).then(hitch(this, function (modules) {
+
+                //final step, return the newly activated module
+                deferred.resolve(modules);
 
             })).otherwise(hitch(this, function (err) {
                 deferred.reject(new Error('Could not install module at ' + from + '. Original error is: ' + err));

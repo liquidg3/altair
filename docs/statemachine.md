@@ -2,7 +2,7 @@
 A StateMachine is an object that has a this.state, can be one of any this.states = ['state1', 'state2'],
 and can transition between states;
 
-In altair/StateMachine, when the states transition (state1 -> state2), we'll fire some events, executed callbacks you have configured . By
+In altair/StateMachine, when the states transition (state1 -> state2), we'll fire some events, executing callbacks you have configured . By
 using the Altair/Lifecycle (modules, commanders, etc) to manage your State Machine, you get a great way to configure state
 machines at run time. This flexibility allows you to do some pretty cool things (like optimization). Note that altair/StateMachines
 are not linear, we can transition to any state in any order at any time, so your callbacks must take it into consideration.
@@ -10,6 +10,8 @@ are not linear, we can transition to any state in any order at any time, so your
 In this example, I'm going to show you how I built commandcentral/commanders/Altair, which is the object you have interfaced
 with if you have ever used Altair. By using a State Machine to independently manage the state of a user's CLI session,
 we can keep our code super thin and clean.
+
+This is an abbreviated example, see
 
 ```js
 define(['altair/facades/declare',
@@ -53,8 +55,8 @@ define(['altair/facades/declare',
 
         execute: function () {
 
-            //will run each state in order, each receiving return value from previous
-            var def = this.fsm.execute().then(hitch(this, function (returnedFromFinalState) {
+            //will run each state in order, each receiving (input) the return value (output) from previous
+            return this.fsm.execute().then(hitch(this, function (returnedFromFinalState) {
 
                 console.log('this.stateMachineDidEnterExecuteCommand returned', returnedFromFinalState);
 
@@ -68,13 +70,11 @@ define(['altair/facades/declare',
 
             }));
 
-            //or i can completely control state management by jumping to states manually
-            def = this.fsm.transitionToState('selectcommand', { foo: 'bar' }).then(function (results) {
+            //OR i can completely control state management by jumping to states manually
+            return this.fsm.transitionToState('selectcommand', { foo: 'bar' }).then(function (results) {
                 console.log(results); //[ "nextState", { state: data } ]
             });
 
-            //this will keep force Altair to wait until the State Machine is shutdown, make sure you want this behavior
-            return def;
 
         },
 
@@ -85,7 +85,6 @@ define(['altair/facades/declare',
          * onStateMachineDidEnter{{StateName}}
          * onStateMachineDidExit{{StateName}}
          */
-
          //We have entered firstRun, our first state
          onStateMachineDidEnterFirstRun: function ($e) {
 
@@ -98,9 +97,7 @@ define(['altair/facades/declare',
 
          onStateMachineDidEnterSelectCommand: function ($e) {
 
-            //by returning a Deferred, we will stay in this state until we resolve() it.
-            var d   = new this.Deferred(),
-                foo = e.get('foo'); //i get this because the previous state returned it (it may not be here if we jumped to this state)
+            var foo = e.get('foo'); //i get this because the previous state returned it (it may not be here if we jumped to this state)
 
 
             if(foo) {
@@ -108,18 +105,21 @@ define(['altair/facades/declare',
             }
 
             //some async process (waiting for input? showing graphix? animation?)
-            this.readLine('enter commander name').then(function (named) {
+            //by returning a Deferred (return from readLine), we will stay in this state
+            return this.readLine('enter commander name').then(function (named) {
 
-                //resolve the deferred, unblocking the state machine, finish off this stage
-                d.resolve({ commander: named });
+                //the deferred will now resolve with this value which, according to state machine conventions, will
+                //be passed through to the event of next state
+                return { commander: named };
 
             });
-
-            return d;
 
          },
 
          onStateMachineDidEnterExecuteCommand: function (e) {
+
+            //returned data from previous state gets mixed into event data
+            console.log(e.get('commander'));
 
             if(!this.someErrorCheck()) {
                 //if returning an array, the 1st value is the next state you want to transition to, the 2nd value is an
@@ -127,7 +127,7 @@ define(['altair/facades/declare',
                 return ['selectCommand', { commander: e.get('commander') }];
             }
 
-            var d = new this.module.Deferred();
+            var d = new this.Deferred();
 
             setTimeout(function () {
                 d.resolve(['firstRun', {}]); //will start the whole thing over since firstRun is our first state
