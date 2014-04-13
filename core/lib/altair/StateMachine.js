@@ -7,8 +7,8 @@ define(['altair/facades/declare',
         'altair/events/Event',
         'altair/Deferred',
         'altair/facades/__',
-        'altair/plugins/node!underscore.string',
-        'altair/plugins/node!underscore'
+        'altair/facades/sprintf',
+        'lodash'
         ],
     function (declare,
               hitch,
@@ -16,7 +16,7 @@ define(['altair/facades/declare',
               Event,
               Deferred,
               __,
-              _str,
+              sprintf,
               _) {
 
 
@@ -94,7 +94,7 @@ define(['altair/facades/declare',
          * @private
          */
         _stateAndEventNameToCallbackName: function (state, eventName) {
-            return _str.sprintf(this._listenerMap[eventName], _str.capitalize(state));
+            return sprintf(this._listenerMap[eventName], _.capitalize(state));
         },
 
         /**

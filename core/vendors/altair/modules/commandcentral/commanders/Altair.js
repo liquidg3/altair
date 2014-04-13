@@ -11,7 +11,7 @@ define(['altair/facades/declare',
         'altair/modules/commandcentral/mixins/_IsCommanderMixin',
         'altair/facades/when',
         'altair/StateMachine',
-        'altair/plugins/node!underscore'
+        'lodash'
         ], function (declare,
                      hitch,
                      mixin,

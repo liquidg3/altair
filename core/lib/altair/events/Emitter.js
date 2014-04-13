@@ -10,8 +10,7 @@ define(['altair/facades/declare',
         './QueryAgent',
         'dojo/promise/all',
         'altair/facades/when',
-        'altair/plugins/node!underscore'
-
+        'lodash'
 ], function (declare,
              Event,
              hitch,
