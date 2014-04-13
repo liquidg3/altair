@@ -11,7 +11,9 @@ In this example, I'm going to show you how I built commandcentral/commanders/Alt
 with if you have ever used Altair. By using a State Machine to independently manage the state of a user's CLI session,
 we can keep our code super thin and clean.
 
-This is an abbreviated example, see altair.io/core/vendors/altair/modules/commandcentral/commanders/Altair.js for the
+This is an abbreviated example, see the [the actual code](https://github.com/liquidg3/altair/blob/master/core/vendors/altair/modules/commandcentral/commanders/Altair.js)
+for the a fully working example.
+
 current working version.
 
 ```js
