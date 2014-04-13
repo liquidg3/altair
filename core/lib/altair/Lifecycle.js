@@ -33,8 +33,7 @@
  *
  * ...
  *
- * REMEMBER: the purpose of startup() is NOT to load external resource and send them back to the caller. It
- * is to ensure execute() has everything it needs to do its job. Don't abuse startup().
+ * REMEMBER: the purpose of startup() is to to ensure execute() has everything it needs to do its job. Don't abuse startup().
  *
  */
 define(['altair/facades/declare',
@@ -97,7 +96,7 @@ define(['altair/facades/declare',
         execute: function () {
 
             //make sure startup deferred is still not active (can happen when someone goes life.startup().then(life.execute())
-            //and deferreds are autoresolved (which makes the whole process syncronise)
+            //and deferreds are auto-resolved (which makes the whole process sync)
             if(this.deferred && this.deferred === this._startupDeferred) {
                 this.deferred = null;
             }
@@ -107,6 +106,7 @@ define(['altair/facades/declare',
                 this.deferred.resolve(this);
             }
 
+            //do not need the startup deferred again
             this._startupDeferred = null;
 
             //remove the deferred after it's been resolved

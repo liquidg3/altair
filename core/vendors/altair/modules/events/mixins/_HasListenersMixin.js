@@ -56,7 +56,7 @@ define(['dojo/_base/declare',
         return results;
     }
 
-    return declare('altair/modules/events/mixins/_HasListenersMixin', [Lifecycle, Emitter], {
+    return declare([Lifecycle, Emitter], {
 
         startup: function () {
             var def = new this.Deferred(),

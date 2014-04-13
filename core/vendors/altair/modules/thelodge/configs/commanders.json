@@ -7,6 +7,9 @@
             "search": {
                 "description": "Search all menus available for a specific module, theme, etc",
                 "aliases": ["s", "find "]
+            },
+            "npm": {
+                "description": "Pull in and update npm dependencies."
             }
         }
     }

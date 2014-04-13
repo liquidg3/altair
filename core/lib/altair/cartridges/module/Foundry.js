@@ -170,7 +170,7 @@ define(['altair/facades/declare',
                 require(['altair/plugins/config!' + packagePath], hitch(this, function (config) {
 
                     if(!config) {
-                        def.reject(__('could not find config at %s', packagePath));
+                        def.reject(__('could not parse config at %s', packagePath));
                         return;
                     }
 

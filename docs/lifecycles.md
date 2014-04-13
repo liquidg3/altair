@@ -17,8 +17,7 @@ define(['altair/facades/declare'], function (declare) {
          * Put anything that needs to be done (configuring, setup, etc.) before your lifecycle is executed.
          *
          * Startup always returns an altair/Deferred. If one does not exist (meaning you did not set
-         * this.deferred = new this.Deferred in your child class) then I will make one and resolve it immediately.
-         * This makes the operation synchronise, but will allow us to always use the startup().then(... syntax.
+         * this.deferred = new this.Deferred in your class) then I will make one and resolve it immediately.
          *
          * @param options optional simply overrides this.options if passed
          * @return {altair.Deferred}

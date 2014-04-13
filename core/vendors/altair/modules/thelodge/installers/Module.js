@@ -5,7 +5,6 @@ define(['altair/facades/declare',
         'altair/plugins/node!path',
         'altair/plugins/node!mkdirp',
         'altair/plugins/node!fs',
-        'altair/plugins/node!npm',
         'altair/plugins/node!ncp',
         'altair/plugins/node!rimraf',
         'altair/plugins/node!semver',
@@ -19,7 +18,6 @@ define(['altair/facades/declare',
              path,
              mkdirp,
              fs,
-             npm,
              ncp,
              rimraf,
              semvr,
@@ -30,7 +28,7 @@ define(['altair/facades/declare',
 
     return declare([_IsInstallerMixin], {
 
-        npm: null,
+        _npm: null,
         _steps: [
 
         ],
@@ -45,23 +43,20 @@ define(['altair/facades/declare',
 
             var _options = options || this.options;
 
-            //do not auto resolve
-            this.deferred = new this.Deferred();
+            if(_options && _options.npm) {
+                this._npm = _options.npm;
+            } else {
 
-            //dependency injection
-            this.npm = _options.npm || npm;
+                //do not auto resolve
+                this.deferred = new this.Deferred();
 
-            //load npm
-            this.npm.load({}, hitch(this, function (err) {
-
-                //doh!
-                if(err) {
-                    this.deferred.reject(err);
-                } else {
+                //load npm
+                this.module.foundry('client/Npm').then(hitch(this, function (npm) {
+                    this._npm = npm;
                     this.deferred.resolve(this);
-                }
+                }));
 
-            }));
+            }
 
             return this.inherited(arguments);
         },
@@ -101,7 +96,7 @@ define(['altair/facades/declare',
                 //step 4 - drop in npm requirements to our projects main package.json if needed
                 if(package.dependencies) {
 
-                    list.push(this.installNodeDependencies(package.dependencies).then(function () {
+                    list.push(this._npm.installDependencies(package.dependencies).then(function () {
                         //ok, back to what we were doing
                         return package;
                     }));
