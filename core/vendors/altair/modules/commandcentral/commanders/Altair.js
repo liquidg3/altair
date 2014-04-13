@@ -4,6 +4,14 @@
  *
  * firstRun, selectCommander, selectCommand, executeCommand
  *
+ * You can automatically select a commander and the command to execute by passing arguments through with your original request
+ *
+ * $ ./altair.js {{commander}} {{command}}
+ * $ ./altair.js forge                          #jumps you to the selectCommand state with theforge as the active commander
+ * $ ./altair.js forge new                      #jumps you to executeCommand
+ * $ ./altair.js forge new --vendor liquidfire  #if the command has a schema, you can populate it
+ * $ ./altair.js forge new --vendor liquidfire --name TestModule --dir app
+ *
  */
 define(['altair/facades/declare',
         'altair/facades/hitch',
@@ -54,11 +62,12 @@ define(['altair/facades/declare',
                         state: this.startState
                     }).otherwise(hitch(this, function (err) {
 
+                        //an error occurred, so lets try our best to start again
                         if(err instanceof Error) {
                             err = err.message;
                         }
 
-
+                        //write the error to the console
                         this.writeLine(err, 'error');
 
                         //jump to my best guess of what to do now (jump to last state on error, or first state if all else fails)
@@ -79,8 +88,11 @@ define(['altair/facades/declare',
             //if there is an active commander, lets wait till it loads
             if(this.activeCommander && this.activeCommander.then) {
 
+                //this can happen if the active command is set to a deferred. this lets us know that we should wait on
+                // its promise to provide one later
                 this.activeCommander.then(hitch(this, function (commander) {
 
+                    //is an active command passed
                     if(commander) {
                         this.activeCommander = commander;
                         this.startState        = (this.activeCommand) ? 'executeCommand' : 'selectCommand';
@@ -91,7 +103,8 @@ define(['altair/facades/declare',
                 })).otherwise(hitch(def, 'reject'));
 
             }
-            //if no initial arguments were passed, start from square one.
+            //if no initial arguments were passed, then we will never have an activeCommander at this point, so start
+            //from square one.
             else {
                 run();
             }

@@ -92,7 +92,7 @@ define(['altair/facades/declare',
              */
             focus: function (commander) {
 
-                //blur last focused commander
+                //blur currently focused commander
                 if(this._focusedCommander) {
                     this._focusedCommander.blur();
                 }
