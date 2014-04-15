@@ -9,12 +9,12 @@
 
         "cartridges": [
             {
-                "path": "altair/cartridges/nexus/Nexus",
+                "path": "altair/cartridges/apollo/Apollo",
                 "options": {
                 }
             },
             {
-                "path": "altair/cartridges/apollo/Apollo",
+                "path": "altair/cartridges/nexus/Nexus",
                 "options": {
                 }
             },

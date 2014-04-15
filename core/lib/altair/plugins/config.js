@@ -179,7 +179,13 @@ define(['require',
                 id = id + '.json';
             }
 
-            return require.toUrl(id);
+            if(id.charAt(0) == '.') {
+                id = toAbsMid(id);
+            } else {
+                id = require.toUrl(id);
+            }
+
+            return id;
 
         }};
 });

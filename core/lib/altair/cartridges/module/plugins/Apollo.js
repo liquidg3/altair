@@ -46,7 +46,6 @@ define(['altair/facades/declare',
          */
         execute: function (module) {
 
-
             if(module.isInstanceOf(_HasSchemaMixin)) {
 
                 //override startup to mixin options as values

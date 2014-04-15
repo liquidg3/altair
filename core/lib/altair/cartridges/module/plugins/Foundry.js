@@ -19,11 +19,13 @@ define(['altair/facades/declare',
         './_Base',
         'altair/facades/hitch',
         'altair/Deferred',
+        'apollo/_HasSchemaMixin',
         'altair/plugins/node!fs'
 ], function (declare,
              _Base,
              hitch,
              Deferred,
+             _HasSchemaMixin,
              fs) {
 
     var defaultCallback = function (Class, options) {
@@ -72,7 +74,8 @@ define(['altair/facades/declare',
 
                             require([path], hitch(this, function (Child) {
 
-                                var a = instantiationCallback(Child, options);
+                                var a   = instantiationCallback(Child, options),
+                                    schema
 
                                 a.name      = this.name + '::' + className;
                                 a.module    = this;
@@ -90,6 +93,23 @@ define(['altair/facades/declare',
                                    }
                                 });
 
+                                //is there a schema?
+                                if(a.isInstanceOf(_HasSchemaMixin) && a.schema) {
+
+                                    if(!a._schema) {
+
+                                        schema = this._nexus.resolve('cartridges/Apollo').createSchema(a.schema);
+                                        a.setSchema(schema);
+                                        delete a.schema;
+
+                                    }
+
+                                    if(options) {
+                                        a.mixin(options);
+                                    }
+                                }
+
+                                //startup the module
                                 if(a.startup) {
                                     a.startup(options).then(hitch(d, 'resolve')).otherwise(hitch(d, 'reject'));
                                 } else {

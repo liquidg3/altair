@@ -11,10 +11,10 @@ define(['dojo/_base/declare',
         key: 'string',
         options: {
             maxLength: {
-                type: 'number',
+                type: 'int',
                 options: {
                     defaultValue: -1,
-                    label: 'Truncate the length of this string to anything you want.'
+                    label: 'Truncate the length of this string to anything you want. -1 means do not trim.'
                 }
             }
         },

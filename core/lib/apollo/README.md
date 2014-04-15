@@ -72,7 +72,7 @@ By default, you will put this file in ./config/schema.json.
 
 The Module
 ---
-This can be any .js file.
+This can be any AMD module.
 
 ``` js
 define(['apollo/_HasSchemaMixin', 'dojo/declare'], function (_HasSchemaMixin, declare) {

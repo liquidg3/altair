@@ -36,9 +36,11 @@ define(['dojo/_base/declare',
         },
 
         npm: function () {
+
             return this._valet.npm().step(hitch(this, function (step) {
                 this.writeLine(step.message);
             }));
+
         }
 
 

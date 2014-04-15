@@ -4,8 +4,8 @@ define(['doh/runner',
         'core/tests/support/boot',
         'altair/facades/hitch',
         'require',
-        'altair/plugins/config!core/vendors/altair/modules/thelodge/tests/config/cartridges', //altair/modules is not aliased in tests
-        'altair/plugins/config!core/vendors/altair/modules/thelodge/tests/config/menu'
+        'altair/plugins/config!./configs/cartridges',
+        'altair/plugins/config!./configs/menu'
     ],
     function (doh,
               StateMachine,

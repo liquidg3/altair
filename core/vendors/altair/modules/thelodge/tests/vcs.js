@@ -7,7 +7,7 @@ define(['doh/runner',
         'altair/plugins/node!mkdirp',
         'altair/plugins/node!os',
         'altair/plugins/node!fs',
-        'altair/plugins/config!core/vendors/altair/modules/thelodge/tests/config/cartridges' //altair/modules is not aliased in tests
+        'altair/plugins/config!./configs/cartridges'
     ],
     function (doh,
               StateMachine,

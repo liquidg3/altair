@@ -21,9 +21,8 @@ define(['dojo/_base/declare',
     }
 
 
-    var _HasSchemaMixin = declare('apollo/_HasSchemaMixin', null, {
+    var _HasSchemaMixin = declare(null, {
 
-        schemaPath: 'config/schema.json',
         _schema:    null,
         values:     null,
 

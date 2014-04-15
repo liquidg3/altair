@@ -1,6 +1,6 @@
 define(['doh/runner',
         'core/tests/support/boot',
-        'dojo/Deferred',
+        'altair/Deferred',
         'dojo/has',
         'altair/facades/hitch',
         'altair/facades/mixin'],
@@ -115,9 +115,9 @@ define(['doh/runner',
              */
             function (t) {
 
-                return boot(cartridges).then(function (altair) {
+                return boot.nexus(cartridges).then(function (nexus) {
 
-                    var module = altair.cartridge('altair/cartridges/module/Module').module('altair:Adapters');
+                    var module = nexus('altair:Adapters');
 
                     return module.adapter('adapters/Mock1').then(function (adapter) {
                         t.t( typeof adapter.foo === 'function', 'adapter load failed' );
@@ -148,9 +148,9 @@ define(['doh/runner',
                     }
                 }, _cartridges[2].options);
 
-                return boot(_cartridges).then(function (altair) {
+                return boot.nexus(_cartridges).then(function (nexus) {
 
-                    var module = altair.cartridge('altair/cartridges/module/Module').module('altair:Adapters');
+                    var module = nexus('altair:Adapters');
 
                     var adapter = module.adapter();
 

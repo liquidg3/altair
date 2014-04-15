@@ -171,7 +171,7 @@ define(['dojo/_base/declare',
         elementType: function (key) {
 
             if (!(key in this._elementTypes)) {
-                throw 'No field type of ' + key + ' found in schema.';
+                throw new Error('No field type of ' + key + ' found in schema.');
             }
 
             return this._elementTypes[key];
