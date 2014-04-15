@@ -37,14 +37,16 @@ define(['altair/facades/declare',
             startup: function (options) {
 
                 this._commanders        = {};
-                this._selectedAdapter   = options ? options.adapter : this._selectedAdapter;
 
-                if(!this._selectedAdapter) {
+                var _options = options || this.options;
+
+                //if there is no selected adapter being passed with startup, try our best to detect which one to use
+                if(!options.selectedAdapter) {
 
                     if(!process.stdin.isTTY || !process.stdout.isTTY) {
-                        this._selectedAdapter = 'adapters/Prompt';
+                        this.set('selectedAdapter', 'adapters/Prompt');
                     } else {
-                        this._selectedAdapter = 'adapters/Blessed';
+                        this.set('selectedAdapter', 'adapters/Blessed');
                     }
 
                 }

@@ -1,5 +1,8 @@
 {
     "name": "altair:Adapters",
-    "version": "0.0.1",
-    "description": "Introduces a helpful mixin to implement the adapter pattern into your module."
+    "version": "0.1.0",
+    "description": "Introduces a helpful mixin to implement the adapter pattern into your module.",
+    "altairDependencies": {
+        "altair:Events" : ">=0.1.x"
+    }
 }

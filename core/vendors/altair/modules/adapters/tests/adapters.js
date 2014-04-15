@@ -28,7 +28,7 @@ define(['doh/runner',
                 path: 'altair/cartridges/module/Module',
                 options: {
                     paths: ['core/vendors'],
-                    modules: ['altair:Adapters'],
+                    modules: ['altair:Adapters', 'altair:Events'],
                     plugins: [
                         'altair/cartridges/module/plugins/Nexus',
                         'altair/cartridges/module/plugins/Deferred',
@@ -53,20 +53,16 @@ define(['doh/runner',
              */
             function (t) {
 
-                return boot(cartridges).then(function (altair) {
+                return boot.nexus(cartridges).then(function (nexus) {
 
-                    var module = altair.cartridge('altair/cartridges/module/Module').module('altair:Adapters'),
-                        def    = new Deferred();
+                    var module = nexus('altair:Adapters');
 
-                    module.set('selectedAdapter', 'altair:Adapters::adapters/Mock2');
+                    module.set('selectedAdapter', 'altair:Adapters/adapters/Mock2');
 
                     return module.get('selectedAdapter').then(function (adapter) {
                         t.t(!!adapter, 'selected adapter failed.');
-                        def.resolve(true);
-                    }).otherwise(hitch(def, 'reject'));
+                    });
 
-
-                    return def;
 
                 });
 
@@ -93,9 +89,9 @@ define(['doh/runner',
 
                 runTest: function (t) {
 
-                    return boot(cartridges).then(function (altair) {
+                    return boot.nexus(cartridges).then(function (nexus) {
 
-                        var module = altair.cartridge('altair/cartridges/module/Module').module('altair:Adapters'),
+                        var module = nexus('altair:Adapters'),
                             def = new Deferred();
 
                         module.adapter('adapters/Mock3').then(function (adapter) {
@@ -140,7 +136,7 @@ define(['doh/runner',
              * @param t
              * @returns {*|Promise}
              */
-                function (t) {
+             function (t) {
 
                 var _cartridges = cartridges.slice(0);
 

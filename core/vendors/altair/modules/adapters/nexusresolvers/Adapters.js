@@ -17,8 +17,8 @@ define(['dojo/_base/declare',
     return declare('altair/modules/adapters/nexusresolvers/Adapters', [_ResolverBase], {
 
 
-        nexus: null,
-        adapterCache: null,
+        nexus:          null,
+        adapterCache:   null,
 
         constructor: function (nexus) {
             this.nexus = nexus;
@@ -40,9 +40,9 @@ define(['dojo/_base/declare',
          */
         resolve: function (key, options, config) {
 
-            var parts   = key.split('::'),
-                module  = this.nexus.resolve(parts[0]),
-                adapter = parts[1],
+            var parts   = key.split('/'),
+                module  = this.nexus.resolve(parts.shift()),
+                adapter = parts.join('/'),
                 d       = new Deferred();
 
 
@@ -50,10 +50,8 @@ define(['dojo/_base/declare',
                 d.resolve(this.adapterCache[key]);
 
             } else {
-
-                return module.adapter(adapter);
+                d = module.adapter(adapter);
             }
-
 
             return d;
         },
@@ -65,7 +63,7 @@ define(['dojo/_base/declare',
          * @returns {boolean}
          */
         handles: function (key) {
-            return key.search('::adapters/') > 0;
+            return key.search('/adapters/') > 0;
         }
 
     });
