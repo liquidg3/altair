@@ -1,14 +1,28 @@
 define(['dojo/_base/declare',
-    './_Base'],
+        './_Base',
+        'lodash'],
 
     function (declare,
-              _Base) {
+              _Base,
+              _) {
 
 
 
         return declare([_Base], {
 
-            key: 'int'
+            key: 'integer',
+
+            toJsValue: function (value, options, config) {
+
+                var _value = value;
+
+                //if a value was provided, but it's a string
+                if(_value && !_.isNumber(_value)) {
+                    _value = parseInt(_value, 10);
+                }
+
+                return _value;
+            },
 
         });
     });

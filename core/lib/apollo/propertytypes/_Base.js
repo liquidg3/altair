@@ -93,7 +93,7 @@ define(['dojo/_base/declare',
         constructor: function () {
 
             if(!this.key) {
-                throw new Error('You must set a key for your property type ( ' + this.declaredClass + ' ), something like "text" or "bool" or "email".', 'el');
+                throw new Error('You must set a key for your property type ( ' + this.key + ' ), something like "text" or "bool" or "email".', 'el');
             }
 
             //mixin options with default options
@@ -137,7 +137,7 @@ define(['dojo/_base/declare',
          * @param config
          */
         toJsValue: function (value, options, config) {
-            throw "toJsValue is not yet implemented in " + this.declaredClass + ".";
+            throw "toJsValue is not yet implemented in " + this.key + ".";
         },
 
         /**
