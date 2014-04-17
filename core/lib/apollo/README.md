@@ -36,7 +36,7 @@ By default, you will put this file in ./config/schema.json.
 
 
     {
-        "elements": {
+        "properties": {
 
             "restEndpoint": {
                 "type": "url",

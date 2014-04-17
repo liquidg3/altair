@@ -36,6 +36,16 @@ define([
             throw "Must output str and use whatever options you pass it";
         },
 
+        writeError: function (err) {
+            "use strict";
+            //an error occurred, so lets try our best to start again
+            if(err instanceof Error) {
+                err = err.stack;
+            }
+            console.error(err);
+
+        },
+
         readLine: function(question, options) {
             throw "Must output question, return a deferred, wait for a response, resolve deferred with response. Must take into account options.";
         },

@@ -4,7 +4,7 @@
  * In altair
  *
  * var schema = this.nexus('cartridges/Apollo').createSchema({
- *  'elements' => {
+ *  'properties' => {
  *      'fieldName' => {
  *          'type' => 'string',
  *          'options' => [
@@ -26,7 +26,7 @@ define(['dojo/_base/declare',
     return declare(null, {
 
         _data:           null,
-        _elementTypes:   null,
+        _propertyTypes:   null,
         _optionsByField: null,
         _typeCache:      null,
 
@@ -35,29 +35,29 @@ define(['dojo/_base/declare',
          *
          * @param schema
          */
-        constructor: function (schema, elementTypes) {
+        constructor: function (schema, propertyTypes) {
 
-            if (!schema || !elementTypes) {
+            if (!schema || !propertyTypes) {
                 throw "You must pass a schema literal and an array of apollo/fieldtypes/_Base instances";
             }
 
-            this._elementTypes      = {};
+            this._propertyTypes      = {};
             this._data              = schema;
             this._optionsByField    = {};
             this._typeCache         = {};
 
-            if(!this._data.elements) {
-                this._data.elements = {};
+            if(!this._data.properties) {
+                this._data.properties = {};
             }
 
-            if (elementTypes instanceof Array) {
+            if (propertyTypes instanceof Array) {
 
-                elementTypes.forEach(lang.hitch(this, function (type) {
-                    this._elementTypes[type.key] = type;
+                propertyTypes.forEach(lang.hitch(this, function (type) {
+                    this._propertyTypes[type.key] = type;
                 }));
 
             } else {
-                this._elementTypes = elementTypes;
+                this._propertyTypes = propertyTypes;
             }
 
 
@@ -66,45 +66,45 @@ define(['dojo/_base/declare',
         /**
          * Does a schema have a field by this name?
          *
-         * @param elementName
+         * @param propertyName
          * @returns {boolean}
          */
-        has: function (elementName) {
+        has: function (propertyName) {
 
-            return (this._data.elements.hasOwnProperty(elementName));
+            return (this._data.properties.hasOwnProperty(propertyName));
         },
 
         /**
-         * Tells you the type of a particular element (firstName would return string)
+         * Tells you the type of a particular property (firstName would return string)
          *
-         * @param elementName
+         * @param propertyName
          * @returns {string}
          */
-        typeFor: function (elementName) {
-            return this._data.elements[elementName].type;
+        typeFor: function (propertyName) {
+            return this._data.properties[propertyName].type;
         },
 
-        setOptionFor: function (elementName, optionName, optionValue) {
-            this._data.elements[elementName].options[optionName] = optionValue;
+        setOptionFor: function (propertyName, optionName, optionValue) {
+            this._data.properties[propertyName].options[optionName] = optionValue;
             return this;
         },
 
         /**
          * Get you all the options for this field mixed in with all options for the field type.
          *
-         * @param elementName
+         * @param propertyName
          * @param mixinAll optional
          * @returns {string} all options for that field type
          */
-        optionsFor: function (elementName, mixinAll) {
+        optionsFor: function (propertyName, mixinAll) {
 
-            if (elementName in this._data.elements) {
+            if (propertyName in this._data.properties) {
 
-                var element = this._data.elements[elementName],
-                    options = element.options;
+                var property = this._data.properties[propertyName],
+                    options = property.options;
 
                 if (!options) {
-                    throw elementName + " has no options. add it to your schema";
+                    throw propertyName + " has no options. add it to your schema";
                 }
 
                 //if we are doing a simple (lightweight) get of options
@@ -112,111 +112,111 @@ define(['dojo/_base/declare',
                     return options;
                 }
 
-                if (!this._optionsByField[elementName]) {
+                if (!this._optionsByField[propertyName]) {
 
-                    var type = this.elementType(element.type);
-                    this._optionsByField[elementName] = type.normalizeOptions(options);
+                    var type = this.propertyType(property.type);
+                    this._optionsByField[propertyName] = type.normalizeOptions(options);
 
                 }
 
 
             } else {
 
-                throw elementName + ' does not exist on ' + this.declaredClass;
+                throw propertyName + ' does not exist on ' + this.declaredClass;
             }
 
-            return this._optionsByField[elementName];
+            return this._optionsByField[propertyName];
 
         },
 
 
         /**
-         * All the elements on this schema
+         * All the properties on this schema
          *
          * @returns {};
          */
-        elements: function () {
-            return this._data.elements;
+        properties: function () {
+            return this._data.properties;
         },
 
         /**
-         * Gets all elements in this schema, but returns an array
+         * Gets all properties in this schema, but returns an array
          *
          * @returns {Array}
          */
-        elementsAsArray: function () {
+        propertiesAsArray: function () {
 
-            var elements = [];
+            var properties = [];
 
-            Object.keys(this._data.elements).forEach(lang.hitch(this, function (name) {
+            Object.keys(this._data.properties).forEach(lang.hitch(this, function (name) {
 
-                var element = lang.mixin({}, this._data.elements[name], {
+                var property = lang.mixin({}, this._data.properties[name], {
                     name: name
                 });
 
-                elements.push(element);
+                properties.push(property);
 
             }));
 
-            return elements;
+            return properties;
 
         },
 
         /**
-         * Returns you a elementtype by a particular key, e.g. string, email, bool
+         * Returns you a propertytype by a particular key, e.g. string, email, bool
          *
          * @param key
          * @returns {*}
          */
-        elementType: function (key) {
+        propertyType: function (key) {
 
-            if (!(key in this._elementTypes)) {
-                throw new Error('No field type of ' + key + ' found in schema.');
+            if (!(key in this._propertyTypes)) {
+                throw new Error('No property type of ' + key + ' found in schema.');
             }
 
-            return this._elementTypes[key];
+            return this._propertyTypes[key];
 
         },
 
         /**
-         * Tries all the methods passed on the element elementType, first one wins.
+         * Tries all the methods passed on the property propertyType, first one wins.
          *
          * Example:
          *
-         *  schema.applyOnElement(['toSolrValue', 'toStringValue'], 'firstName', 'Taylo®™', { maxLength: 35 }
+         *  schema.applyOnProperty(['toSolrValue', 'toStringValue'], 'firstName', 'Taylo®™', { maxLength: 35 }
          *
          * @param named
          * @returns {*}
          */
-        applyOnElement: function (methodNames, elementName, value, options, config) {
+        applyOnProperty: function (methodNames, propertyName, value, options, config) {
 
             //by convention, these are null and will not be casted
             if (value === null || value === undefined) {
                 return null;
             }
 
-            var element = this._data.elements[elementName],
-                type = element.type,
-                elementType = this.elementType(type),
+            var property = this._data.properties[propertyName],
+                type = property.type,
+                propertyType = this.propertyType(type),
                 c,
                 methodName;
 
 
             //normalize options
-            options = lang.mixin({}, this.optionsFor(elementName), options || {});
+            options = lang.mixin({}, this.optionsFor(propertyName), options || {});
 
             //normalize for many
-            value = elementType.normalizeMany(value, options, config);
+            value = propertyType.normalizeMany(value, options, config);
 
 
             for (c = 0; c < methodNames.length; c++) {
 
                 methodName = methodNames[c];
 
-                if (methodName in elementType) {
+                if (methodName in propertyType) {
 
                     //make sure it's not an array when {{methodName}} is called
-                    if (elementType.makeValuesSingular) {
+                    if (propertyType.makeValuesSingular) {
 
                         var wasArray = false;
 
@@ -233,7 +233,7 @@ define(['dojo/_base/declare',
                         var finalValue = [];
 
                         value.forEach(function (_value) {
-                            finalValue.push(elementType[methodName](_value, options, config));
+                            finalValue.push(propertyType[methodName](_value, options, config));
                         });
 
                         return wasArray ? finalValue : finalValue[0];
@@ -242,7 +242,7 @@ define(['dojo/_base/declare',
                     //we want the raw value passed to method name
                     else {
 
-                        return elementType[methodName](value, options, config);
+                        return propertyType[methodName](value, options, config);
 
                     }
 
@@ -251,12 +251,12 @@ define(['dojo/_base/declare',
             }
 
 
-            throw 'Could not find methods on element named ' + elementName + '.';
+            throw 'Could not find methods (' + methods.join(', ') + ') for property named ' + propertyName + '.';
 
         },
 
         /**
-         * Add a new element to this schema.
+         * Add a new property to this schema.
          *
          * @param name
          * @param type
@@ -264,7 +264,7 @@ define(['dojo/_base/declare',
          */
         append: function (name, type, options) {
             
-            this._data.elements[name] = {
+            this._data.properties[name] = {
                 type:       type,
                 options:    options
             };

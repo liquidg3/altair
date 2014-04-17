@@ -3,11 +3,11 @@
  */
 define(['doh/runner',
         'apollo/Apollo',
-        'apollo/elementtypes/Str',
-        'apollo/elementtypes/Bool',
-        'apollo/elementtypes/Float',
-        'apollo/elementtypes/Int',
-        'apollo/elementtypes/Date'],
+        'apollo/propertytypes/Str',
+        'apollo/propertytypes/Bool',
+        'apollo/propertytypes/Float',
+        'apollo/propertytypes/Int',
+        'apollo/propertytypes/Date'],
 
     function (doh,
               Apollo,
@@ -23,7 +23,7 @@ define(['doh/runner',
     var schemaData = {
         name: 'my test user schema',
         foo:  'bar',
-        elements: {
+        properties: {
 
             dateInserted: {
                 type: 'date',

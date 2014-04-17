@@ -1,5 +1,5 @@
 define(['dojo/_base/declare',
-        'apollo/elementtypes/_Base'],
+        'apollo/propertytypes/_Base'],
 
     function (declare,
               _Base) {
@@ -14,7 +14,7 @@ define(['dojo/_base/declare',
                 this.nexus = nexus;
 
                 if(!this.nexus) {
-                     throw new Error('Please pass nexus to the Nexus element type constructor.');
+                     throw new Error('Please pass nexus to the Nexus property type constructor.');
                 }
 
             },

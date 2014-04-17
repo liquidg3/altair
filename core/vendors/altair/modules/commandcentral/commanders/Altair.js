@@ -62,13 +62,8 @@ define(['altair/facades/declare',
                         state: this.startState
                     }).otherwise(hitch(this, function (err) {
 
-                        //an error occurred, so lets try our best to start again
-                        if(err instanceof Error) {
-                            err = err.message;
-                        }
-
                         //write the error to the console
-                        this.writeLine(err, 'error');
+                        this.writeError(err.error);
 
                         //jump to my best guess of what to do now (jump to last state on error, or first state if all else fails)
                         this.startState = this.sm.state && this.sm.previousState(this.sm.state) ? this.sm.previousState(this.sm.state) : this.sm.states[0];

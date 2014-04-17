@@ -4,8 +4,8 @@
 define(['doh/runner',
         'apollo/Schema',
         'apollo/tests/mock/Entity',
-        'apollo/elementtypes/Str',
-        'apollo/elementtypes/Bool'],
+        'apollo/propertytypes/Str',
+        'apollo/propertytypes/Bool'],
 
     function (doh,
               Schema,
@@ -19,7 +19,7 @@ define(['doh/runner',
         var schemaLiteral = {
             name: 'my test user schema',
             foo:  'bar',
-            elements: {
+            properties: {
 
                 firstName: {
                     type: 'string',

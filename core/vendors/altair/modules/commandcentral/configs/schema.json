@@ -1,9 +1,9 @@
 {
-    "elements": {
+    "properties": {
         "autostart":       {
             "type":    "bool",
             "options": {
-                "defaultValue": true,
+                "default": true,
                 "label": "Autostart"
             }
         }

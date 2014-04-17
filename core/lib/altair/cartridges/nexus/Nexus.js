@@ -13,7 +13,7 @@ define(['dojo/_base/declare',
         'dojo/_base/lang',
         '../_Base',
         './resolvers/Cartridge',
-        './elementtypes/Nexus'],
+        './propertytypes/Nexus'],
                 function (declare,
                           lang,
                           _Base,
@@ -76,7 +76,7 @@ define(['dojo/_base/declare',
 
         /**
          * Setup the Cartridge resolver so people can access all cartridges using nexus('cartridges/{*}') and also
-         * add awesome element type to apollo
+         * add awesome property type to apollo
          */
         execute: function () {
 
@@ -84,7 +84,7 @@ define(['dojo/_base/declare',
             var resolver = new CartridgeResolver(this);
             this.addResolver(resolver);
 
-            //create and add the element type
+            //create and add the property type
             var apolloCartridge = this.resolve('cartridges/Apollo');
             if(apolloCartridge) {
 

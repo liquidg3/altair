@@ -77,15 +77,15 @@ define(['altair/facades/declare',
         },
 
         /**
-         * Render a complex form of elements, use apollo schema flavor
+         * Render a complex form of properties, use apollo schema flavor
          *
          * @param elements
          * @param options
          * @returns altair.Deferred
          */
-        form: function(elementsOrSchema, options) {
+        form: function(propertiesOrSchema, options) {
 
-            var apolloSchema = this.module.nexus('cartridges/Apollo').createSchema(elementsOrSchema);
+            var apolloSchema = this.module.nexus('cartridges/Apollo').createSchema(propertiesOrSchema);
 
             return this.adapter.form(apolloSchema, options);
         },
@@ -97,12 +97,12 @@ define(['altair/facades/declare',
          */
         schemaForCommand: function (named) {
 
-            var elements = this.options.commands[named].schema;
+            var properties = this.options.commands[named].schema;
 
-            if(elements) {
+            if(properties) {
 
                 return this.nexus('cartridges/Apollo').createSchema({
-                   elements: elements
+                    properties: properties
                 });
 
             }
@@ -117,7 +117,7 @@ define(['altair/facades/declare',
 
 
     //mix certain adapter methods into the commander for easy access
-    methods = ['notice', 'writeLine', 'readLine', 'select', 'showProgress', 'hideProgress', 'splash'];
+    methods = ['notice', 'writeLine', 'writeError', 'readLine', 'select', 'showProgress', 'hideProgress', 'splash'];
     sig     = {};
 
     methods.forEach(function (method) {

@@ -114,7 +114,7 @@ define(['dojo/_base/declare',
                 this.values[name] = value;
 
             } else {
-                throw "No element called '" + name + "' exists on this " + this.declaredClass;
+                throw "No property called '" + name + "' exists on this " + this.declaredClass;
 
             }
 
@@ -133,7 +133,7 @@ define(['dojo/_base/declare',
          */
         _get: function (name, defaultValue, options, config) {
 
-            var value = this._schema.applyOnElement(['toJsValue'], name, this.values[name], options, config);
+            var value = this._schema.applyOnProperty(['toJsValue'], name, this.values[name], options, config);
 
             if( value === null || value === undefined ) {
                 value = defaultValue;
@@ -157,16 +157,16 @@ define(['dojo/_base/declare',
                 this.values = {};
             }
 
-            var elements    = schema.elements();
+            var properties    = schema.properties();
 
-            Object.keys(elements).forEach(lang.hitch(this, function (name) {
+            Object.keys(properties).forEach(lang.hitch(this, function (name) {
 
                 //only set values on ourselves that do not already exist
-                //this is to ensure that values has a key for every element in the schema
+                //this is to ensure that values has a key for every property in the schema
                 if( !( this.values.hasOwnProperty(name) ) ) {
 
-                    this.values[name] = '';//so the .set doesn't give us "element does not exist"
-                    this.set(name, schema.optionsFor(name, false).defaultValue || null);
+                    this.values[name] = '';//so the .set doesn't give us "property does not exist"
+                    this.set(name, schema.optionsFor(name, false).default || null);
 
                 }
 

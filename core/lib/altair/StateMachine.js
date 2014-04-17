@@ -121,7 +121,12 @@ define(['altair/facades/declare',
                     this.transitionTo(lastResponse[0], lastResponse[1], options).then(function (response) {
                         lastResponse = response;
                         fire();
-                    }).otherwise(hitch(d, 'reject'));
+                    }).otherwise(hitch(this, function (err) {
+                        d.reject({
+                            error: err,
+                            state: state
+                        });
+                    }));
 
                 });
 

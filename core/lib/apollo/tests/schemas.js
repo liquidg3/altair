@@ -3,8 +3,8 @@
  */
 define(['doh/runner',
         'apollo/Schema',
-        'apollo/elementtypes/Str',
-        'apollo/elementtypes/Bool'],
+        'apollo/propertytypes/Str',
+        'apollo/propertytypes/Bool'],
 
     function (doh,
               Schema,
@@ -17,7 +17,7 @@ define(['doh/runner',
         var schemaLiteral = {
             name: 'my test user schema',
             foo:  'bar',
-            elements: {
+            properties: {
 
                 firstName: {
                     type: 'string',
@@ -47,7 +47,7 @@ define(['doh/runner',
 
                 var schema = new Schema(schemaLiteral, fieldTypes);
 
-                doh.assertTrue('string' in schema._elementTypes, 'String field not added to fieldtypes of schema.');
+                doh.assertTrue('string' in schema._propertyTypes, 'String field not added to fieldtypes of schema.');
 
             },
 

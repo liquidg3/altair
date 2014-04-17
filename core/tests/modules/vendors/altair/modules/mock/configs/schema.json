@@ -4,7 +4,7 @@
             "type": "string",
             "options": {
                 "label": "Foo",
-                "defaultValue": "bar"
+                "default": "bar"
             }
         },
         "email": {

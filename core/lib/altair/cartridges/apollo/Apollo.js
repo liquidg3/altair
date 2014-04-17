@@ -33,18 +33,18 @@ define(['dojo/_base/declare',
                 var _options = options || this.options;
 
                 //do they pass the fieldtypes they want loaded?
-                if( !_options.hasOwnProperty('elementTypes') ) {
+                if( !_options.hasOwnProperty('propertyTypes') ) {
 
                 //} else { //jsLint complains about the empty if block, flip it and use this else when you want to do some logic here.
 
                     //the base fieldtypes i think we need to get altair to work
-                    _options.elementTypes = [
-                        'apollo/elementTypes/Str',
-                        'apollo/elementTypes/Bool',
-                        'apollo/elementTypes/Int',
-                        'apollo/elementTypes/Float',
-                        'apollo/elementTypes/Date',
-                        'apollo/elementTypes/Select'
+                    _options.propertyTypes = [
+                        'apollo/propertytypes/Str',
+                        'apollo/propertytypes/Bool',
+                        'apollo/propertytypes/Int',
+                        'apollo/propertytypes/Float',
+                        'apollo/propertytypes/Date',
+                        'apollo/propertytypes/Select'
                     ];
 
                 }
@@ -52,7 +52,7 @@ define(['dojo/_base/declare',
                 this.deferred   = new Deferred();
                 this.apollo     = new Apollo();
 
-                require( _options.elementTypes, lang.hitch(this, function () {
+                require( _options.propertyTypes, lang.hitch(this, function () {
 
                     var types = Array.prototype.slice.call(arguments),
                         i,
@@ -84,11 +84,11 @@ define(['dojo/_base/declare',
                     return data;
                 }
 
-                //if they did not pass something with "elements", assume they meant to and that they passed
-                //an object where the keys are the element names and everything else is as expected
-                if(!data.hasOwnProperty('elements')) {
+                //if they did not pass something with "properties", assume they meant to and that they passed
+                //an object where the keys are the property names and everything else is as expected
+                if(!data.hasOwnProperty('properties')) {
                     data = {
-                        elements: data
+                        properties: data
                     };
                 }
 

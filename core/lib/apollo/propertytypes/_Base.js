@@ -61,7 +61,7 @@ define(['dojo/_base/declare',
                 type: 'bool',
                 options: {
                     label:          'Many',
-                    description:    'Whether this element should allow more than one value to be attached to it.',
+                    description:    'Whether this property should allow more than one value to be attached to it.',
                     defaultValue:   false
                 }
             },
@@ -78,7 +78,7 @@ define(['dojo/_base/declare',
                 type: 'number',
                 options: {
                     label: 'Minimum Values',
-                    description: 'The minimum amount of values this element can have. Used for validation.'
+                    description: 'The minimum amount of values this property can have. Used for validation.'
                 }
             }
 
@@ -93,7 +93,7 @@ define(['dojo/_base/declare',
         constructor: function () {
 
             if(!this.key) {
-                throw new Error('You must set a key for your element type ( ' + this.declaredClass + ' ), something like "text" or "bool" or "email".', 'el');
+                throw new Error('You must set a key for your property type ( ' + this.declaredClass + ' ), something like "text" or "bool" or "email".', 'el');
             }
 
             //mixin options with default options
