@@ -6,7 +6,7 @@ define(['dojo/_base/declare',
 
     return declare([_Base], {
 
-        key: 'bool',
+        key: 'boolean',
 
         /**
          * Anything truthy to an actual boolean.
@@ -15,8 +15,7 @@ define(['dojo/_base/declare',
          * @param config
          */
         toJsValue: function (value, options, config) {
-
-            return value ? true : false;
+            return !!value ? true : false;
         }
 
 

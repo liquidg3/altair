@@ -228,7 +228,7 @@ define(['altair/facades/declare',
                 d           = new this.Deferred(),
                 done        = function (values) {
                     results = commander[command](values);
-                    if (results.then) {
+                    if (results && results.then) {
                         results.then(hitch(d, 'resolve')).otherwise(hitch(d, 'reject'));
                     } else {
                         d.resolve(results);

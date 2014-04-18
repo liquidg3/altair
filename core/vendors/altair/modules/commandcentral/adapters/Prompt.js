@@ -263,7 +263,7 @@ define(['altair/facades/declare',
 
             var d       = new this.Deferred(),
                 values  = {},
-                elements= schema.propties(),
+                elements= schema.properties(),
                 keys    = Object.keys(elements),
                 total   = keys.length,
                 next    = hitch(this, function (index) {
