@@ -18,6 +18,11 @@ about Altair, having at least some familiarity with these terms will make life e
 - If mixes in Lifecycle; .startup() is executed on each module, sorted by dependency, right after the Module Cartridge is started
 - If mixes in Lifecycle; .execute() is excuted right after startup() on each module
 
+## Subcomponent
+- Any AMD module, mixin, plugin, or facade that lives inside of your module
+- A great example would be an adapter (when using _HasAdaptersMixin)
+-
+
 ## Lifecycle
 - An object with 3 states, startup, execute, teardown
 - Execute may be called many times
