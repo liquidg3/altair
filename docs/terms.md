@@ -21,7 +21,7 @@ about Altair, having at least some familiarity with these terms will make life e
 ## Subcomponent
 - Any AMD module, mixin, plugin, or facade that lives inside of your module
 - A great example would be an adapter (when using _HasAdaptersMixin)
--
+- Almost everything you create with the foundry() extension would be considered a subcomponent
 
 ## Lifecycle
 - An object with 3 states, startup, execute, teardown

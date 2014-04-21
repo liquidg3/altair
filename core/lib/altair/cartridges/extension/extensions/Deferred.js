@@ -30,7 +30,7 @@ define(['altair/facades/declare',
     function (declare,
               _Base,
               Deferred,
-              lang) {
+              hitch) {
 
     return declare([_Base], {
 

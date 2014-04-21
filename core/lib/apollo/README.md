@@ -44,7 +44,7 @@ By default, you will put this file in ./config/schema.json.
                     "required":     true,
                     "label":        "Rest Endpoint",
                     "secure":       true,
-                    "value":        "defaultvalue.com",
+                    "default":      "defaultvalue.com",
                     "description":  "Enter in the URL of wherever we're connecting."
                 }
             },

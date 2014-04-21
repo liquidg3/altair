@@ -1,14 +1,14 @@
-# Module Plugins
-The module plugin feature is provided by the [Module Cartridge](../core/lib/altair/cartridges/module/README.md) A plugin
-is an object that inherits altair/cartridges/module/plugins/_Base and whose execute method receives every module that
-is added to the system. At that point, the plugin can safely mixin additional functions to every module.
+# Extensions
+The extension system is provided by the [Extension Cartridge](../core/lib/altair/cartridges/extension/README.md)
+An extension is an AMD module that inherits altair/cartridges/extension/extensions/_Base and whose execute method receives every
+module/subcomponent that is added to the system.
 
-
-## Current Plugins
-Below are the plugins that come with Altair and the methods they mixin.
+## Current Extension
+Below are some extensions that come with Altair and the methods they mixin.
 
 ### Foundry
-Allows you to create instance of classes by their nexus path.
+Allows you to create instance of classes by their nexus path. Everything created through the Foundry extension is
+extended through the Extension system.
 
     this.foundry('path/to/Class').then(function (obj) {
 
@@ -36,10 +36,6 @@ Allows you to create instance of classes by their nexus path.
         console.log(err);
     });
 
-### Deferred
-
-    //easy access to altair/Deferred
-    var d = new this.Deferred();
 
 ### Apollo
 

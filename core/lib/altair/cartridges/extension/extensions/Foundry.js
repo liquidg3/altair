@@ -21,20 +21,23 @@ define(['altair/facades/declare',
         'altair/Deferred',
         'apollo/_HasSchemaMixin',
         'apollo/Schema',
-        'altair/plugins/node!fs'
+        'altair/plugins/node!fs',
+        'altair/plugins/node!path'
 ], function (declare,
              _Base,
              hitch,
              Deferred,
              _HasSchemaMixin,
              Schema,
-             fs) {
+             fs,
+             pathUtil) {
 
     var defaultCallback = function (Class, options) {
 
         var a = new Class(options);
 
         return a;
+
     };
 
     return declare([_Base], {
@@ -42,7 +45,7 @@ define(['altair/facades/declare',
         name: 'foundry',
         execute: function (module) {
 
-
+            //mixin our extensions
             declare.safeMixin(module, {
 
                 foundry: function (className, options, instantiationCallback) {
@@ -67,8 +70,10 @@ define(['altair/facades/declare',
 
                     }
 
+                    //the path to the class
                     path = parent.resolvePath(className + '.js');
 
+                    //does this file exist?
                     fs.exists(path, hitch(this, function (exists) {
 
                         if(!exists) {
@@ -77,47 +82,26 @@ define(['altair/facades/declare',
 
                             require([path], hitch(this, function (Child) {
 
-                                var a   = instantiationCallback(Child, options),
-                                    schema
+                                var a       = instantiationCallback(Child, options);
 
-                                a.name      = this.name + '::' + className;
-                                a.module    = this;
-                                a._nexus    = this._nexus;
+                                //setup basics
+                                a.name      = parent.name + '::' + className;
+                                a.module    = parent;
+                                a.dir       = pathUtil.dirname(path);
+                                a._nexus    = parent._nexus;
 
-                                declare.safeMixin(a, {
-                                    nexus: function (key ,options, config) {
-                                        return this._nexus.resolve(key, options, config);
-                                    },
-                                    on: function() {
-                                        return this.module.on.apply(this.module, arguments);
-                                    },
-                                    emit: function() {
-                                        return this.module.emit.apply(this.module, arguments);
-                                    }
-                                });
+                                //extend this object
+                                this.nexus('cartridges/Extension').extend(a).then(hitch(this, function () {
 
-                                //is there a schema?
-                                if(a.isInstanceOf(_HasSchemaMixin) && a._schema) {
-
-                                    if(!a._schema || !a._schema.isInstanceOf(Schema)) {
-
-                                        schema = this._nexus.resolve('cartridges/Apollo').createSchema(a._schema);
-                                        a.setSchema(schema);
-                                        delete a.schema;
-
+                                    //startup the module
+                                    if(a.startup) {
+                                        a.startup(options).then(hitch(d, 'resolve')).otherwise(hitch(d, 'reject'));
+                                    } else {
+                                        d.resolve(a);
                                     }
 
-                                    if(options) {
-                                        a.mixin(options);
-                                    }
-                                }
+                                }));
 
-                                //startup the module
-                                if(a.startup) {
-                                    a.startup(options).then(hitch(d, 'resolve')).otherwise(hitch(d, 'reject'));
-                                } else {
-                                    d.resolve(a);
-                                }
 
                             }));
 
@@ -125,7 +109,6 @@ define(['altair/facades/declare',
 
 
                     }));
-
 
 
                     return d;
