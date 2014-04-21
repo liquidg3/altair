@@ -33,7 +33,7 @@ define(['dojo/_base/declare',
 
     return declare([_Base], {
 
-        declaredClass: 'altair/cartridges/cache/Cache',
+        name: 'cache',
 
         plugin: null,
 

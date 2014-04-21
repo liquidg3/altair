@@ -6,10 +6,11 @@ define(['dojo/_base/declare',
 
 function (declare, _Base) {
 
-    return declare('altair/cartridges/Mock', [_Base], {
+    return declare([_Base], {
 
         startedUp: false,
         tornDown: false,
+        name: 'mock',
 
         startup: function (options) {
             this.startedUp = true;
@@ -17,7 +18,7 @@ function (declare, _Base) {
         },
 
         execute: function(){
-
+            return this.inherited(arguments);
         },
 
         teardown: function () {

@@ -19,6 +19,22 @@
                 }
             },
             {
+                "path": "altair/cartridges/extension/Extension",
+                "options": {
+                    "extensions": [
+                        "altair/cartridges/extension/extensions/Paths",
+                        "altair/cartridges/extension/extensions/Config",
+                        "altair/cartridges/extension/extensions/Package",
+                        "altair/cartridges/extension/extensions/Deferred",
+                        "altair/cartridges/extension/extensions/Apollo",
+                        "altair/cartridges/extension/extensions/Nexus",
+                        "altair/cartridges/extension/extensions/Events",
+                        "altair/cartridges/extension/extensions/Foundry",
+                        "altair/cartridges/extension/extensions/Log"
+                    ]
+                }
+            },
+            {
                 "path": "altair/cartridges/module/Module",
                 "options": { "$ref": "./modules.json" }
             }

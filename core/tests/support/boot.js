@@ -1,7 +1,5 @@
 /**
  * Boots you an instance of altair for testing purposes.
- *
- *
  */
 define(['altair/Deferred',
         'altair/facades/hitch',
@@ -12,10 +10,10 @@ define(['altair/Deferred',
               Foundry,
               Altair) {
 
-        var boot = function (cartridges) {
+        var boot = function (cartridges, altairOptions) {
 
             var deferred    = new Deferred(),
-                altair      = new Altair(),
+                altair      = new Altair(altairOptions || {}),
                 foundry     = new Foundry(altair);
 
             foundry.build(cartridges || boot.cartridges).then(function (cartridges) {
@@ -32,20 +30,19 @@ define(['altair/Deferred',
         };
 
         boot.nexus = function (cartridges) {
-            var d = new Deferred();
-            boot(cartridges).then(function (altair) {
 
-                var n = altair.cartridge('altair/cartridges/nexus/Nexus');
+            return boot(cartridges).then(function (altair) {
+
+                var n = altair.cartridge('nexus');
 
                 if(!n) {
-                    d.reject(new Error('tests/support/boot.js has to be configured with the Nexus cartridge for boot.nexus to work.'));
+                    throw new Error('tests/support/boot.js has to be configured with the Nexus cartridge for boot.nexus to work.');
                 } else {
-                    d.resolve(hitch(n, n.resolve));
+                    return hitch(n, n.resolve);
                 }
 
-            }).otherwise(hitch(d, 'reject'));
+            });
 
-            return d;
         };
 
 
@@ -57,15 +54,19 @@ define(['altair/Deferred',
                 }
             },
             {
+                path: 'altair/cartridges/extension/Extension',
+                options: {
+                    extensions: ['altair/cartridges/extension/extensions/Nexus', 'altair/cartridges/extension/extensions/Events']
+                }
+            },
+            {
                 path: 'altair/cartridges/module/Module',
                 options: {
                     paths: ['core/tests/modules/vendors', 'core/vendors'],
                     modules: ['altair:MockWithEvents', 'altair:MockWithEvents2', 'altair:Events'],
-                    plugins: ['altair/cartridges/module/plugins/Nexus', 'altair/cartridges/module/plugins/Events']
                 }
             }
         ];
-
 
 
         return boot;

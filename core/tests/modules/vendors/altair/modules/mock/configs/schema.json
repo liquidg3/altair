@@ -1,5 +1,5 @@
 {
-    "elements": {
+    "properties": {
         "foo": {
             "type": "string",
             "options": {

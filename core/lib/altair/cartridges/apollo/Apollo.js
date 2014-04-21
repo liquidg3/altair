@@ -1,7 +1,7 @@
 /**
  * Sets up Apollo for altair. We also add our self to the Nexus cartridge if it's enabled
  */
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         'dojo/_base/lang',
         '../_Base',
         'dojo/Deferred',
@@ -20,8 +20,7 @@ define(['dojo/_base/declare',
 
         return declare([_Base], {
 
-            declaredClass: 'altair/cartridges/apollo/Apollo',
-
+            name:   'apollo',
             apollo: null,
 
             /**
@@ -30,6 +29,7 @@ define(['dojo/_base/declare',
              * @returns {*}
              */
             startup: function (options) {
+
                 var _options = options || this.options;
 
                 //do they pass the fieldtypes they want loaded?

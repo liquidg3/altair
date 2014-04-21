@@ -18,6 +18,7 @@ define(['dojo/_base/declare',
 
         _cartridges:    null,
         env:            'dev',
+        paths:          null,
 
         constructor: function (options) {
 
@@ -37,15 +38,13 @@ define(['dojo/_base/declare',
          */
         addCartridge: function (cartidge) {
 
-            var deferred = new Deferred();
 
-            this._cartridges[cartidge.declaredClass] = cartidge;
+            this._cartridges[cartidge.name] = cartidge;
 
-            cartidge.startup().then(function (cartridge) {
-                cartridge.execute().then(lang.hitch(deferred, 'resolve')).otherwise(lang.hitch(deferred, 'reject'));
-            }).otherwise(lang.hitch(deferred, 'reject'));
+            return cartidge.startup().then(function (cartridge) {
+                return cartridge.execute();
+            });
 
-            return deferred;
 
         },
 
@@ -55,18 +54,18 @@ define(['dojo/_base/declare',
          * @param key
          * @returns dojo/Deferred
          */
-        removeCartridge: function (declaredClass) {
+        removeCartridge: function (name) {
 
-            var def = this.cartridge(declaredClass).teardown();
+            var def = this.cartridge(name).teardown();
 
-            delete this._cartridges[declaredClass];
+            delete this._cartridges[name];
 
             return def;
 
         },
 
         /**
-         * All the cartridges by declaredClass.
+         * All the cartridges by name.
          *
          * @returns {object}
          */
@@ -80,32 +79,32 @@ define(['dojo/_base/declare',
          * @param key
          * @returns {*|null}
          */
-        cartridge: function (declaredClass) {
-            return this._cartridges[declaredClass] || null;
+        cartridge: function (name) {
+            return this._cartridges[name] || null;
         },
 
         /**
          * Is this cartridge loaded?
          *
-         * @param declaredClass
+         * @param name
          * @returns {boolean}
          */
-        hasCartridge: function (declaredClass) {
-            return !!this._cartridges[declaredClass];
+        hasCartridge: function (name) {
+            return !!this._cartridges[name];
         },
 
         /**
          * Quick check if all the cartridges are loaded. If any single one is missing,
          * it returns false.
          *
-         * @param declaredClasses
+         * @param namees
          * @returns {boolean}
          */
-        hasCartridges: function (declaredClasses) {
+        hasCartridges: function (namees) {
             var i;
 
-            for(i = 0; i < declaredClasses.length; i++) {
-                if(!this.hasCartridge(declaredClasses[i])) {
+            for(i = 0; i < namees.length; i++) {
+                if(!this.hasCartridge(namees[i])) {
                     return false;
                 }
             }

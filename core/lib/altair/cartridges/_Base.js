@@ -1,4 +1,4 @@
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         'altair/Lifecycle'],
 
     function (declare,
@@ -6,21 +6,21 @@ define(['dojo/_base/declare',
 
     return declare([Lifecycle], {
 
-        altair: null,
-        options: null,
-        declaredClass: false,
+        altair:     null,
+        options:    null,
+        name:       false,
 
         constructor: function (altair, options) {
 
-            this.altair = altair;
-            this.options = options || {};
+            this.altair     = altair;
+            this.options    = options || {};
 
-            if(!this.declaredClass) {
-                throw new Error('Your cartridge must define a declaredClass');
+            if(!this.name) {
+                throw new Error('Your cartridge must define a name');
             }
 
             if(!altair) {
-                throw "You must pass an instance of Altair to any cartridge";
+                throw new Error("You must pass an instance of Altair to any cartridge");
             }
 
         }

@@ -1,15 +1,4 @@
 {
-    "plugins": [
-        "altair/cartridges/module/plugins/Paths",
-        "altair/cartridges/module/plugins/Config",
-        "altair/cartridges/module/plugins/Package",
-        "altair/cartridges/module/plugins/Deferred",
-        "altair/cartridges/module/plugins/Apollo",
-        "altair/cartridges/module/plugins/Nexus",
-        "altair/cartridges/module/plugins/Events",
-        "altair/cartridges/module/plugins/Foundry",
-        "altair/cartridges/module/plugins/Log"
-    ],
     "modules": "*",
     "moduleOptions": {
         "altair:CommandCentral": {

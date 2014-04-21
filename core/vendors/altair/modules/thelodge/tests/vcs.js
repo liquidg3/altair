@@ -26,7 +26,8 @@ define(['doh/runner',
                 type:   'git',
                 url:    'git@github.com:liquidg3/altair-test-clone.git'
             },
-            destination = os.tmpdir() + 'thelodge';
+            destination = os.tmpdir() + 'thelodge',
+            git;
 
         doh.register('thelodge.vcs',[
 
@@ -38,26 +39,22 @@ define(['doh/runner',
                 },
                 runTest: function (t) {
 
-                    var d = new Deferred();
 
-                    boot.nexus(cartridges).then(function (nexus) {
+                    return boot.nexus(cartridges).then(function (nexus) {
 
-                        nexus('Altair:TheLodge').vcs(testRepo.type).then(function (git) {
+                        return nexus('Altair:TheLodge').vcs(testRepo.type);
 
-                            git.clone({
-                                url:            testRepo.url,
-                                destination:    destination
-                            }).then(function(results) {
-                                t.is(results, destination, 'checkout failed');
-                                d.resolve();
-                            }).otherwise(hitch(d, 'reject'));
+                    }).then(function (git) {
 
+                        return git.clone({
+                            url:            testRepo.url,
+                            destination:    destination
                         });
 
+                    }).then(function(results) {
+                        t.is(results, destination, 'checkout failed');
+                    });
 
-                    }).otherwise(hitch(d, 'reject'));
-
-                    return d;
                 }
             },
 
@@ -69,34 +66,36 @@ define(['doh/runner',
                 },
                 runTest: function (t) {
 
-                    var d = new Deferred();
+                    return boot.nexus(cartridges).then(function (nexus) {
 
-                    boot.nexus(cartridges).then(function (nexus) {
+                        return nexus('Altair:TheLodge').vcs(testRepo.type);
 
-                        nexus('Altair:TheLodge').vcs(testRepo.type).then(function (git) {
+                    }).then(function (_git) {
 
-                            git.clone({
-                                url:            testRepo.url,
-                                destination:    destination,
-                                version:        '0.0.2'
-                            }).then(function(results) {
+                        //pass git up
+                        git = _git;
 
-                                t.is(results, destination, 'clone failed');
-
-                                fs.readFile(results + '/package.json', function (err, contents) {
-                                    var config = JSON.parse(contents.toString());
-                                    t.is(config.version, '0.0.2', 'version failed');
-                                    d.resolve();
-                                });
-
-                            }).otherwise(hitch(d, 'reject'));
-
+                        return git.clone({
+                            url:            testRepo.url,
+                            destination:    destination,
+                            version:        '0.0.2'
                         });
 
+                    }).then(function(results) {
 
-                    }).otherwise(hitch(d, 'reject'));
+                        t.is(results, destination, 'clone failed');
 
-                    return d;
+                        var d = new Deferred();
+
+                        fs.readFile(results + '/package.json', function (err, contents) {
+                            var config = JSON.parse(contents.toString());
+                            t.is(config.version, '0.0.2', 'version failed');
+                            d.resolve();
+                        });
+
+                        return d;
+
+                    });
                 }
             },
 
@@ -108,61 +107,70 @@ define(['doh/runner',
                 },
                 runTest: function (t) {
 
-                    var d = new Deferred();
+                    return boot.nexus(cartridges).then(function (nexus) {
 
-                    boot.nexus(cartridges).then(function (nexus) {
+                        return nexus('Altair:TheLodge').vcs(testRepo.type);
 
-                        nexus('Altair:TheLodge').vcs(testRepo.type).then(function (git) {
 
-                            git.clone({
-                                url:            testRepo.url,
-                                destination:    destination,
-                                version:        '0.0.2'
-                            }).then(function(results) {
+                    }).then(function (git) {
 
-                                t.is(results, destination, 'clone failed');
+                        return git.clone({
+                            url:            testRepo.url,
+                            destination:    destination,
+                            version:        '0.0.2'
+                        });
 
-                                fs.readFile(results + '/package.json', function (err, contents) {
+                    }).then(function(results) {
 
-                                    if(err) {
-                                        d.reject(err);
-                                        return;
-                                    }
+                        t.is(results, destination, 'clone failed');
 
-                                    var config = JSON.parse(contents.toString());
-                                    t.is(config.version, '0.0.2', 'version failed');
+                        var d = new Deferred();
 
-                                    //do a full update (should take us to newest version)
-                                    git.update({
-                                        destination: destination
-                                    }).then(function (results) {
+                        fs.readFile(results + '/package.json', function (err, contents) {
 
-                                        fs.readFile(results + '/package.json', function (err, contents) {
+                            if(err) {
+                                d.reject(err);
+                                return;
+                            }
 
-                                            if(err) {
-                                                d.reject(err);
-                                                return;
-                                            }
-
-                                            var config = JSON.parse(contents.toString());
-                                            t.is(config.version, '0.0.4', 'version failed');
-
-                                            d.resolve();
-
-                                        });
-
-                                    }).otherwise(hitch(d, 'reject'));
-
-                                });
-
-                            }).otherwise(hitch(d, 'reject'));
+                            return d.resolve(contents);
 
                         });
 
+                        return d;
 
-                    }).otherwise(hitch(d, 'reject'));
+                    }).then(function (contents) {
 
-                    return d;
+                        var config = JSON.parse(contents.toString());
+                        t.is(config.version, '0.0.2', 'version failed');
+
+                        //do a full update (should take us to newest version)
+                        return git.update({
+                            destination: destination
+                        });
+
+                    }).then(function (results) {
+
+                        var d = new Deferred();
+
+                        fs.readFile(results + '/package.json', function (err, contents) {
+
+                            if(err) {
+                                d.reject(err);
+                                return;
+                            }
+
+                            var config = JSON.parse(contents.toString());
+                            t.is(config.version, '0.0.4', 'version failed');
+
+                            d.resolve();
+
+                        });
+
+                        return d;
+
+                    });
+
                 }
             }
         ]);

@@ -1,12 +1,14 @@
 define(['doh/runner',
         'altair/Altair',
+        'altair/Deferred',
         'altair/cartridges/Foundry',
-        'dojo/_base/lang'],
+        'altair/facades/hitch'],
 
     function (runner,
               Altair,
+              Deferred,
               Foundry,
-              lang) {
+              hitch) {
 
     /**
      * Dependencies
@@ -23,17 +25,14 @@ define(['doh/runner',
         };
 
 
-    runner.register('cartridges', [
+    runner.register('cartridges', {
 
-        /**
-         * Make sure we can construct a Foundry instance
-         */
-        function () {
+        "test instantiating cartridge": function (t) {
 
-            var altair = new Altair(),
+            var altair  = new Altair(),
                 foundry = new Foundry(altair);
 
-            runner.assertTrue(!!foundry);
+            t.t(!!foundry);
 
         },
 
@@ -41,31 +40,27 @@ define(['doh/runner',
         /**
          * Build some cartridges and test to make sure they are started up
          */
-        function () {
+        "test building but not starting a cartridge": function (t) {
 
             var altair      = new Altair(),
-                foundry     = new Foundry(altair),
-                deferred    = new doh.Deferred();
+                foundry     = new Foundry(altair);
 
-            foundry.build(options.cartridges).then(deferred.getTestCallback(lang.hitch(this, function (cartridges) {
+            return foundry.build(options.cartridges).then(function (cartridges) {
 
                 var mock = cartridges[0];
 
-                runner.assertEqual(1, cartridges.length, 'Wrong number of cartridges created.');
-                runner.assertEqual('bar', mock.options.foo, 'Options were not passed through to cartridge');
-                runner.assertFalse(mock.startedUp, 'Cartridge should not be started up.');
+                t.is(1, cartridges.length, 'Wrong number of cartridges created.');
+                t.is('bar', mock.options.foo, 'Options were not passed through to cartridge');
+                t.f(mock.startedUp, 'Cartridge should not be started up.');
 
 
-            })));
+            });
 
 
-            runner.assertTrue(!!foundry);
-
-            return deferred;
 
         }
 
-    ]);
+    });
 
 
 });

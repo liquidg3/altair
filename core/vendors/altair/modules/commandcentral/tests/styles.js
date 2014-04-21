@@ -41,6 +41,21 @@ define(['doh/runner',
                 }
             },
             {
+                path: 'altair/cartridges/extension/Extension',
+                options: {
+                    extensions: [
+                        "altair/cartridges/extension/extensions/Paths",
+                        "altair/cartridges/extension/extensions/Config",
+                        "altair/cartridges/extension/extensions/Package",
+                        "altair/cartridges/extension/extensions/Deferred",
+                        "altair/cartridges/extension/extensions/Apollo",
+                        "altair/cartridges/extension/extensions/Nexus",
+                        "altair/cartridges/extension/extensions/Events",
+                        "altair/cartridges/extension/extensions/Foundry"
+                    ]
+                }
+            },
+            {
                 path: 'altair/cartridges/module/Module',
                 options: {
                     paths: ['core/vendors'],
@@ -49,32 +64,18 @@ define(['doh/runner',
                         "altair:CommandCentral": {
                             "autostart": false
                         }
-                    },
-                    plugins: [
-                        "altair/cartridges/module/plugins/Paths",
-                        "altair/cartridges/module/plugins/Config",
-                        "altair/cartridges/module/plugins/Package",
-                        "altair/cartridges/module/plugins/Deferred",
-                        "altair/cartridges/module/plugins/Apollo",
-                        "altair/cartridges/module/plugins/Nexus",
-                        "altair/cartridges/module/plugins/Events",
-                        "altair/cartridges/module/plugins/Foundry"
-                    ]
+                    }
                 }
             }
         ];
 
-        doh.register('command-central', [
+        doh.register('command-central', {
 
+            "test parsing selector by tag and id, ensuring cascading": function (t) {
 
-            /**
-             * Make sure I can parse a style by selector, id (2nd one wins)
-             */
-            function (t) {
+                return boot.nexus(cartridges).then(function (nexus) {
 
-                return boot(cartridges).then(function (altair) {
-
-                    var m = altair.cartridge('altair/cartridges/module/Module').module('altair:CommandCentral');
+                    var m = nexus('altair:CommandCentral');
 
                     m.adapter('adapters/Mock').then(function (mock) {
 
@@ -93,11 +94,11 @@ define(['doh/runner',
 
             },
 
-            function (t) {
+            "test basic by id": function (t) {
 
-                return boot(cartridges).then(function (altair) {
+                return boot.nexus(cartridges).then(function (nexus) {
 
-                    var m = altair.cartridge('altair/cartridges/module/Module').module('altair:CommandCentral');
+                    var m = nexus('altair:CommandCentral');
 
                     m.adapter('adapters/Mock').then(function (mock) {
 
@@ -115,7 +116,7 @@ define(['doh/runner',
 
 
 
-        ]);
+        });
 
 
     });

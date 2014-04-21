@@ -9,7 +9,7 @@
  * for a stub class you can mixin.
  *
  */
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         'dojo/_base/lang',
         '../_Base',
         './resolvers/Cartridge',
@@ -23,7 +23,7 @@ define(['dojo/_base/declare',
 
     return declare([_Base], {
 
-        declaredClass: 'altair/cartridges/nexus/Nexus',
+        name: 'nexus',
 
         _resolvers: null,
         _map:       null,

@@ -1,4 +1,9 @@
-define(['doh/runner', 'altair/Lifecycle', 'dojo/_base/lang'], function (doh, Lifecycle, lang) {
+define(['doh/runner',
+        'altair/Lifecycle',
+        'dojo/_base/lang'],
+    function (doh,
+              Lifecycle,
+              lang) {
 
     /**
      * Dependencies
@@ -8,32 +13,24 @@ define(['doh/runner', 'altair/Lifecycle', 'dojo/_base/lang'], function (doh, Lif
     };
 
 
-    doh.register('lifecycle', [
+    doh.register('lifecycle', {
 
-        /**
-         * Make sure we can construct a CartridgeFactory instance
-         */
-        function (t) {
+        "test constructing lifecycle": function (t) {
 
             var life = new Lifecycle();
             t.t(!!life);
 
         },
 
-        /**
-         * Make sure lifecycle passes options through
-         */
-        function (t) {
+        "options set locally on lifecycle": function (t) {
 
             var life = new Lifecycle(options);
 
             t.is(options.foo, life.options.foo, 'options failed to pass through to lifecycle');
 
         },
-        /**
-         * Make sure that startup returns a resolved deferred
-         */
-        function (t) {
+
+        "make sure startup returns a deferred": function (t) {
 
             var life = new Lifecycle(),
                 deferred = new doh.Deferred();
@@ -53,10 +50,7 @@ define(['doh/runner', 'altair/Lifecycle', 'dojo/_base/lang'], function (doh, Lif
             return deferred;
         },
 
-        /**
-         * Make sure that execute returns a resolved deferred
-         */
-        function (t) {
+        "lifecycle execute returns seloved deferred": function (t) {
 
             var life = new Lifecycle(),
                 deferred = new doh.Deferred();
@@ -76,10 +70,7 @@ define(['doh/runner', 'altair/Lifecycle', 'dojo/_base/lang'], function (doh, Lif
             return deferred;
         },
 
-        /**
-         * Make sure that teardown returns a resolved deferred
-         */
-        function (t) {
+        "lifecycle teardown returning resolved deferred": function (t) {
 
             var life        = new Lifecycle(),
                 deferred    = new doh.Deferred();
@@ -99,7 +90,7 @@ define(['doh/runner', 'altair/Lifecycle', 'dojo/_base/lang'], function (doh, Lif
             return deferred;
         }
 
-    ]);
+    });
 
 
 });

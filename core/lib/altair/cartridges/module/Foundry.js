@@ -42,7 +42,7 @@ define(['altair/facades/declare',
     }
 
 
-    return declare('altair/cartridges/module/Foundry', null, {
+    return declare(null, {
 
 
         /**
@@ -84,8 +84,7 @@ define(['altair/facades/declare',
 
                     //all modules failed?
                     if( !_paths || _paths.length === 0 || (options.modules !== '*' && _paths.length !== options.modules.length)) {
-                        deferred.reject("Failed to load one or more modules: " + options.modules.join(', ') + ' from paths: ' + paths.join(', '));
-                        return;
+                        throw new Error("Failed to load one or more modules: " + options.modules.join(', ') + ' from paths: ' + paths.join(', '));
                     }
 
                     return this._sortByDependencies(_paths);
@@ -94,7 +93,7 @@ define(['altair/facades/declare',
                 })).then(hitch(this, function (sorted) {
 
                     if(!sorted) {
-                        deferred.reject(new Error('No modules found to build in Foundry. Checked ' + paths));
+                        throw new Error('No modules found to build in Foundry. Checked ' + paths);
                     } else {
 
                         //we have our sorted list, lets build each module

@@ -1,12 +1,12 @@
 /**
  * This simple cartridge foundry helps us create cartridges. It's every basic, but it gets the job done.
  */
-define(['dojo/_base/declare',
-        'dojo/_base/lang',
+define(['altair/facades/declare',
+        'altair/facades/hitch',
         'dojo/promise/all',
         'dojo/Deferred'],
 function (declare,
-          lang,
+          hitch,
           all,
           Deferred) {
 
@@ -43,7 +43,7 @@ function (declare,
          */
         build: function (options) {
 
-            var list            = options.map(lang.hitch(this, 'buildOne'));
+            var list            = options.map(hitch(this, 'buildOne'));
 
             return all(list);
         },
@@ -58,9 +58,8 @@ function (declare,
 
             var def = new Deferred();
 
-            require([options.path], lang.hitch(this, function (Cartridge) {
+            require([options.path], hitch(this, function (Cartridge) {
                 def.resolve(new Cartridge(this.altair, options.options));
-
             }));
 
             return def;

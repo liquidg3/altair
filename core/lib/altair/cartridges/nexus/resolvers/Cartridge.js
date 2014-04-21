@@ -3,10 +3,12 @@
  */
 define(['dojo/_base/declare',
         'altair/cartridges/nexus/_ResolverBase',
-        'altair/facades/hitch'
+        'altair/facades/hitch',
+        'lodash'
 ], function (declare,
              _ResolverBase,
-             hitch) {
+             hitch,
+             _) {
 
     return declare([_ResolverBase], {
 
@@ -33,19 +35,12 @@ define(['dojo/_base/declare',
          */
         resolve: function (key, options, config) {
 
-            var match = null,
-                _key  = key.toLowerCase();
+            var match,
+                all   = this.altair.cartridges(),
+                _key  = key.toLowerCase().split('/').pop();
 
 
-            Object.keys(this.altair.cartridges()).forEach(hitch(this, function (named) {
-
-                if(named.search(_key) > 0) {
-                    match = this.altair.cartridge(named);
-                }
-
-            }));
-
-            return match;
+            return all[_key];
 
         },
 

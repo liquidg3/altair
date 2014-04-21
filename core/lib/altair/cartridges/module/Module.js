@@ -38,7 +38,7 @@ define(['altair/facades/declare',
 
     return declare([_Base, Emitter], {
 
-        declaredClass: 'altair/cartridges/module/Module',
+        name:  'module',
 
         foundry:        null,
         modules:        null,
@@ -52,8 +52,7 @@ define(['altair/facades/declare',
          * @param options {
          *
          *      modules:    ['array', 'of', 'module', 'names', 'that', 'will', 'be', 'created'],
-         *      paths:      ['array', 'of', 'paths', 'to', 'look', 'for', 'modules'],
-         *      dataStore:  configured instance of altair/cartridges/modules/DataStore
+         *      paths:      ['array', 'of', 'paths', 'to', 'look', 'for', 'modules']
          *
          * }
          */
@@ -61,9 +60,6 @@ define(['altair/facades/declare',
 
             var _options = options || this.options,
                 list;
-
-            //override our deferred
-            this.deferred = new Deferred();
 
             //pass through altair if it was passed or fallback to altair's paths
             this.paths = _options.paths;
@@ -82,103 +78,12 @@ define(['altair/facades/declare',
                 this.foundry = new Foundry();
 
             } else {
-                this.deferred.reject("Not finished, should this set directly or assume something needs to be loaded?");
+                throw new Error("Not finished, should this set directly or assume something needs to be loaded?");
                 return;
-            }
-
-            /**
-             * If there is a datastore, we'll use it to get the enabled modules
-             */
-            if (_options.dataStore) {
-                this.deferred.reject("Not finished, need to figure out how to do this one");
-
-                return;
-            }
-
-            /**
-             * Load all plugins
-             */
-            if (_options.plugins) {
-
-                list = [];
-                this.plugins = [];
-
-                _options.plugins.forEach(hitch(this, function (path) {
-
-                    var def = new Deferred();
-
-                    require([path], hitch(this, function (Plugin) {
-
-                        var plugin = new Plugin(this);
-
-                        this.plugins.push(plugin);
-                        
-                        plugin.startup().then(hitch(def, 'resolve')).otherwise(hitch(def, 'reject'));
-
-                    }));
-
-                    list.push(def);
-                }));
-
-                all(list).then(hitch(this.deferred, 'resolve', this)).otherwise(hitch(this.deferred, 'reject'));
-
-            }
-            //if there are no plugins, we are ready
-            else {
-                this.deferred.resolve(this);
             }
 
             return this.inherited(arguments);
 
-        },
-
-        /**
-         * Gets you a module plugin by a particular declared class.
-         *
-         * @param declaredClass
-         * @returns {*}
-         */
-        plugin: function (declaredClass) {
-            var c;
-
-            for( c = 0; c <= this.plugins.length; c++ ) {
-                if( this.plugins[c].declaredClass === declaredClass ) {
-
-                    return this.plugins[c];
-                }
-            }
-
-            return null;
-        },
-
-        /**
-         *
-         * @param declaredClass
-         * @returns {boolean}
-         */
-        hasPlugin: function (declaredClass) {
-
-            return array.some(this.plugins, function (plugin) { return plugin.declaredClass === declaredClass; });
-        },
-
-        /**
-         * Tells us whether or not we have all the plugins
-         *
-         * @param declaredClasses
-         * @returns {boolean}
-         */
-        hasPlugins: function (declaredClasses) {
-            var i;
-
-            for( i = 0; i < declaredClasses.length; i++ ) {
-                if(!this.hasPlugin(declaredClasses[i])) {
-
-                    return false;
-                }
-
-            }
-
-            return true;
         },
 
         module: function (named) {
@@ -207,14 +112,13 @@ define(['altair/facades/declare',
 
                 //if the nexus cartridge is in, register our resolver and ourselves so people can find modules
                 //using nexus()
-                if(this.altair.hasCartridge('altair/cartridges/nexus/Nexus')) {
+                if(this.altair.hasCartridge('nexus')) {
 
-                    var nexus       = this.altair.cartridge('altair/cartridges/nexus/Nexus'),
+                    var nexus       = this.altair.cartridge('nexus'),
                         resolver    = new ModulesResolver(this);
 
                     nexus.addResolver(resolver);
                 }
-
 
                 //startup all modules, then return ourselves to the deferred
                 return this.injectModules(modules).then(hitch(this, function (modules) {
@@ -237,7 +141,7 @@ define(['altair/facades/declare',
             //intentional shallow copy
             var _modules    = modules.slice(0),
                 deferred    = new Deferred(),
-                list,
+                list        = [],
                 load,
                 options;
 
@@ -245,26 +149,23 @@ define(['altair/facades/declare',
 
             //add to local store of modules by name
             _modules.forEach(hitch(this, function (module) {
+
                 this.modulesByName[module.name.toLowerCase()] = module;
+
+
+                //if we have extensions
+                if(this.altair.hasCartridge('extension')) {
+
+                    //setup modules to take advantage of certain extensions
+                    module.packagePath   = './package';
+                    module.schemaPath    = './configs/schema';
+
+                    //extend the module through the extension module
+                    list.push(this.altair.cartridge('extension').extend(module));
+
+                }
+
             }));
-
-            list = []; // all our deferreds
-
-            //run through plugins and execute them on the plugins we have
-            if (this.plugins) {
-
-                _modules.forEach(hitch(this, function (module) {
-
-                    this.plugins.forEach(hitch(this, function (plugin) {
-
-                        list.push(plugin.execute(module));
-
-                    }));
-
-                }));
-
-
-            }
 
             //lets startup all modules, ensuring one is not started until the one before it is
             load = hitch(this, function () {
@@ -330,7 +231,6 @@ define(['altair/facades/declare',
 
             this.modules.forEach(function (module) {
                 list.push(module.teardown());
-
             });
 
             //make sure auto resolved deferred is not returned by Lifecycle parent

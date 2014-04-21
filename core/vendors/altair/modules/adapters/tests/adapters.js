@@ -25,33 +25,32 @@ define(['doh/runner',
                 }
             },
             {
+                path: 'altair/cartridges/extension/Extension',
+                options: {
+                    extensions: [
+                        'altair/cartridges/extension/extensions/Nexus',
+                        'altair/cartridges/extension/extensions/Deferred',
+                        'altair/cartridges/extension/extensions/Paths',
+                        'altair/cartridges/extension/extensions/Config',
+                        'altair/cartridges/extension/extensions/Events',
+                        'altair/cartridges/extension/extensions/Foundry',
+                        'altair/cartridges/extension/extensions/Apollo'
+                    ]
+                }
+            },
+            {
                 path: 'altair/cartridges/module/Module',
                 options: {
                     paths: ['core/vendors'],
-                    modules: ['altair:Adapters', 'altair:Events'],
-                    plugins: [
-                        'altair/cartridges/module/plugins/Nexus',
-                        'altair/cartridges/module/plugins/Deferred',
-                        'altair/cartridges/module/plugins/Paths',
-                        'altair/cartridges/module/plugins/Config',
-                        'altair/cartridges/module/plugins/Events',
-                        'altair/cartridges/module/plugins/Foundry',
-                        'altair/cartridges/module/plugins/Apollo'
-                    ]
+                    modules: ['altair:Adapters', 'altair:Events']
                 }
             }
         ];
 
-        doh.register('altair-adapters-module', [
+        doh.register('altair-adapters-module', {
 
 
-            /**
-             * Test selected adapter as single
-             *
-             * @param t
-             * @returns {*|Promise}
-             */
-            function (t) {
+            "test selected adapter as single": function (t) {
 
                 return boot.nexus(cartridges).then(function (nexus) {
 
@@ -68,52 +67,26 @@ define(['doh/runner',
 
             },
 
-            /**
-             * Test failed to find adapter
-             *
-             * @param t
-             * @returns {*|Promise}
-             */
-            {
-                setUp: function () {
+            "test failed to find adapter":  function (t) {
 
-                    has.add("config-deferredInstrumentation", 0, null, true);
+                return boot.nexus(cartridges).then(function (nexus) {
 
-                },
+                    var module = nexus('altair:Adapters'),
+                        def = new Deferred();
 
-                name: 'should-fail',
-
-                tearDown: function () {
-                    has.add("config-deferredInstrumentation", 1, null, true);
-                },
-
-                runTest: function (t) {
-
-                    return boot.nexus(cartridges).then(function (nexus) {
-
-                        var module = nexus('altair:Adapters'),
-                            def = new Deferred();
-
-                        module.adapter('adapters/Mock3').then(function (adapter) {
-                            def.reject('Adapter resolved with bad key');
-                            has.add("config-deferredInstrumentation", 1, null, true);
-
-                        }).otherwise(function () {
-                            has.add("config-deferredInstrumentation", 1, null, true);
-                            def.resolve();
-                        });
-
-                        return def;
+                    module.adapter('adapters/Mock3').then(function (adapter) {
+                        def.reject('Adapter resolved with bad key');
+                    }).otherwise(function () {
+                        def.resolve();
                     });
 
-                }
+                    return def;
+                });
+
 
             },
 
-            /**
-             * Make sure I can get an adapter by key
-             */
-            function (t) {
+            "make sure I can get an adapter by key": function (t) {
 
                 return boot.nexus(cartridges).then(function (nexus) {
 
@@ -129,30 +102,24 @@ define(['doh/runner',
 
             },
 
-
-            /**
-             * Test selected adapter on start (which should come ready and callable from adapter()
-             *
-             * @param t
-             * @returns {*|Promise}
-             */
-             function (t) {
+             "test selected adapter on start ": function (t) {
 
                 var _cartridges = cartridges.slice(0);
 
-                _cartridges[2].options = mixin({
+                _cartridges[3].options = mixin({
                     moduleOptions: {
                         'altair:Adapters': {
                             'selectedAdapter': 'altair:Adapters::adapters/Mock2'
                         }
                     }
-                }, _cartridges[2].options);
+                }, _cartridges[3].options);
 
                 return boot.nexus(_cartridges).then(function (nexus) {
 
-                    var module = nexus('altair:Adapters');
+                    var module  = nexus('altair:Adapters'),
+                        adapter = module.adapter();
 
-                    var adapter = module.adapter();
+                    t.t(!!adapter.foo, 'selected adapter did not initialize at startup.');
 
                     t.is(adapter.foo(), 'Mock2', 'Selected adapter on startup failed.');
 
@@ -162,7 +129,7 @@ define(['doh/runner',
             }
 
 
-        ]);
+        });
 
 
     });
