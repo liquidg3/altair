@@ -14,7 +14,7 @@ define(['altair/facades/declare',
 
         constructor: function (name, data, target) {
             this.name = name;
-            this.data = data;
+            this.data = data || {};
             this.target = target;
         },
 

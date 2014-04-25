@@ -48,7 +48,6 @@ define(['altair/facades/declare',
             //mixin our extensions
             declare.safeMixin(module, {
 
-
                 foundry: function (className, options, instantiationCallback, shouldStartup) {
 
                     var d = new Deferred(),
