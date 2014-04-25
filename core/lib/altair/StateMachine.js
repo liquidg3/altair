@@ -208,10 +208,10 @@ define(['altair/facades/declare',
                     //make sure we at least have the state
                     eventData.state = state;
 
-                    var e = new Event(events[i], eventData, this);
-
                     //emit this event
-                    this.emit(e).then(hitch(this, function (results) {
+                    this.emit(events[i], eventData).then(hitch(this, function (e) {
+
+                        var results = e.resultsRaw();
 
                         //get the results from the last event listener if any listeners are set
                         if(results.length > 0) {

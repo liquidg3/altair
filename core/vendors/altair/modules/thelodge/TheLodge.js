@@ -56,8 +56,8 @@ define(['altair/facades/declare',
          * @returns {altair.Deferred}
          */
         refreshMenus: function () {
-            return this.emit('register-menus').then(hitch(this, function (menus) {
-                return _.flatten(_.flatten(menus)); //each listener is expected to return an array of menus
+            return this.emit('register-menus').then(hitch(this, function (e) {
+                return e.results();
             }));
         },
 
@@ -73,15 +73,14 @@ define(['altair/facades/declare',
          */
         refreshInstallers: function () {
 
-            return this.emit('register-installers').then(hitch(this, function (installers) {
+            return this.emit('register-installers').then(hitch(this, function (e) {
 
                 //reset our local installers
                 this._installers = {};
 
                 //track list of installers
-                var list = [];
-
-                installers = _.flatten(installers);
+                var list = [],
+                    installers = e.results();
 
                 installers.forEach(hitch(this, function (installer) {
 

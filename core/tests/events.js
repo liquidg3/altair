@@ -105,21 +105,15 @@ define(['doh/runner',
          */
         function (t) {
 
-            var emitter     = new Emitter(),
-                deferred    = new Deferred();
+            var emitter     = new Emitter();
 
             emitter.on('dummy-event', function (e) {
                 t.is('dummy-event', e.name, 'Event was not created as expected.');
-                deferred.resolve(true);
-
             });
 
-            emitter.emit('dummy-event', {
+            return emitter.emit('dummy-event', {
                 foo: 'bar'
-
             });
-
-            return deferred;
 
         },
 
@@ -128,19 +122,16 @@ define(['doh/runner',
          */
         function (t) {
 
-            var emitter     = new Emitter(),
-                deferred    = new doh.Deferred();
+            var emitter     = new Emitter();
 
             emitter.on('dummy-event-2').then(function (e) {
                 t.is('dummy-event-2', e.name, 'Event was not created as expected.');
-                deferred.resolve(true);
             });
 
-            emitter.emit('dummy-event-2', {
+            return emitter.emit('dummy-event-2', {
                 foo: 'bar'
             });
 
-            return deferred;
 
         },
 
@@ -149,21 +140,17 @@ define(['doh/runner',
          */
         function (t) {
 
-            var emitter     = new Emitter(),
-                deferred    = new doh.Deferred();
+            var emitter     = new Emitter();
 
             emitter.on('dummy-event-3', function (e) {
                 t.is('dummy-event-3', e.name, 'Event was not created as expected.');
-                deferred.resolve(true);
             }, {
                 foo: 'bar'
             });
 
-            emitter.emit('dummy-event-3', {
+            return emitter.emit('dummy-event-3', {
                 foo: 'bar'
             });
-
-            return deferred;
 
         },
 
@@ -174,19 +161,15 @@ define(['doh/runner',
          */
         function () {
 
-            var emitter     = new Emitter(),
-                deferred    = new doh.Deferred();
+            var emitter     = new Emitter();
 
             emitter.on('dummy-event-4', { foo: 'bar' }).then(function (e) {
                 doh.assertEqual('dummy-event-4', e.name, 'Event was not created as expected.');
-                deferred.resolve();
             });
 
-            emitter.emit('dummy-event-4', {
+            return emitter.emit('dummy-event-4', {
                 foo: 'bar'
             });
-
-            return deferred;
 
         },
 
@@ -197,21 +180,17 @@ define(['doh/runner',
          */
         function () {
 
-            var emitter     = new Emitter(),
-                deferred    = new doh.Deferred();
+            var emitter     = new Emitter();
 
             emitter.on('dummy-event-4', { foo: 'bar' }).then(function (e) {
 
                 doh.assertEqual('dummy-event-4', e.name, 'Event was not created as expected.');
-                deferred.resolve();
 
             });
 
-            emitter.emit('dummy-event-4', {
+            return emitter.emit('dummy-event-4', {
                 foo: 'bar'
             });
-
-            return deferred;
 
         },
 
@@ -220,8 +199,7 @@ define(['doh/runner',
          */
         function (t) {
 
-            var emitter     = new Emitter(),
-                deferred    = new doh.Deferred();
+            var emitter     = new Emitter();
 
             emitter.on('dummy-event-4').then(function (e) {
 
@@ -255,20 +233,19 @@ define(['doh/runner',
                 return d;
             });
 
-            emitter.emit('dummy-event-4', {
+            return emitter.emit('dummy-event-4', {
                 foo: 'bar'
-            }).then(function (results) {
+            }).then(function (e) {
+
+                var results = e.results();
 
                 t.is(results[0], 1, 'Event was not created as expected.');
                 t.is(results[1], 2, 'Event was not created as expected.');
                 t.is(results[2], 3, 'Event was not created as expected.');
                 t.is(results[3], 4, 'Event was not created as expected.');
 
-                deferred.resolve();
 
             });
-
-            return deferred;
 
 
         },
@@ -334,24 +311,22 @@ define(['doh/runner',
                 return 'yay';
             });
 
-            emitter.emit('dummy-event-4', {
+            return emitter.emit('dummy-event-4', {
                 foo: 'bar'
-            }).then(function (results) {
+            }).then(function (e) {
+
+                var results = e.results();
 
                 t.t(results.length === 1, 'too many results gathered from event');
                 t.is(results[0], 'yay');
-                deferred.resolve();
 
-            }).otherwise(hitch(deferred, 'reject'));
-
-            return deferred;
+            });
 
         },
 
         function (t) {
 
-            var emitter     = new Emitter(),
-                deferred    = new Deferred();
+            var emitter     = new Emitter();
 
             emitter.on('dummy-event-4', function (e) {
                 return 'yay';
@@ -375,17 +350,16 @@ define(['doh/runner',
             });
 
 
-            emitter.emit('dummy-event-4').then(function (results) {
+            return emitter.emit('dummy-event-4').then(function (e) {
+
+                var results = e.results();
 
                 t.t(results.length === 3, 'wrong amount of results gathered from event');
                 t.is(results[0], 'yay');
                 t.is(results[1], 'hey');
                 t.is(results[2], 'stay');
-                deferred.resolve();
 
-            }).otherwise(hitch(deferred, 'reject'));
-
-            return deferred;
+            });
 
         }
 

@@ -114,7 +114,6 @@ define(['altair/facades/declare',
 
             //build a list of results all listeners...
             var list = [],
-                deferred = new BaseDeferred(),
                 toRemove = [],
                 _agent;
 
@@ -185,7 +184,7 @@ define(['altair/facades/declare',
 
             }
 
-            all(list).then(function (results) {
+            return all(list).then(function (results) {
 
                 var cleaned = [];
 
@@ -196,11 +195,13 @@ define(['altair/facades/declare',
 
                 });
 
-                deferred.resolve(cleaned);
+                event.setResults(cleaned);
+                return event;
 
-            }).otherwise(hitch(deferred, 'reject'));
 
-            return deferred;
+
+            });
+
         },
 
         /**

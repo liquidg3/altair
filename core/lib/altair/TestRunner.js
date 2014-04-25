@@ -1,21 +1,19 @@
 /**
  * Our simple test running. Works with doh/runner.
  */
-define(['dojo/_base/declare',
-    'altair/Lifecycle',
-    'dojo/_base/lang',
-    'dojo/promise/all',
-    'dojo/Deferred',
-    'dojo/node!fs',
-    'dojo/node!path',
-    'doh/runner',
-    'altair/facades/glob',
-    'require'],
+define(['altair/facades/declare',
+        'altair/Lifecycle',
+        'altair/facades/hitch',
+        'altair/facades/all',
+        'altair/plugins/node!fs',
+        'altair/plugins/node!path',
+        'doh/runner',
+        'altair/facades/glob',
+        'require'],
     function (declare,
               Lifecycle,
-              lang,
+              hitch,
               all,
-              Deferred,
               fs,
               path,
               doh,
@@ -32,8 +30,6 @@ define(['dojo/_base/declare',
              */
             startup: function (options) {
 
-                this.deferred = new Deferred();
-
                 var list         = [],
                     _options = this.options || options;
 
@@ -49,19 +45,23 @@ define(['dojo/_base/declare',
 
                 };
 
-                glob(_options.glob.map(lang.hitch(require, 'toUrl')), _options.globOptions).then(lang.hitch(this, function (files) {
-                    list.concat(files.map(lang.hitch(this, 'includeTest')));
-                    all(list).then(lang.hitch(this.deferred, 'resolve')).otherwise(lang.hitch(this.deferred, 'reject'));
-                })).otherwise(lang.hitch(this.deferred, 'reject'));
+                this.deferred = glob(_options.glob.map(hitch(require, 'toUrl')), _options.globOptions).then(hitch(this, function (files) {
+
+                    list.concat(files.map(hitch(this, 'includeTest')));
+                    return all(list);
+
+                })).then(hitch(this, function () {
+                    return this;
+                }));
 
 
                 return this.inherited(arguments);
             },
 
             execute: function () {
-                this.deferred = new Deferred();
+                this.deferred = new this.Deferred();
 
-                doh._onEnd = lang.hitch(this, function () {
+                doh._onEnd = hitch(this, function () {
                     if(doh._errorCount > 0) {
                         this.deferred.reject(doh._errorCount + ' tests failed.');
 
@@ -79,7 +79,7 @@ define(['dojo/_base/declare',
 
 
             includeTest: function (path) {
-                var deferred = new Deferred();
+                var deferred = new this.Deferred();
 
                 require([path], function (t) {
                     if(!t) {

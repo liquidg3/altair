@@ -121,9 +121,10 @@ define(['altair/facades/declare',
              */
             refreshCommanders: function () {
 
-                return this.emit('register-commanders').then(this.hitch(function (results) {
+                return this.emit('register-commanders').then(this.hitch(function (e) {
 
                     var commanders  = {},
+                        results     = e.results(),
                         list        = [],
                         adapter     = this.adapter();
 
@@ -146,11 +147,9 @@ define(['altair/facades/declare',
                             //default to our adapter, but one can be passed in (not sure why)
                             options.adapter = options.adapter || adapter;
 
-                            this._commanders[name] = this.foundry(path, options).then(this.hitch(function (c) {
+                            list.push(this.foundry(path, options).then(this.hitch(function (c) {
                                 this._commanders[name] = c;
-                            }));
-
-                            list.push(this._commanders[name]);
+                            })));
 
                         }
 
