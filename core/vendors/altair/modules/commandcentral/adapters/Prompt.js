@@ -1,13 +1,13 @@
 define(['altair/facades/declare',
-        'altair/facades/hitch',
-        'altair/facades/__',
-        'lodash',
-        'altair/facades/when',
-        'altair/facades/partial',
-        './_Base',
-        'altair/plugins/node!prompt',
-        'altair/plugins/node!chalk',
-        'altair/plugins/node!yargs'
+    'altair/facades/hitch',
+    'altair/facades/__',
+    'lodash',
+    'altair/facades/when',
+    'altair/facades/partial',
+    './_Base',
+    'altair/plugins/node!prompt',
+    'altair/plugins/node!chalk',
+    'altair/plugins/node!yargs'
 ], function (declare,
              hitch,
              __,
@@ -20,10 +20,10 @@ define(['altair/facades/declare',
              yargs) {
 
 
-    prompt.override     = yargs.argv;
-    prompt.colors       = false;
-    prompt.message      = 'altair';
-    prompt.delimiter    = ': ';
+    prompt.override = yargs.argv;
+    prompt.colors = false;
+    prompt.message = 'altair';
+    prompt.delimiter = ': ';
 
 
     return declare([_Base], {
@@ -57,7 +57,7 @@ define(['altair/facades/declare',
          *
          * @param str
          */
-        notice: function(str) {
+        notice: function (str) {
             this.writeLine(chalk.red('* Notice:', str, '*'));
             return this;
         },
@@ -70,9 +70,9 @@ define(['altair/facades/declare',
          */
         writeLine: function (str, options) {
 
-            if(_.isString(options)) {
+            if (_.isString(options)) {
 
-                switch(options) {
+                switch (options) {
                     case 'error':
                         str = 'error: ' + chalk.white.bgRed(str);
                         break;
@@ -93,7 +93,7 @@ define(['altair/facades/declare',
 
             var d = new this.module.Deferred();
 
-            if(yargs.argv._[0]) {
+            if (yargs.argv._[0]) {
                 this.module.refreshCommanders().then(function (commanders) {
                     d.resolve(commanders[yargs.argv._[0]]);
                 }).otherwise(hitch(d, 'reject'));
@@ -106,7 +106,7 @@ define(['altair/facades/declare',
         },
 
         //if we can autoload the current command, return it here
-        initialCommand: function () {
+        initialCommand:   function () {
             return yargs.argv._[1];
         },
 
@@ -119,34 +119,40 @@ define(['altair/facades/declare',
          */
         readLine: function (question, defaultValue, options) {
 
-            var def         = new this.Deferred(),
-                name        = (options && _.has(options, 'override')) ? options.override : 'answer';
+            var def = new this.Deferred(),
+                name = (options && _.has(options, 'override')) ? options.override : 'answer';
 
             //it's been overridden
-            if(!prompt.override[name]) {
+            if (!prompt.override[name]) {
 
                 //output a description
-                if(options && _.has(options, 'description')) {
-                    console.log(chalk.italic(options.description));
+                if (options && _.has(options, 'description')) {
+                    this.writeLine(chalk.italic(options.description));
                 }
 
                 //help user by outputing pattern
-                if(options && _.has(options, 'pattern') && options.pattern) {
+                if (options && _.has(options, 'pattern') && options.pattern) {
                     question = question + " " + options.pattern;
+                }
+
+                //default value
+                if(defaultValue) {
+                    question = question + ' (' + chalk.italic(defaultValue) + ')';
                 }
 
             }
 
-            prompt.get([{
-                name: name,
-                type: 'string',
-                description: question
-            }], hitch(this, function (err, results) {
+            prompt.get([
+                {
+                    name:        name,
+                    description: question
+                }
+            ], hitch(this, function (err, results) {
 
-                if(err) {
+                if (err) {
                     def.reject(err);
                 } else {
-                    def.resolve(results[name]);
+                    def.resolve(results[name] || defaultValue);
                 }
 
             }));
@@ -165,23 +171,23 @@ define(['altair/facades/declare',
          */
         select: function (question, defaultValue, options) {
 
-            var def             = new this.Deferred(),
-                _options        = _.has(options, 'multiOptions') ? options : { multiOptions: options },
-                required        = _.has(_options, 'required') ? _options.required : true,
-                aliases         = _.has(_options, 'aliases') ? _options.aliases : {},
-                multiOptions    = _options.multiOptions,
-                name            = (options && _.has(options, 'override')) ? options.override : 'answer';
+            var def = new this.Deferred(),
+                _options = _.has(options, 'multiOptions') ? options : { multiOptions: options },
+                required = _.has(_options, 'required') ? _options.required : true,
+                aliases = _.has(_options, 'aliases') ? _options.aliases : {},
+                multiOptions = _options.multiOptions,
+                name = (options && _.has(options, 'override')) ? options.override : 'answer';
 
-            if(!multiOptions) {
+            if (!multiOptions) {
                 def.reject(new Error('you must supply multiOptions to your select "' + question + '"', 234));
                 return def;
             }
 
-            var keys            = Object.keys(multiOptions),
+            var keys = Object.keys(multiOptions),
                 aliasesReversed = {},
                 go;
 
-            if(!prompt.override[name]) {
+            if (!prompt.override[name]) {
 
                 this.writeLine('')
                     .writeLine('--- ' + question + ' ---')
@@ -190,7 +196,7 @@ define(['altair/facades/declare',
                 keys.forEach(hitch(this, function (key) {
                     var line = '| ' + key;
 
-                    if(aliases.hasOwnProperty(key)) {
+                    if (aliases.hasOwnProperty(key)) {
                         aliases[key].forEach(function (a) {
                             aliasesReversed[a] = key;
                         });
@@ -213,39 +219,39 @@ define(['altair/facades/declare',
 
                 this.readLine(__('select option'), defaultValue, options).then(hitch(this, function (results) {
 
-                    //was this an alias?
-                    if(aliasesReversed.hasOwnProperty(results)) {
-                        results = aliasesReversed[results];
-                    }
+                        //was this an alias?
+                        if (aliasesReversed.hasOwnProperty(results)) {
+                            results = aliasesReversed[results];
+                        }
 
-                    //did they select a valid option?
-                    if(!results || !(multiOptions.hasOwnProperty(results))) {
+                        //did they select a valid option?
+                        if (!results || !(multiOptions.hasOwnProperty(results))) {
 
-                        //are we going to force them to select an option?
-                        if(!required) {
+                            //are we going to force them to select an option?
+                            if (!required) {
 
-                            def.reject(results, false);
+                                def.reject(results, false);
+
+                            } else {
+
+                                //help them out a bit
+                                this.writeLine('Invalid Selection', 'alert');
+                                this.writeLine('Valid options are: ' + keys.join(', '));
+
+                                go();
+
+                            }
 
                         } else {
 
-                            //help them out a bit
-                            this.writeLine('Invalid Selection', 'alert');
-                            this.writeLine('Valid options are: ' + keys.join(', '));
-
-                            go();
+                            def.resolve(results);
 
                         }
 
-                    } else {
-
-                        def.resolve(results);
-
-                    }
-
-                })).otherwise(hitch(this, function () {
-                    //if the whole thing crashes, try again (bad idea?)
-                    go();
-                }));
+                    })).otherwise(hitch(this, function () {
+                        //if the whole thing crashes, try again (bad idea?)
+                        go();
+                    }));
             });
 
             go();
@@ -261,45 +267,57 @@ define(['altair/facades/declare',
          */
         form: function (schema) {
 
-            var d       = new this.Deferred(),
-                values  = {},
-                elements= schema.properties(),
-                keys    = Object.keys(elements),
-                total   = keys.length,
-                next    = hitch(this, function (index) {
+            var d = new this.Deferred(),
+                values = {},
+                elements = schema.properties(),
+                keys = Object.keys(elements),
+                total = keys.length,
+                next = hitch(this, function (index) {
 
-                if(index === total) {
-                    d.resolve(values);
-                } else {
+                    if (index === total) {
+                        d.resolve(values);
+                    } else {
 
-                    var name    = keys[index],
-                        type    = schema.typeFor(name),
-                        options = schema.optionsFor(name);
+                        var name = keys[index],
+                            type = schema.typeFor(name),
+                            options = schema.optionsFor(name);
 
-                    //to allow for arguments to be passed through
-                    options.override = name;
+                        //to allow for arguments to be passed through
+                        options.override = name;
 
-                    //see if we have a function by the name of type
-                    if(!this[type]) {
-                        type = 'readLine';
+                        //see if we have a function by the name of type
+                        if (!this[type]) {
+                            type = 'readLine';
+                        }
+
+                        index = index + 1;
+
+                        when(this[type](options.label, options.default, options)).then(function (answer) {
+                            values[name] = schema.applyOnProperty(['toJsValue'], name, answer, options);
+                            next(index);
+                        }).otherwise(hitch(d, 'reject'));
+
                     }
 
-                    index = index + 1;
-
-                    when(this[type](options.label, options.default, options)).then(function (answer) {
-                        values[name] = answer;
-                        next(index);
-                    }).otherwise(hitch(d, 'reject'));
-
-                }
-
-            });
+                });
 
 
-           next(0);
+            next(0);
 
             return d;
 
+        },
+
+        /**
+         * Gives the user a handy autocomplete path selection tool
+         * @param question
+         * @param defaultValue
+         * @param options
+         * @returns {Deferred}
+         */
+        path: function (question, defaultValue, options) {
+            //coming soon???
+            return this.readLine(question, defaultValue, options);
         },
 
         showProgress: function (message) {

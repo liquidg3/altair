@@ -94,10 +94,16 @@ define(['dojo/_base/declare',
         mixin: function(values) {
 
             Object.keys(values).forEach(lang.hitch(this, function (name) {
-                this.set(name, values[name]);
+                if(this.has(name)) {
+                    this.set(name, values[name]);
+                }
             }));
 
             return this;
+        },
+
+        has: function (name) {
+            return this.schema().has(name);
         },
 
         /**
@@ -114,7 +120,7 @@ define(['dojo/_base/declare',
                 this.values[name] = value;
 
             } else {
-                throw "No property called '" + name + "' exists on this " + this.declaredClass;
+                throw "No property called '" + name + "' exists on this " + this;
 
             }
 
@@ -173,6 +179,15 @@ define(['dojo/_base/declare',
             }));
 
             return this;
+        },
+
+        /**
+         * Returns you the schema attached to this object
+         *
+         * @returns {apollo.Schema}
+         */
+        schema: function () {
+            return this._schema;
         }
 
     });

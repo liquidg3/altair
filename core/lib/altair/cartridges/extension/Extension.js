@@ -20,8 +20,6 @@ define(['altair/facades/declare',
                 var _options = options || this.options || {},
                     list     = [];
 
-                this.deferred = new this.Deferred();
-
 
                 /**
                  * Load all extensions
@@ -44,12 +42,12 @@ define(['altair/facades/declare',
                         return def;
                     }));
 
-                    all(list).then(hitch(this.deferred, 'resolve', this)).otherwise(hitch(this.deferred, 'reject'));
+                    //wait it out
+                    this.deferred = all(list).then(hitch(this, function () { return this; }));
 
                 }
                 //if there are no extensions, we are ready
                 else {
-                    this.deferred.resolve(this);
                 }
 
                 return this.inherited(arguments);
@@ -80,7 +78,7 @@ define(['altair/facades/declare',
              * Pass an extension that has not been started up. Resolves with the started up extension
              *
              * @param ext
-             * @returns {Deferred}
+             * @returns {altair.Deferred}
              */
             addExtension: function (ext) {
 

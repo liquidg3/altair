@@ -44,7 +44,8 @@ define(['altair/facades/declare',
                         'apollo/propertytypes/Int',
                         'apollo/propertytypes/Float',
                         'apollo/propertytypes/Date',
-                        'apollo/propertytypes/Select'
+                        'apollo/propertytypes/Select',
+                        'apollo/propertytypes/Path',
                     ];
 
                 }

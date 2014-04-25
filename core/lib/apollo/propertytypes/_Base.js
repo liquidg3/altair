@@ -42,12 +42,18 @@ define(['dojo/_base/declare',
                     label: 'Label'
                 }
             },
+            default: {
+                type: 'object',
+                options: {
+                    label: 'Default value'
+                }
+            },
             required: {
                 type:           'bool',
                 options: {
                     label:          'Required',
                     description:    'If this field is required, set to true.',
-                    defaultValue:    false
+                    default:    false
                 }
             },
             pattern: {
@@ -62,7 +68,7 @@ define(['dojo/_base/declare',
                 options: {
                     label:          'Many',
                     description:    'Whether this property should allow more than one value to be attached to it.',
-                    defaultValue:   false
+                    default:   false
                 }
             },
 
@@ -109,8 +115,7 @@ define(['dojo/_base/declare',
             this.defaultOptionValues = {};
 
             Object.keys(this.options).forEach(lang.hitch(this, function (name) {
-                this.defaultOptionValues[name] = this.options[name].options.hasOwnProperty('defaultValue') ? this.options[name].options.defaultValue : null;
-
+                this.defaultOptionValues[name] = this.options[name].options.hasOwnProperty('default') ? this.options[name].options.default : null;
             }));
 
         },

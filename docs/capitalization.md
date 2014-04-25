@@ -1,7 +1,7 @@
 ### Capitalization
 How does it work in altair? Really, it's very easy;
 
-**Capitalzie your file if it contains something we are expected to instantiate.**
+**Capitalize your file if it contains something we are expected to instantiate.**
 
 this allows me to draw the following conclusion;
 

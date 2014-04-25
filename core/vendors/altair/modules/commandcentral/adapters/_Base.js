@@ -4,8 +4,7 @@ define([
     'altair/Lifecycle',
     'altair/facades/mixin',
     'altair/facades/hitch',
-    'dojo/_base/lang'
-        ],
+    'dojo/_base/lang'],
     function (declare,
               Emitter,
               Lifecycle,

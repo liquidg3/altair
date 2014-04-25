@@ -211,10 +211,17 @@ define(['altair/facades/declare',
         //before we execute our command, make sure we have our commander and command (our best attempt)
         onStateMachineWillEnterExecuteCommand: function (e) {
 
-            return mixin({
+            var output = mixin({
                 commander:  this.activeCommander,
                 command:    this.activeCommand
             },e.data);
+
+            if(!output.commander || !output.commander.hasCommand(output.command)) {
+                throw new Error('Could not find command: "' + output.command + '" in commander: "' + e.commander + '"');
+            }
+
+            return output;
+
 
         },
 

@@ -8,15 +8,8 @@ define(['dojo/_base/declare',
 
     return declare([_Base], {
 
-        key: 'string',
+        key: 'path',
         options: {
-            maxLength: {
-                type: 'int',
-                options: {
-                    default: -1,
-                    label: 'Truncate the length of this string to anything you want. -1 means do not trim.'
-                }
-            }
         },
 
 
@@ -29,22 +22,14 @@ define(['dojo/_base/declare',
          * @returns {*}
          */
         toJsValue: function (value, options, config) {
+
             var results;
 
             //get most common check out of the way
-            if(typeof value === 'string' && options.maxLength === -1) {
+            if(typeof value === 'string') {
                 results = value;
-
-            } else if(typeof value === 'string') {
-                results = value.substr(0, options.maxLength);
-
-            } else if(options.maxLength > -1) {
-                results = value.toString().substr(0, options.maxLength);
-
             } else if(value) {
                 results = value.toString();
-            } else {
-                results = null;
             }
 
             return results;

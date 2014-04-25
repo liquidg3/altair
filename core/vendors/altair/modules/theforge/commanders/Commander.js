@@ -37,7 +37,7 @@ define(['altair/facades/declare',
                 vendor  = values.vendor,
                 name    = str.capitalize(values.name),
                 full    = vendor + ':' + name,
-                match   = this.module.nexus(full),
+                match   = this.nexus(full),
                 destination,
                 files   = {};
 
@@ -50,10 +50,11 @@ define(['altair/facades/declare',
 
                 files[this.module.resolvePath('templates/_Module.js')]      = path.join(destination, name + '.js');
                 files[this.module.resolvePath('templates/_package.json')]   = path.join(destination, 'package.json');
+                files[this.module.resolvePath('templates/_README.md')]      = path.join(destination, 'README.md');
 
 
                 //create destination directory for our module
-                mkdirp(destination, hitch(this, function (err) {
+                mkdirp(destination, this.hitch(function (err) {
 
                     if(err) {
 
@@ -65,13 +66,13 @@ define(['altair/facades/declare',
                         var list = [];
 
                         //load the templates and write them
-                        Object.keys(files).forEach(hitch(this, function (template) {
+                        Object.keys(files).forEach(this.hitch(function (template) {
 
                             var def = new this.Deferred();
                             list.push(def);
 
                             //read template
-                            fs.readFile(template, hitch(this, function (err, results) {
+                            fs.readFile(template, this.hitch(function (err, results) {
 
                                 if(err) {
                                     def.reject(new Error(err));
@@ -106,7 +107,7 @@ define(['altair/facades/declare',
 
 
                         //after all templates are done
-                        all(list).then(hitch(this, function (results) {
+                        all(list).then(this.hitch(function (results) {
 
                             this.writeLine('forging complete, created ' + results.length + ' files.');
                             d.resolve();
@@ -134,11 +135,11 @@ define(['altair/facades/declare',
             var schema = this.inherited(arguments);
 
             //the newModule command has some multiOptions that need updating (destination dir)
-            if(named === 'newModule') {
+            if(schema && named === 'newModule') {
 
                 //get the 'paths' we have set in altair
-                var altair = this.module.nexus('Altair'),
-                    multiOptions = {};
+                var altair          = this.nexus('Altair'),
+                    multiOptions    = {};
 
                 altair.paths.forEach(function (path) {
                     multiOptions[path] = require.toUrl(path);

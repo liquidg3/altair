@@ -70,7 +70,6 @@ define(['dojo/_base/declare',
          * @returns {boolean}
          */
         has: function (propertyName) {
-
             return (this._data.properties.hasOwnProperty(propertyName));
         },
 

@@ -48,16 +48,22 @@ define(['altair/facades/declare',
             //mixin our extensions
             declare.safeMixin(module, {
 
-                foundry: function (className, options, instantiationCallback) {
+
+                foundry: function (className, options, instantiationCallback, shouldStartup) {
 
                     var d = new Deferred(),
                         parent,
                         parts,
                         path;
 
+                    //should we startup?
+                    shouldStartup = instantiationCallback !== false && shouldStartup !== false;
+
                     //default callbacks
                     if(!instantiationCallback) {
                         instantiationCallback = defaultCallback;
+                    } else {
+
                     }
 
                     //if the classname can be resolved in nexus
@@ -84,9 +90,17 @@ define(['altair/facades/declare',
 
                                 var a       = instantiationCallback(Child, options);
 
-                                //setup basics
-                                a.name      = parent.name + '::' + className;
-                                a.module    = parent;
+                                if(!a) {
+                                    d.reject(new Error('The instantiateCallback param in the Foundry extension must return an class instance.'));
+                                    return;
+                                }
+
+                                //setup basics if they are missing
+                                if(!a.name) {
+                                    a.name      = className[0] === '/' ? className : parent.name + '/' + className;
+                                }
+
+                                a.module    = parent.module || parent;
                                 a.dir       = pathUtil.dirname(path);
                                 a._nexus    = parent._nexus;
 
@@ -94,7 +108,7 @@ define(['altair/facades/declare',
                                 this.nexus('cartridges/Extension').extend(a).then(hitch(this, function () {
 
                                     //startup the module
-                                    if(a.startup) {
+                                    if(a.startup && shouldStartup) {
                                         a.startup(options).then(hitch(d, 'resolve')).otherwise(hitch(d, 'reject'));
                                     } else {
                                         d.resolve(a);

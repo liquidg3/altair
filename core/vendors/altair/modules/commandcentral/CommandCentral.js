@@ -121,9 +121,7 @@ define(['altair/facades/declare',
              */
             refreshCommanders: function () {
 
-                var def = new this.Deferred();
-
-                this.emit('register-commanders').then(this.hitch(function (results) {
+                return this.emit('register-commanders').then(this.hitch(function (results) {
 
                     var commanders  = {},
                         list        = [],
@@ -159,11 +157,12 @@ define(['altair/facades/declare',
                     }));
 
                     //after all commanders are instantiated and started up, resolve the deferred with them all
-                    all(list).then(hitch(def, 'resolve', this._commanders)).otherwise(hitch(def,'reject'));
+                    return all(list);
 
-                })).otherwise(hitch(def,'reject'));
+                })).then(this.hitch(function () {
+                    return this._commanders;
+                }));
 
-                return def;
             }
 
 

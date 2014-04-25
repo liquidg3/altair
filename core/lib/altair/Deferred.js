@@ -301,6 +301,19 @@ define([
             return this.then(callback, errback, progback);
         };
 
+        this.always = function(callbackOrErrback){
+            // summary:
+            //		Add a callback to be invoked when the promise is resolved
+            //		or rejected.
+            // callbackOrErrback: Function?
+            //		A function that is used both as a callback and errback.
+            // returns: dojo/promise/Promise
+            //		Returns a new promise for the result of the callback/errback.
+
+            return this.then(callbackOrErrback, callbackOrErrback);
+        };
+
+
         this.cancel = promise.cancel = function(reason, strict){
             // summary:
             //		Inform the deferred it may cancel its asynchronous operation.

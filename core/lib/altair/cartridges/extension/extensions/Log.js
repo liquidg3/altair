@@ -15,6 +15,14 @@ define(['altair/facades/declare',
 
             declare.safeMixin(module, {
                 log: debug(module.name), //enable debugging for '{{vendor}}:{{Name}}'
+                toString: function () {
+                    if(this.name) {
+                        return '[object ' + this.name + ']';
+                    } else {
+                        return '[object Object]';
+                    }
+
+                }
             });
 
             return this.inherited(arguments);

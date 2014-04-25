@@ -5,12 +5,14 @@ define(['altair/facades/declare',
         'altair/facades/mixin',
         'altair/Lifecycle',
         'altair/facades/hitch',
+        'lodash',
         '../facades/css'
 
 ], function (declare,
              mixin,
              Lifecycle,
              hitch,
+             _,
              css) {
 
 
@@ -108,6 +110,16 @@ define(['altair/facades/declare',
             }
 
             return null;
+        },
+
+        /**
+         * Will tell us if a certain command by name exists
+         *
+         * @param named
+         * @returns {boolean}
+         */
+        hasCommand: function (named) {
+            return _.has(this.options.commands, named);
         }
 
 

@@ -13,6 +13,11 @@ define(['altair/facades/declare',
         altair:         null,
         name:           false,
         constructor: function (cartridge, altair) {
+
+            if(!cartridge) {
+                throw new Error('You must pass your extension the Extension cartridge');
+            }
+
             this.cartridge  = cartridge;
             this.altair     = altair || cartridge.altair;
             if(!this.name) {

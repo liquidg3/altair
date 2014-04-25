@@ -8,7 +8,7 @@ define(['dojo/_base/declare',
 
         return declare([_Base], {
 
-            key: 'email'
+            key: 'date',
 
         });
     });

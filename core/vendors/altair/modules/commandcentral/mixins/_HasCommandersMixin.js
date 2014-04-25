@@ -1,9 +1,7 @@
 define(['altair/facades/declare',
-        'altair/facades/hitch',
         'altair/Lifecycle',
         'altair/events/Emitter'
 ], function (declare,
-             hitch,
              Lifecycle,
              Emitter) {
 
@@ -12,7 +10,7 @@ define(['altair/facades/declare',
 
         startup: function () {
 
-            this.on('altair:CommandCentral::register-commanders').then(hitch(this, 'registerCommanders'));
+            this.on('altair:CommandCentral::register-commanders').then(this.hitch('registerCommanders'));
 
             return this.inherited(arguments);
         },
@@ -25,13 +23,13 @@ define(['altair/facades/declare',
         */
         registerCommanders: function (e) {
 
-            return this.parseConfig('configs/commanders.json').then(hitch(this, function (commanders) {
+            return this.parseConfig('configs/commanders').then(this.hitch(function (commanders) {
 
                 //resolve relative paths
-                Object.keys(commanders).forEach(hitch(this, function (alias) {
+                Object.keys(commanders).forEach(this.hitch(function (alias) {
 
                     if(!commanders[alias].path) {
-                        throw "You must pass your commander a path";
+                        throw new Error("You must pass your " + alias + " commander a path");
                     }
 
                     if(commanders[alias].path.search('::') === -1) {
@@ -41,6 +39,8 @@ define(['altair/facades/declare',
 
                 return commanders;
 
+            })).otherwise(this.hitch(function (err) {
+                this.log(err);
             }));
 
         }

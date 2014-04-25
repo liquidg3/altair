@@ -1,7 +1,6 @@
 # Terms
 
-Below are terms, definitions, classes, etc. used throughout Altair. If you are ever having a conversation with someone
-about Altair, having at least some familiarity with these terms will make life easier.
+Below are terms, definitions, classes, etc. used throughout Altair.
 
 ## Nexus
 - A strategy pattern'esque registry available throughout Altair
@@ -18,10 +17,10 @@ about Altair, having at least some familiarity with these terms will make life e
 - If mixes in Lifecycle; .startup() is executed on each module, sorted by dependency, right after the Module Cartridge is started
 - If mixes in Lifecycle; .execute() is excuted right after startup() on each module
 
-## Subcomponent
+## Sub component
 - Any AMD module, mixin, plugin, or facade that lives inside of your module
 - A great example would be an adapter (when using _HasAdaptersMixin)
-- Almost everything you create with the foundry() extension would be considered a subcomponent
+- Almost everything you create with the foundry() extension would be considered a sub component
 
 ## Lifecycle
 - An object with 3 states, startup, execute, teardown

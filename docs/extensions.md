@@ -10,32 +10,37 @@ Below are some extensions that come with Altair and the methods they mixin.
 Allows you to create instance of classes by their nexus path. Everything created through the Foundry extension is
 extended through the Extension system.
 
-    this.foundry('path/to/Class').then(function (obj) {
+ - **foundry(pathOrNexusId[, options, shouldAutoStart])**: loads, instantiates, and optionally calls startup() on any AMD module.
 
-        console.dir(obj);
 
-        //Classes created through foundry have access to some pretty helpful stuff, here is the API available to them:
+**Examples**
+```js
+this.foundry('path/to/Class').then(function (obj) {
 
-        //the module we sit under, altair:CommandCentral::adapters/Prompt would return an instance if the altair:CommandCentral module
-        var  module = obj.module;
+    console.dir(obj);
 
-        //add an event listener just like you would from a module
-        obj.on('altair:CommandCentral::register-adapters').then().otherwise();
+    //the module we sit under, altair:CommandCentral::adapters/Prompt would return an instance if the altair:CommandCentral module
+    var  module = obj.module;
 
-        //emit an event like a module
-        obj.emit('altair:PostMaster::did-receive-email').then().otherwise();
+    //events extionsion gives us on/emit
+    obj.on('altair:CommandCentral::register-adapters').then().otherwise();
+    obj.emit('did-receive-email').then().otherwise();
 
-    }).otherwise(function (err) {
-        console.log(err);
-    });
+}).otherwise(function (err) {
+    this.log(err);
+});
 
-    //using nexus path (vendor:Module)
-    this.foundry('titan:Alfred::path/to/Class').then(function (obj) {
-        console.dir(obj);
-    }).otherwise(function (err) {
-        console.log(err);
-    });
+//using nexus path (vendor:Module)
+this.foundry('titan:Alfred::path/to/Class').then(function (obj) {
+    console.dir(obj);
+}).otherwise(function (err) {
+    console.log(err);
+});
+```
+### Log
+This is currently a simple wapper for [visionmedia/debug](https://github.com/visionmedia/debug);
 
+ - **log(anything[,anything[,...]])** Logs anything to the console. You should always use this and never console.log directly.
 
 ### Apollo
 

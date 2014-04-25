@@ -14,7 +14,7 @@
  *
  * Allowing you to go
  *
- * this.adapter('smtp').then(hitch(this, function (adapter) {
+ * this.adapter('smtp').then(this.hitch(function (adapter) {
  *      adapter.send(..., ...);
  * }));
  *
@@ -53,12 +53,12 @@ define(['altair/facades/declare',
          */
         startup: function () {
 
-            this.on('register-adapters').then(hitch(this, 'registerAdapters'));
+            this.on('register-adapters').then(this.hitch('registerAdapters'));
 
-            return this.inherited(arguments).then(hitch(this, function () {
+            return this.inherited(arguments).then(this.hitch(function () {
 
                 //if there is a selected adapter, load it first, then set it to our ourselves, then be done
-                return (this.values.selectedAdapters && typeof this.values.selectedAdapters[0] === 'string') ? this.adapter(this.values.selectedAdapters[0]).then(hitch(this, function (a) {
+                return (this.values.selectedAdapters && typeof this.values.selectedAdapters[0] === 'string') ? this.adapter(this.values.selectedAdapters[0]).then(this.hitch(function (a) {
                     this.values.selectedAdapters[0] = a;
                     return this;
                 })) : this;
@@ -108,7 +108,7 @@ define(['altair/facades/declare',
             //load it from scratch, then cache
             else {
 
-                d = this.foundry(named).then(hitch(this, function (adapter) {
+                d = this.foundry(named).then(this.hitch(function (adapter) {
                     this._adaptersCache[named] = adapter;
                     return adapter;
                 }));
@@ -155,6 +155,11 @@ define(['altair/facades/declare',
                 schema.append('selectedAdapters', 'nexus', {
                     label: 'Selected Adapters',
                     many:  true
+                });
+
+                schema.append('selectedAdapter', 'nexus', {
+                    label: 'Selected Adapter',
+                    many:  false
                 });
 
             }

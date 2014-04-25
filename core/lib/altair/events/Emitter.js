@@ -110,7 +110,7 @@ define(['altair/facades/declare',
          */
         emit: function (event, data, config) {
 
-            event = this._normalizeEvent(event, data);
+            event = this.coerceEvent(event, data);
 
             //build a list of results all listeners...
             var list = [],
@@ -212,7 +212,7 @@ define(['altair/facades/declare',
          * @returns {altair.io.core.lib.altair.events.Event}
          * @private
          */
-        _normalizeEvent: function (eventName, data) {
+        coerceEvent: function (eventName, data) {
             return (typeof eventName === 'string') ? new Event(eventName, data, this) : eventName;
         }
 

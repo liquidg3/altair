@@ -17,6 +17,10 @@ define(['dojo/_base/declare',
                         label: 'A key/value pair of options the user can select from.'
                     }
                 }
+            },
+
+            toJsValue: function (value, options, config) {
+                return (value) ? value.toString() : value;
             }
 
 

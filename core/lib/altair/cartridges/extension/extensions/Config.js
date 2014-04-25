@@ -74,6 +74,11 @@ define(['altair/facades/declare',
                             }));
 
                         } catch (e) {
+
+                            if(this.log) {
+                                this.log(e);
+                            }
+
                             deferred.reject( e, false ); //reject and suppress error logging
                         }
 

@@ -26,13 +26,15 @@
  */
 define(['altair/facades/declare',
         './_Base',
-        'dojo/Deferred',
+        'altair/Deferred',
+        'lodash',
         'altair/facades/hitch',
         'altair/events/Emitter'],
 
     function (declare,
               _Base,
               Deferred,
+              _,
               hitch,
               Emitter) {
 
@@ -51,7 +53,7 @@ define(['altair/facades/declare',
 
             var orgEvent = event;
 
-            if(event.indexOf('::') !== -1) {
+            if(_.isString(event) && event.indexOf('::') !== -1) {
 
                 var eventParts = event.split('::');
 

@@ -79,7 +79,14 @@ define(['altair/facades/declare',
             }
 
             //remove the deferred after it's been resolved
-            this.deferred.promise.always(this._deferredAutoRemover(this.deferred));
+            if(!this.deferred.always) {
+
+                this.deferred.reject(new Error('Invalid deferred type, use altair/Deferred.'));
+
+            } else {
+
+                this.deferred.always(this._deferredAutoRemover(this.deferred));
+            }
 
             //tracking
             this._startupDeferred = this.deferred;
@@ -110,7 +117,7 @@ define(['altair/facades/declare',
             this._startupDeferred = null;
 
             //remove the deferred after it's been resolved
-            this.deferred.promise.always(this._deferredAutoRemover(this.deferred));
+            this.deferred.always(this._deferredAutoRemover(this.deferred));
 
             return this.deferred;
 
@@ -129,7 +136,7 @@ define(['altair/facades/declare',
             }
 
             //remove the deferred after it's been resolved
-            this.deferred.promise.always(this._deferredAutoRemover(this.deferred));
+            this.deferred.always(this._deferredAutoRemover(this.deferred));
 
             return this.deferred;
 
