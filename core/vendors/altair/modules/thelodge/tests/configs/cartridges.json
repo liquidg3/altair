@@ -10,6 +10,18 @@
         }
     },
     {
+        "path": "altair/cartridges/module/Module",
+        "options": {
+            "paths":    ["core/vendors", "community/vendors"],
+            "modules":  ["altair:Events", "altair:CommandCentral", "altair:Adapters", "altair:TheLodge"],
+            "moduleOptions": {
+                "altair:CommandCentral": {
+                    "autostart": false
+                }
+            }
+        }
+    },
+    {
         "path": "altair/cartridges/extension/Extension",
         "options": {
             "extensions": [
@@ -22,18 +34,6 @@
                 "altair/cartridges/extension/extensions/Events",
                 "altair/cartridges/extension/extensions/Foundry"
             ]
-        }
-    },
-    {
-        "path": "altair/cartridges/module/Module",
-        "options": {
-            "paths":    ["core/vendors", "community/vendors"],
-            "modules":  ["altair:Events", "altair:CommandCentral", "altair:Adapters", "altair:TheLodge"],
-            "moduleOptions": {
-                "altair:CommandCentral": {
-                    "autostart": false
-                }
-            }
         }
     }
 ]

@@ -6,11 +6,11 @@
  * is ready. Currently, this is things like Nexus (Dependency Injection), Apollo (ORM), Cache, Database, and a few others.
  * See core/config/altair.json to see the current config.
  */
-define(['dojo/_base/declare',
-        'dojo/Deferred',
-        'dojo/_base/lang',
+define(['altair/facades/declare',
+        'altair/Deferred',
+        'altair/facades/hitch',
         'dojo/has'],
-    function (declare, Deferred, lang) {
+    function (declare, Deferred, hitch) {
 
         "use strict";
 
@@ -31,18 +31,22 @@ define(['dojo/_base/declare',
         },
 
         /**
-         * Add an un-started cartridge and I'll add it to the system and start it up.
+         * Add an un-started cartridge and I'll add it to the system and start it up. optionally i will execute it.
          *
          * @param cartidge
-         * @returns dojo.Deferred
+         * @param execute should I execute the cartridge after startup??
+         * @returns altair.Deferred
          */
-        addCartridge: function (cartidge) {
-
+        addCartridge: function (cartidge, execute) {
 
             this._cartridges[cartidge.name] = cartidge;
 
             return cartidge.startup().then(function (cartridge) {
-                return cartridge.execute();
+                if(execute !== false) {
+                    return cartridge.execute();
+                } else {
+                    return cartridge;
+                }
             });
 
 
@@ -101,6 +105,7 @@ define(['dojo/_base/declare',
          * @returns {boolean}
          */
         hasCartridges: function (namees) {
+
             var i;
 
             for(i = 0; i < namees.length; i++) {
@@ -121,22 +126,45 @@ define(['dojo/_base/declare',
          */
         addCartridges: function (cartridges) {
 
-            var deferred = new Deferred();
+            var deferred = new Deferred(),
+                deferred2 = new Deferred(),
+                started  = [];
 
-            var load = lang.hitch(this, function () {
+            //add all modules
+            var add = hitch(this, function () {
 
                 var cartridge = cartridges.shift();
 
                 if(cartridge) {
-                    this.addCartridge(cartridge).then(load).otherwise(lang.hitch(deferred, 'reject'));
+                    started.push(cartridge);
+                    this.addCartridge(cartridge, false).then(add).otherwise(hitch(deferred, 'reject'));
                 } else {
                     deferred.resolve(this);
                 }
             });
 
-            load();
+            add();
 
-            return deferred;
+            //execute module
+            var execute = hitch(this, function () {
+
+                var cartridge = started.shift();
+
+                if(cartridge) {
+                    cartridge.execute().then(execute).otherwise(function (err) {
+                        deferred2.reject(err);
+                    });
+                } else {
+                    deferred2.resolve(this);
+                }
+            });
+
+            return deferred.then(hitch(this, function () {
+
+                execute();
+                return deferred2;
+
+            }));
 
         }
 

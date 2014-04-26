@@ -1,24 +1,25 @@
 define(['doh/runner',
         'altair/cartridges/module/Foundry',
         'altair/Altair',
+        'altair/events/Emitter',
+        'altair/Deferred',
         'altair/facades/hitch'],
 
     function (doh,
               Foundry,
               Altair,
+              Emitter,
+              Deferred,
               hitch) {
 
-    doh.register('module-foundry', [
+    doh.register('module-foundry', {
 
-        /**
-         * Make sure we can construct a cache cartridge instance
-         */
-        function () {
+        "test can construct a cache cartridge instance": function (t) {
 
             var altair      = new Altair(),
                 foundry     = new Foundry(altair, {});
 
-            doh.assertTrue(!!foundry, 'Basic instantiation failed.');
+            t.t(!!foundry, 'Basic instantiation failed.');
 
         },
 
@@ -27,27 +28,66 @@ define(['doh/runner',
          * modules back, it should be in front. This could crash hard if it does not work (meaning it may not trigger
          * the failure callback).
          */
-        function (t) {
+        "test can construct forge modules": function (t) {
 
             var altair      = new Altair(),
-                foundry     = new Foundry(altair, {}),
-                deferred    = new doh.Deferred();
+                foundry     = new Foundry(altair, {});
 
-            foundry.build({
+            return foundry.build({
                 paths: [
-                    'core/tests/modules/vendors'
+                    'core/tests/modules/vendors/'
                 ],
                 modules: [ "_altair:Mock", "altair:Mock"]
             }).then(function (modules) {
                 t.is(modules[0].name, 'altair:Mock', 'Passing modules to foundry did not produce expected results.');
                 t.is(modules[1].name, '_altair:Mock', 'Passing modules to foundry did not produce expected results.');
-                deferred.resolve(true);
-            }).otherwise(hitch(deferred, 'reject'));
+            });
+
+        },
+
+        "test event emitter delegation": function (t) {
+
+            var altair      = new Altair(),
+                foundry     = new Foundry(altair, {}),
+                deferred    = new Deferred(),
+                delegate    = new Emitter(),
+                expected    = ['will-forge-module', 'did-forge-module'],
+                listener    = function (e) {
+
+                    if(expected.indexOf(e.name) == -1) {
+                        deferred.reject('Unknown event fired while forging a module');
+                    } else {
+
+                        _.pull(expected, e.name);
+
+                        if(expected.length == 0) {
+                            deferred.resolve();
+                        }
+
+                    }
+
+            };
+
+
+            //listen for emissions
+            delegate.on('will-forge-module').then(listener);
+            delegate.on('did-forge-module').then(listener);
+
+            foundry.build({
+                eventDelegate: delegate,
+                paths: [
+                    'core/tests/modules/vendors/'
+                ],
+                modules: [ "altair:Mock"]
+            }).then(function (modules) {
+                t.is(modules[0].name, 'altair:Mock', 'Passing modules to foundry did not produce expected results.');
+            });
 
             return deferred;
+
         }
 
-    ]);
+    });
 
 
 });

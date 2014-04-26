@@ -5,6 +5,8 @@
  * Events:
  *  will-startup-module
  *  did-startup-module
+ *  will-forge-module
+ *  did-forge-module
  *
  *  Nexus:
  *   Cartridges/Module
@@ -33,10 +35,9 @@ define(['altair/facades/declare',
               Lifecycle,
               nodePath,
               Foundry,
-              array,
-              Emitter) {
+              array) {
 
-    return declare([_Base, Emitter], {
+    return declare([_Base], {
 
         name:  'module',
 
@@ -75,7 +76,7 @@ define(['altair/facades/declare',
              * Was a foundry passed? if not, lets create one
              */
             if (!_options || !_options.foundry) {
-                this.foundry = new Foundry();
+                this.foundry = new Foundry({ eventDelegate: this });
 
             } else {
                 throw new Error("Not finished, should this set directly or assume something needs to be loaded?");
@@ -101,9 +102,7 @@ define(['altair/facades/declare',
          */
         execute: function () {
 
-            this.deferred = new Deferred();
-
-            this.buildModules(this.options.modules).then(hitch(this, function (modules) {
+            this.deferred = this.buildModules(this.options.modules).then(hitch(this, function (modules) {
 
                 this.modules = [];
 
@@ -120,12 +119,16 @@ define(['altair/facades/declare',
                     nexus.addResolver(resolver);
                 }
 
-                //startup all modules, then return ourselves to the deferred
-                return this.injectModules(modules).then(hitch(this, function (modules) {
-                    this.deferred.resolve(this);
-                }));
+               return modules;
 
-            })).otherwise(hitch(this.deferred, 'reject'));
+            })).then(this.hitch(function (modules) {
+
+                //startup all modules, then return ourselves to the deferred
+                return this.injectModules(modules);
+
+            })).then(this.hitch(function () {
+                return this;
+            }));
 
             return this.inherited(arguments);
         },
@@ -141,34 +144,21 @@ define(['altair/facades/declare',
             //intentional shallow copy
             var _modules    = modules.slice(0),
                 deferred    = new Deferred(),
-                list        = [],
-                load,
+                started     = [],
+                startup,
+                execute,
                 options;
 
             this.modules = this.modules.concat(_modules);
 
             //add to local store of modules by name
             _modules.forEach(hitch(this, function (module) {
-
                 this.modulesByName[module.name.toLowerCase()] = module;
-
-
-                //if we have extensions
-                if(this.altair.hasCartridge('extension')) {
-
-                    //setup modules to take advantage of certain extensions
-                    module.packagePath   = './package';
-                    module.schemaPath    = './configs/schema';
-
-                    //extend the module through the extension module
-                    list.push(this.altair.cartridge('extension').extend(module));
-
-                }
-
             }));
 
             //lets startup all modules, ensuring one is not started until the one before it is
-            load = hitch(this, function () {
+            startup = hitch(this, function () {
+
                 var module = _modules.shift();
 
                 if(module) {
@@ -188,9 +178,13 @@ define(['altair/facades/declare',
                                 module: module
                             });
 
-                            module.execute().then(load).otherwise(hitch(deferred, 'reject'));
+                            started.push(module);
 
-                        })).otherwise(hitch(deferred, 'reject'));
+                            startup();
+
+                        })).otherwise(function (err) {
+                            deferred.reject(err);
+                        });
 
                     }
                     //...but it's not required
@@ -200,17 +194,32 @@ define(['altair/facades/declare',
                             module: module
                         });
 
-                        load();
+                        startup();
 
                     }
                 } else {
-                    deferred.resolve(modules);
+
+                    execute();
 
                 }
 
             });
 
-            all( list ).then( load ).otherwise( hitch( deferred, 'reject' ) );
+
+            execute = function () {
+
+                var m = started.shift();
+
+                if(m) {
+                    m.execute().then(execute).otherwise(hitch(deferred, 'reject'));
+                } else {
+                    deferred.resolve();
+                }
+
+            };
+
+            startup();
+
 
             return deferred;
 
@@ -249,6 +258,7 @@ define(['altair/facades/declare',
         buildModules: function (modules) {
 
             return this.foundry.build({
+                eventDelegate: this,
                 paths: this.paths,
                 modules: modules
             });

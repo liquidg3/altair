@@ -25,19 +25,26 @@ define(['altair/facades/declare',
 
             return this.parseConfig('configs/commanders').then(this.hitch(function (commanders) {
 
+                var list = [];
+
                 //resolve relative paths
                 Object.keys(commanders).forEach(this.hitch(function (alias) {
 
-                    if(!commanders[alias].path) {
+                    var name = commanders[alias].path;
+
+                    if(!name) {
                         throw new Error("You must pass your " + alias + " commander a path");
                     }
 
-                    if(commanders[alias].path.search('::') === -1) {
-                        commanders[alias].path = this.name + '::' + commanders[alias].path;
+                    if(name.search('::') === -1) {
+                        name = this.name + '::' + name;
                     }
+
+                    list.push(this.foundry(name));
+
                 }));
 
-                return commanders;
+                return all(list);
 
             })).otherwise(this.hitch(function (err) {
                 this.log(err);

@@ -4,7 +4,6 @@
 define(['altair/facades/declare',
         'dojo/_base/lang',
         '../_Base',
-        'dojo/Deferred',
         'apollo/Apollo',
         'require',
         'apollo/Schema'
@@ -13,7 +12,6 @@ define(['altair/facades/declare',
         function (declare,
               lang,
               _Base,
-              Deferred,
               Apollo,
               require,
               Schema) {
@@ -50,7 +48,7 @@ define(['altair/facades/declare',
 
                 }
 
-                this.deferred   = new Deferred();
+                this.deferred   = new this.Deferred();
                 this.apollo     = new Apollo();
 
                 require( _options.propertyTypes, lang.hitch(this, function () {

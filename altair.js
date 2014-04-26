@@ -30,6 +30,7 @@ dojoConfig = {
     has: {
         'config-tlmSiblingOfDojo': 0 //for relative path resolution from require() - setting to true breaks it, dojo.js 944
     },
+
     packages: [
         {
             name: 'lodash',
@@ -57,6 +58,9 @@ dojoConfig = {
             location: path.join(base, "core/lib/apollo")
         }
     ],
+    paths: {
+        'dojo/_base/declare': path.join(base, 'core/lib/altair/facades/declare2')
+    },
     deps: [
         argv.bootstrap
     ]

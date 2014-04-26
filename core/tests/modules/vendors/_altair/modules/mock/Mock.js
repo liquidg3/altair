@@ -1,7 +1,7 @@
 /**
  * Test module
  */
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         'altair/Lifecycle',
         'altair/modules/mock/mixins/_MockMixin'
 ], function (declare, Lifecycle, _MockMixin) {

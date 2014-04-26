@@ -2,23 +2,24 @@
  * Bootstrap Altair contexts based on a config
  */
 require(['altair/TestRunner',
-         'altair/plugins/config!core/config/test'], function (TestRunner, config) {
+         'altair/plugins/node!debug',
+         'altair/plugins/config!core/config/test'], function (TestRunner, debug, config) {
 
+    debug.enable('altair:test');
+    debug = debug('altair:test');
 
     var runner = new TestRunner();
 
     runner.startup(config).then(function () {
 
-        console.log('-- Tests Loaded--');
+        debug('tests loaded');
 
         runner.execute().then(function () {
-            console.log('-- Tests Finished --');
-        }).otherwise(function () {
-            console.error('-- Tests Failed --');
+            debug('tests complete');
+        }).otherwise(function (e) {
+            debug('tests failed');
         });
 
-    }).otherwise(function (err) {
-//        console.error(err);
     });
 
 

@@ -8,12 +8,19 @@ define(['altair/facades/declare',
 
         name: 'mock',
         foo: 'bar',
-        execute: function (module) {
+        extend: function (Module) {
 
-            declare.safeMixin(module, {
+            Module.extend({
+
+                _count: 0,
                 foo: function () {
                     return 'bar';
+                },
+
+                counter: function () {
+                    return this._count ++;
                 }
+
             });
 
             return this.inherited(arguments);

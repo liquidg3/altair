@@ -1,4 +1,4 @@
-define(['dojo/_base/declare', 'dojo/Deferred', './_Base'], function (declare, Deferred, _Base) {
+define(['altair/facades/declare', 'dojo/Deferred', './_Base'], function (declare, Deferred, _Base) {
 
     return declare([_Base], {
 

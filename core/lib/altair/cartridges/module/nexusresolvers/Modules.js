@@ -2,7 +2,7 @@
  * The nexus resolver used to let users gain access to modules via nexus
  */
 define([
-    'dojo/_base/declare',
+    'altair/facades/declare',
     'altair/cartridges/nexus/_ResolverBase'
 ],
 function (declare,

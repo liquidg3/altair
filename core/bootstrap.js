@@ -6,6 +6,7 @@ require(['altair/Altair',
         'altair/cartridges/Foundry',
         'altair/facades/hitch',
         'altair/facades/mixin',
+        'altair/plugins/node!debug',
         'altair/plugins/config!core/config/altair.json?env=' + global.env],
 
     function (Altair,
@@ -13,8 +14,13 @@ require(['altair/Altair',
               Foundry,
               hitch,
               mixin,
+              debug,
               config) {
 
+        /**
+         * Simple debug logging
+         */
+        debug = debug('altair:Altair');
 
         /**
          * Bring in the packages from the config, this should point to at least app and core. Even though core is not
@@ -53,22 +59,22 @@ require(['altair/Altair',
             altair      = new Altair({ paths: paths });
             foundry     = new Foundry(altair);
 
-            console.log('Creating cartridge foundry. Adding', config.cartridges.length, 'cartridges.');
+            debug('creating cartridge foundry. adding', config.cartridges.length, 'cartridges.');
 
             foundry.build(config.cartridges).then(function (cartridges) {
 
-                console.log('Cartridges created. Adding to Altair for startup.');
+                debug('cartridges created. adding to altair for startup.');
 
                 /**
                  * Add cartridges
                  */
-                altair.addCartridges(cartridges).then(function () {
+                return altair.addCartridges(cartridges).then(function () {
 
-                    console.log('Cartridges started.  ');
+                    debug('cartridges started.');
 
-                }).otherwise(hitch(console, 'error'));
+                });
 
-            }).otherwise(hitch(console, 'error'));
+            }).otherwise(debug);
 
         });
 

@@ -20,7 +20,6 @@
  *
  */
 define(['altair/facades/declare',
-        'altair/facades/hitch',
         'altair/facades/mixin',
         'altair/Lifecycle',
         'altair/events/Emitter',
@@ -28,7 +27,6 @@ define(['altair/facades/declare',
         'apollo/_HasSchemaMixin'],
 
     function (declare,
-              hitch,
               mixin,
               Lifecycle,
               Emitter,
@@ -95,7 +93,7 @@ define(['altair/facades/declare',
                     d = this.values.selectedAdapters[0];
 
                 } else {
-                    d.reject('No ' + this.name + ' adapter selected.');
+                    d.reject(new Error('No ' + this.name + ' adapter selected.'));
                 }
 
             }

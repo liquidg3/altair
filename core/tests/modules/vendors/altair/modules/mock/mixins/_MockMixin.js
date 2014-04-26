@@ -1,7 +1,7 @@
 /**
  * Text mixin
  */
-define(['dojo/_base/declare'
+define(['altair/facades/declare'
 ], function (declare) {
 
 

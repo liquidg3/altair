@@ -1,7 +1,7 @@
 /**
  * Test module, depends on altair:Events module
  */
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         'dojo/_base/lang',
         'altair/events/Emitter'
 ], function (declare,
@@ -9,7 +9,7 @@ define(['dojo/_base/declare',
              Emitter) {
 
 
-    return declare('altair/modules/mockwithevents2/MockWithEvents2', [Emitter], {
+    return declare([Emitter], {
 
     });
 });

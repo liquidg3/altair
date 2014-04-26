@@ -20,7 +20,7 @@
  * you must nest both callbacks under the same event
  *
  */
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         'altair/facades/hitch',
         'altair/Lifecycle',
         'altair/events/Emitter'

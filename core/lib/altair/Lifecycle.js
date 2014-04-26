@@ -17,7 +17,7 @@
  *      this.deferred = new Deferred();
  *
  *      //run your complicated, time consuming setup
- *      fs.someLongComplicatedAsyncProcess(lang.hitch(this, function (results) {
+ *      fs.someLongComplicatedAsyncProcess(this.hitch(function (results) {
  *
  *          //do something with your results
  *          this.results = results;
@@ -37,9 +37,11 @@
  *
  */
 define(['altair/facades/declare',
-        'altair/Deferred'],
+        'altair/Deferred',
+        'altair/facades/hitch'],
             function (declare,
-                      Deferred) {
+                      Deferred,
+                      hitch) {
 
     "use strict";
 
@@ -55,6 +57,17 @@ define(['altair/facades/declare',
 
         constructor: function (options) {
             this.options = options;
+        },
+
+        /**
+         * Returns a function bound using hitch rules to ourselves
+         *
+         * @returns {function}
+         */
+        hitch: function () {
+            var args = Array.prototype.slice.call(arguments, 0);
+            args.unshift(this);
+            return hitch.apply(hitch, args);
         },
 
         /**

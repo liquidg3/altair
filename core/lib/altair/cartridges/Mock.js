@@ -1,7 +1,7 @@
 /**
  * TEST CARTRIDGE ONLY ** DO NOT USE BECAUSE IT IS REALLY BORING **
  */
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         './_Base'],
 
 function (declare, _Base) {

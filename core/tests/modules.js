@@ -108,28 +108,6 @@ define(['doh/runner',
         },
 
 
-        "test foo extension": function (t) {
-
-            var altair      = new Altair(),
-                mock        = new declare(null, {})(),
-                cartridge   = new ExtensionCartridge(altair, {
-                    extensions: [
-                        'altair/cartridges/extension/extensions/Mock'
-                    ]
-                });
-
-            return cartridge.startup().then(function () {
-
-                return cartridge.extend(mock);
-
-            }).then(function () {
-
-                t.is('bar', mock.foo(), 'Mock plugin failed to create foo() method.');
-
-            });
-
-        },
-
         "test that module cartridge can create some modules when passed through to altair": function (t) {
 
             var altair      = new Altair(),

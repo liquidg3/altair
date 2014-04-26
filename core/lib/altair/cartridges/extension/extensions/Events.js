@@ -40,8 +40,7 @@ define(['altair/facades/declare',
 
 
         /**
-         * Will apply the action to the parent, but use the event name to resolve the parent to
-         * something from nexus if necessary
+         * Will apply the action to the parent, but use the event name to resolve a new parent from nexus if necessary
          *
          * @param parent
          * @param event
@@ -88,12 +87,12 @@ define(['altair/facades/declare',
 
         },
 
-        execute: function (module) {
+        extend: function (Module) {
 
             //if they are an event emmiter
-            if(module.isInstanceOf(Emitter)) {
+            if(Module.prototype.isInstanceOf(Emitter)) {
     
-                declare.safeMixin(module, {
+                Module.extend({
 
                     /**
                      * We interject Nexus support into the event system.

@@ -1,4 +1,4 @@
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         'apollo/propertytypes/_Base'],
 
     function (declare,

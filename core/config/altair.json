@@ -19,6 +19,10 @@
                 }
             },
             {
+                "path": "altair/cartridges/module/Module",
+                "options": { "$ref": "./modules.json" }
+            },
+            {
                 "path": "altair/cartridges/extension/Extension",
                 "options": {
                     "extensions": [
@@ -33,10 +37,6 @@
                         "altair/cartridges/extension/extensions/Log"
                     ]
                 }
-            },
-            {
-                "path": "altair/cartridges/module/Module",
-                "options": { "$ref": "./modules.json" }
             }
         ]
 

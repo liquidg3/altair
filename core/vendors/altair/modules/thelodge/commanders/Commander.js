@@ -1,4 +1,4 @@
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         '../../commandcentral/mixins/_IsCommanderMixin',
         'altair/facades/hitch'
 ], function (declare,

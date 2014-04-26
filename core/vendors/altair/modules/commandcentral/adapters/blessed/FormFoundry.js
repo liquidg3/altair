@@ -1,4 +1,4 @@
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
     'altair/modules/commandcentral/adapters/_Base',
     'dojo/node!blessed',
         'altair/facades/mixin'

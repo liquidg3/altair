@@ -21,15 +21,11 @@
  * returns a dojo/Deferred
  *
  */
-define(['dojo/_base/declare',
-        'dojo/_base/lang',
-        '../_Base',
-        'dojo/Deferred'],
+define(['altair/facades/declare',
+        '../_Base'],
 
     function (declare,
-              lang,
-              _Base,
-              Deferred) {
+              _Base) {
 
     return declare([_Base], {
 
@@ -47,11 +43,11 @@ define(['dojo/_base/declare',
 
             var _options = options || this.options;
 
-            this.deferred = new Deferred();
+            this.deferred = new this.Deferred();
 
             if(_options.plugin) {
 
-                require([_options.plugin.path], lang.hitch(this, function ( Plugin ) {
+                require([_options.plugin.path], this.hitch(function ( Plugin ) {
                     this.plugin = new Plugin( this );
                     this.plugin.startup( _options.plugin.options );
                     this.deferred.resolve( this );

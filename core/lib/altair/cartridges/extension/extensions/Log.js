@@ -7,14 +7,10 @@ define(['altair/facades/declare',
 
     return declare([_Base], {
 
-        name: 'log',
-        execute:        function (module) {
+        name:  'log',
+        extend: function (Module) {
 
-            //auto enable for now
-            debug.enable(module.name);
-
-            declare.safeMixin(module, {
-                log: debug(module.name), //enable debugging for '{{vendor}}:{{Name}}'
+            Module.extend({
                 toString: function () {
                     if(this.name) {
                         return '[object ' + this.name + ']';
@@ -26,6 +22,16 @@ define(['altair/facades/declare',
             });
 
             return this.inherited(arguments);
+        },
+
+        execute: function (module) {
+
+            declare.safeMixin(module, {
+                log: debug(module.name)
+            });
+
+            //auto enable for now
+            debug.enable(module.name);
         }
 
     });

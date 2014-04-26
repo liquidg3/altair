@@ -1,4 +1,4 @@
-define(['dojo/_base/declare'],
+define(['altair/facades/declare'],
     function (declare) {
 
         return declare('altair/modules/adapters/adapters/Mock1', null, {

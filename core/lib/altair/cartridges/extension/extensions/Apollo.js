@@ -8,15 +8,13 @@ define(['altair/facades/declare',
          './_Base',
          'altair/facades/hitch',
          'apollo/_HasSchemaMixin',
-         'apollo/Schema',
-         'altair/Deferred'],
+         'apollo/Schema'],
 
     function (declare,
               _Base,
               hitch,
               _HasSchemaMixin,
-              Schema,
-              Deferred) {
+              Schema) {
 
     return declare([_Base], {
 
@@ -24,13 +22,25 @@ define(['altair/facades/declare',
 
         startup: function () {
 
+            this.deferred = new this.Deferred();
+
             //we have to make sure we have our dependent plugins loaded
             if(!this.altair.hasCartridge('apollo')) {
-                throw new Error("You must have the 'apollo' cartridge enabled.");
+                this.deferred.reject(new Error("You must have the 'apollo' cartridge enabled."));
             }
             //only 1 error at a time, now check for the config plugin
             else if(!this.cartridge.hasExtension('config')) {
-                throw new Error("Please make sure you have the 'config' enabled.");
+                this.deferred.reject(new Error("Please make sure you have the 'config' enabled."));
+            } else {
+                this.deferred.resolve(this);
+            }
+
+            //if the module cartridge is installed, hook into forge
+            if(this.altair.hasCartridge('module')) {
+
+                var m = this.altair.cartridge('module');
+                m.on('did-forge-module').then(this.hitch('onDidForgeModule'));
+
             }
 
             return this.inherited(arguments);
@@ -38,18 +48,17 @@ define(['altair/facades/declare',
         },
 
         /**
-         * Called once for each module.
+         * Extend prototype to mixin options to check if they match fields
          *
-         * @param module
-         * @returns {*}
+         * @param Module
          */
-        execute: function (module) {
+        extend: function (Module) {
 
-            if(module.isInstanceOf(_HasSchemaMixin)) {
+            if(Module.prototype.isInstanceOf(_HasSchemaMixin) && !Module.prototype._willMixinOnStartup) {
 
                 //override startup to mixin options as values
-                declare.safeMixin(module, {
-
+                Module.extendBefore({
+                    _willMixinOnStartup: true,
                     startup: function (options) {
 
                         if(options) {
@@ -59,8 +68,21 @@ define(['altair/facades/declare',
                         return this.inherited(arguments);
                     }
                 });
+            }
 
-                this.deferred = new Deferred();
+        },
+
+        /**
+         * Help load schemas
+         *
+         * @param module
+         * @returns {*}
+         */
+        execute: function (module) {
+
+            if(module.isInstanceOf(_HasSchemaMixin)) {
+
+                this.deferred = new this.Deferred();
 
                 //if there is a path to a schema, lets parse it and load it
                 if(module.schemaPath) {
@@ -105,11 +127,29 @@ define(['altair/facades/declare',
 
                     this.deferred.resolve(this);
 
+                } else {
+                    this.deferred.resolve(this);
                 }
 
             }
 
             return this.inherited(arguments);
+        },
+
+
+        /**
+         * Whenever a module is forged, we need to setup the package path
+         *
+         * @param e
+         */
+        onDidForgeModule: function (e) {
+
+            var module = e.get('module');
+
+            if(!module.schemaPath) {
+                module.schemaPath = 'configs/schema';
+            }
+
         }
 
     });

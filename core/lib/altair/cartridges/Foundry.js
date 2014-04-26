@@ -10,7 +10,7 @@ function (declare,
           all,
           Deferred) {
 
-    return declare('altair/cartridges/Foundry', null, {
+    return declare(null, {
 
 
         constructor: function (altair) {
@@ -18,7 +18,7 @@ function (declare,
             this.altair = altair;
 
             if(!this.altair) {
-                throw 'A cartridge Foundry needs an instance of Altair.';
+                throw new Error('A cartridge Foundry needs an instance of Altair.');
             }
 
 

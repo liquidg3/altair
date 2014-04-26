@@ -39,11 +39,11 @@ define(['altair/facades/declare',
          * @param event
          * @param callback
          * @param query
-         * @param config
+         * @param options
          * @returns {dojo.Deferred}
          */
-        addEventListener: function (event, callback, query, config) {
-            return this.on(event, callback, query, config);
+        addEventListener: function (event, callback, query, options) {
+            return this.on(event, callback, query, options);
         },
 
         /**
@@ -52,10 +52,10 @@ define(['altair/facades/declare',
          * @param event
          * @param callback
          * @param query
-         * @param config
+         * @param options
          * @returns {dojo.Deferred}
          */
-        on: function (event, callback, query, config) {
+        on: function (event, callback, query, options) {
 
             //get _listeners ready
             if (!this._listeners[event]) {
@@ -101,14 +101,14 @@ define(['altair/facades/declare',
         },
 
         /**
-         * Emit an event by name passing along data. Customize it with config.
+         * Emit an event by name passing along data. Customize it with options.
          *
          * @param event
          * @param data
          * @param callback
-         * @param config
+         * @param options
          */
-        emit: function (event, data, config) {
+        emit: function (event, data, options) {
 
             event = this.coerceEvent(event, data);
 
@@ -119,7 +119,7 @@ define(['altair/facades/declare',
 
             if(this._listeners[event.name]) {
 
-                _agent = (config && config.agent) ? config.agent : this._eventListenerQueryAgent;
+                _agent = (options && options.agent) ? options.agent : this._eventListenerQueryAgent;
 
                 this._listeners[event.name].forEach(hitch(this, function (listener) {
 

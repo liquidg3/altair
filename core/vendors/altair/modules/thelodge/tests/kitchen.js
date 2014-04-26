@@ -41,37 +41,8 @@ define(['doh/runner',
                 });
                 
 
-            },
-
-            "test installing module into community dir": function (t) {
-
-                //boot altair
-                return boot.nexus(cartridges).then(function (nexus) {
-
-                    //create a kitchen
-                    return nexus('altair:TheLodge').foundry('client/Kitchen', {
-                        menus: [ testMenu ]
-                    }).then(function (kitchen) {
-
-                        //search the kitchen
-                        return kitchen.search('IoT').then(function (results) {
-
-//                            var jarvis =
-
-                            t.is(results[0].name, 'liquidfire:Jarvis', 'searching the kitchen failed');
-
-                            //checkout module
-//                            kitchen.vcs(resul)
-
-                        });
-
-
-                    });
-
-                });
-
-
             }
+
 
         });
 

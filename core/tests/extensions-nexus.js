@@ -21,19 +21,20 @@ define(['doh/runner',
 
                 }
             },
-            {
-                path: 'altair/cartridges/extension/Extension',
-                options: {
-                    extensions:    ['altair/cartridges/extension/extensions/Nexus', 'altair/cartridges/extension/extensions/Events']
-                }
-            },
+
             {
                 path: 'altair/cartridges/module/Module',
                 options: {
                     paths:      ['core/tests/modules/vendors', 'core/vendors'],
                     modules:    ['altair:MockWithEvents', 'altair:MockWithEvents2', 'altair:Events']
                 }
-            }
+            },
+            {
+                path: 'altair/cartridges/extension/Extension',
+                options: {
+                    extensions:    ['altair/cartridges/extension/extensions/Nexus', 'altair/cartridges/extension/extensions/Events']
+                }
+            },
         ];
 
 
@@ -46,13 +47,18 @@ define(['doh/runner',
             "test resolving module name": function (t) {
 
 
-                return boot(cartridges).then(function (altair) {
+                return boot.nexus(cartridges).then(function (nexus) {
 
-                    var m   = altair.cartridge('module').modules[0],
-                        m2  = m.nexus('altair:MockWithEvents'); //find another module that is currently loaded
+                    var m2  = nexus('altair:MockWithEvents'); //find another module that is currently loaded
 
                     t.t(!!m2, 'Nexus fail');
                     t.is(m2.name, 'altair:MockWithEvents', 'Nexus resolution failed');
+
+                    var m3 = m2.nexus('altair:Events');
+
+                    t.t(!!m3, 'Nexus fail');
+                    t.is(m3.name, 'altair:Events', 'Nexus resolution failed');
+
 
                 });
 

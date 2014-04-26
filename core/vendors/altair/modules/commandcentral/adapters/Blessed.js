@@ -1,4 +1,4 @@
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         'altair/facades/hitch',
         'altair/facades/mixin',
         './_Base',

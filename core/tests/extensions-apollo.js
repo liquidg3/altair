@@ -17,6 +17,13 @@ define(['doh/runner',
                 }
             },
             {
+                path: 'altair/cartridges/module/Module',
+                options: {
+                    paths: ['core/tests/modules/vendors'],
+                    modules: ['altair:Mock']
+                }
+            },
+            {
                 path: 'altair/cartridges/extension/Extension',
                 options: {
                     extensions: [
@@ -29,13 +36,6 @@ define(['doh/runner',
                         "altair/cartridges/extension/extensions/Events",
                         "altair/cartridges/extension/extensions/Foundry"
                     ]
-                }
-            },
-            {
-                path: 'altair/cartridges/module/Module',
-                options: {
-                    paths: ['core/tests/modules/vendors'],
-                    modules: ['altair:Mock']
                 }
             }
         ];

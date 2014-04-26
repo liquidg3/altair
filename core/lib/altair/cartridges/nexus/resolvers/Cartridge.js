@@ -1,7 +1,7 @@
 /**
  * Resolver to make all cartridges is Altair available via nexus, e.g. this.nexus('cartridges/Apollo')
  */
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         'altair/cartridges/nexus/_ResolverBase',
         'altair/facades/hitch',
         'lodash'

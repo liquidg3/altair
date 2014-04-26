@@ -1,10 +1,12 @@
 define(['altair/facades/declare',
-        'altair/Lifecycle'],
+        'altair/Lifecycle',
+        'altair/events/Emitter'],
 
     function (declare,
-              Lifecycle) {
+              Lifecycle,
+              Emitter) {
 
-    return declare([Lifecycle], {
+    return declare([Lifecycle, Emitter], {
 
         altair:     null,
         options:    null,

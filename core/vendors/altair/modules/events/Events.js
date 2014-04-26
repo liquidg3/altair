@@ -1,4 +1,4 @@
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         './mixins/_HasEventsMixin',
         'altair/events/Emitter'
 ], function (declare,

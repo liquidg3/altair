@@ -1,7 +1,7 @@
 /**
  * Test module
  */
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         '../events/mixins/_HasEventsMixin',
         '../commandcentral/mixins/_HasCommandersMixin'
 ], function (declare,

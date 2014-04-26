@@ -20,10 +20,9 @@ define(['altair/facades/declare',
     return declare([_Base], {
 
         name: 'paths',
-        execute: function (module) {
+        extend: function (Module) {
 
-
-            declare.safeMixin(module, {
+            Module.extendOnce({
 
                 /**
                  * Pass a path and it will be appended to this.dir (unless it starts with "/").
@@ -49,6 +48,7 @@ define(['altair/facades/declare',
 
             return this.inherited(arguments);
         }
+
 
     });
 

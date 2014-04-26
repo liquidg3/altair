@@ -55,6 +55,7 @@ exports.config = function(config){
 
 		loaderPatch: {
 			log:function(item){
+                console.dir(item.stack || item);
 				// define debug for console messages during dev instead of console.log
 				// (node's heavy async makes console.log confusing sometimes)
 				var util = require("util");

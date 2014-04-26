@@ -4,14 +4,12 @@
 define(['altair/facades/declare',
         'altair/Deferred',
         './_Base',
-        'dojo/_base/lang',
         'require',
         'altair/facades/hitch'],
 
     function (declare,
               Deferred,
               _Base,
-              lang,
               require,
               hitch) {
 
@@ -21,16 +19,23 @@ define(['altair/facades/declare',
         startup: function () {
 
             if(!this.cartridge.hasExtension('paths')) {
-                throw new Error('The config extension needs the paths extension to work.');
+                this.deferred = new Deferred();
+                this.deferred.reject(new Error('The config extension needs the paths extension to work.'));
             }
 
             return this.inherited(arguments);
 
         },
 
-        execute: function (module) {
+        /**
+         * Extend the Module
+         *
+         * @param module
+         * @returns {*}
+         */
+        extend: function (Module) {
 
-            declare.safeMixin(module, {
+            Module.extendOnce({
 
                 _configs: null,
 

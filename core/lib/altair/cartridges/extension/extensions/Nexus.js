@@ -27,9 +27,9 @@ define(['altair/facades/declare',
             return this.inherited(arguments);
         },
 
-        execute: function (module) {
+        extend: function (Module) {
 
-            declare.safeMixin(module, {
+            Module.extendOnce({
                 _nexus: this.nexus,
                 nexus: function (name, options, config) {
                     return this._nexus.resolve(name, options, config);

@@ -25,6 +25,13 @@ define(['doh/runner',
                 }
             },
             {
+                path: 'altair/cartridges/module/Module',
+                options: {
+                    paths: ['core/vendors'],
+                    modules: ['altair:Adapters', 'altair:Events']
+                }
+            },
+            {
                 path: 'altair/cartridges/extension/Extension',
                 options: {
                     extensions: [
@@ -36,13 +43,6 @@ define(['doh/runner',
                         'altair/cartridges/extension/extensions/Foundry',
                         'altair/cartridges/extension/extensions/Apollo'
                     ]
-                }
-            },
-            {
-                path: 'altair/cartridges/module/Module',
-                options: {
-                    paths: ['core/vendors'],
-                    modules: ['altair:Adapters', 'altair:Events']
                 }
             }
         ];
@@ -106,13 +106,13 @@ define(['doh/runner',
 
                 var _cartridges = cartridges.slice(0);
 
-                _cartridges[3].options = mixin({
+                _cartridges[2].options = mixin({
                     moduleOptions: {
                         'altair:Adapters': {
                             'selectedAdapter': 'altair:Adapters::adapters/Mock2'
                         }
                     }
-                }, _cartridges[3].options);
+                }, _cartridges[2].options);
 
                 return boot.nexus(_cartridges).then(function (nexus) {
 

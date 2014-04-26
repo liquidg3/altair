@@ -24,19 +24,19 @@ define(['doh/runner',
                 }
             },
             {
+                path: 'altair/cartridges/module/Module',
+                options: {
+                    paths: ['core/tests/modules/vendors', 'core/vendors'],
+                    modules: ['altair:MockWithEvents', 'altair:MockWithEvents2', 'altair:Events']
+                }
+            },
+            {
                 path: 'altair/cartridges/extension/Extension',
                 options: {
                     extensions: [
                         'altair/cartridges/extension/extensions/Nexus',
                         'altair/cartridges/extension/extensions/Events'
                     ]
-                }
-            },
-            {
-                path: 'altair/cartridges/module/Module',
-                options: {
-                    paths: ['core/tests/modules/vendors', 'core/vendors'],
-                    modules: ['altair:MockWithEvents', 'altair:MockWithEvents2', 'altair:Events']
                 }
             }
         ];

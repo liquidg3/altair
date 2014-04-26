@@ -6,6 +6,7 @@ define(['altair/facades/declare',
         'altair/facades/hitch',
         'altair/facades/all',
         'altair/plugins/node!fs',
+        'altair/plugins/node!debug',
         'altair/plugins/node!path',
         'doh/runner',
         'altair/facades/glob',
@@ -15,10 +16,14 @@ define(['altair/facades/declare',
               hitch,
               all,
               fs,
+              debug,
               path,
               doh,
               glob,
               require) {
+
+        debug.enable('altair:test');
+        debug = debug('altair:test');
 
         return declare('altair/TestRunner', [Lifecycle], {
 
@@ -40,9 +45,38 @@ define(['altair/facades/declare',
                 }
 
                 doh.debug = console.log;
-                doh.error = function (type, message) {
-                    console.error(type, message);
+                doh.error = function (err) {
+                    if(err.stack) {
+                        console.error(err.stack || err);
+                    } else {
+                        console.log(err);
+                    }
+                };
 
+
+                doh._handleFailure = function (groupName, fixture, e) {
+
+                    // this.debug("FAILED test:", fixture.name);
+                    // mostly borrowed from JUM
+                    this._groups[groupName].failures++;
+                    if(e instanceof this._AssertFailure){
+                        this._failureCount++;
+                        this.error(e.toString());
+                    }else{
+                        this._errorCount++;
+                        this.error(e); // printing Error on IE9 (and other browsers?) yields "[Object Error]"
+                    }
+                    if(fixture.runTest["toSource"]){
+                        var ss = fixture.runTest.toSource();
+                        this.debug("\tERROR IN:\n\t\t", ss);
+                    }else{
+                        this.debug("\tERROR IN:\n\t\t", fixture.runTest);
+                    }
+                    if(e.rhinoException){
+                        e.rhinoException.printStackTrace();
+                    }else if(e.javaException){
+                        e.javaException.printStackTrace();
+                    }
                 };
 
                 this.deferred = glob(_options.glob.map(hitch(require, 'toUrl')), _options.globOptions).then(hitch(this, function (files) {

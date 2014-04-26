@@ -15,7 +15,7 @@ define([
 		if(deferred && deferred.stack){
 			stack += "\n    ----------------------------------------\n" + deferred.stack;
 		}
-		console.error(error, stack);
+		console.error(stack);
 	}
 
 	function reportRejections(error, handled, rejection, deferred){

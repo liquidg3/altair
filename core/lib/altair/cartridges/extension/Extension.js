@@ -1,11 +1,13 @@
 define(['altair/facades/declare',
         'altair/facades/hitch',
         'altair/facades/all',
+        'altair/facades/when',
         'lodash',
         '../_Base'],
     function (declare,
               hitch,
               all,
+              when,
               _,
               _Base) {
 
@@ -18,23 +20,29 @@ define(['altair/facades/declare',
             startup: function (options) {
 
                 var _options = options || this.options || {},
-                    list     = [];
+                    list     = [],
+                    cartridge,
+                    listen   = this.hitch(function () {
+                        if(this.altair.hasCartridge('module')) {
+                            //setup module forging listeners
+                            cartridge = this.altair.cartridge('module');
+                            cartridge.on('will-forge-module').then(this.hitch('onWillForgeModule'));
+                            cartridge.on('did-forge-module').then(this.hitch('onDidForgeModule'));
+                        }
+                    });
 
-
-                /**
-                 * Load all extensions
-                 */
+                //load the passed extensions
                 if (_options.extensions) {
 
                     this._extensions = [];
 
-                    list = _options.extensions.map(hitch(this, function (path) {
+                    list = _options.extensions.map(this.hitch(function (path) {
 
                         var def = new this.Deferred();
 
-                        require([path], hitch(this, function (extension) {
+                        require([path], this.hitch(function (Extension) {
 
-                            var extension = new extension(this);
+                            var extension = new Extension(this);
                             this.addExtension(extension).then(hitch(def, 'resolve')).otherwise(hitch(def, 'reject'));
 
                         }));
@@ -42,12 +50,17 @@ define(['altair/facades/declare',
                         return def;
                     }));
 
+
                     //wait it out
-                    this.deferred = all(list).then(hitch(this, function () { return this; }));
+                    this.deferred = all(list).then(this.hitch(function () {
+                        listen();
+                        return this;
+                    }));
 
                 }
                 //if there are no extensions, we are ready
                 else {
+                    listen();
                 }
 
                 return this.inherited(arguments);
@@ -82,7 +95,7 @@ define(['altair/facades/declare',
              */
             addExtension: function (ext) {
 
-                return ext.startup().then(hitch(this, function (ext) {
+                return ext.startup().then(this.hitch(function (ext) {
                     this._extensions.push(ext);
                     return ext;
                 }));
@@ -118,25 +131,75 @@ define(['altair/facades/declare',
             },
 
             /**
-             * Extend the passed AMD module using all the available extensions
+             * Extend the passed AMD module using all the available extensions, make sure the module
+             * you are passing is a function, not an instance
              *
              * @param module
-             * @returns {*}
+             * @returns {altair.Deferred}
              */
-            extend: function (module) {
+            extend: function (Module) {
 
                 var list = [];
 
-                this._extensions.forEach(hitch(this, function (plugin) {
+                this._extensions.forEach(this.hitch(function (plugin) {
+                    list.push(plugin.extend(Module));
+                }));
+
+                if(list.length == 0) {
+                    return Module;
+                }
+
+                return all(list).then(function() {
+                    return Module;
+                });
+
+            },
+
+            /**
+             * Run anything you want on an AMD module after it's been created
+             *
+             * @returns {altair.Deferred}
+             */
+            execute: function (module) {
+
+                if(!module) {
+                    return this.inherited(arguments);
+                }
+
+                var list = [];
+
+                this._extensions.forEach(this.hitch(function (plugin) {
                     list.push(plugin.execute(module));
                 }));
 
                 if(list.length == 0) {
-                    return module;
+                    return when(module);
                 }
 
-                return all(list);
+                return all(list).then(function () {
+                    return module;
+                });
 
+            },
+
+            /**
+             * Whenever a module is about to be forged, extend it.
+             *
+             * @param e
+             * @return {altair.Deferred}
+             */
+            onWillForgeModule: function (e) {
+                return this.extend(e.get('Module'));
+            },
+
+            /**
+             * When a module is done being forged (but is not started up)
+             *
+             * @param e
+             * @returns {altair.Deferred}
+             */
+            onDidForgeModule: function (e) {
+                return this.execute(e.get('module'));
             }
 
 

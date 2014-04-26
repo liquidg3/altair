@@ -1,7 +1,7 @@
 /**
  * Test module
  */
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         'altair/events/Emitter'
 ], function (declare, Emitter) {
 

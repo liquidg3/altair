@@ -3,7 +3,7 @@
  * https://github.com/davidgtonge/underscore-query - since speed is of the utmost importance, we need to always be
  * on the lookout for ways to improve and speed up the event query process.
  */
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         'dojo/node!underscore',
         'dojo/node!underscore-query'
 ], function (declare, _, underscoreQuery) {

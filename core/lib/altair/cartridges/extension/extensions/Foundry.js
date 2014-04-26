@@ -18,6 +18,7 @@
 define(['altair/facades/declare',
         './_Base',
         'altair/facades/hitch',
+        'altair/facades/when',
         'altair/Deferred',
         'apollo/_HasSchemaMixin',
         'apollo/Schema',
@@ -26,27 +27,44 @@ define(['altair/facades/declare',
 ], function (declare,
              _Base,
              hitch,
+             when,
              Deferred,
              _HasSchemaMixin,
              Schema,
              fs,
              pathUtil) {
 
-    var defaultCallback = function (Class, options) {
+    //instantiation callback for every foundry call
+    var defaultCallback = function (Class, options, parent, name, path) {
 
-        var a = new Class(options);
+        return parent.nexus('cartridges/Extension').extend(Class).then(function (Class) {
 
-        return a;
+            var a = new Class(options);
+
+            //setup basics if they are missing
+            if(!a.name) {
+                a.name      = name[0] === '/' ? name : parent.name + '/' + name;
+            }
+
+            a.module    = parent.module || parent;
+            a.dir       = pathUtil.dirname(path);
+            a._nexus    = parent._nexus;
+
+            return parent.nexus('cartridges/Extension').execute(a);
+
+        });
+
+
 
     };
 
     return declare([_Base], {
 
         name: 'foundry',
-        execute: function (module) {
+        extend: function (Module) {
 
             //mixin our extensions
-            declare.safeMixin(module, {
+            Module.extendOnce({
 
                 foundry: function (className, options, instantiationCallback, shouldStartup) {
 
@@ -87,24 +105,10 @@ define(['altair/facades/declare',
 
                             require([path], hitch(this, function (Child) {
 
-                                var a       = instantiationCallback(Child, options);
-
-                                if(!a) {
-                                    d.reject(new Error('The instantiateCallback param in the Foundry extension must return an class instance.'));
-                                    return;
-                                }
-
-                                //setup basics if they are missing
-                                if(!a.name) {
-                                    a.name      = className[0] === '/' ? className : parent.name + '/' + className;
-                                }
-
-                                a.module    = parent.module || parent;
-                                a.dir       = pathUtil.dirname(path);
-                                a._nexus    = parent._nexus;
+                                var a       = instantiationCallback(Child, options, parent, className, path);
 
                                 //extend this object
-                                this.nexus('cartridges/Extension').extend(a).then(hitch(this, function () {
+                                when(a).then(hitch(this, function (a) {
 
                                     //startup the module
                                     if(a.startup && shouldStartup) {

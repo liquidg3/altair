@@ -5,7 +5,7 @@
  *
  *
  */
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         'altair/cartridges/nexus/_ResolverBase',
         'dojo/Deferred',
         'dojo/node!fs'
@@ -14,7 +14,7 @@ define(['dojo/_base/declare',
                      Deferred,
                      fs) {
 
-    return declare('altair/modules/adapters/nexusresolvers/Adapters', [_ResolverBase], {
+    return declare([_ResolverBase], {
 
 
         nexus:          null,

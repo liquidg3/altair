@@ -40,6 +40,19 @@ define(['doh/runner',
 
                 }
             },
+
+            {
+                path: 'altair/cartridges/module/Module',
+                options: {
+                    paths: ['core/vendors'],
+                    modules: ['altair:Events', 'altair:Adapters', 'altair:CommandCentral' ],
+                    moduleOptions: {
+                        "altair:CommandCentral": {
+                            "autostart": false
+                        }
+                    }
+                }
+            },
             {
                 path: 'altair/cartridges/extension/Extension',
                 options: {
@@ -53,18 +66,6 @@ define(['doh/runner',
                         "altair/cartridges/extension/extensions/Events",
                         "altair/cartridges/extension/extensions/Foundry"
                     ]
-                }
-            },
-            {
-                path: 'altair/cartridges/module/Module',
-                options: {
-                    paths: ['core/vendors'],
-                    modules: ['altair:Events', 'altair:Adapters', 'altair:CommandCentral' ],
-                    moduleOptions: {
-                        "altair:CommandCentral": {
-                            "autostart": false
-                        }
-                    }
                 }
             }
         ];

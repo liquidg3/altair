@@ -35,9 +35,9 @@ define(['altair/facades/declare',
     return declare([_Base], {
 
         name: 'deferred',
-        execute: function (module) {
+        extend: function (Module) {
 
-            declare.safeMixin(module, {
+            Module.extendOnce({
                 Deferred: Deferred,
                 hitch: function () {
                     var args = Array.prototype.slice.call(arguments, 0);

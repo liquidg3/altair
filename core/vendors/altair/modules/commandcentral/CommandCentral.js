@@ -125,7 +125,6 @@ define(['altair/facades/declare',
 
                     var commanders  = {},
                         results     = e.results(),
-                        list        = [],
                         adapter     = this.adapter();
 
                     //loop through the results of every listener and flatten them into single object
@@ -133,30 +132,7 @@ define(['altair/facades/declare',
                         commanders = mixin(commanders, _commanders);
                     }));
 
-                    //now instantiate any commanders not yet instantiated
-                    Object.keys(commanders).forEach(this.hitch(function (name) {
-
-                        if(!(this._commanders.hasOwnProperty(name))) {
-
-                            var options = mixin({}, commanders[name]), //copy options
-                                path    = options.path;
-
-                            //we don't need the path, it is replaced by name (which is more a fqn than path is)
-                            delete options.path;
-
-                            //default to our adapter, but one can be passed in (not sure why)
-                            options.adapter = options.adapter || adapter;
-
-                            list.push(this.foundry(path, options).then(this.hitch(function (c) {
-                                this._commanders[name] = c;
-                            })));
-
-                        }
-
-                    }));
-
-                    //after all commanders are instantiated and started up, resolve the deferred with them all
-                    return all(list);
+                    return commanders
 
                 })).then(this.hitch(function () {
                     return this._commanders;

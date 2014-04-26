@@ -234,7 +234,9 @@ define([
                 if(strict === false) {
                     this.ignoreErrors = true;
                 }
-                if(!this.ignoreErrors && has("config-deferredInstrumentation") && Error.captureStackTrace){
+                if(!this.ignoreErrors && has("config-deferredInstrumentation") && Error.captureStackTrace && !error.__hasBeenLogged){
+//                    error.__hasBeenLogged = true;
+//                    console.error(error.stack || error);
                     Error.captureStackTrace(rejection = {}, reject);
                 }
                 signalWaiting(waiting, fulfilled = REJECTED, result = error, rejection, deferred, this.ignoreErrors);

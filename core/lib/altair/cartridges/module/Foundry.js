@@ -12,38 +12,47 @@
 define(['altair/facades/declare',
         'dojo/_base/lang',
         'altair/facades/hitch',
-        'dojo/promise/all',
+        'altair/facades/all',
         'altair/Deferred',
+        'altair/events/Event',
         'altair/facades/glob',
         'altair/plugins/node!path',
         'altair/facades/__',
+        'lodash',
         'require'],
                          function (declare,
                                    lang,
                                    hitch,
                                    all,
                                    Deferred,
+                                   Event,
                                    glob,
                                    path,
                                    __,
+                                   _,
                                    require) {
 
 
-    function ucfirst (str) {
-        // From: http://phpjs.org/functions
-        // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-        // +   bugfixed by: Onno Marsman
-        // +   improved by: Brett Zamir (http://brett-zamir.me)
-        // *     example 1: ucfirst('kevin van zonneveld');
-        // *     returns 1: 'Kevin van zonneveld'
-        str += '';
-        var f = str.charAt(0).toUpperCase();
-        return f + str.substr(1);
-    }
 
 
     return declare(null, {
 
+
+        /**
+         * We will delegate all events through this deletate
+         */
+        _eventDelegate: null,
+
+        /**
+         * @param options
+         */
+        constructor: function (options) {
+
+            var _options = options || {};
+
+            this._eventDelegate = _options.eventDelegate || null;
+
+        },
 
         /**
          * Build modules by looking in paths you pass. The modules that come back will *not* be started up.
@@ -63,11 +72,15 @@ define(['altair/facades/declare',
 
             try {
 
+                if(options.eventDelegate) {
+                    this._eventDelegate = options.eventDelegate;
+                }
+
                 //they want to restrict the modules being created
                 options.modules = (options && options.modules) ? options.modules : '*';
 
                 if(!options.paths || options.paths.length === 0) {
-                    deferred.reject("You must pass an array of paths for the Module Foundry to search and parse.");
+                    deferred.reject(new Error("You must pass an array of paths for the Module Foundry to search and parse."));
                     return deferred;
                 }
 
@@ -78,7 +91,7 @@ define(['altair/facades/declare',
 
 
                 //glob all the dirs
-                glob( paths ).then( hitch( this, function ( files ) {
+                deferred = glob( paths ).then( hitch( this, function ( files ) {
 
                     var _paths = this._filterPaths( files, options.modules );
 
@@ -104,7 +117,7 @@ define(['altair/facades/declare',
                     }
 
 
-                })).then(hitch(deferred, 'resolve')).otherwise(hitch(deferred, 'reject'));
+                }));
 
             } catch (e) {
 
@@ -113,6 +126,28 @@ define(['altair/facades/declare',
             }
 
             return deferred;
+
+        },
+
+        /**
+         * Emit our event through our delegate
+         *
+         * @param name
+         * @param data
+         * @returns {*}
+         */
+        delegateEmit: function (name, data) {
+
+            var d;
+
+            if(this._eventDelegate) {
+                d = this._eventDelegate.emit(name, data);
+            } else {
+                d = new Deferred();
+                d.resolve(new Event(name, data));
+            }
+
+            return d;
 
         },
 
@@ -282,11 +317,22 @@ define(['altair/facades/declare',
 
             require([modulePath], hitch(this, function (Module) {
 
-                var module      = new Module();
-                    module.dir  = dir;
-                    module.name = name;
+                //emit will build
+                this.delegateEmit('will-forge-module', {
+                    Module: Module
+                }).then(hitch(this, function (e) {
 
-                deferred.resolve(module);
+                    var module      = new (e.get('Module'))();
+                        module.dir  = dir;
+                        module.name = name;
+
+                    return this.delegateEmit('did-forge-module', {
+                        module: module
+                    });
+
+                })).then(function (e) {
+                    deferred.resolve(e.get('module'));
+                });
 
             }));
 

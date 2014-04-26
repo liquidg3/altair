@@ -3,7 +3,7 @@
  * for unit tests
  */
 
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
         './mixins/_HasAdaptersMixin',
         './nexusresolvers/Adapters',
         'altair/Lifecycle'],
@@ -12,7 +12,7 @@ define(['dojo/_base/declare',
               Adapters,
               Lifecycle) {
 
-    return declare('altair/modules/adapters/Adapters', [_HasAdaptersMixin, Lifecycle], {
+    return declare([_HasAdaptersMixin, Lifecycle], {
 
         /**
          * On startup, add Adapter Resolver to nexus. Also add the adapter field type to Apollo

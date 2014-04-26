@@ -12,18 +12,29 @@ define(['altair/Deferred',
 
         var boot = function (cartridges, altairOptions) {
 
-            var deferred    = new Deferred(),
+            var deferred,
+                altair,
+                foundry;
+
+            try {
+
                 altair      = new Altair(altairOptions || {}),
                 foundry     = new Foundry(altair);
 
-            foundry.build(cartridges || boot.cartridges).then(function (cartridges) {
+                deferred    = foundry.build(cartridges || boot.cartridges).then(function (cartridges) {
 
-                altair.addCartridges(cartridges).then(function () {
-                    deferred.resolve(altair);
-                }).otherwise(hitch(deferred, 'reject'));
+                    return altair.addCartridges(cartridges).then(function () {
+                        return altair;
+                    });
 
-            });
+                });
 
+            } catch(e) {
+
+                deferred    = new Deferred();
+                deferred.reject(e);
+
+            }
 
             return deferred;
 
