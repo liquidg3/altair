@@ -66,10 +66,19 @@ define(['altair/facades/declare',
                         this.writeError(err.error);
 
                         //jump to my best guess of what to do now (jump to last state on error, or first state if all else fails)
-                        this.startState = this.sm.state && this.sm.previousState(this.sm.state) ? this.sm.previousState(this.sm.state) : this.sm.states[0];
+                        this.startState = this.sm.state ? this.sm.previousState(this.sm.state) : this.sm.states[0];
 
-                        //run again
-                        run();
+                        //if we can't go back any farther, so probably will never recover
+                        if(this.sm.state && this.sm.previousState(this.sm.state) === '') {
+
+                        }
+                        //loop
+                        else {
+
+                            run();
+                        }
+
+
 
 
                     }));
@@ -146,9 +155,8 @@ define(['altair/facades/declare',
                 this.activeCommander = commander;
                 return { commander: this.activeCommander };
 
-            })).otherwise(hitch(d, 'reject'));
+            }));
 
-            return d;
 
         },
 
@@ -168,6 +176,10 @@ define(['altair/facades/declare',
                 options     = {},
                 aliases     = {},
                 longLabels  = this.module.adapter().longLabels;
+
+            if(!commands) {
+                throw new Error('The commander named ' + commander.name + ' has no commands registered. See altair:CommandCentral/README.md');
+            }
 
             //let user select the command they want to run by outputting a
             //simple select box. also get aliases ready to check
@@ -190,6 +202,7 @@ define(['altair/facades/declare',
                 }
 
             }));
+
 
             //show select
             return this.select('choose command', null, { multiOptions: options, aliases: aliases, id: "command-select"}).then(hitch(this, function (command) {

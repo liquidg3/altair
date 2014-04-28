@@ -174,7 +174,9 @@ define(['altair/facades/declare',
                             };
 
                             //should we stop looping after first error?
-                        }(list.length - 1)).otherwise(hitch(def, 'reject'));
+                        }(list.length - 1)).otherwise(function (err) {
+                            def.reject(err);
+                        });
 
 
 

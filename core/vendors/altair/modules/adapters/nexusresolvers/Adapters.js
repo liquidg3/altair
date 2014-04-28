@@ -23,7 +23,7 @@ define(['altair/facades/declare',
         constructor: function (nexus) {
             this.nexus = nexus;
             if(!nexus) {
-                throw "The Adapters plugin needs nexus.";
+                throw "The Adapters nexus resolver needs nexus.";
 
             }
 

@@ -13,7 +13,8 @@ define(['altair/facades/declare',
 
             //we have to make sure we have our dependent plugins loaded
             if(!this.altair.hasCartridges(['nexus'])) {
-                throw new Error("The nexus extension needs the 'nexus' cartridge enabled.");
+                this.deferred = new this.Deferred();
+                this.deferred.resolve(new Error("The nexus extension needs the 'nexus' cartridge enabled."));
             }
 
             //get our local nexus instance
@@ -27,9 +28,9 @@ define(['altair/facades/declare',
             return this.inherited(arguments);
         },
 
-        extend: function (Module) {
+        execute: function (module) {
 
-            Module.extendOnce({
+            declare.safeMixin(module, {
                 _nexus: this.nexus,
                 nexus: function (name, options, config) {
                     return this._nexus.resolve(name, options, config);

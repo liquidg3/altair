@@ -6,7 +6,7 @@
  *
  * Example from inside your module
  *
- * this.foundry('adapters/Smtp', {...options...}).then(function (smtp)) {
+ * this.forge('adapters/Smtp', {...options...}).then(function (smtp)) {
  *
  *      console.log(smtp.name) --> Vendor:Module::adapters/Smtp
  *      console.log(smtp.module) --> instance of Vendor:Module
@@ -34,23 +34,26 @@ define(['altair/facades/declare',
              fs,
              pathUtil) {
 
-    //instantiation callback for every foundry call
-    var defaultCallback = function (Class, options, parent, name, path) {
+    //instantiation callback for every foundry call, assums everything is a subcomponent
+    var defaultFoundry = function (Class, options, config) {
 
-        return parent.nexus('cartridges/Extension').extend(Class).then(function (Class) {
+        return config.extensions.extend(Class, config.type).then(function (Class) {
 
-            var a = new Class(options);
+            var a       = new Class(options),
+                parent  = config.parent,
+                dir     = config.dir,
+                name    = config.name || '__unnamed';
 
             //setup basics if they are missing
             if(!a.name) {
-                a.name      = name[0] === '/' ? name : parent.name + '/' + name;
+                a.name = name;
             }
 
             a.module    = parent.module || parent;
-            a.dir       = pathUtil.dirname(path);
+            a.dir       = dir;
             a._nexus    = parent._nexus;
 
-            return parent.nexus('cartridges/Extension').execute(a);
+            return config.extensions.execute(a, config.type);
 
         });
 
@@ -61,51 +64,80 @@ define(['altair/facades/declare',
     return declare([_Base], {
 
         name: 'foundry',
+
+        startup: function () {
+
+            if(!this.cartridge.hasExtension('paths')) {
+                this.deferred = new this.Deferred();
+                this.deferred.reject(new Error("The foundry extension needs the paths extension loaded first."));
+            } else if(!this.cartridge.hasExtension('nexus')) {
+                this.deferred = new this.Deferred();
+                this.deferred.reject(new Error("The foundry extension needs the paths extension loaded first."));
+            }
+
+            return this.inherited(arguments);
+
+        },
+
         extend: function (Module) {
 
             //mixin our extensions
             Module.extendOnce({
 
-                foundry: function (className, options, instantiationCallback, shouldStartup) {
+                forge: function (className, options, config) {
+
+                    config = config || {};
 
                     var d = new Deferred(),
-                        parent,
+                        parent        = this,
+                        path,
                         parts,
-                        path;
+                        foundry       = _.has(config, 'foundry') ? config.foundry : defaultFoundry,
+                        shouldStartup = _.has(config, 'startup') ? config.startup : true,
+                        type          = _.has(config, 'type') ? config.type : 'subComponent';
 
-                    //should we startup?
-                    shouldStartup = instantiationCallback !== false && shouldStartup !== false;
 
-                    //default callbacks
-                    if(!instantiationCallback) {
-                        instantiationCallback = defaultCallback;
-                    } else {
 
-                    }
-
-                    //if the classname can be resolved in nexus
-                    parent = this;
-
-                    if(className.search('::') > 0) {
-                        parts       = className.split('::');
+                    if(className.search(':') > 0) {
+                        parts       = className.split('/');
                         parent      = this.nexus(parts[0]);
-                        className   = parts[1];
-
+                        className   = className.replace(parts[0] + '/', '');
                     }
 
-                    //the path to the class
-                    path = parent.resolvePath(className + '.js');
+                    if(!parent) {
+                        d.reject('could not resolve ' + className + ' in Foundry extension.');
+                        return d;
+                    }
+
+                    //path from newly resolved classname
+                    path = parent.resolvePath(className + '.js'),
 
                     //does this file exist?
                     fs.exists(path, hitch(this, function (exists) {
 
                         if(!exists) {
-                            d.reject(new Error('Could not create ' + path));
+                            d.reject(new Error('Could not create ' + type + ' at ' + path));
                         } else {
 
                             require([path], hitch(this, function (Child) {
 
-                                var a       = instantiationCallback(Child, options, parent, className, path);
+                                var name = className;
+
+                                //the path is relative to parent, lets try and resolve it
+                                //this is safe to change, just make sure to test alfred and controllers
+                                if(name.search(/\.\./) > -1) {
+                                    name = parent.name.split(':')[0] + ':' + pathUtil.join(parent.name.split(':')[1], '..', name);
+                                } else {
+                                    name = (name[0] === '/') ? name : parent.name + '/' + name; //keep absolute path?
+                                }
+
+                                var a       = foundry(Child, options, {
+                                    parent:     parent,
+                                    name:       name,
+                                    type:       type,
+                                    dir:        pathUtil.dirname(path),
+                                    extensions: this.nexus('cartridges/Extension')
+                                });
 
                                 //extend this object
                                 when(a).then(hitch(this, function (a) {

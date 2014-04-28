@@ -32,7 +32,7 @@ define(['altair/facades/declare',
                 resolvePath: function (path) {
 
                     if(!this.dir) {
-                        throw new Error('resolvePath for "' + this.name + '" requires this.dir (absolute path to class)');
+                        throw new Error('resolvePath for "' + this.name + '" requires this.dir (dirname of absolute path to class file)');
                     }
 
                     if(path[0] === '/') {

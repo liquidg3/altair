@@ -25,7 +25,7 @@ define(['altair/facades/declare',
             var _options = options || this.options,
                 list     = [];
 
-            list.push(this.module.foundry('client/Npm').then(hitch(this, function (npm) {
+            list.push(this.module.forge('client/Npm').then(hitch(this, function (npm) {
                 this._npm = npm;
             })));
 

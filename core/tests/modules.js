@@ -93,14 +93,14 @@ define(['doh/runner',
             var altair      = new Altair(),
                 cartridge   = new ExtensionCartridge(altair, {
                     extensions: [
-                        'altair/cartridges/extension/extensions/Mock'
+                        'core/tests/extensions/Mock1'
                     ]
                 });
 
             return altair.addCartridge(cartridge).then(function () {
 
-                t.t(cartridge.hasExtension('mock'), 'Module cartridge failed to create plugins');
-                t.is('bar', cartridge.extension('mock').foo, 'Mock plugin failed.');
+                t.t(cartridge.hasExtension('mock1'), 'Extension cartridge failed to create plugins');
+                t.is('bar', cartridge.extension('mock1').foo, 'Mock plugin failed.');
 
             });
 

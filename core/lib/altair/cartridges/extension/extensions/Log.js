@@ -26,12 +26,14 @@ define(['altair/facades/declare',
 
         execute: function (module) {
 
+            //auto enable for now
+            debug.enable(module.name);
+
             declare.safeMixin(module, {
                 log: debug(module.name)
             });
 
-            //auto enable for now
-            debug.enable(module.name);
+
         }
 
     });

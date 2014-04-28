@@ -15,6 +15,10 @@ define(['altair/facades/declare',
 
             this.startedUp = true;
             return this.inherited(arguments);
+        },
+
+        foo: function () {
+            return 'original';
         }
 
     });

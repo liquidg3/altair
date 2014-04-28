@@ -21,7 +21,7 @@ define(['altair/facades/declare',
             this.altair     = nexus.altair;
 
             if(!nexus) {
-                throw "The Adapters plugin needs nexus.";
+                throw "The nexus resolver nexus.";
             }
         },
 

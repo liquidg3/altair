@@ -15,7 +15,7 @@ extended through the Extension system.
 
 **Examples**
 ```js
-this.foundry('path/to/Class').then(function (obj) {
+this.forge('path/to/Class').then(function (obj) {
 
     console.dir(obj);
 
@@ -31,7 +31,7 @@ this.foundry('path/to/Class').then(function (obj) {
 });
 
 //using nexus path (vendor:Module)
-this.foundry('titan:Alfred::path/to/Class').then(function (obj) {
+this.forge('titan:Alfred::path/to/Class').then(function (obj) {
     console.dir(obj);
 }).otherwise(function (err) {
     console.log(err);

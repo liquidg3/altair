@@ -10,7 +10,7 @@ define(['altair/facades/declare',
         '../events/mixins/_HasListenersMixin',
         './mixins/_HasCommandersMixin',
         'apollo/_HasSchemaMixin',
-        'altair/facades/hitch',
+        'lodash',
         'altair/facades/mixin',
         'dojo/promise/all'],
 
@@ -19,7 +19,7 @@ define(['altair/facades/declare',
               _HasListenersMixin,
               _HasCommandersMixin,
               _HasSchemaMixin,
-              hitch,
+              _,
               mixin,
               all) {
 
@@ -78,7 +78,7 @@ define(['altair/facades/declare',
                     this.refreshCommanders().then(this.hitch(function (commanders) {
                         this.focus(commanders.altair);
                         commanders.altair.execute();
-                    }));
+                    })).otherwise(this.log);
 
                 }
 
@@ -123,19 +123,18 @@ define(['altair/facades/declare',
 
                 return this.emit('register-commanders').then(this.hitch(function (e) {
 
-                    var commanders  = {},
-                        results     = e.results(),
-                        adapter     = this.adapter();
+                      var commanders  = {},
+                        results     = e.results();
 
                     //loop through the results of every listener and flatten them into single object
-                    results.forEach(this.hitch(function (_commanders) {
+                    _.each(results, function (_commanders) {
                         commanders = mixin(commanders, _commanders);
-                    }));
+                    }, this);
 
-                    return commanders
 
-                })).then(this.hitch(function () {
+                    this._commanders = commanders;
                     return this._commanders;
+
                 }));
 
             }

@@ -10,8 +10,9 @@
  * What next?
  *
  * 1. Setting up listeners: altair.io/docs/listeners.md
- * 2. Building a Commander: altair.io/core/vendors/altair/modules/commandcentral/README.md
- * 3. The Adapter Pattern:  altair.io/core/vendors/altair/modules/adapters/README.md
+ * 2. Using extensions: altair.io/docs/extensions.md
+ * 3. Building a Commander: altair.io/core/vendors/altair/modules/commandcentral/README.md
+ * 4. The Adapter Pattern:  altair.io/core/vendors/altair/modules/adapters/README.md
  *
  */
 
@@ -40,7 +41,7 @@ define(['altair/facades/declare', //take a look at terms.md
             //use the options that were passed in, or the ones we have by default; avoid mutating options
             var _options = options || this.options;
 
-            console.log('Executing startup() for %(full)s');
+            this.log('Executing startup() for %(full)s'); //this.log is one of many extensions you have available in Altair
 
 
 //            //if your startup is going to take a moment, you should instantiate a Deferred. This is functionality

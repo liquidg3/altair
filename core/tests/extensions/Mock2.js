@@ -2,19 +2,20 @@
  * A plugin for testing, do not use
  */
 define(['altair/facades/declare',
-        './_Base'], function (declare, _Base) {
+        'altair/cartridges/extension/extensions/_Base'], function (declare, _Base) {
 
     return declare([_Base], {
 
-        name: 'mock',
+        name: 'mock2',
         foo: 'bar',
+        _handles: ['module'],
         extend: function (Module) {
 
-            Module.extend({
+            Module.extendOnce({
 
                 _count: 0,
-                foo: function () {
-                    return 'bar';
+                foo2: function () {
+                    return 'bar2';
                 },
 
                 counter: function () {

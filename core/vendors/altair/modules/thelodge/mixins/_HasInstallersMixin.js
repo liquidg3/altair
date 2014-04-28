@@ -34,8 +34,8 @@ define(['altair/facades/declare',
                         throw "You must set a path for your installer for thelodge";
                     }
 
-                    if(installer.path.search('::') === -1) {
-                        installer.path = this.name + '::' + installer.path;
+                    if(installer.path.search(':') === -1) {
+                        installer.path = this.name + '/' + installer.path;
                     }
                 }));
 

@@ -225,7 +225,7 @@ define([
                     errCallback: null,
                     then: function (callback) {
                         this.callback = callback;
-                        if(finished) {
+                        if(finished && fulfilled !== REJECTED) {
                             callback(results);
                         }
                         return this;
@@ -251,17 +251,27 @@ define([
                     if(callback) {
 
                         var _deferred    = listener.deferred;
-                        newResult        = callback(value);
+
+                        try {
+                            newResult        = callback(value);
+                        } catch(e) {
+                            _waiting = [];
+                            fulfilled = REJECTED;
+                            finished = true;
+                            if(newPromise.errCallback) {
+                                newPromise.errCallback(err);
+                            }
+                        }
 
 
-                        if(_deferred.hasWaiting()) {
+                        if(!finished && _deferred.hasWaiting()) {
 
                             _deferred.resolve(newResult).then(function (_newResult) {
 
                                 newResult = _newResult[0];
 
                                 if(newResult && typeof newResult.then === "function"){
-                                    console.warn('@FINISH fluent then()\'s sot supported for result passthrough ');
+                                    console.warn('@FINISH fluent then()\'s not supported after resolve() ');
                                 } else {
 
                                     results.push(_newResult[0]);
@@ -274,12 +284,13 @@ define([
                             }).otherwise(function (err) {
                                 _waiting = [];//no more waiting, entire operation canceled
                                 finished = true;
+                                fulfilled = REJECTED;
                                 if(newPromise.errCallback) {
                                     newPromise.errCallback(err);
                                 }
                             });
 
-                        } else {
+                        } else if(!finished) {
 
                             when(newResult).then(function (_result) {
                                 results.push(_result);
@@ -287,6 +298,8 @@ define([
                             }).otherwise(function (err) {
                                 _waiting = [];//no more waiting, entire operation canceled
                                 finished = true;
+                                fulfilled = REJECTED;
+                                results = err;
                                 if(newPromise.errCallback) {
                                     newPromise.errCallback(err);
                                 }
@@ -302,7 +315,7 @@ define([
                 //there are no more waiting
                 else {
                     finished = true;
-                    if(newPromise.callback) {
+                    if(newPromise.callback && fulfilled !== REJECTED) {
                         newPromise.callback(results);
                     }
                 }

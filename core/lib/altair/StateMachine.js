@@ -168,7 +168,7 @@ define(['altair/facades/declare',
             var i = _.indexOf(this.states, state) - 1,
                 next = '';
 
-            if(i > 0) {
+            if(i >= 0) {
                 next = this.states[i];
             } else if(backToLast === true){
                 next = this.states[this.states.length-1];

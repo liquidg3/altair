@@ -18,7 +18,7 @@ define(['altair/facades/declare',
 
                 this.deferred = new this.Deferred();
 
-                this.module.foundry('client/Valet').then(hitch(this, function (valet) {
+                this.module.forge('client/Valet').then(hitch(this, function (valet) {
                     this._valet = valet;
                     this.deferred.resolve(this);
                 }));

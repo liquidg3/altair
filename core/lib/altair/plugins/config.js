@@ -45,12 +45,14 @@
  */
 define(['require',
         'dojo/node!querystring',
+        'dojo/node!path',
         'dojo/_base/lang',
         'dojo/Deferred',
         'dojo/DeferredList'],
 
     function (require,
               querystring,
+              path,
               lang,
               Deferred,
               DeferredList) {
@@ -132,6 +134,11 @@ define(['require',
 
                 if(query.env) {
                     env = query.env;
+                }
+
+                //drop extension from env
+                if(env && env.search(/\./) > 0) {
+                    env = env.replace(path.extname(env), '');
                 }
 
 

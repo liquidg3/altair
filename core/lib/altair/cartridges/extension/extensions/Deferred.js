@@ -38,7 +38,7 @@ define(['altair/facades/declare',
         extend: function (Module) {
 
             Module.extendOnce({
-                Deferred: Deferred,
+                Deferred: null,
                 hitch: function () {
                     var args = Array.prototype.slice.call(arguments, 0);
                     args.unshift(this);
@@ -47,6 +47,13 @@ define(['altair/facades/declare',
             });
 
             return this.inherited(arguments);
+        },
+
+        execute: function (module) {
+
+            if(!module.Deferred) {
+                module.Deferred = Deferred;
+            }
         }
 
     });

@@ -17,7 +17,8 @@ define(['altair/facades/declare',
             var _options = options || this.options;
 
             if(!_options.type) {
-                throw new Error('You must pass installers for thelodge a type (such as modules, themes, widgets, etc.)');
+                this.deferred = new this.Deferred();
+                this.deferred.reject(new Error('You must pass installers for thelodge a type (such as modules, themes, widgets, etc.)'));
             }
 
             this.type = _options.type;

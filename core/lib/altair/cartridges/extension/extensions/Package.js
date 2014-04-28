@@ -10,11 +10,14 @@ define(['altair/facades/declare',
     return declare([_Base], {
 
         name:    'package',
+        _handles: 'module',
 
         startup: function () {
 
             if(!this.cartridge.hasExtension('config')) {
-                throw new Error('The package extension requires the config extension.');
+                this.deferred = new this.Deferred();
+                this.deferred.reject(new Error('The package extension requires the config extension.'));
+                return;
             }
 
             //if the module cartridge is installed, hook into forge

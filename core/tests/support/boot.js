@@ -49,7 +49,7 @@ define(['altair/Deferred',
                 if(!n) {
                     throw new Error('tests/support/boot.js has to be configured with the Nexus cartridge for boot.nexus to work.');
                 } else {
-                    return hitch(n, n.resolve);
+                    return hitch(n, 'resolve');
                 }
 
             });

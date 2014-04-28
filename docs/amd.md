@@ -11,8 +11,8 @@ define(['altair/facades/declare',
 
         startup: function (options) {
 
-            //get options, fallback to default
-            var _options = options || this.options;
+            //get options, fallback to default, finally blank obj
+            var _options = options || this.options || {};
 
             return this.inherited(arguments);
 

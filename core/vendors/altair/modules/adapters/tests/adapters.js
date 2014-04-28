@@ -109,7 +109,7 @@ define(['doh/runner',
                 _cartridges[2].options = mixin({
                     moduleOptions: {
                         'altair:Adapters': {
-                            'selectedAdapter': 'altair:Adapters::adapters/Mock2'
+                            'selectedAdapter': 'altair:Adapters/adapters/Mock2'
                         }
                     }
                 }, _cartridges[2].options);

@@ -24,7 +24,7 @@ define(['doh/runner',
                 return boot.nexus(cartridges).then(function (nexus) {
 
                     //create a kitchen
-                    return nexus('altair:TheLodge').foundry('client/Kitchen', {
+                    return nexus('altair:TheLodge').forge('client/Kitchen', {
                         menus: [ testMenu ]
                     }).then(function (kitchen) {
 

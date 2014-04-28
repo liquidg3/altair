@@ -27,10 +27,11 @@ define(['altair/facades/declare',
             //we have to make sure we have our dependent plugins loaded
             if(!this.altair.hasCartridge('apollo')) {
                 this.deferred.reject(new Error("You must have the 'apollo' cartridge enabled."));
+                return this.inherited(arguments);
             }
             //only 1 error at a time, now check for the config plugin
             else if(!this.cartridge.hasExtension('config')) {
-                this.deferred.reject(new Error("Please make sure you have the 'config' enabled."));
+                this.deferred.reject(new Error("Please make sure you have the config extension enabled."));
             } else {
                 this.deferred.resolve(this);
             }

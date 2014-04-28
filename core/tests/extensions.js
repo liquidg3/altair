@@ -1,4 +1,4 @@
-define(['doh/runner',
+ define(['doh/runner',
         'altair/facades/declare',
         'altair/cartridges/extension/Extension',
         'altair/Altair',
@@ -33,21 +33,15 @@ define(['doh/runner',
                 path: 'altair/cartridges/module/Module',
                 options: {
                     paths: ['core/tests/modules/vendors'],
-                    modules: ['altair:Mock']
+                    modules: ['altair:Mock', 'altair:Mock2']
                 }
             },
             {
                 path: 'altair/cartridges/extension/Extension',
                 options: {
                     extensions: [
-                        "altair/cartridges/extension/extensions/Paths",
-                        "altair/cartridges/extension/extensions/Config",
-                        "altair/cartridges/extension/extensions/Package",
-                        "altair/cartridges/extension/extensions/Deferred",
-                        "altair/cartridges/extension/extensions/Apollo",
-                        "altair/cartridges/extension/extensions/Nexus",
-                        "altair/cartridges/extension/extensions/Events",
-                        "altair/cartridges/extension/extensions/Foundry"
+                        "core/tests/extensions/Mock1",
+                        "core/tests/extensions/Mock2"
                     ]
                 }
             }
@@ -86,7 +80,7 @@ define(['doh/runner',
                         dir: os.tmpdir()
                     });
 
-                    extensions.extend(Dummy1);
+                    extensions.extend(Dummy1, 'module');
 
                     var dummy1 = new Dummy1();
 
@@ -111,11 +105,11 @@ define(['doh/runner',
                         dir: 'core/tests'
                     });
 
-                    extensions.extend(Dummy1);
+                    extensions.extend(Dummy1, 'subComponent');
 
                     var dummy1 = new Dummy1();
 
-                    doh.assertTrue(!!dummy1.parseConfig, 'parseConfig not added to module by Config plugin.');
+                    doh.assertTrue(!!dummy1.parseConfig, 'parseConfig not added to subComponent by Config plugin.');
 
                     return dummy1.parseConfig('configs/env?env=dev').then(function (config) {
                         t.is('bar2', config.foo, 'Config loading failed');
@@ -130,7 +124,13 @@ define(['doh/runner',
 
                 return boot.nexus(cartridges).then(function (nexus) {
 
-                    var m = nexus('altair:Mock');
+                    var m = nexus('altair:Mock'),
+                        m2= nexus('altair:Mock2');
+
+                    t.is(m.foo(), 'original', 'mock extension clobbered native foo()');
+                    t.t(!!m.foo2, 'mock extension did not add foo()');
+                    t.is(m2.foo(), 'bar1', 'mock extension did not add foo()');
+
 
 
                 });

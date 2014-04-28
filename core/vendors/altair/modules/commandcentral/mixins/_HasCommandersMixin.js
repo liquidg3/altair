@@ -1,9 +1,15 @@
 define(['altair/facades/declare',
         'altair/Lifecycle',
-        'altair/events/Emitter'
+        'altair/events/Emitter',
+        'altair/facades/all',
+        'altair/facades/mixin',
+        'lodash'
 ], function (declare,
              Lifecycle,
-             Emitter) {
+             Emitter,
+             all,
+             mixin,
+             _) {
 
 
     return declare([Lifecycle, Emitter], {
@@ -25,12 +31,15 @@ define(['altair/facades/declare',
 
             return this.parseConfig('configs/commanders').then(this.hitch(function (commanders) {
 
-                var list = [];
+                var _commanders = {};
 
                 //resolve relative paths
-                Object.keys(commanders).forEach(this.hitch(function (alias) {
+                _(commanders).each(function (commander, alias) {
 
-                    var name = commanders[alias].path;
+                    var name = commander.path,
+                        options = mixin(commander, {
+                            adapter: this.nexus('altair:CommandCentral').adapter()
+                        });
 
                     if(!name) {
                         throw new Error("You must pass your " + alias + " commander a path");
@@ -40,14 +49,12 @@ define(['altair/facades/declare',
                         name = this.name + '::' + name;
                     }
 
-                    list.push(this.foundry(name));
+                    _commanders[alias] = this.forge(name, options);
 
-                }));
+                },this);
 
-                return all(list);
+                return all(_commanders);
 
-            })).otherwise(this.hitch(function (err) {
-                this.log(err);
             }));
 
         }

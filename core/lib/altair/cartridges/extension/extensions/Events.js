@@ -80,8 +80,10 @@ define(['altair/facades/declare',
         startup: function () {
 
             if(!this.cartridge.hasExtension('nexus')) {
-                throw new Error("The module event plugin needs the nexus plugin loaded first.");
+                this.deferred = new this.Deferred();
+                this.deferred.reject(new Error("The events event extension needs the nexus extension loaded first."));
             }
+
 
             return this.inherited(arguments);
 

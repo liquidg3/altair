@@ -29,6 +29,10 @@ define(['doh/runner',
             destination = os.tmpdir() + 'thelodge',
             git;
 
+
+        //DISABLED
+        return;
+
         doh.register('thelodge.vcs',[
 
             {

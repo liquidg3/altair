@@ -12,4 +12,4 @@ people are sharing.
 
 ## Creating your own installer
 
-Out of the gate Altair comes with 1 installer; altair:TheLodge::installers/Module
+Out of the gate Altair comes with 1 installer; altair:TheLodge/installers/Module

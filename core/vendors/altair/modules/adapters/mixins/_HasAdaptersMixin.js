@@ -106,7 +106,7 @@ define(['altair/facades/declare',
             //load it from scratch, then cache
             else {
 
-                d = this.foundry(named).then(this.hitch(function (adapter) {
+                d = this.forge(named, null, { type: 'adapter' }).then(this.hitch(function (adapter) {
                     this._adaptersCache[named] = adapter;
                     return adapter;
                 }));

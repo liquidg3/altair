@@ -46,7 +46,7 @@ define(['altair/facades/declare',
             //setup the chef so he can run and grab the menus if they are remote
             if(!_options.chef) {
 
-                list.push(this.module.foundry('client/Chef').then(hitch(this, function (chef) {
+                list.push(this.module.forge('client/Chef').then(hitch(this, function (chef) {
 
                     this.chef = chef;
 
@@ -68,7 +68,7 @@ define(['altair/facades/declare',
                 //now that the kitchen is setup, lets get our inspector ready (for module search)
                 if(!_options.inspector) {
 
-                    return this.module.foundry('client/Inspector', { installers: this.installers, menus: this.menus }).then(hitch(this, function (inspector) {
+                    return this.module.forge('client/Inspector', { installers: this.installers, menus: this.menus }).then(hitch(this, function (inspector) {
                         this.inspector = inspector;
                     }));
 

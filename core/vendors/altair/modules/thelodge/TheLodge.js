@@ -34,7 +34,7 @@ define(['altair/facades/declare',
                 type = 'vcs/' + _.capitalize(type);
             }
 
-            return this.foundry(type, options);
+            return this.forge(type, options);
 
         },
 
@@ -89,7 +89,7 @@ define(['altair/facades/declare',
 
                     delete i.path;
 
-                    list.push(this.foundry(path, i));
+                    list.push(this.forge(path, i));
 
 
                 }));

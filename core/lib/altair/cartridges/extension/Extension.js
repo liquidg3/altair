@@ -15,7 +15,7 @@ define(['altair/facades/declare',
         return declare([_Base], {
 
             name: 'extension',
-            _extensions: [],
+            _extensions: null,
 
             startup: function (options) {
 
@@ -60,6 +60,7 @@ define(['altair/facades/declare',
                 }
                 //if there are no extensions, we are ready
                 else {
+                    this._extensions = [];
                     listen();
                 }
 
@@ -103,6 +104,26 @@ define(['altair/facades/declare',
             },
 
             /**
+             * Add a bunch of extensions at once.
+             *
+             * @param exts
+             * @returns {*}
+             */
+            addExtensions: function (exts) {
+
+                var list = [];
+
+                _.each(exts, function (ext) {
+
+                    list.push(this.addExtension(ext));
+
+                }, this);
+
+                return all(list);
+
+            },
+
+            /**
              *
              * @param name
              * @returns {boolean}
@@ -137,12 +158,14 @@ define(['altair/facades/declare',
              * @param module
              * @returns {altair.Deferred}
              */
-            extend: function (Module) {
+            extend: function (Module, type) {
 
                 var list = [];
 
                 this._extensions.forEach(this.hitch(function (plugin) {
-                    list.push(plugin.extend(Module));
+                    if(plugin.canExtend(type)) {
+                        list.push(plugin.extend(Module));
+                    }
                 }));
 
                 if(list.length == 0) {
@@ -160,7 +183,7 @@ define(['altair/facades/declare',
              *
              * @returns {altair.Deferred}
              */
-            execute: function (module) {
+            execute: function (module, type) {
 
                 if(!module) {
                     return this.inherited(arguments);
@@ -169,7 +192,9 @@ define(['altair/facades/declare',
                 var list = [];
 
                 this._extensions.forEach(this.hitch(function (plugin) {
-                    list.push(plugin.execute(module));
+                    if(plugin.canExtend(type)) {
+                        list.push(plugin.execute(module));
+                    }
                 }));
 
                 if(list.length == 0) {
@@ -189,7 +214,7 @@ define(['altair/facades/declare',
              * @return {altair.Deferred}
              */
             onWillForgeModule: function (e) {
-                return this.extend(e.get('Module'));
+                return this.extend(e.get('Module'), 'module');
             },
 
             /**
@@ -199,7 +224,7 @@ define(['altair/facades/declare',
              * @returns {altair.Deferred}
              */
             onDidForgeModule: function (e) {
-                return this.execute(e.get('module'));
+                return this.execute(e.get('module'), 'module');
             }
 
 
