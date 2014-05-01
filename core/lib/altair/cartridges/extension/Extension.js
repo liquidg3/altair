@@ -15,12 +15,11 @@ define(['altair/facades/declare',
         return declare([_Base], {
 
             name: 'extension',
-            _extensions: null,
+            _extensions: null, //has to be an array to maintain order
 
             startup: function (options) {
 
                 var _options = options || this.options || {},
-                    list     = [],
                     cartridge,
                     listen   = this.hitch(function () {
                         if(this.altair.hasCartridge('module')) {
@@ -36,26 +35,24 @@ define(['altair/facades/declare',
 
                     this._extensions = [];
 
-                    list = _options.extensions.map(this.hitch(function (path) {
+                    this.deferred = this.promise(require, _options.extensions).then(this.hitch(function (extensions) {
 
-                        var def = new this.Deferred();
+                        var list = [];
 
-                        require([path], this.hitch(function (Extension) {
+                        _.each(extensions, function (Extension) {
 
                             var extension = new Extension(this);
-                            this.addExtension(extension).then(hitch(def, 'resolve')).otherwise(hitch(def, 'reject'));
+                            list.push(this.addExtension(extension));
 
+                        }, this);
+
+                        return all(list).then(this.hitch(function () {
+                            listen();
+                            return this;
                         }));
 
-                        return def;
                     }));
 
-
-                    //wait it out
-                    this.deferred = all(list).then(this.hitch(function () {
-                        listen();
-                        return this;
-                    }));
 
                 }
                 //if there are no extensions, we are ready
@@ -69,23 +66,13 @@ define(['altair/facades/declare',
             },
 
             /**
-             * Gets you a extension by a particular name
+             * Gets you the first extension by a particular name
              *
              * @param name
              * @returns {*}
              */
             extension: function (name) {
-
-                var c;
-
-                for( c = 0; c <= this._extensions.length; c++ ) {
-                    if( this._extensions[c].name === name ) {
-
-                        return this._extensions[c];
-                    }
-                }
-
-                return null;
+                return this._extensions[name];
             },
 
             /**
@@ -114,9 +101,7 @@ define(['altair/facades/declare',
                 var list = [];
 
                 _.each(exts, function (ext) {
-
                     list.push(this.addExtension(ext));
-
                 }, this);
 
                 return all(list);
@@ -129,7 +114,9 @@ define(['altair/facades/declare',
              * @returns {boolean}
              */
             hasExtension: function (name) {
-                return _.some(this._extensions, function (extension) { return extension.name === name; });
+                return _.find(this._extensions, function (ext) {
+                    return ext.name === name;
+                });
             },
 
             /**
@@ -162,11 +149,11 @@ define(['altair/facades/declare',
 
                 var list = [];
 
-                this._extensions.forEach(this.hitch(function (plugin) {
-                    if(plugin.canExtend(type)) {
-                        list.push(plugin.extend(Module));
+                _.each(this._extensions, function (extension) {
+                    if(extension.canExtend(type)) {
+                        list.push(extension.extend(Module));
                     }
-                }));
+                },this);
 
                 if(list.length == 0) {
                     return Module;
@@ -191,11 +178,11 @@ define(['altair/facades/declare',
 
                 var list = [];
 
-                this._extensions.forEach(this.hitch(function (plugin) {
-                    if(plugin.canExtend(type)) {
-                        list.push(plugin.execute(module));
+                _.each(this._extensions, function (extension) {
+                    if(extension.canExtend(type)) {
+                        list.push(extension.execute(module));
                     }
-                }));
+                },this);
 
                 if(list.length == 0) {
                     return when(module);
@@ -218,7 +205,7 @@ define(['altair/facades/declare',
             },
 
             /**
-             * When a module is done being forged (but is not started up)
+             * When a module is done being forged (but is not started up) mixin more
              *
              * @param e
              * @returns {altair.Deferred}

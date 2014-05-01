@@ -2,10 +2,10 @@
  * Apollo _HasSchemaMixin -> give any object you want a schema, it's powerful and stuff =)
  */
 define(['dojo/_base/declare',
-        'dojo/_base/lang',
+        'lodash',
         './Schema'
 ], function (declare,
-             lang,
+             lodash,
              Schema) {
 
     function capitalise(string) {
@@ -93,11 +93,11 @@ define(['dojo/_base/declare',
          */
         mixin: function(values) {
 
-            Object.keys(values).forEach(lang.hitch(this, function (name) {
+            _.each(values, function (value, name) {
                 if(this.has(name)) {
-                    this.set(name, values[name]);
+                    this.set(name, value);
                 }
-            }));
+            }, this);
 
             return this;
         },
@@ -139,7 +139,7 @@ define(['dojo/_base/declare',
          */
         _get: function (name, defaultValue, options, config) {
 
-            var value = this._schema.applyOnProperty(['toJsValue'], name, this.values[name], options, config);
+            var value = this.schema().applyOnProperty((config && config.methods) ? config.methods : ['toJsValue'], name, this.values[name], options, config);
 
             if( value === null || value === undefined ) {
                 value = defaultValue;
@@ -165,7 +165,7 @@ define(['dojo/_base/declare',
 
             var properties    = schema.properties();
 
-            Object.keys(properties).forEach(lang.hitch(this, function (name) {
+            _.each(properties, function (value, name) {
 
                 //only set values on ourselves that do not already exist
                 //this is to ensure that values has a key for every property in the schema
@@ -176,7 +176,7 @@ define(['dojo/_base/declare',
 
                 }
 
-            }));
+            }, this);
 
             return this;
         },
@@ -188,7 +188,33 @@ define(['dojo/_base/declare',
          */
         schema: function () {
             return this._schema;
-        }
+        },
+
+        /**
+         *
+         * @returns {*}
+         */
+        getValues: function (optionsByProperty, config) {
+
+            var values = {},
+                _obp     = optionsByProperty || {},
+                _config  = config || {};
+
+
+
+            _.each(this.schema().properties(), function (propConfig, name) {
+
+                var options = _.defaults(_obp[name] || {}, propConfig.options);
+
+                values[name] = this.get(name, null, options, _config);
+
+
+            }, this);
+
+
+            return values;
+
+        },
 
     });
 

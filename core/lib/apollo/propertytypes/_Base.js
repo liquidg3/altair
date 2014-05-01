@@ -1,13 +1,15 @@
 /**
  * Base field type,
  */
-define(['dojo/_base/declare',
-        'dojo/Deferred',
-        'dojo/_base/lang'
+define(['altair/facades/declare',
+        'altair/facades/hitch',
+        'altair/facades/mixin',
+        'lodash'
 
 ], function (declare,
-             Deferred,
-             lang) {
+             hitch,
+             mixin,
+             _) {
 
     return declare(null, {
 
@@ -96,27 +98,26 @@ define(['dojo/_base/declare',
          */
         renderer: null,
 
-        constructor: function () {
+        constructor: function (options) {
+
+            var _options = mixin(options || {}, this.options, this._defaultOptions);
+
+
+            if(_options.key) {
+                this.key = _options.key;
+            }
+
 
             if(!this.key) {
                 throw new Error('You must set a key for your property type ( ' + this.key + ' ), something like "text" or "bool" or "email".', 'el');
             }
 
-            //mixin options with default options
-            if(!this.options) {
-                this.options = {};
-            }
-
-            var options = {};
-
-            lang.mixin(options, this.options, this._defaultOptions);
-
-            this.options = options;
+            this.options = _options;
             this.defaultOptionValues = {};
 
-            Object.keys(this.options).forEach(lang.hitch(this, function (name) {
-                this.defaultOptionValues[name] = this.options[name].options.hasOwnProperty('default') ? this.options[name].options.default : null;
-            }));
+            _.each(this.options, function (property, name) {
+                this.defaultOptionValues[name] = _.has(property.options, 'default') ? property.options.default : null;
+            }, this);
 
         },
 
@@ -127,8 +128,7 @@ define(['dojo/_base/declare',
          */
         normalizeOptions: function (options) {
 
-            var newOptions = {};
-            lang.mixin(newOptions, this.defaultOptionValues, options);
+            var newOptions = mixin(this.defaultOptionValues, options || {});
 
             return newOptions;
 

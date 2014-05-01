@@ -45,8 +45,8 @@ define(['altair/facades/declare',
                         throw new Error("You must pass your " + alias + " commander a path");
                     }
 
-                    if(name.search('::') === -1) {
-                        name = this.name + '::' + name;
+                    if(name.search(':') === -1) {
+                        name = this.name + '/' + name;
                     }
 
                     _commanders[alias] = this.forge(name, options);

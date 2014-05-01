@@ -5,7 +5,11 @@ require(['altair/TestRunner',
          'altair/plugins/node!debug',
          'altair/plugins/config!core/config/test'], function (TestRunner, debug, config) {
 
-    debug.enable('altair:test');
+    if(!config) {
+        throw new Error('Could not read core/config/test');
+    }
+
+    debug.enable(config.debug || ".*");
     debug = debug('altair:test');
 
     var runner = new TestRunner();
@@ -15,7 +19,7 @@ require(['altair/TestRunner',
         debug('tests loaded');
 
         runner.execute().then(function () {
-            debug('tests complete');
+            debug('tests complete, printing summary');
         }).otherwise(function (e) {
             debug('tests failed');
         });

@@ -34,7 +34,7 @@ define(['doh/runner',
                 options: {
                     extensions:    ['altair/cartridges/extension/extensions/Nexus', 'altair/cartridges/extension/extensions/Events']
                 }
-            },
+            }
         ];
 
 

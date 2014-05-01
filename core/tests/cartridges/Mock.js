@@ -2,7 +2,7 @@
  * TEST CARTRIDGE ONLY ** DO NOT USE BECAUSE IT IS REALLY BORING **
  */
 define(['altair/facades/declare',
-        './_Base'],
+        'altair/cartridges/_Base'],
 
 function (declare, _Base) {
 

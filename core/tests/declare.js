@@ -68,8 +68,9 @@ define(['doh/runner',
                 });
 
                 Dummy.extendBefore({
-                    foo: function () {
+                    foo: function (old) {
                         this.actual.push('foo2');
+                        return old();
                     }
                 });
 
@@ -102,9 +103,12 @@ define(['doh/runner',
                 });
 
                 Dummy.extendBefore({
-                    foo: function (bar) {
+                    foo: function (bar, old) {
+
                         this.actual.push(bar);
                         this.actual.push('foo2');
+
+                        return old(bar);
                     }
                 });
 
@@ -149,8 +153,9 @@ define(['doh/runner',
                 });
 
                 Dummy2.extendBefore({
-                    foo: function () {
+                    foo: function (old) {
                         this.actual.push('foo3');
+                        return old();
                     }
                 });
 
@@ -196,8 +201,9 @@ define(['doh/runner',
                 });
 
                 Dummy2.extendBefore({
-                    foo: function () {
+                    foo: function (old) {
                         this.actual.push('foo3');
+                        return old();
                     }
                 });
 
@@ -243,12 +249,12 @@ define(['doh/runner',
                 });
 
                 Dummy2.extendBefore({
-                    foo: function () {
+                    foo: function (old) {
                         var d = new Deferred();
 
                         setTimeout(hitch(this, function () {
                             this.actual.push('foo3');
-                            d.resolve();
+                            d.resolve(old());
                         }), 50);
 
                         return d;

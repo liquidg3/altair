@@ -28,30 +28,22 @@ define(['altair/facades/declare',
              */
             startup: function (options) {
 
-                var _options = options || this.options;
-
-                //do they pass the fieldtypes they want loaded?
-                if( !_options.hasOwnProperty('propertyTypes') ) {
-
-                //} else { //jsLint complains about the empty if block, flip it and use this else when you want to do some logic here.
-
-                    //the base fieldtypes i think we need to get altair to work
-                    _options.propertyTypes = [
+                var _options = options || this.options || {},
+                    types    = _options.propertyTypes || [
                         'apollo/propertytypes/Str',
                         'apollo/propertytypes/Bool',
                         'apollo/propertytypes/Int',
                         'apollo/propertytypes/Float',
                         'apollo/propertytypes/Date',
                         'apollo/propertytypes/Select',
-                        'apollo/propertytypes/Path',
+                        'apollo/propertytypes/Path'
                     ];
 
-                }
 
                 this.deferred   = new this.Deferred();
                 this.apollo     = new Apollo();
 
-                require( _options.propertyTypes, lang.hitch(this, function () {
+                require( types, this.hitch(function () {
 
                     var types = Array.prototype.slice.call(arguments),
                         i,

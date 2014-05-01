@@ -1,9 +1,11 @@
 define(['doh/runner',
         'altair/Lifecycle',
-        'dojo/_base/lang'],
+        'altair/Deferred',
+        'altair/plugins/node!fs'],
     function (doh,
               Lifecycle,
-              lang) {
+              Deferred,
+              fs) {
 
     /**
      * Dependencies
@@ -32,63 +34,93 @@ define(['doh/runner',
 
         "make sure startup returns a deferred": function (t) {
 
-            var life = new Lifecycle(),
-                deferred = new doh.Deferred();
+            var life = new Lifecycle();
 
-            life.startup().then(function () {
+            return life.startup().then(function () {
 
                 t.t(true, 'Lifecycle startup did not return a resolved deferred');
                 t.t(!!life.deferred, 'Lifecycle cleared deferred too soon');
 
+                var d = new Deferred();
+
                 setTimeout(function () {
                     t.is(life.deferred, null, 'Lifecycle did not clear out resolved');
-                    deferred.resolve(true);
+                    d.resolve(true);
                 }, 10);
+
+
+                return d;
 
             });
 
-            return deferred;
         },
 
-        "lifecycle execute returns seloved deferred": function (t) {
+        "lifecycle execute returns resolved deferred": function (t) {
 
-            var life = new Lifecycle(),
-                deferred = new doh.Deferred();
+            var life = new Lifecycle();
 
-            life.execute().then(function () {
+            return life.execute().then(function () {
 
                 t.t(true, 'Lifecycle startup did not return a resolved deferred');
                 t.t(!!life.deferred, 'Lifecycle cleared deferred too soon');
 
+                var d = new Deferred();
+
                 setTimeout(function () {
                     t.is(life.deferred, null, 'Lifecycle did not clear out resolved');
-                    deferred.resolve(true);
+                    d.resolve(true);
                 }, 10);
 
-            });
+                return d;
 
-            return deferred;
+            });
         },
 
         "lifecycle teardown returning resolved deferred": function (t) {
 
-            var life        = new Lifecycle(),
-                deferred    = new doh.Deferred();
+            var life        = new Lifecycle();
 
-            life.teardown().then(function () {
+            return life.teardown().then(function () {
 
                 t.t(true, 'Lifecycle startup did not return a resolved deferred');
                 t.t(!!life.deferred, 'Lifecycle cleared deferred too soon');
 
+                var d = new Deferred();
+
                 setTimeout(function () {
                     t.is(life.deferred, null, 'Lifecycle did not clear out resolved');
-                    deferred.resolve(true);
+                    d.resolve(true);
                 }, 10);
+
+                return d;
 
             });
 
-            return deferred;
+        },
+
+        "lifecycle promise works with object and string method name and 1 param": function (t) {
+
+            var life        = new Lifecycle();
+
+            return life.promise(fs, 'stat', require.toUrl('core/tests/')).then(function (results) {
+
+                t.t(!!results.mode, 'lifecycle promise wrapper failed');
+            });
+
+        },
+
+        "lifecycle promise works with function and 1 param": function (t) {
+
+            var life        = new Lifecycle();
+
+            return life.promise(require, ['core/tests/cartridges/Mock']).then(function (results) {
+
+                t.t(!!results, 'lifecycle promise wrapper failed with require()');
+            });
+
         }
+
+
 
     });
 

@@ -1,3 +1,4 @@
+//this logic should be moved to a declare library, there is too much going on in this one file to make it maintainable
 define(["dojo/_base/kernel", "dojo/has", "dojo/_base/lang"], function(dojo, has, lang){
     // module:
     //		dojo/_base/declare
@@ -346,7 +347,6 @@ define(["dojo/_base/kernel", "dojo/has", "dojo/_base/lang"], function(dojo, has,
      *
      * @param source
      */
-    var emptyInherited = function () {};
     function extendBefore(source) {
 
         var t, name, old;
@@ -358,39 +358,29 @@ define(["dojo/_base/kernel", "dojo/has", "dojo/_base/lang"], function(dojo, has,
 
             old = this.prototype[name];
 
-            if(!old) {
-                this.prototype[name] = t;
-            } else {
+            if(typeof t == 'function') {
 
                 this.prototype[name] = function (t, old) {
                     return function () {
 
                         //before calling new, lets ditch inherited so we don't get an infinite loop
-                        var i = this.inherited,
-                            r,
-                            args = Array.prototype.slice.call(arguments, 0);
+                        var args = Array.prototype.slice.call(arguments, 0),
+                            _old = (old) ? lang.hitch(this, old) : undefined;
 
-                        this.inherited = emptyInherited;
-
-                        r = t.apply(this, args);
-
-                        //bring back inherited so
-                        this.inherited = i;
-
-                        //it's a deferred, lets wait
-                        if(r && r.then) {
-
-                            return r.then(lang.hitch(this, function () {
-                                return old.apply(this, args) || r;
-                            }));
-
-                        } else {
-
-                            return old.apply(this, args) || r;
+                        //make sure we have as many args as the function accepts
+                        while(args.length < t.length - 1) {
+                            args.push(undefined);
                         }
+
+                        args.push(_old);
+
+                        return t.apply(this, args);
 
                     };
                 }(t, old);
+
+            } else {
+                throw new Error('You cannot extendBefore a property, only methods.');
             }
 
         }

@@ -51,11 +51,8 @@ define(['altair/facades/declare',
 
             var _options = options || this.options;
 
-            //setup new resolver if one is passed
             if (_options.resolvers) {
-                _options.resolvers.forEach(lang.hitch(this, function (resolver) {
-                    this.addResolver(resolver);
-                }));
+                throw new Error('not finished;');
             }
 
             return this.inherited(arguments);

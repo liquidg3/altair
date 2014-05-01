@@ -20,7 +20,7 @@ require(['altair/Altair',
         /**
          * Simple debug logging
          */
-        debug.enable = function () { return true; }
+        debug.enable(config.debug);
         debug = debug('altair:Altair');
 
         /**

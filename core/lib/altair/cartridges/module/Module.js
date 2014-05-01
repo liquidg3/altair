@@ -250,9 +250,9 @@ define(['altair/facades/declare',
         },
 
         /**
-         * Build modules against our local path settings using the foundry
+         * Build modules by name against our local path settings using the foundry
          *
-         * @param modules
+         * @param modules array of module name, titan:Alfred
          * @returns {altair.Deferred}
          */
         buildModules: function (modules) {

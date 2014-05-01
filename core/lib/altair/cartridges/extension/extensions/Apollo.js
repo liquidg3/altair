@@ -6,12 +6,14 @@
  */
 define(['altair/facades/declare',
          './_Base',
+         'altair/Deferred',
          'altair/facades/hitch',
          'apollo/_HasSchemaMixin',
          'apollo/Schema'],
 
     function (declare,
               _Base,
+              Deferred,
               hitch,
               _HasSchemaMixin,
               Schema) {
@@ -57,16 +59,27 @@ define(['altair/facades/declare',
 
             if(Module.prototype.isInstanceOf(_HasSchemaMixin) && !Module.prototype._willMixinOnStartup) {
 
+                Module.extendOnce({
+                    _willMixinOnStartup: true
+                });
+
                 //override startup to mixin options as values
                 Module.extendBefore({
-                    _willMixinOnStartup: true,
-                    startup: function (options) {
+                    startup: function (options, old) {
 
                         if(options) {
                             this.mixin(options);
                         }
 
-                        return this.inherited(arguments);
+                        if(!old) {
+                            old = new Deferred();
+                            old.resolve(this);
+                        } else {
+                            old = old(options);
+                        }
+
+                        return old;
+
                     }
                 });
             }

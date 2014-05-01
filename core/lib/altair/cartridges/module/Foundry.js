@@ -110,7 +110,7 @@ define(['altair/facades/declare',
                     } else {
 
                         //we have our sorted list, lets build each module
-                        var list    = sorted.map(hitch(this, 'buildOne'));
+                        var list    = sorted.map(hitch(this, 'forgeOne'));
 
                         return all(list);
 
@@ -181,6 +181,7 @@ define(['altair/facades/declare',
 
             var list                    = [],
                 pathsByName             = {},
+                packagesByName          = {},
                 deferred                = new Deferred(),
                 def;
 
@@ -195,7 +196,9 @@ define(['altair/facades/declare',
                         dependencies: null
                     };
 
+                packagesByName[name] = module;
                 pathsByName[name] = _path;
+
 
                 //manage our deferreds
                 def = new Deferred();
@@ -207,6 +210,8 @@ define(['altair/facades/declare',
                         def.reject(__('could not parse config at %s', packagePath));
                         return;
                     }
+
+
 
                     if(config.altairDependencies) {
                         module.dependencies = Object.keys(config.altairDependencies);
@@ -227,26 +232,39 @@ define(['altair/facades/declare',
             //make sure they all resolve, flatten the list, then order them by putting unshift()'ing dependent modules
             all(list).then(hitch(this, function (results) {
 
-                var sorted = [];
+                var sorted = [],
+                    sortDependencies = function (pack) {
 
-                results.forEach(hitch(this, function (m) {
+                        if(pack.dependencies) {
 
-                    if(m.dependencies) {
-                        m.dependencies.forEach(hitch(this, function (dep) {
-                            var p = pathsByName[dep];
+                            pack.dependencies.forEach(hitch(this, function (name) {
 
-                            if(!p) {
-                                deferred.reject("Dependent module " + dep + " is missing. Make sure it exists in your 'paths' and is enabled. The module in question is " + m.name);
-                            }
+                                var p       = pathsByName[name],
+                                    _pack   = packagesByName[name];
 
-                            if(sorted.indexOf(p) === -1) {
-                                sorted.unshift(p);
-                            }
-                        }));
-                    }
+                                if(!p) {
+                                    deferred.reject("Dependent module " + name + " is missing. Make sure it exists in your 'paths' and is enabled. The module in question is " + m.name);
+                                }
 
-                    if(sorted.indexOf(m.path) === -1) {
-                        sorted.push(m.path);
+                                //go through the dependency's dependencies
+                                sortDependencies(_pack);
+
+                                //now drop in dependent to list
+                                if(sorted.indexOf(p) === -1) {
+                                    sorted.push(p);
+                                }
+
+                            }));
+                        }
+
+                    };
+
+                results.forEach(hitch(this, function (pack) {
+
+                    sortDependencies(pack);
+
+                    if(sorted.indexOf(pack.path) === -1) {
+                        sorted.push(pack.path);
                     }
 
                 }));
@@ -298,7 +316,7 @@ define(['altair/facades/declare',
          *
          * @param path
          */
-        buildOne: function (modulePath) {
+        forgeOne: function (modulePath) {
 
             var deferred    = new Deferred(),
 

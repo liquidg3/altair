@@ -16,7 +16,7 @@ define(['doh/runner',
     var options   = {
             cartridges: [
                 {
-                    "path": "altair/cartridges/Mock",
+                    "path": "core/tests/cartridges/Mock",
                     "options": {
                         foo: "bar"
                     }
@@ -27,7 +27,7 @@ define(['doh/runner',
 
     runner.register('cartridges', {
 
-        "test instantiating cartridge": function (t) {
+        "test instantiating cartridge foundry": function (t) {
 
             var altair  = new Altair(),
                 foundry = new Foundry(altair);

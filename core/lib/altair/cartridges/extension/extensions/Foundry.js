@@ -92,6 +92,7 @@ define(['altair/facades/declare',
                         parent        = this,
                         path,
                         parts,
+                        name          = _.has(config, 'name') ? config.name : null,
                         foundry       = _.has(config, 'foundry') ? config.foundry : defaultFoundry,
                         shouldStartup = _.has(config, 'startup') ? config.startup : true,
                         type          = _.has(config, 'type') ? config.type : 'subComponent';
@@ -109,6 +110,21 @@ define(['altair/facades/declare',
                         return d;
                     }
 
+                    //detect name
+                    if(!name) {
+
+                        name = className;
+
+                        //the path is relative to parent, lets try and resolve it
+                        //this is safe to change, just make sure to test alfred and controllers
+                        if(name.search(/\.\./) > -1) {
+                            name = parent.name.split(':')[0] + ':' + pathUtil.join(parent.name.split(':')[1], '..', name);
+                        } else {
+                            name = (name[0] === '/') ? name : parent.name + '/' + name; //keep absolute path?
+                        }
+
+                    }
+
                     //path from newly resolved classname
                     path = parent.resolvePath(className + '.js'),
 
@@ -119,40 +135,38 @@ define(['altair/facades/declare',
                             d.reject(new Error('Could not create ' + type + ' at ' + path));
                         } else {
 
-                            require([path], hitch(this, function (Child) {
+                            try {
 
-                                var name = className;
+                                require([path], hitch(this, function (Child) {
 
-                                //the path is relative to parent, lets try and resolve it
-                                //this is safe to change, just make sure to test alfred and controllers
-                                if(name.search(/\.\./) > -1) {
-                                    name = parent.name.split(':')[0] + ':' + pathUtil.join(parent.name.split(':')[1], '..', name);
-                                } else {
-                                    name = (name[0] === '/') ? name : parent.name + '/' + name; //keep absolute path?
-                                }
+                                    var a       = foundry(Child, options, {
+                                        parent:     parent,
+                                        name:       name,
+                                        type:       type,
+                                        dir:        pathUtil.dirname(path),
+                                        extensions: this.nexus('cartridges/Extension')
+                                    });
 
-                                var a       = foundry(Child, options, {
-                                    parent:     parent,
-                                    name:       name,
-                                    type:       type,
-                                    dir:        pathUtil.dirname(path),
-                                    extensions: this.nexus('cartridges/Extension')
-                                });
+                                    //extend this object
+                                    when(a).then(hitch(this, function (a) {
 
-                                //extend this object
-                                when(a).then(hitch(this, function (a) {
+                                        //startup the module
+                                        if(a.startup && shouldStartup) {
+                                            a.startup(options).then(hitch(d, 'resolve')).otherwise(hitch(d, 'reject'));
+                                        } else {
+                                            d.resolve(a);
+                                        }
 
-                                    //startup the module
-                                    if(a.startup && shouldStartup) {
-                                        a.startup(options).then(hitch(d, 'resolve')).otherwise(hitch(d, 'reject'));
-                                    } else {
-                                        d.resolve(a);
-                                    }
+                                    })).otherwise(hitch(d, 'reject'));
+
 
                                 }));
 
+                            } catch(err) {
+                                d.reject(err);
+                            }
 
-                            }));
+
 
                         }
 

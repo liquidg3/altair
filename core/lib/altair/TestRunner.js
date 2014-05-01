@@ -22,8 +22,6 @@ define(['altair/facades/declare',
               glob,
               require) {
 
-        debug.enable('altair:test');
-        debug = debug('altair:test');
 
         return declare('altair/TestRunner', [Lifecycle], {
 

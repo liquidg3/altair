@@ -1,6 +1,7 @@
 {
     "default": {
 
+        "debug": ".*",
         "paths": {
             "app": "app",
             "community": "community",

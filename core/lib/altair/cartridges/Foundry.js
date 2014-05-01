@@ -43,7 +43,7 @@ function (declare,
          */
         build: function (options) {
 
-            var list            = options.map(hitch(this, 'buildOne'));
+            var list            = options.map(hitch(this, 'forgeOne'));
 
             return all(list);
         },
@@ -54,7 +54,7 @@ function (declare,
          * @param options
          * @returns {dojo.Deferred}
          */
-        buildOne: function (options) {
+        forgeOne: function (options) {
 
             var def = new Deferred();
 

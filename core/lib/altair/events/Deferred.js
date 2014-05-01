@@ -258,8 +258,9 @@ define([
                             _waiting = [];
                             fulfilled = REJECTED;
                             finished = true;
+                            results = e;
                             if(newPromise.errCallback) {
-                                newPromise.errCallback(err);
+                                newPromise.errCallback(e);
                             }
                         }
 

@@ -74,6 +74,7 @@ define(['altair/facades/declare',
          * @returns {*}
          */
         teardown: function () {
+
             var results;
 
             if( this.plugin ) {
