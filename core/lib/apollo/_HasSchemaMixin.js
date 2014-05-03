@@ -214,7 +214,7 @@ define(['dojo/_base/declare',
 
             return values;
 
-        },
+        }
 
     });
 

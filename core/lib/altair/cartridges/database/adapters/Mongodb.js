@@ -1,15 +1,28 @@
 define(['altair/facades/declare',
         './_Base',
-        'altair/plugins/node!mongodb'
+        'altair/plugins/node!mongodb',
+        'lodash',
+        '../cursors/Mongodb'
 ], function (declare,
              _Base,
-             mongodb) {
+             mongodb,
+             _,
+             MongodbCursor) {
 
     return declare([_Base], {
 
         _client: null,
         _db:     null,
         alias:  '', //we can give our database connections an alias so they are easy to lookup later
+        writeConcern: true,
+        _operatorMap: {
+            '$>':   '$gt',
+            '$!=':  '$ne',
+            '$<':   '$lt',
+            '$>=':  '$gte',
+            '$<=':  '$lte',
+            '$OR':  '$or'
+        },
 
         startup: function (options) {
 
@@ -19,6 +32,7 @@ define(['altair/facades/declare',
 
             //was this connection given an alias?
             this.alias    = _options.alias || '';
+            this.writeConcern = _options.writeConcern || this.writeConcern;
 
             if(!this.alias) {
                 this.deferred = new this.Deferred();
@@ -39,7 +53,6 @@ define(['altair/facades/declare',
 
             //remove connectionString from options so the remaining options can be passed to the mongo client
             connectionString = _options.connectionString;
-            delete _options.connectionString;
 
             //create a new client
             this._client = new mongodb.MongoClient();
@@ -78,7 +91,116 @@ define(['altair/facades/declare',
 
         },
 
-        execute: function (query) {
+        update: function (collectionName, statement, options) {
+
+
+            var clauses     = this.parseStatement(statement),
+                collection  = this._db.collection(collectionName),
+                where       = clauses.where;
+
+            return this.promise(collection, 'update', where, { '$set': clauses.set}, options || { w: this.writeConcern }).then(function (results) {
+                return results[0];
+            });
+
+
+        },
+
+        teardown: function () {
+            return this.promise(this._db, 'close');
+        },
+
+        create: function (collectionName, document, options) {
+
+            var collection = this._db.collection(collectionName);
+
+            return this.promise(collection, 'insert', [document], options || { w: this.writeConcern }).then(function (results) {
+                return results.pop();
+            });
+
+        },
+
+        createMany: function (collectionName, documents, options) {
+
+            var collection = this._db.collection(collectionName);
+
+            return this.promise(collection, 'insert', documents, options || { w: this.writeConcern }).then(function (results) {
+                return results;
+            });
+
+
+        },
+
+        'delete': function (collectionName, statement, options) {
+
+            var clauses     = this.parseStatement(statement),
+                collection  = this._db.collection(collectionName);
+
+            return this.promise(collection, 'remove', clauses.where || {}, options || { w: this.writeConcern }).then(function (results) {
+                return results;
+            });
+
+        },
+
+        find: function (collectionName, statement, options) {
+
+            var clauses     = this.parseStatement(statement),
+                collection  = this._db.collection(collectionName),
+                where       = clauses.where,
+                _options    = options || {};
+
+            //apply limit clause
+            if(_.has(clauses, 'limit')) {
+                _options.limit = clauses.limit;
+            }
+
+            //apply skip clause
+            if(_.has(clauses, 'skip')) {
+                _options.skip = clauses.skip;
+            }
+
+            return this.promise(collection, 'find', where || {}, _options).then(function (cursor) {
+                return new MongodbCursor(cursor, statement);
+            });
+
+        },
+
+        findOne: function (collectionName, statement, options) {
+
+            statement.limit(1);
+
+            return this.find(collectionName, statement, options).then(function (cursor) {
+                return cursor.toArray();
+            }).then(function (docs) {
+                return docs.pop();
+            });
+
+        },
+
+        parseStatement: function (statement) {
+
+            var clauses      = statement.clauses(),
+                mapOperators = this.hitch(function (obj) {
+
+                var output = _.isArray(obj) ? [] : {};
+
+                _.each(obj, function (value, key) {
+
+                    var _key = this._operatorMap[key] || key;
+
+                    if(_.isObject(value)) {
+                        output[_key] = mapOperators(value);
+                    } else {
+                        output[_key] = value;
+                    }
+
+                }, this);
+
+                return output;
+            });
+
+            clauses.where = mapOperators(clauses.where);
+
+            return clauses;
 
         },
 

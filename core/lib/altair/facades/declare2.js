@@ -1,4 +1,3 @@
-//this logic should be moved to a declare library, there is too much going on in this one file to make it maintainable
 define(["dojo/_base/kernel", "dojo/has", "dojo/_base/lang"], function(dojo, has, lang){
     // module:
     //		dojo/_base/declare
@@ -1145,7 +1144,7 @@ define(["dojo/_base/kernel", "dojo/has", "dojo/_base/lang"], function(dojo, has,
 
     // For back-compat, remove for 2.0
     dojo.safeMixin = declare.safeMixin = safeMixin;
-    dojo.declare = declare;
+    dojo.declare = cachedDeclare = declare;
 
     return declare;
 });

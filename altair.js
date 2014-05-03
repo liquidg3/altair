@@ -58,8 +58,11 @@ dojoConfig = {
             location: path.join(base, "core/lib/apollo")
         }
     ],
-    paths: {
-        'dojo/_base/declare': path.join(base, 'core/lib/altair/facades/declare2')
+    map: {
+         "*": {
+            'dojo/_base/declare': 'altair/facades/declare'
+         }
+
     },
     deps: [
         argv.bootstrap

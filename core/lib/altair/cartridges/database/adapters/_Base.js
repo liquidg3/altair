@@ -1,7 +1,5 @@
 define(['altair/facades/declare',
-        'altair/Lifecycle'
-], function (declare,
-             Lifecycle) {
+        'altair/Lifecycle'], function (declare, Lifecycle) {
 
     return declare([Lifecycle], {
 
@@ -14,6 +12,7 @@ define(['altair/facades/declare',
 
 
         }
+
 
     });
 

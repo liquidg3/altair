@@ -1,33 +1,33 @@
 define(['altair/facades/declare',
         '../_Base',
-        'altair/facades/mixin',
         'altair/facades/all',
-        'altair/facades/hitch',
+        './Statement',
         'lodash'
 ], function (declare,
              _Base,
-             mixin,
              all,
-             hitch,
+             Statement,
              _) {
 
     return declare([_Base], {
 
         name: 'database',
         _connections: null,
-
+        Statement: Statement,
         startup: function (options) {
 
             var _options    = options || this.options || {},
                 list        = [];
 
+            //dependency injection
+            this.Statement      = _options.Statement || this.Statement;
 
             //mix in any adapter types passed (see this.adapterTypes)
             this._connections = [];
 
             if(_options.connections) {
 
-                _.each(_options.connections, this.hitch(function (connection) {
+                _.each(_options.connections, function (connection) {
 
                     var d = this.promise(require, [connection.path]).then(this.hitch(function (Adapter) {
                         var a = new Adapter(this, connection.options);
@@ -37,7 +37,7 @@ define(['altair/facades/declare',
 
                     list.push(d);
 
-                }), this);
+                }, this);
 
                 this.deferred = all(list);
 
@@ -61,16 +61,107 @@ define(['altair/facades/declare',
         },
 
         /**
+         * Create a record in you database by a table/collection name
+         *
+         * @param tableName
+         * @param record
+         * @returns {altair.Deferred}
+         */
+        create: function (tableName, record, options) {
+
+            return new this.Statement(this.hitch(function (statement, options) {
+
+                var c = this._connections[0];
+                return c.create(tableName, statement.clause('set'), options);
+
+            }));
+
+        },
+
+        /**
+         * Create many records at once!
+         *
+         * @param tableName
+         * @param records
+         * @returns {altair.Deferred}
+         */
+        createMany: function (tableName, records, options) {
+
+            return new this.Statement(this.hitch(function (statement, options) {
+
+                var c = this._connections[0];
+                return c.createMany(tableName, statement.clause('set'), options);
+
+            }));
+
+        },
+
+        /**
+         * Delete records.
+         *
+         * @param tableName
+         * @param options
+         * @returns {altair.cartridges.database.query.Query}
+         */
+        'delete': function (tableName) {
+
+            return new this.Statement(this.hitch(function (statement, options) {
+
+                var c = this._connections[0];
+                return c.delete(tableName, statement, options);
+
+            }));
+
+        },
+
+        /**
+         *
+         * @param tableName
+         * @param options
+         * @returns {altair.cartridges.database.query.Query}
+         */
+        update: function (tableName) {
+
+            return new this.Statement(this.hitch(function (statement, options) {
+
+                var c = this._connections[0];
+                return c.update(tableName, statement, options);
+
+            }));
+
+        },
+
+        find: function (tableName) {
+
+            return new this.Statement(this.hitch(function (statement, options) {
+
+                var c = this._connections[0];
+                return c.find(tableName, statement, options);
+
+            }));
+
+        },
+
+        findOne: function (tableName) {
+
+            return new this.Statement(this.hitch(function (statement, options) {
+
+                var c = this._connections[0];
+                return c.findOne(tableName, statement, options);
+
+            }));
+
+        },
+
+        /**
          * Get a connection by its alias
          *
          * @param alias
          */
         connection: function (alias) {
-
             return _.find(this._connections, { alias: alias });
-
-
         },
+
 
         teardown: function () {
 

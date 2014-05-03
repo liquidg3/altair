@@ -39,6 +39,10 @@ define(['altair/facades/declare',
 
                         var list = [];
 
+                        if(!_.isArray(extensions)) {
+                            extensions = [extensions];
+                        }
+
                         _.each(extensions, function (Extension) {
 
                             var extension = new Extension(this);
@@ -72,7 +76,9 @@ define(['altair/facades/declare',
              * @returns {*}
              */
             extension: function (name) {
-                return this._extensions[name];
+                return _.find(this._extensions, function (ext) {
+                    return ext.name === name;
+                });
             },
 
             /**
