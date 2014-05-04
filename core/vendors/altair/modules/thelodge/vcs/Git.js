@@ -79,7 +79,7 @@ define(['altair/facades/declare',
          */
         update: function (options) {
 
-            var d           = new this.module.Deferred(),
+            var d           = new this.Deferred(),
                 destination = options.destination,
                 version     = options.version,
                 repo;

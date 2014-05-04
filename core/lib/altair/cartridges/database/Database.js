@@ -127,6 +127,14 @@ define(['altair/facades/declare',
 
         },
 
+        count: function (tableName) {
+
+            return new this.Statement(this.hitch(function (statement, options) {
+                return this.defaultConnection().count(tableName, statement, options);
+            }));
+
+        },
+
         findOne: function (tableName) {
 
             return new this.Statement(this.hitch(function (statement, options) {

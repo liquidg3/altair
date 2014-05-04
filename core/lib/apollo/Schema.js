@@ -88,6 +88,14 @@ define(['dojo/_base/declare',
             return this;
         },
 
+        optionFor: function (propertyName, optionName) {
+
+            if(!_.has(this._data.properties, propertyName)) {
+                throw new Error('no property called ' + propertyName + ' found on schema.');
+            }
+
+            return this._data.properties[propertyName].options[optionName];
+        },
         /**
          * Get you all the options for this field mixed in with all options for the field type.
          *
@@ -128,6 +136,9 @@ define(['dojo/_base/declare',
 
         },
 
+        option: function (named) {
+            return this._data[named];
+        },
 
         /**
          * All the properties on this schema
@@ -135,7 +146,7 @@ define(['dojo/_base/declare',
          * @returns {};
          */
         properties: function () {
-            return this._data.properties;
+            return this.option('properties');
         },
 
         /**

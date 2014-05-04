@@ -78,7 +78,7 @@ define(['altair/facades/declare',
                 destination; //where we will save it after everything is loaded
 
             //step 2 - try and find a package.json for the module to be installed
-            return this.module.parseConfig(configPath).then(this.hitch(function (package) {
+            return this.parseConfig(configPath).then(this.hitch(function (package) {
 
                 var list = [];
 

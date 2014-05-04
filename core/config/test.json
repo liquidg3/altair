@@ -1,8 +1,9 @@
 {
     "debug": ".*",
     "glob": [
-        "core/vendors/*/modules/*/tests/*.js",
-        "core/tests/*.js",
-        "apollo/tests/*.js"
+        "missed-core/vendors/*/modules/*/tests/*.js",
+        "missed-core/tests/*.js",
+        "core/tests/cartridges-database-cursor.js",
+        "missed-apollo/tests/*.js"
     ]
 }

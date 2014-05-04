@@ -341,7 +341,7 @@ define(['altair/facades/declare',
                 }).then(hitch(this, function (e) {
 
                     var module      = new (e.get('Module'))();
-                        module.dir  = dir;
+                        module.dir  = path.join(dir, '/');
                         module.name = name;
 
                     return this.delegateEmit('did-forge-module', {

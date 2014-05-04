@@ -20,19 +20,17 @@ define(['altair/facades/declare',
         'altair/facades/hitch',
         'altair/facades/when',
         'altair/Deferred',
-        'apollo/_HasSchemaMixin',
-        'apollo/Schema',
         'altair/plugins/node!fs',
-        'altair/plugins/node!path'
+        'altair/plugins/node!path',
+        'lodash'
 ], function (declare,
              _Base,
              hitch,
              when,
              Deferred,
-             _HasSchemaMixin,
-             Schema,
              fs,
-             pathUtil) {
+             pathUtil,
+             _) {
 
     //instantiation callback for every foundry call, assums everything is a subcomponent
     var defaultFoundry = function (Class, options, config) {
@@ -42,6 +40,7 @@ define(['altair/facades/declare',
             var a       = new Class(options),
                 parent  = config.parent,
                 dir     = config.dir,
+                nexus   = config.nexus,
                 name    = config.name || '__unnamed';
 
             //setup basics if they are missing
@@ -51,7 +50,7 @@ define(['altair/facades/declare',
 
             a.parent    = parent;
             a.dir       = dir;
-            a._nexus    = parent._nexus;
+            a._nexus    = nexus;
 
             return config.extensions.execute(a, config.type);
 
@@ -98,23 +97,24 @@ define(['altair/facades/declare',
                         type          = _.has(config, 'type') ? config.type : 'subComponent';
 
 
-                    if(className.search('./') === 0) {
-                        className = className.substr(2);
+                    //are we pointing to a relative directiory?
+                    if(className[0] === '.') {
+                        className = pathUtil.join(this.dir, className).replace(parent.dir, '');
                     }
-
-                    if(className.search(':') > 0) {
+                    //it's a full nexus path
+                    else if(className.search(':') > 0) {
                         parts       = className.split('/');
                         parent      = this.nexus(parts[0]);
                         className   = className.replace(parts[0] + '/', '');
                     }
 
-                    if(!parent) {
-                        d.reject('could not resolve ' + className + ' in Foundry extension.');
-                        return d;
-                    }
-
                     //detect name
                     if(!name) {
+
+                        if(!parent) {
+                            d.reject('Could not resolve parent for ' + className + ' in Foundry extension. Parent is required if you do not pass a name.');
+                            return d;
+                        }
 
                         name = className;
 
@@ -129,7 +129,7 @@ define(['altair/facades/declare',
                     }
 
                     //path from newly resolved classname
-                    path = parent.resolvePath(className + '.js'),
+                    path = (parent) ? parent.resolvePath(className + '.js') : this.resolvePath(className + '.js');
 
                     //does this file exist?
                     fs.exists(path, hitch(this, function (exists) {
@@ -138,15 +138,17 @@ define(['altair/facades/declare',
                             d.reject(new Error('Could not create ' + type + ' at ' + path));
                         } else {
 
-                            try {
 
-                                require([path], hitch(this, function (Child) {
+                            require([path], hitch(this, function (Child) {
+
+                                try {
 
                                     var a       = foundry(Child, options, {
                                         parent:     parent,
                                         name:       name,
+                                        nexus:      (parent) ? parent._nexus : this._nexus,
                                         type:       type,
-                                        dir:        pathUtil.dirname(path),
+                                        dir:        pathUtil.join(pathUtil.dirname(path), '/'),
                                         defaultFoundry: defaultFoundry,
                                         extensions: this.nexus('cartridges/Extension')
                                     });
@@ -164,19 +166,15 @@ define(['altair/facades/declare',
                                     })).otherwise(hitch(d, 'reject'));
 
 
-                                }));
-
-                            } catch(err) {
-                                d.reject(err);
-                            }
-
+                                } catch(err) {
+                                    d.reject(err);
+                                }
+                            }));
 
 
                         }
 
-
                     }));
-
 
                     return d;
 

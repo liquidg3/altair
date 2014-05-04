@@ -13,7 +13,6 @@ define(['altair/facades/declare',
 
         _client: null,
         _db:     null,
-        alias:  '', //we can give our database connections an alias so they are easy to lookup later
         writeConcern: true,
         _operatorMap: {
             '$>':   '$gt',
@@ -30,16 +29,8 @@ define(['altair/facades/declare',
             var _options = options || this.options || {},
                 connectionString;
 
-            //was this connection given an alias?
-            this.alias    = _options.alias || '';
+            //passthrough of writeconcern
             this.writeConcern = _options.writeConcern || this.writeConcern;
-
-            if(!this.alias) {
-                this.deferred = new this.Deferred();
-                this.deferred.reject(new Error('please give your database adapter a nickname.'));
-
-                return this.inherited(arguments); //boo mid-function return (I prefer this to everything in an "else")
-            }
 
             //did we pass all we needed?
             if(!_options.connectionString) {
@@ -136,6 +127,17 @@ define(['altair/facades/declare',
                 collection  = this._db.collection(collectionName);
 
             return this.promise(collection, 'remove', clauses.where || {}, options || { w: this.writeConcern }).then(function (results) {
+                return results;
+            });
+
+        },
+
+        count: function (collectionName, statement, options) {
+
+            var clauses     = this.parseStatement(statement),
+                collection  = this._db.collection(collectionName);
+
+            return this.promise(collection, 'count', clauses.where || {}, options || { w: this.writeConcern }).then(function (results) {
                 return results;
             });
 

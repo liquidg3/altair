@@ -25,7 +25,7 @@ define(['altair/facades/declare',
 
             var _options         = mixin(this.options || {}, options || {});
 
-            this.adapter         = (_options && _options.adapter) ? _options.adapter : this.module.adapter();
+            this.adapter         = (_options && _options.adapter) ? _options.adapter : this.parent.adapter();
 
             _options.description = (_options && _options.description) ? _options.description : this.name;
             _options.label       = (_options && _options.label) ? _options.label : _options.description;
@@ -45,7 +45,7 @@ define(['altair/facades/declare',
 
             return this.inherited(arguments).then(hitch(this, function () {
 
-                var file        = this.module.resolvePath('commanders/styles.css'),
+                var file        = this.parent.resolvePath('commanders/styles.css'),
                     deferred    = new this.Deferred();
 
                 css(file).then(hitch(this, function (styles) {
@@ -87,7 +87,7 @@ define(['altair/facades/declare',
          */
         form: function(propertiesOrSchema, options) {
 
-            var apolloSchema = this.module.nexus('cartridges/Apollo').createSchema(propertiesOrSchema);
+            var apolloSchema = this.nexus('cartridges/Apollo').createSchema(propertiesOrSchema);
 
             return this.adapter.form(apolloSchema, options);
         },

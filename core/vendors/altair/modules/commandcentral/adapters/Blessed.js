@@ -239,7 +239,7 @@ define(['altair/facades/declare',
 
             var d        = new Deferred();
 
-            this.module.forge('adapters/blessed/FormFoundry').then(hitch(this, function (foundry) {
+            this.parent.forge('adapters/blessed/FormFoundry').then(hitch(this, function (foundry) {
 
                 var form = foundry.build(this, schema, options);
 

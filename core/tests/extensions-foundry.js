@@ -51,7 +51,7 @@ define(['doh/runner',
 
                     return m.forge('test/Component').then(function (test) {
 
-                        var dir = require.toUrl('core/tests/modules/vendors/altair/modules/mock/test');
+                        var dir = require.toUrl('core/tests/modules/vendors/altair/modules/mock/test/');
 
                         t.is(test.name, 'altair:Mock/test/Component');
                         t.is(test.dir, dir);

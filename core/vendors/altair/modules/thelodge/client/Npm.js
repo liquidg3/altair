@@ -64,7 +64,7 @@ define(['altair/facades/declare',
             } else {
 
                 //there are some dependencies, lets drop them into package.json
-                results = this.module.parseConfig(mainPackagePath).then(hitch(this, function (mainPackage) {
+                results = this.parseConfig(mainPackagePath).then(hitch(this, function (mainPackage) {
 
                     var changesMade = false,
                         results     = mainPackage;

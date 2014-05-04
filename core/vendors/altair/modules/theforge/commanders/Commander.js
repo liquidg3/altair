@@ -48,9 +48,9 @@ define(['altair/facades/declare',
                 destination = path.join(require.toUrl(values.dir), 'vendors', vendor.toLowerCase(), 'modules', name.toLowerCase());
 
 
-                files[this.module.resolvePath('templates/_Module.js')]      = path.join(destination, name + '.js');
-                files[this.module.resolvePath('templates/_package.json')]   = path.join(destination, 'package.json');
-                files[this.module.resolvePath('templates/_README.md')]      = path.join(destination, 'README.md');
+                files[this.parent.resolvePath('templates/_Module.js')]      = path.join(destination, name + '.js');
+                files[this.parent.resolvePath('templates/_package.json')]   = path.join(destination, 'package.json');
+                files[this.parent.resolvePath('templates/_README.md')]      = path.join(destination, 'README.md');
 
 
                 //create destination directory for our module

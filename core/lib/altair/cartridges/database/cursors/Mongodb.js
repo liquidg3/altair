@@ -1,9 +1,15 @@
 define(['altair/facades/declare',
         './_Base',
-        'lodash'
+        'lodash',
+        'altair/facades/all',
+        'altair/facades/hitch',
+        'altair/facades/when'
 ], function (declare,
              _Base,
-             _) {
+             _,
+             all,
+             hitch,
+             when) {
 
     return declare([_Base], {
 
@@ -15,11 +21,43 @@ define(['altair/facades/declare',
         },
 
         next: function () {
-            return this.promise(this._cursor, 'next');
+            return this.promise(this._cursor, 'next').then(this.hitch(function (document) {
+
+                if(this.foundry) {
+                    return this.foundry(document);
+                } else {
+                    return document;
+                }
+
+            }));
         },
 
         each: function () {
-            return this.promise(this._cursor, 'each');
+
+            var d = new this.Deferred(),
+                c = 0;
+
+            this._cursor.each(this.hitch(function (err, document) {
+
+                if(err) {
+                    d.reject(err);
+                } else if(document) {
+
+                    c = c + 1;
+
+                    if(this.foundry) {
+                        when(this.foundry(document)).then(hitch(d, 'progress')).otherwise(hitch(d, 'reject'));
+                    } else {
+                        d.progress(document);
+                    }
+
+                } else {
+                    d.resolve(c);
+                }
+
+            }));
+
+            return d;
         },
 
         close: function () {
@@ -27,7 +65,21 @@ define(['altair/facades/declare',
         },
 
         toArray: function() {
-            return this.promise(this._cursor, 'toArray');
+            return this.promise(this._cursor, 'toArray').then(this.hitch(function (documents) {
+
+                if(this.foundry) {
+
+                    var l = _.map(documents, function (document) {
+                        return this.foundry(document);
+                    }, this);
+
+                    return all(l);
+
+                } else {
+                    return documents;
+                }
+
+            }));
         },
 
         count: function () {

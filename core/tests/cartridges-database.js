@@ -203,14 +203,14 @@ define(['doh/runner',
 
                 }).then(function (count) {
 
-                    t.t(count === 1, 'record count missmatch');
+                    t.is(1, count, 'record count missmatch');
 
                     //update the record
                     return database.update('test_collection').set('firstName', 'taytay').where('foo', '==', 'bar').execute();
 
                 }).then(function (totalUpdated) {
 
-                    t.t(totalUpdated === 1, 'record update missmatch');
+                    t.is(1, totalUpdated, 'record update missmatch');
 
                     return database.findOne('test_collection').where('foo', '==', 'bar').execute();
 
@@ -220,6 +220,48 @@ define(['doh/runner',
 
                     //cleanup
                     return database.delete('test_collection').execute();
+                });
+
+            },
+
+            "test counting records through cartridge": function (t) {
+
+                var database;
+
+                return boot.nexus(cartridges).then(function (nexus) {
+
+                    database  = nexus('cartridges/Database');
+
+                    //start by cleaning out the collection
+                    return database.delete('test_collection').execute();
+
+                }).then(function (totalDeleted) {
+
+                    return database.createMany('test_collection').set([
+                        {
+                            foo: 'bar',
+                            firstName: 'tay',
+                            lastName: 'ro',
+                            age:      10
+                        },
+                        {
+                            foo: 'bar',
+                            bravo: 'bar',
+                            age: 20
+                        }
+                    ]).execute();
+
+
+                }).then(function (documents) {
+
+                    return database.count('test_collection').where('age', '>', 5).and().where('age', '<', 20).execute();
+
+                }).then(function (count) {
+
+                    t.is(count, 1, 'count failed');
+
+                    return database.delete('test_collection').execute();
+
                 });
 
             }

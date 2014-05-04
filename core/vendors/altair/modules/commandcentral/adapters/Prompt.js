@@ -91,10 +91,10 @@ define(['altair/facades/declare',
          */
         initialCommander: function () {
 
-            var d = new this.module.Deferred();
+            var d = new this.Deferred();
 
             if (yargs.argv._[0]) {
-                this.module.refreshCommanders().then(function (commanders) {
+                this.parent.refreshCommanders().then(function (commanders) {
                     d.resolve(commanders[yargs.argv._[0]]);
                 }).otherwise(hitch(d, 'reject'));
             } else {

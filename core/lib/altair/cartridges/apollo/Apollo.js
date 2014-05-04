@@ -36,7 +36,8 @@ define(['altair/facades/declare',
                         'apollo/propertytypes/Float',
                         'apollo/propertytypes/Date',
                         'apollo/propertytypes/Select',
-                        'apollo/propertytypes/Path'
+                        'apollo/propertytypes/Path',
+                        'apollo/propertytypes/Object'
                     ];
 
 

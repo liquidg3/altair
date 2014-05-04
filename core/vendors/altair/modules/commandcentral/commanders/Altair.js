@@ -138,7 +138,7 @@ define(['altair/facades/declare',
             var multiOptions    = {}, //options for the select
                 d               = new this.Deferred();
 
-            return this.module.refreshCommanders().then(hitch(this, function (commanders) {
+            return this.parent.refreshCommanders().then(hitch(this, function (commanders) {
 
                 Object.keys(commanders).forEach(function (name) {
                     if (name !== 'altair') {
@@ -147,7 +147,7 @@ define(['altair/facades/declare',
                 });
 
                 return this.select('choose commander', null, multiOptions).then(hitch(this, function (commander) {
-                    return this.module.commander(commanders[commander]);
+                    return this.parent.commander(commanders[commander]);
                 }));
 
             })).then(hitch(this, function (commander) {
@@ -175,7 +175,7 @@ define(['altair/facades/declare',
                 commands    = commander.options.commands,
                 options     = {},
                 aliases     = {},
-                longLabels  = this.module.adapter().longLabels;
+                longLabels  = this.parent.adapter().longLabels;
 
             if(!commands) {
                 throw new Error('The commander named ' + commander.name + ' has no commands registered. See altair:CommandCentral/README.md');
