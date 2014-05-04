@@ -51,7 +51,7 @@ define(['altair/facades/declare',
                 this.deferred = new this.Deferred();
 
                 //load npm
-                this.module.forge('client/Npm').then(this.hitch(function (npm) {
+                this.parent.forge('client/Npm').then(this.hitch(function (npm) {
                     this._npm = npm;
                     this.deferred.resolve(this);
                 }));

@@ -55,7 +55,7 @@ define(['doh/runner',
 
                         t.is(test.name, 'altair:Mock/test/Component');
                         t.is(test.dir, dir);
-                        t.is(test.module, m, 'parent failed to be assigned');
+                        t.is(test.parent, m, 'parent failed to be assigned');
                         t.t(!!test.forge, 'Foundry was not applied to forged component');
 
 

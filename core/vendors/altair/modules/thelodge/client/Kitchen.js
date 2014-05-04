@@ -35,7 +35,7 @@ define(['altair/facades/declare',
             //without installers, i can't do anything
             if(!_options.installers) {
 
-                list.push(this.module.refreshInstallers().then(hitch(this, function (installers) {
+                list.push(this.parent.refreshInstallers().then(hitch(this, function (installers) {
                     this.installers = installers;
                 })));
 
@@ -46,7 +46,7 @@ define(['altair/facades/declare',
             //setup the chef so he can run and grab the menus if they are remote
             if(!_options.chef) {
 
-                list.push(this.module.forge('client/Chef').then(hitch(this, function (chef) {
+                list.push(this.parent.forge('client/Chef').then(hitch(this, function (chef) {
 
                     this.chef = chef;
 
@@ -68,7 +68,7 @@ define(['altair/facades/declare',
                 //now that the kitchen is setup, lets get our inspector ready (for module search)
                 if(!_options.inspector) {
 
-                    return this.module.forge('client/Inspector', { installers: this.installers, menus: this.menus }).then(hitch(this, function (inspector) {
+                    return this.parent.forge('client/Inspector', { installers: this.installers, menus: this.menus }).then(hitch(this, function (inspector) {
                         this.inspector = inspector;
                     }));
 

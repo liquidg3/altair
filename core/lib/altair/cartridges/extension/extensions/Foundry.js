@@ -49,7 +49,7 @@ define(['altair/facades/declare',
                 a.name = name;
             }
 
-            a.module    = parent.module || parent;
+            a.parent    = parent;
             a.dir       = dir;
             a._nexus    = parent._nexus;
 

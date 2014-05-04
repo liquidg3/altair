@@ -114,7 +114,7 @@ define(['altair/facades/declare',
          */
         search: function (term, type, skip, limit) {
 
-            var d       = new this.module.Deferred(),
+            var d       = new this.Deferred(),
                 results = this._index.search(term).map(hitch(this, function (match) {
 
                 return this._docs.filter(function (doc) {
