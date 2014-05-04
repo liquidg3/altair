@@ -157,7 +157,7 @@ define(['altair/facades/declare',
 
                 _.each(this._extensions, function (extension) {
                     if(extension.canExtend(type)) {
-                        list.push(extension.extend(Module));
+                        list.push(extension.extend(Module, type));
                     }
                 },this);
 
@@ -186,7 +186,7 @@ define(['altair/facades/declare',
 
                 _.each(this._extensions, function (extension) {
                     if(extension.canExtend(type)) {
-                        list.push(extension.execute(module));
+                        list.push(extension.execute(module, type));
                     }
                 },this);
 

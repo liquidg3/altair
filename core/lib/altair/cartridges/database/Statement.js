@@ -4,20 +4,27 @@
 
 define(['altair/facades/declare',
         'altair/facades/mixin',
+        'altair/facades/when',
+        'altair/facades/all',
         'lodash',
-        'dojo/_base/lang'
+        'dojo/_base/lang',
+        'altair/events/Emitter',
+        'altair/mixins/_DeferredMixin'
 ], function (declare,
              mixin,
+             when,
+             all,
              _,
-             lang) {
+             lang,
+             Emitter,
+             _DeferredMixin) {
 
-    return declare(null, {
+    return declare([Emitter, _DeferredMixin], {
 
         _currentJoin:   'and',
         _queryPath:     '', //dot style identifier for setting proper spots in the query
         _callback:      null,
         _clauses:       null,
-
         constructor: function (callback) {
 
             //we always at least have a where clause (or two)
@@ -26,6 +33,7 @@ define(['altair/facades/declare',
             };
 
             this._callback  = callback;
+            this._thens     = [];
         },
 
         where: function (name, operator, operand) {
@@ -179,11 +187,36 @@ define(['altair/facades/declare',
 
         },
 
+        then: function (callback) {
+            this._thens.push(callback);
+            return this;
+        },
+
         execute: function () {
 
-            if(this._callback) {
-                return this._callback(this);
-            }
+            return this.emit('will-execute', {
+                statement: this,
+                clauses:   this.clauses()
+            }).then(this.hitch(function (e) {
+
+                var results;
+
+                if(this._callback) {
+                    results = this._callback(this);
+                }
+
+                return when(results);
+
+            })).then(this.hitch(function (results) {
+
+                return this.emit('did-execute', {
+                    results: results,
+                    statement: this
+                });
+
+            })).then(function (e) {
+                return e.get('results');
+            });
 
         }
 

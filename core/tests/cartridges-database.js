@@ -159,7 +159,7 @@ define(['doh/runner',
 
                 }).then(function (totalDeleted) {
 
-                    t.is(totalDeleted, 0, 'too many records where deleted');
+                    t.is(totalDeleted, 0, 'too many records were deleted');
 
                     return database.delete('test_collection').where('age', '>', 10).or().where('age', '<', 30).execute();
 

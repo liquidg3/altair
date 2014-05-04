@@ -19,7 +19,7 @@ define(['altair/facades/declare',
         },
 
         get: function (name, defaultValue) {
-            return this.data[name] || defaultValue;
+            return _.has(this.data, name) ? this.data[name] : defaultValue;
         },
 
         set: function (name, value) {

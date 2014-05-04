@@ -51,7 +51,7 @@ define(['altair/facades/declare',
                 this.deferred = new this.Deferred();
 
                 //load npm
-                this.module.forge('client/Npm').then(hitch(this, function (npm) {
+                this.module.forge('client/Npm').then(this.hitch(function (npm) {
                     this._npm = npm;
                     this.deferred.resolve(this);
                 }));
@@ -64,7 +64,7 @@ define(['altair/facades/declare',
         /**
          * Try and install a module.
          *
-         * @param from the source file path
+         * @param from the source directory
          * @param to the destination (should most likely be something like app or community)
          * @returns {altair.Deferred} - will resolve with array of live modules
          */
@@ -75,11 +75,10 @@ define(['altair/facades/declare',
                 foundry     = cartridge.foundry, //the module foundry will help us with path resolution and building modules
                 _from       = require.toUrl(from),
                 configPath  = path.join(_from, 'package.json'), //path to where the module's package.json should live
-                destination, //where we will save it after everything is loaded
-                deferred    = new this.Deferred(); //step 1 - let our caller know we intend on being busy
+                destination; //where we will save it after everything is loaded
 
             //step 2 - try and find a package.json for the module to be installed
-            this.module.parseConfig(configPath).then(hitch(this, function (package) {
+            return this.module.parseConfig(configPath).then(this.hitch(function (package) {
 
                 var list = [];
 
@@ -96,10 +95,7 @@ define(['altair/facades/declare',
                 //step 4 - drop in npm requirements to our projects main package.json if needed
                 if(package.dependencies) {
 
-                    list.push(this._npm.installDependencies(package.dependencies).then(function () {
-                        //ok, back to what we were doing
-                        return package;
-                    }));
+                    list.push(this._npm.installDependencies(package.dependencies));
 
                 } else {
                     list.push(when(package));
@@ -109,7 +105,7 @@ define(['altair/facades/declare',
                     return package; //make sure next step gets the package
                 });
 
-            })).then(hitch(this, function (package) {
+            })).then(this.hitch(function (package) {
 
                 var d = new this.Deferred();
 
@@ -120,39 +116,20 @@ define(['altair/facades/declare',
 
                 return d;
 
-            })).then(hitch(this, function (package) {
+            })).then(this.hitch(function (package) {
 
-                var d           = new this.Deferred();
-
-                //step 6 - create destination directory
-                mkdirp(destination, function (err) {
-
-                    if(err) {
-                        d.reject(err);
-                    } else {
-                        d.resolve(package);
-                    }
-
+                return this.promise(mkdirp, destination).then(function () {
+                    return package;
                 });
 
-                return d;
-
-            })).then(hitch(this, function (package) {
+            })).then(this.hitch(function (package) {
 
                 //step 7 - move module into place at its destination
-                var d = new this.Deferred();
+                return this.promise(ncp.ncp, _from, destination).then(function () {
+                    return package;
+                });
 
-                ncp.ncp(_from, destination, function (err) {
-                    if(err) {
-                        d.reject(err);
-                    } else {
-                        d.resolve(package);
-                    }
-                })
-
-                return d;
-
-            })).then(hitch(this, function (package) {
+            })).then(this.hitch(function (package) {
 
                 //step 8 - pass the module to the foundry for creation
                 return foundry.build({
@@ -160,22 +137,21 @@ define(['altair/facades/declare',
                     modules:    [package.name]
                 });
 
-            })).then(hitch(this, function (modules) {
+            })).then(this.hitch(function (modules) {
 
                 //step 9 - inject new modules into altair's runtime via the module cartridge
                 return cartridge.injectModules(modules);
 
-            })).then(hitch(this, function (modules) {
+            })).then(this.hitch(function (modules) {
 
                 //final step, return the newly activated module
-                deferred.resolve(modules);
+                return modules;
 
-            })).otherwise(hitch(this, function (err) {
-                deferred.reject(new Error('Could not install module at ' + from + '. Original error is: ' + err));
+            })).otherwise(this.hitch(function (err) {
+                this.log(new Error('Could not install module at ' + from + '. Original error is: ' + err));
             }));
 
 
-            return deferred;
         }
 
 

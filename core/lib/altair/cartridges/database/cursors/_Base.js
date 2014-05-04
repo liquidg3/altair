@@ -1,9 +1,9 @@
 define(['altair/facades/declare',
-        'altair/mixins/_Deferred'
+        'altair/mixins/_DeferredMixin'
 ], function (declare,
-             _Deferred) {
+             _DeferredMixin) {
 
-    return declare([_Deferred], {
+    return declare([_DeferredMixin], {
 
         next: function () {
 

@@ -20,6 +20,11 @@
                 }
             },
             {
+                "path": "altair/cartridges/database/Database",
+                "options": {
+                }
+            },
+            {
                 "path": "altair/cartridges/module/Module",
                 "options": { "$ref": "./modules.json" }
             },

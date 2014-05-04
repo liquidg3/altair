@@ -9,6 +9,34 @@ define(['doh/runner',
 
         runner.register('cartridges-database-query', {
 
+            "test events in statement and after execute": function (t) {
+
+                var q       = new Statement(function (q) {
+                    return 10;
+                }),
+                    willFired = false,
+                    didFired  = false;
+
+                q.on('will-execute').then(function (e) {
+                    willFired = true;
+                });
+
+                q.on('did-execute').then(function (e) {
+                    t.is(10, e.get('results'), 'results not passed through to did-execute');
+                    e.set('results', 2000);
+                });
+
+
+                q.where('firstName', '==', 'taylor').or().where('lastName', '==', 'romero')
+                    .and()
+                    .where('firstName', '==', 'becca')
+                    .skip(10).limit(20);
+
+
+                return q.execute().then(function (results) {
+                    t.is(2000, results, 'statement then() did not accumulate.');
+                });
+            },
 
             "test building simple queries": function (t) {
 
@@ -170,7 +198,27 @@ define(['doh/runner',
                 t.is(clauses.skip, 10, 'skip failed');
 
 
+            },
+
+            "test 'then' in statement": function (t) {
+
+                var q       = new Statement(function (q) {
+                    return 10;
+                });
+
+
+                q.where('firstName', '==', 'taylor').or().where('lastName', '==', 'romero')
+                    .and()
+                    .where('firstName', '==', 'becca')
+                    .skip(10).limit(20).then(function (results) {
+                        t.is(results, 10);
+                    });
+
+
+                return q.execute();
             }
+
+
 
         });
 

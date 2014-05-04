@@ -37,14 +37,14 @@
  *
  */
 define(['altair/facades/declare',
-        './mixins/_Deferred'],
+        './mixins/_DeferredMixin'],
             function (declare,
-                      _Deferred) {
+                      _DeferredMixin) {
 
     "use strict";
 
 
-    return declare([_Deferred], {
+    return declare([_DeferredMixin], {
 
         deferred:       null,
         options:        null,

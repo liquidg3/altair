@@ -64,16 +64,12 @@ define(['altair/facades/declare',
          * Create a record in you database by a table/collection name
          *
          * @param tableName
-         * @param record
          * @returns {altair.Deferred}
          */
-        create: function (tableName, record, options) {
+        create: function (tableName, options) {
 
             return new this.Statement(this.hitch(function (statement, options) {
-
-                var c = this._connections[0];
-                return c.create(tableName, statement.clause('set'), options);
-
+                return this.defaultConnection().create(tableName, statement.clause('set'), options);
             }));
 
         },
@@ -82,15 +78,12 @@ define(['altair/facades/declare',
          * Create many records at once!
          *
          * @param tableName
-         * @param records
          * @returns {altair.Deferred}
          */
-        createMany: function (tableName, records, options) {
+        createMany: function (tableName, options) {
 
             return new this.Statement(this.hitch(function (statement, options) {
-
-                var c = this._connections[0];
-                return c.createMany(tableName, statement.clause('set'), options);
+                return this.defaultConnection().createMany(tableName, statement.clause('set'), options);
 
             }));
 
@@ -106,9 +99,7 @@ define(['altair/facades/declare',
         'delete': function (tableName) {
 
             return new this.Statement(this.hitch(function (statement, options) {
-
-                var c = this._connections[0];
-                return c.delete(tableName, statement, options);
+                return this.defaultConnection().delete(tableName, statement, options);
 
             }));
 
@@ -123,10 +114,7 @@ define(['altair/facades/declare',
         update: function (tableName) {
 
             return new this.Statement(this.hitch(function (statement, options) {
-
-                var c = this._connections[0];
-                return c.update(tableName, statement, options);
-
+                return this.defaultConnection().update(tableName, statement, options);
             }));
 
         },
@@ -134,10 +122,7 @@ define(['altair/facades/declare',
         find: function (tableName) {
 
             return new this.Statement(this.hitch(function (statement, options) {
-
-                var c = this._connections[0];
-                return c.find(tableName, statement, options);
-
+                return this.defaultConnection().find(tableName, statement, options);
             }));
 
         },
@@ -145,10 +130,7 @@ define(['altair/facades/declare',
         findOne: function (tableName) {
 
             return new this.Statement(this.hitch(function (statement, options) {
-
-                var c = this._connections[0];
-                return c.findOne(tableName, statement, options);
-
+                return this.defaultConnection().findOne(tableName, statement, options);
             }));
 
         },
@@ -162,6 +144,9 @@ define(['altair/facades/declare',
             return _.find(this._connections, { alias: alias });
         },
 
+        defaultConnection: function () {
+            return this._connections[0];
+        },
 
         teardown: function () {
 

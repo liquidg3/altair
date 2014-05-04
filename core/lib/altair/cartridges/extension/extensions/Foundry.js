@@ -89,7 +89,7 @@ define(['altair/facades/declare',
                     config = config || {};
 
                     var d = new Deferred(),
-                        parent        = this,
+                        parent        = _.has(config, 'parent') ? config.parent : this.parent || this,
                         path,
                         parts,
                         name          = _.has(config, 'name') ? config.name : null,
@@ -98,6 +98,9 @@ define(['altair/facades/declare',
                         type          = _.has(config, 'type') ? config.type : 'subComponent';
 
 
+                    if(className.search('./') === 0) {
+                        className = className.substr(2);
+                    }
 
                     if(className.search(':') > 0) {
                         parts       = className.split('/');
@@ -144,6 +147,7 @@ define(['altair/facades/declare',
                                         name:       name,
                                         type:       type,
                                         dir:        pathUtil.dirname(path),
+                                        defaultFoundry: defaultFoundry,
                                         extensions: this.nexus('cartridges/Extension')
                                     });
 

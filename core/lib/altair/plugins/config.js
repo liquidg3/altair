@@ -44,10 +44,11 @@
  *
  */
 define(['require',
-        'dojo/node!querystring',
-        'dojo/node!path',
+        'altair/plugins/node!querystring',
+        'altair/plugins/node!path',
         'dojo/_base/lang',
-        'dojo/Deferred',
+        'altair/Deferred',
+        'altair/plugins/node!debug',
         'dojo/DeferredList'],
 
     function (require,
@@ -55,8 +56,12 @@ define(['require',
               path,
               lang,
               Deferred,
+              debug,
               DeferredList) {
 
+
+        debug.enable('altair:config');
+        debug = debug('altair:config');
 
         var parseRefs = function (config, baseUrl) {
 
@@ -148,6 +153,11 @@ define(['require',
             try {
                 config = require.nodeRequire(id);
             } catch (e) {
+
+                if(e instanceof SyntaxError) {
+                    debug(e);
+                }
+
                 load(undefined);
                 return;
             }

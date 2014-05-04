@@ -4,13 +4,13 @@ define([
     'altair/Lifecycle',
     'altair/facades/mixin',
     'altair/facades/hitch',
-    'dojo/_base/lang'],
+    'lodash'],
     function (declare,
               Emitter,
               Lifecycle,
               mixin,
               hitch,
-              lang) {
+              _) {
 
 
     return declare([Emitter, Lifecycle], {
@@ -173,7 +173,7 @@ define([
 
             var results = {};
 
-            if(!lang.isString(selector)) {
+            if(!_.isString(selector)) {
                 return selector;
             }
 
