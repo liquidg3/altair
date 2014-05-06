@@ -57,10 +57,10 @@ define(['altair/facades/declare',
          */
         extend: function (Module) {
 
-            if(Module.prototype.isInstanceOf(_HasSchemaMixin) && !Module.prototype._willMixinOnStartup) {
+            if(Module.prototype.isInstanceOf(_HasSchemaMixin) && !Module.prototype.__willMixinSchemaValuesOnStartup) {
 
                 Module.extendOnce({
-                    _willMixinOnStartup: true
+                    __willMixinSchemaValuesOnStartup: true
                 });
 
                 //override startup to mixin options as values

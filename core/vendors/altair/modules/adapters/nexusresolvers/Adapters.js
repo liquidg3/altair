@@ -1,18 +1,16 @@
 /**
  * Help us resolve Adapters
  *
- * {{Vendor}}:{{Module}}::/path/to/Adapter
+ * {{Vendor}}:{{Module}}/path/to/Adapter
  *
  *
  */
 define(['altair/facades/declare',
         'altair/cartridges/nexus/_ResolverBase',
-        'dojo/Deferred',
-        'dojo/node!fs'
+        'dojo/Deferred'
         ], function (declare,
                      _ResolverBase,
-                     Deferred,
-                     fs) {
+                     Deferred) {
 
     return declare([_ResolverBase], {
 

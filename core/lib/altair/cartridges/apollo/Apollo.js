@@ -64,6 +64,20 @@ define(['altair/facades/declare',
             },
 
             /**
+             * Add a new property type to apollo, like image or date (or whatevs)
+             *
+             * @param type
+             * @returns {this}
+             */
+            addPropertyType: function (type) {
+
+                this.apollo.addType(type);
+
+                return this;
+
+            },
+
+            /**
              * Create a schema passed on a few options.
              *
              * @param data

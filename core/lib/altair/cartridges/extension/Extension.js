@@ -16,7 +16,7 @@ define(['altair/facades/declare',
 
             name: 'extension',
             _extensions: null, //has to be an array to maintain order
-
+            _forgedModules: null, //any modules we have observed being forged so we can extend when extension are added late
             startup: function (options) {
 
                 var _options = options || this.options || {},
@@ -29,6 +29,8 @@ define(['altair/facades/declare',
                             cartridge.on('did-forge-module').then(this.hitch('onDidForgeModule'));
                         }
                     });
+
+                this._forgedModules = [];
 
                 //load the passed extensions
                 if (_options.extensions) {
@@ -82,7 +84,8 @@ define(['altair/facades/declare',
             },
 
             /**
-             * Pass an extension that has not been started up. Resolves with the started up extension
+             * Pass an extension that has not been started up. Resolves with the started up extension and apply it to
+             * any previously forged modules.
              *
              * @param ext
              * @returns {altair.Deferred}
@@ -90,8 +93,27 @@ define(['altair/facades/declare',
             addExtension: function (ext) {
 
                 return ext.startup().then(this.hitch(function (ext) {
+
+                    var list = [];
+
                     this._extensions.push(ext);
-                    return ext;
+
+                    if(ext.canExtend('module')) {
+
+                        _.each(this._forgedModules, function (module) {
+
+                                list.push(when(ext.extend(module.constructor, 'module')).then(this.hitch(function () {
+                                    return ext.execute(module, 'module');
+                                })));
+
+                        }, this);
+
+                    }
+
+                    return all(list).then(function () {
+                        return ext;
+                    });
+
                 }));
 
             },
@@ -110,7 +132,7 @@ define(['altair/facades/declare',
                     list.push(this.addExtension(ext));
                 }, this);
 
-                return all(list);
+                return all(list);;
 
             },
 
@@ -217,6 +239,7 @@ define(['altair/facades/declare',
              * @returns {altair.Deferred}
              */
             onDidForgeModule: function (e) {
+                this._forgedModules.push(e.get('module'));
                 return this.execute(e.get('module'), 'module');
             }
 

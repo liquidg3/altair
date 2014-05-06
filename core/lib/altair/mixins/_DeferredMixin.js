@@ -45,7 +45,7 @@ define(['altair/facades/declare',
                     //this ternary is to handle someone wrapping a require(). all other cases, first arg is expected to be error
 
                     if(err) {
-                        d.reject(new Error(err));
+                        d.reject(new Error(err), false); // we will not log promise failures here because they afton are not serious (fs.stat'ing for a file)
                     } else {
                         d.resolve(args.length <= 1 ? args.pop() : args);
                     }
