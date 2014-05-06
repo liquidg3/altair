@@ -12,7 +12,7 @@
     {
         "path": "altair/cartridges/module/Module",
         "options": {
-            "paths":    ["core/vendors", "community/vendors"],
+            "paths":    ["core/vendors/altair/modules", "community/vendors/altair/modules"],
             "modules":  ["altair:Events", "altair:CommandCentral", "altair:Adapters", "altair:TheLodge"],
             "moduleOptions": {
                 "altair:CommandCentral": {

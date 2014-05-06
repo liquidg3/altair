@@ -32,7 +32,7 @@
             {
                 path: 'altair/cartridges/module/Module',
                 options: {
-                    paths: ['core/tests/modules/vendors'],
+                    paths: ['core/tests/modules/altair'],
                     modules: ['altair:Mock', 'altair:Mock2']
                 }
             },

@@ -12,7 +12,7 @@ define(['doh/runner',
               Deferred,
               hitch) {
 
-    doh.register('module-foundry', {
+    doh.register('cartridges-module-foundry', {
 
         "test can construct a cache cartridge instance": function (t) {
 
@@ -35,7 +35,7 @@ define(['doh/runner',
 
             return foundry.build({
                 paths: [
-                    'core/tests/modules/vendors/'
+                    'core/tests/modules/altair', 'core/tests/modules/_altair'
                 ],
                 modules: [ "_altair:Mock", "altair:Mock"]
             }).then(function (modules) {
@@ -76,7 +76,7 @@ define(['doh/runner',
             foundry.build({
                 eventDelegate: delegate,
                 paths: [
-                    'core/tests/modules/vendors/'
+                    'core/tests/modules/altair'
                 ],
                 modules: [ "altair:Mock"]
             }).then(function (modules) {

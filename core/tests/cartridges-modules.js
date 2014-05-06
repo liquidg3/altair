@@ -20,10 +20,10 @@ define(['doh/runner',
     /**
      * Dependencies
      */
-    var testPaths       = ['core/tests/modules/vendors'],
-        altairTestPaths = ['core/tests/modules'];
+    var testPaths       = ['core/tests/modules/altair'],
+        altairTestPaths = ['core'];
 
-    doh.register('modules', {
+    doh.register('cartridges-modules', {
 
         "test instantiating module cartridge": function () {
 
@@ -164,27 +164,6 @@ define(['doh/runner',
                 t.t(!!mock, 'nexus could not resolve altair:Mock');
 
             });
-        },
-
-
-        "ensure that the module cartridge will fallback onto altair's paths": function (t) {
-
-            var altair      = new Altair({
-                    paths: altairTestPaths
-                }),
-                cartridge   = new ModuleCartridge(altair, {
-                    modules: ['altair:Mock', 'altair:Mock2']
-                });
-
-
-            return altair.addCartridge(cartridge).then(function () {
-
-                var mock2 = cartridge.module('altair:Mock2');
-                t.t(!!mock2, 'Module cartridge did not fallback to use altair\'s paths.');
-
-            });
-
-
         }
 
 

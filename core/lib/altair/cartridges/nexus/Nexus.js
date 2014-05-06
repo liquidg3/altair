@@ -85,7 +85,7 @@ define(['altair/facades/declare',
             var apolloCartridge = this.resolve('cartridges/Apollo');
             if(apolloCartridge) {
 
-                var type = new NexusElementType(this);
+                var type = new NexusElementType({}, this);
                 apolloCartridge.apollo.addType(type);
 
             }

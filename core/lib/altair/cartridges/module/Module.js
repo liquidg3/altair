@@ -23,8 +23,7 @@ define(['altair/facades/declare',
         'altair/Lifecycle',
         'altair/plugins/node!path',
         './Foundry',
-        'dojo/_base/array',
-        'altair/events/Emitter'],
+        'altair/facades/glob'],
 
     function (declare,
               hitch,
@@ -33,9 +32,9 @@ define(['altair/facades/declare',
               all,
               ModulesResolver,
               Lifecycle,
-              nodePath,
+              pathUtil,
               Foundry,
-              array) {
+              glob) {
 
     return declare([_Base], {
 
@@ -66,10 +65,28 @@ define(['altair/facades/declare',
             this.paths = _options.paths;
 
             if(!this.paths && this.altair.paths) {
+
                 this.paths = [];
-                this.altair.paths.forEach( hitch( this, function ( path ) {
-                    this.paths.push( nodePath.join(path, 'vendors') );
+                this.deferred = new Deferred();
+
+                this.altair.paths.forEach( hitch( this, function ( path, index ) {
+
+                    //find all module dirs inside of this path
+                    var base = require.toUrl(pathUtil.join(path, 'vendors', '*', 'modules'));
+
+                    glob(base).then(this.hitch(function (matches) {
+
+                        this.paths = this.paths.concat(matches);
+
+                        //are we done?
+                        if(index === this.altair.paths.length - 1) {
+                            this.deferred.resolve(this);
+                        }
+
+                    }));
+
                 }));
+
             }
 
             /**

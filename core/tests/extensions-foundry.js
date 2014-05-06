@@ -22,7 +22,7 @@ define(['doh/runner',
             {
                 path: 'altair/cartridges/module/Module',
                 options: {
-                    paths: ['core/tests/modules/vendors'],
+                    paths: ['core/tests/modules/altair'],
                     modules: ['altair:Mock', 'altair:Mock2']
                 }
             },
@@ -51,11 +51,11 @@ define(['doh/runner',
 
                     return m.forge('test/Component').then(function (test) {
 
-                        var dir = require.toUrl('core/tests/modules/vendors/altair/modules/mock/test/');
+                        var dir = require.toUrl('core/tests/modules/altair/mock/test/');
 
-                        t.is(test.name, 'altair:Mock/test/Component');
-                        t.is(test.dir, dir);
-                        t.is(test.parent, m, 'parent failed to be assigned');
+                        t.is('altair:Mock/test/Component', test.name);
+                        t.is(dir, test.dir);
+                        t.is(m, test.parent, 'parent failed to be assigned');
                         t.t(!!test.forge, 'Foundry was not applied to forged component');
 
 

@@ -9,7 +9,7 @@ define(['altair/facades/declare',
             key: 'nexus',
             nexus: null,
 
-            constructor: function (nexus) {
+            constructor: function (options, nexus) {
 
                 this.nexus = nexus;
 

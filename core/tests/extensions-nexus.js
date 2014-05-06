@@ -25,7 +25,7 @@ define(['doh/runner',
             {
                 path: 'altair/cartridges/module/Module',
                 options: {
-                    paths:      ['core/tests/modules/vendors', 'core/vendors'],
+                    paths:      ['core/tests/modules/altair', 'core/vendors/altair/modules'],
                     modules:    ['altair:MockWithEvents', 'altair:MockWithEvents2', 'altair:Events']
                 }
             },

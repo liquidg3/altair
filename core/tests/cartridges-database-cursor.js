@@ -75,6 +75,9 @@ define(['doh/runner',
 
                     t.is(2, count, 'count on cursor failed');
 
+                    return database.teardown();
+
+
                 });
 
             },
@@ -135,6 +138,8 @@ define(['doh/runner',
                 }).then(function (record) {
 
                     t.is('bar22', record.foo, 'cursor.next() with foundry failed');
+
+                    return database.teardown();
 
                 });
 
@@ -204,6 +209,8 @@ define(['doh/runner',
 
                     t.is('bar2', records[0].foo, 'cursor.next() with foundry failed');
                     t.is('bar22', records[1].foo, 'cursor.next() with foundry failed');
+
+                    return database.teardown();
 
                 });
 
@@ -294,6 +301,8 @@ define(['doh/runner',
                     t.is(2, count, 'cursor.each() didn\'t iterate over enough docs');
                     t.t(found1st);
                     t.t(found2nd);
+
+                    return database.teardown();
 
                 });
 

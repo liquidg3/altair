@@ -32,7 +32,6 @@ define(['doh/runner',
         ];
 
 
-
         doh.register('extensions-database', {
 
             "test connecting to one mongodb database": function (t) {
@@ -44,15 +43,19 @@ define(['doh/runner',
 
                     t.is(mongo.alias, 'mongo1', 'connecting to mongo and getting by alias failed.');
 
+                    return database.teardown();
+
                 });
 
             },
 
             "test creating record through cartridge": function (t) {
 
+                var database;
+
                 return boot.nexus(cartridges).then(function (nexus) {
 
-                    var database  = nexus('cartridges/Database');
+                    database = nexus('cartridges/Database');
 
                     return database.create('test_collection').set({
                         foo: 'bar',
@@ -63,15 +66,18 @@ define(['doh/runner',
 
                 }).then(function (document) {
                     t.is(document.firstName, 'tay', 'document save fail');
+                    return database.teardown();
                 });
 
             },
 
             "test creating many records through cartridge": function (t) {
 
+                var database;
+
                 return boot.nexus(cartridges).then(function (nexus) {
 
-                    var database  = nexus('cartridges/Database');
+                    database  = nexus('cartridges/Database');
 
                     return database.createMany('test_collection').set([
                         {
@@ -89,6 +95,7 @@ define(['doh/runner',
                 }).then(function (documents) {
                     t.is(documents[0].firstName, 'tay', 'document save fail');
                     t.is(documents[1].bravo, 'bar', 'document save fail');
+                    return database.teardown();
                 });
 
             },
@@ -114,6 +121,7 @@ define(['doh/runner',
 
                 }).then(function (results) {
                     t.t(results > 0, 'no records where deleted');
+                    return database.teardown();
                 });
 
             },
@@ -166,6 +174,8 @@ define(['doh/runner',
                 }).then(function (totalDeleted) {
 
                     t.is(totalDeleted, 1, 'no records where deleted');
+
+                    return database.teardown();
 
                 });
 
@@ -220,6 +230,8 @@ define(['doh/runner',
 
                     //cleanup
                     return database.delete('test_collection').execute();
+                }).then(function () {
+                    return database.teardown();
                 });
 
             },
@@ -262,6 +274,8 @@ define(['doh/runner',
 
                     return database.delete('test_collection').execute();
 
+                }).then(function () {
+                    return database.teardown();
                 });
 
             }

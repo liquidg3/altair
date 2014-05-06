@@ -58,7 +58,7 @@ define(['altair/facades/declare',
          * Build modules by looking in paths you pass. The modules that come back will *not* be started up.
          *
          * @param options - {
-         *      paths:      ['app', 'community', 'local', 'core', 'test', 'etc.'], //i will add {{vendorName}}/modules/{{modulename}} to each path
+         *      paths:      ['path/to/dir/holding/modules'],
          *      modules:    ['vendor:ModuleOne','vendor:Module2'], //if missing, all modules will be created
          *      loadDependencies: true|false //defaults to true
          * }
@@ -86,7 +86,7 @@ define(['altair/facades/declare',
 
                 //take every path we have received and glob them for our module pattern
                 paths = options.paths.map(function (_path) {
-                    return path.join(require.toUrl(_path), '*/modules/*/*.js');
+                    return path.join(require.toUrl(_path), '/*/*.js');
                 });
 
 
@@ -189,7 +189,7 @@ define(['altair/facades/declare',
             paths.forEach(hitch(this, function (_path) {
 
                 var name        = this.pathToModuleName(_path),
-                    packagePath = path.resolve(require.toUrl(_path), '../', 'package.json'),
+                    packagePath = path.resolve(require.toUrl(_path), '../', 'package'),
                     module      = {
                         name: name,
                         path: _path,
@@ -243,7 +243,8 @@ define(['altair/facades/declare',
                                     _pack   = packagesByName[name];
 
                                 if(!p) {
-                                    deferred.reject("Dependent module " + name + " is missing. Make sure it exists in your 'paths' and is enabled. The module in question is " + m.name);
+                                    deferred.reject(pack.name + ' is missing a dependent module named ' + name);
+                                    return;
                                 }
 
                                 //go through the dependency's dependencies
@@ -287,14 +288,12 @@ define(['altair/facades/declare',
          */
         pathToModuleName: function (modulePath) {
 
-            var dir         = path.resolve(modulePath),
-                pathParts   = dir.split(path.sep),
-                moduleName  = pathParts.pop().split('.')[0],
-                junk        = pathParts.pop(),
-                junk2       = pathParts.pop(),
-                vendorName  = pathParts.pop();
+            //HACK TO BREAK DEPENDENCY ON FOLDER STRUCTURE
+            var p       = path.join(modulePath, '..', 'package.json'),
+                config  = require.nodeRequire(p);
 
-            return vendorName + ':' + moduleName;
+            return config.name;
+
         },
 
         /**
@@ -322,9 +321,9 @@ define(['altair/facades/declare',
 
                 //before any module is required, we have to setup some paths in the AMD loader
                 dir         = path.dirname(modulePath),
-                pathParts   = dir.split('/'),
-                alias       = pathParts.slice(-3).join(path.sep),
                 name        = this.pathToModuleName(modulePath),
+                nameParts   = name.split(':'),
+                alias       = nameParts[0] + '/modules/' + nameParts[1].toLowerCase(),
                 paths    = {};
 
             paths[alias] = dir;

@@ -96,10 +96,6 @@ define(['altair/facades/declare',
 
         },
 
-        teardown: function () {
-            return this.promise(this._db, 'close');
-        },
-
         create: function (collectionName, document, options) {
 
             var collection = this._db.collection(collectionName);

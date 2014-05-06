@@ -44,7 +44,7 @@ define(['doh/runner',
             {
                 path: 'altair/cartridges/module/Module',
                 options: {
-                    paths: ['core/vendors'],
+                    paths: ['core/vendors/altair/modules'],
                     modules: ['altair:Events', 'altair:Adapters', 'altair:CommandCentral' ],
                     moduleOptions: {
                         "altair:CommandCentral": {
