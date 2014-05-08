@@ -35,7 +35,7 @@ define(['altair/facades/declare',
          *
          * @param cartidge
          * @param execute should I execute the cartridge after startup??
-         * @returns altair.Deferred
+         * @returns {altair.Deferred}
          */
         addCartridge: function (cartidge, execute) {
 
@@ -56,7 +56,7 @@ define(['altair/facades/declare',
          * Removes a cartridge, but tears it down first.
          *
          * @param key
-         * @returns dojo/Deferred
+         * @returns {altair.Deferred}
          */
         removeCartridge: function (name) {
 
@@ -122,7 +122,7 @@ define(['altair/facades/declare',
          * dependencies are in place before dependants are loaded =)
          *
          * @param cartridges
-         * @returns dojo.Deferred
+         * @returns {altair.Deferred}
          */
         addCartridges: function (cartridges) {
 

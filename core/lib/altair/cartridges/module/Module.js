@@ -64,7 +64,7 @@ define(['altair/facades/declare',
             //pass through altair if it was passed or fallback to altair's paths
             this.paths = _options.paths;
 
-            if(!this.paths && this.altair.paths) {
+            if(!this.paths && this.altair.paths.length > 0) {
 
                 this.paths = [];
                 this.deferred = new Deferred();
@@ -249,6 +249,7 @@ define(['altair/facades/declare',
          * @returns {*}
          */
         teardown: function () {
+
             var list,
                 deferred;
 

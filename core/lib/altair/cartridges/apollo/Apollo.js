@@ -78,6 +78,20 @@ define(['altair/facades/declare',
             },
 
             /**
+             * Get yourself a type for apollo
+             *
+             * @param key
+             * @returns {*}
+             */
+            propertyType: function (key) {
+                return this.apollo.type(key);
+            },
+
+            propertyTypes: function () {
+                return this.apollo.propertyTypes;
+            },
+
+            /**
              * Create a schema passed on a few options.
              *
              * @param data

@@ -22,7 +22,7 @@ define(['dojo/_base/declare',
                 }
 
                 return _value;
-            },
+            }
 
         });
     });

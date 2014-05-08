@@ -18,7 +18,7 @@ define(['altair/Deferred',
 
             try {
 
-                altair      = new Altair(altairOptions || {}),
+                altair      = new Altair(altairOptions || {});
                 foundry     = new Foundry(altair);
 
                 deferred    = foundry.build(cartridges || boot.cartridges).then(function (cartridges) {
@@ -40,9 +40,9 @@ define(['altair/Deferred',
 
         };
 
-        boot.nexus = function (cartridges) {
+        boot.nexus = function (cartridges, altairOptions) {
 
-            return boot(cartridges).then(function (altair) {
+            return boot(cartridges, altairOptions).then(function (altair) {
 
                 var n = altair.cartridge('nexus');
 
@@ -74,7 +74,7 @@ define(['altair/Deferred',
                 path: 'altair/cartridges/module/Module',
                 options: {
                     paths: ['core/tests/modules/vendors', 'core/vendors'],
-                    modules: ['altair:MockWithEvents', 'altair:MockWithEvents2', 'altair:Events'],
+                    modules: ['altair:MockWithEvents', 'altair:MockWithEvents2', 'altair:Events']
                 }
             }
         ];

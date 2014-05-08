@@ -27,12 +27,28 @@ define(['altair/facades/declare',
                 /**
                  * Pass a path and it will be appended to this.dir (unless it starts with "/").
                  *
-                 * @returns {string}
+                 * @param path
+                 * @param options { absolute: true }
+                 * @returns {*}
                  */
-                resolvePath: function (path) {
+                resolvePath: function (path, options) {
 
                     if(!this.dir) {
                         throw new Error('resolvePath for "' + this.name + '" requires this.dir (dirname of absolute path to class file)');
+                    }
+
+                    //this is a nexus path
+                    if(path.search(':') > 0) {
+
+                        var parts = path.split('/'),
+                            module = this.nexus(parts.shift());
+
+                        if(!module) {
+                            throw new Error('Could not resolve ' + path);
+                        }
+
+                        path = module.resolvePath(parts.join('/'), options);
+
                     }
 
                     if(path[0] === '/') {
@@ -41,7 +57,13 @@ define(['altair/facades/declare',
                         path = path.slice(2);
                     }
 
-                    return nodePath.join(this.dir || '/', path);
+
+                    //should we return absolute path? is true by default
+                    if(!options || !options.absolute) {
+                        path = nodePath.join(this.dir || '/', path);
+                    }
+
+                    return path;
                 }
 
             });

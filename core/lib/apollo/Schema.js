@@ -140,6 +140,10 @@ define(['dojo/_base/declare',
             return this._data[named];
         },
 
+        data: function () {
+            return this._data;
+        },
+
         /**
          * All the properties on this schema
          *

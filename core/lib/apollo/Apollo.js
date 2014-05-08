@@ -27,8 +27,8 @@ define(['dojo/_base/declare',
          * @param fieldType {apollo.propertyTypes._Base}
          * @returns {apollo.Apollo}
          */
-        addType: function (fieldType) {
-            this.propertyTypes[fieldType.key] = fieldType;
+        addType: function (propertyType) {
+            this.propertyTypes[propertyType.key] = propertyType;
             return this;
         },
 
@@ -44,6 +44,16 @@ define(['dojo/_base/declare',
         },
 
         /**
+         * Get you a property type by key
+         *
+         * @param type
+         * @returns {*}
+         */
+        type: function (key) {
+            return this.propertyTypes[key];
+        },
+
+        /**
          * Creates a schema based on the data you provide, but uses the field types that have been added to Apollo
          *
          * @param data
@@ -54,6 +64,7 @@ define(['dojo/_base/declare',
             var s = new Schema(data, this.propertyTypes);
 
             return s;
+
         }
 
 

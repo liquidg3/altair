@@ -38,7 +38,7 @@ define(['altair/facades/declare',
 
                 this._commanders        = {};
 
-                var _options = options || this.options;
+                var _options = options || this.options || {};
 
                 //if there is no selected adapter being passed with startup, try our best to detect which one to use
                 if(!options.selectedAdapter) {
@@ -90,7 +90,7 @@ define(['altair/facades/declare',
              * Focus's a commander
              *
              * @param commander
-             * @returns {altair|modules|commandcentral|CommandCentral}
+             * @returns {this}
              */
             focus: function (commander) {
 
