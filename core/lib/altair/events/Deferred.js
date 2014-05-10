@@ -212,6 +212,9 @@ define([
 
             result      = value;
 
+            //when resolve is called we want to reset status
+            fulfilled = RESOLVED;
+
             var callback,
                 listener,
                 finished = false,

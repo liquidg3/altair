@@ -1,4 +1,4 @@
-define(["dojo", "doh", "../../../_base/sniff", "require"], function(dojo, doh, has, require){
+=define(["dojo", "doh", "../../../_base/sniff", "require"], function(dojo, doh, has, require){
 	doh.register("tests._base._loader.bootstrap", [
 		function hasConsole(t){
 			t.assertTrue("console" in dojo.global);

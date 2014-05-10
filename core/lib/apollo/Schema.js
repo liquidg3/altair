@@ -17,9 +17,10 @@
  *
  */
 define(['dojo/_base/declare',
-        'dojo/_base/lang'
+        'dojo/_base/lang',
+        'lodash'
 
-], function (declare, lang) {
+], function (declare, lang, _) {
 
     "use strict";
 
@@ -49,6 +50,11 @@ define(['dojo/_base/declare',
             if(!this._data.properties) {
                 this._data.properties = {};
             }
+
+            //make sure each property has a name in it as well
+            _.each(this._data.properties, function (prop, name) {
+                prop.name = name;
+            });
 
             if (propertyTypes instanceof Array) {
 
@@ -83,11 +89,36 @@ define(['dojo/_base/declare',
             return this._data.properties[propertyName].type;
         },
 
+        /**
+         * Set a single option for a property
+         *
+         * @param propertyName
+         * @param optionName
+         * @param optionValue
+         * @returns {this}
+         */
         setOptionFor: function (propertyName, optionName, optionValue) {
             this._data.properties[propertyName].options[optionName] = optionValue;
             return this;
         },
 
+        /**
+         * A property by a particular name
+         *
+         * @param named
+         * @returns {{}}
+         */
+        property: function (named) {
+            return this._data.properties[named];
+        },
+
+        /**
+         * I single option for a property
+         *
+         * @param propertyName
+         * @param optionName
+         * @returns {*}
+         */
         optionFor: function (propertyName, optionName) {
 
             if(!_.has(this._data.properties, propertyName)) {
@@ -142,6 +173,10 @@ define(['dojo/_base/declare',
 
         data: function () {
             return this._data;
+        },
+
+        primaryProperty: function () {
+            return _.where(this._data.properties, { type: 'primary' }).pop();
         },
 
         /**
@@ -280,10 +315,19 @@ define(['dojo/_base/declare',
             
             this._data.properties[name] = {
                 type:       type,
+                name:       name,
                 options:    options
             };
 
             return this;
+        },
+
+        /**
+         * Helpful printing
+         * @returns {string}
+         */
+        toString: function () {
+            return '[object Schema]';
         }
 
     });

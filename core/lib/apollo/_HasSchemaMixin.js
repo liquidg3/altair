@@ -3,9 +3,11 @@
  */
 define(['dojo/_base/declare',
         'lodash',
+        'dojo/Deferred',
         './Schema'
 ], function (declare,
-             lodash,
+             _,
+             Deferred,
              Schema) {
 
     function capitalise(string) {
@@ -200,8 +202,6 @@ define(['dojo/_base/declare',
                 _obp     = optionsByProperty || {},
                 _config  = config || {};
 
-
-
             _.each(this.schema().properties(), function (propConfig, name) {
 
                 var options = _.defaults(_obp[name] || {}, propConfig.options);
@@ -213,6 +213,31 @@ define(['dojo/_base/declare',
 
 
             return values;
+
+        },
+
+        primaryProperty: function () {
+            return this.schema().primaryProperty();
+        },
+
+        primaryValue: function () {
+            var prop = this.primaryProperty();
+            return prop ? this.get(prop.name) : undefined;
+        },
+
+        /**
+         * @TODO finish
+         *
+         * @returns {dojo.Deferred}
+         */
+        validate: function () {
+
+            var dfd = new Deferred();
+
+
+            dfd.resolve(this);
+
+            return dfd;
 
         }
 

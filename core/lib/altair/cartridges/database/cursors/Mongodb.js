@@ -24,6 +24,7 @@ define(['altair/facades/declare',
             return this.promise(this._cursor, 'next').then(this.hitch(function (document) {
 
                 if(this.foundry) {
+                    document._id = document._id.toString();
                     return this.foundry(document);
                 } else {
                     return document;
@@ -44,6 +45,7 @@ define(['altair/facades/declare',
                 } else if(document) {
 
                     c = c + 1;
+                    document._id = document._id.toString();
 
                     if(this.foundry) {
                         when(this.foundry(document)).then(hitch(d, 'progress')).otherwise(hitch(d, 'reject'));
@@ -70,12 +72,19 @@ define(['altair/facades/declare',
                 if(this.foundry) {
 
                     var l = _.map(documents, function (document) {
+                        document._id = document._id.toString();
                         return this.foundry(document);
                     }, this);
 
                     return all(l);
 
                 } else {
+
+                    documents = _.map(documents, function (doc) {
+                        doc._id = doc._id.toString();
+                        return doc;
+                    });
+
                     return documents;
                 }
 

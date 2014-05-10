@@ -3,20 +3,12 @@ Use the template below when starting to define a new class.
 
 ``` js
 define(['altair/facades/declare',
-        'altair/Lifecycle'
+        'altair/mixins/_DeferredMixin'
 ], function (declare,
-             Lifecycle) {
+             _DeferredMixin) {
 
-    return declare([Lifecycle], {
+    return declare([_DeferredMixin], {
 
-        startup: function (options) {
-
-            //get options, fallback to default, finally blank obj
-            var _options = options || this.options || {};
-
-            return this.inherited(arguments);
-
-        }
 
     });
 

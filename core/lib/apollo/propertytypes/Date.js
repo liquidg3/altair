@@ -12,7 +12,8 @@ define(['dojo/_base/declare', './_Base'],
                     type:    'boolean',
                     options: {
                         label:       'Include time',
-                        description: 'Allow for time select?'
+                        description: 'Allow for time select?',
+                        'default':   false
                     }
                 },
 
@@ -20,7 +21,7 @@ define(['dojo/_base/declare', './_Base'],
                     type:    'boolean',
                     options: {
                         label:       'Include date',
-                        'default':   1,
+                        'default':   true,
                         description: 'Unchecking this will result in a time select only (if time is true).'
                     }
                 }

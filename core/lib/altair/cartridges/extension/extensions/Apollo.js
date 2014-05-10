@@ -26,12 +26,12 @@ define(['altair/facades/declare',
 
             this.deferred = new this.Deferred();
 
-            //we have to make sure we have our dependent plugins loaded
+            //we have to make sure we have our dependent cartridges & extensions loaded
             if(!this.altair.hasCartridge('apollo')) {
                 this.deferred.reject(new Error("You must have the 'apollo' cartridge enabled."));
                 return this.inherited(arguments);
             }
-            //only 1 error at a time, now check for the config plugin
+            //now check for the config extension
             else if(!this.cartridge.hasExtension('config')) {
                 this.deferred.reject(new Error("Please make sure you have the config extension enabled."));
             } else {
@@ -63,12 +63,31 @@ define(['altair/facades/declare',
                     __willMixinSchemaValuesOnStartup: true
                 });
 
-                //override startup to mixin options as values
+                //override startup to mixin options as values (unless options has a values key, then we use that)
                 Module.extendBefore({
                     startup: function (options, old) {
 
+                        var values = {};
+
                         if(options) {
-                            this.mixin(options);
+
+                            if(_.has(options, '_schema')) {
+                                this.setSchema(options._schema);
+                            }
+
+                            if(_.has(options, 'values')) {
+                                values = options.values;
+                            } else {
+                                values = options;
+                            }
+
+                            if(!this._schema) {
+                                throw new Error('Schema missing for ' + this);
+                            }
+
+                            if(values) {
+                                this.mixin(values);
+                            }
                         }
 
                         if(!old) {
@@ -82,6 +101,7 @@ define(['altair/facades/declare',
 
                     }
                 });
+
             }
 
         },
@@ -100,7 +120,6 @@ define(['altair/facades/declare',
 
                 //if there is a path to a schema, lets parse it and load it
                 if(module.schemaPath) {
-
 
                     //parse the config, then build the schema
                     module.parseConfig(module.schemaPath).then(hitch(this, function (schemaData) {
@@ -137,12 +156,18 @@ define(['altair/facades/declare',
                         var schema = this.altair.cartridge('apollo').createSchema(module._schema);
                         module.setSchema(schema);
 
+                    } else {
+
+                        module.setSchema(module._schema);
+
                     }
 
                     this.deferred.resolve(this);
 
                 } else {
+
                     this.deferred.resolve(this);
+
                 }
 
             }

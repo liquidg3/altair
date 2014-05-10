@@ -122,6 +122,18 @@ define(['altair/facades/declare',
         },
 
         /**
+         * Make your value database friendly
+         *
+         * @param value
+         * @param options
+         * @param config
+         * @returns {*}
+         */
+        toDatabaseValue: function (value, options, config) {
+            return value;
+        },
+
+        /**
          * Will mixin my options into yours. That way you can always get the full set of options
          *
          * @param options
@@ -142,7 +154,7 @@ define(['altair/facades/declare',
          * @param config
          */
         toJsValue: function (value, options, config) {
-            throw "toJsValue is not yet implemented in " + this.key + ".";
+            return value;
         },
 
         /**

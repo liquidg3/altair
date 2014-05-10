@@ -1,9 +1,13 @@
 define(['altair/facades/declare',
         'altair/facades/hitch',
+        'altair/facades/when',
+        'altair/facades/all',
         'lodash',
         'altair/Deferred'
 ], function (declare,
              hitch,
+             when,
+             all,
              _,
              Deferred) {
 
@@ -18,8 +22,33 @@ define(['altair/facades/declare',
          */
         hitch: function () {
             var args = Array.prototype.slice.call(arguments, 0);
-            args.unshift(this);
+
+            if(_.isString(args[0]) || _.isFunction(args[0])) {
+                args.unshift(this);
+            }
+
             return hitch.apply(hitch, args);
+        },
+
+        /**
+         * Not sure if you have a deferred? wrap it in when and be certain.
+         *
+         * @param obj
+         * @returns {altair.Deferred}
+         */
+        when: function (obj) {
+            return when(obj);
+        },
+
+        /**
+         * Have array of deferreds or an object whose values could be deferreds? Pass it to all and I'll wait until they
+         * all resolve.
+         *
+         * @param list
+         * @returns {*}
+         */
+        all: function (list) {
+            return all(list);
         },
 
 

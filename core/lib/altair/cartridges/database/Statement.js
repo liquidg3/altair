@@ -48,6 +48,9 @@ define(['altair/facades/declare',
                 case '===':
                     condition[name] = operand;
                     break;
+                case '!==':
+                case '!=':
+                    operator = '!=';
                 case '>':
                 case '<':
                 case '>=':
@@ -57,7 +60,7 @@ define(['altair/facades/declare',
                     condition[name]['$' + operator] = operand;
                     break;
                 default:
-                    throw new Error('Unknown operator "' + operator + '". Supported include =,==,>,<,>=,<=,LIKE');
+                    throw new Error('Unknown operator "' + operator + '". Supported include =,==,===,!=,!==>,<,>=,<=,LIKE');
             }
 
             if(this._currentJoin === 'and') {

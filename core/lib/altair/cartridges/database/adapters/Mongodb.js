@@ -9,6 +9,8 @@ define(['altair/facades/declare',
              _,
              MongodbCursor) {
 
+    var ObjectId = mongodb.ObjectID;
+
     return declare([_Base], {
 
         _client: null,
@@ -87,7 +89,10 @@ define(['altair/facades/declare',
 
             var clauses     = this.parseStatement(statement),
                 collection  = this._db.collection(collectionName),
-                where       = clauses.where;
+                where       = clauses.where,
+                values      = clauses.set;
+
+            delete values._id; //no updating id
 
             return this.promise(collection, 'update', where, { '$set': clauses.set}, options || { w: this.writeConcern }).then(function (results) {
                 return results[0];
@@ -188,6 +193,12 @@ define(['altair/facades/declare',
                     if(_.isObject(value)) {
                         output[_key] = mapOperators(value);
                     } else {
+
+                        //mongo id?
+                        if(_key === '_id') {
+                            value = new ObjectId(value);
+                        }
+
                         output[_key] = value;
                     }
 
