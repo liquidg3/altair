@@ -4,17 +4,19 @@
 require(['altair/Altair',
         'require',
         'altair/cartridges/Foundry',
-        'altair/facades/hitch',
         'altair/facades/mixin',
+        'altair/facades/home',
         'altair/plugins/node!debug',
+        'altair/plugins/node!path',
         'altair/plugins/config!core/config/altair.json?env=' + global.env],
 
     function (Altair,
               require,
               Foundry,
-              hitch,
               mixin,
+              home,
               debug,
+              path,
               config) {
 
         /**
@@ -33,16 +35,24 @@ require(['altair/Altair',
         });
 
         /**
+         * You can override the main config by creating an .altair/ altair.json in you HOMEDIR
+         */
+        var homeConfigPath = path.join(home(),'.altair', 'altair.json');
+
+        /**
          * Mixin config from app/config/altair.json if there is one
          */
         require([
-            'altair/plugins/config!app/config/altair.json?env' + global.env
+            'altair/plugins/config!' + homeConfigPath + '?env' + global.env
         ], function (_config) {
 
             var paths = [],
                 altair,
                 foundry;
 
+            if(!_config) {
+                debug('no config found at', homeConfigPath, '. see docs/config.md for instructions.');
+            }
 
             //one was found, mix it in
             if(_config) {

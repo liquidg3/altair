@@ -9,3 +9,6 @@ is expected to grow.
  - **reject(message, strict)**: explicitly passing false for *strict* will suppress error logging
  - **step(callback)**: called every time d.progress() is called
  - **hasWaiting()**: returns true if there are listeners set on the deferred (meaning someone called .then())
+
+ ## _DeferredMixin
+ This mixin gives you a ton of useful facades for dealing with async logic.

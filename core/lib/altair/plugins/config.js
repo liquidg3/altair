@@ -143,12 +143,6 @@ define(['require',
                     env = query.env;
                 }
 
-                //drop extension from env
-                if(env && env.search(/\./) > 0) {
-                    env = env.replace(path.extname(env), '');
-                }
-
-
             }
 
             //@TODO move to fs.readFile and JSON.parse
@@ -190,26 +184,28 @@ define(['require',
         },
 
         /**
-         * Traverse config and find any keys called "$ref" and if so, load it and drop it in.
-         *
          * @param config
          * @param baseUrl
          */
 
         normalize: function(id, toAbsMid){
 
+            var parts = id.split('?'),
+                path = parts[0],
+                query = parts[1];
+
             //no file extension, assume .json for now
-            if(id.search('.json') === -1) {
-                id = id + '.json';
+            if(path.search('.json') === -1) {
+                path = path + '.json';
             }
 
-            if(id.charAt(0) == '.') {
-                id = toAbsMid(id);
+            if(path.charAt(0) === '.') {
+                path = toAbsMid(path);
             } else {
-                id = require.toUrl(id);
+                path = require.toUrl(path);
             }
 
-            return id;
+            return (query) ? path + '?' + query : path;
 
         }};
 });

@@ -3,7 +3,7 @@
     "glob": [
         "missed-core/vendors/*/modules/*/tests/*.js",
         "app/vendors/liquidfire/modules/forms/tests/*.js",
-        "missed-core/tests/*.js",
+        "core/tests/*.js",
         "missed-apollo/tests/*.js"
     ]
 }

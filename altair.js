@@ -21,11 +21,11 @@ if (argv.help) {
     return;
 }
 
-var base = path.join('node_modules', 'altair.io');
+var base = ''; //in case we want to install everything somewhere outside of the altair.io dir
 
 // Configuration Object for Dojo Loader:
 dojoConfig = {
-    baseUrl: path.resolve(__dirname, '../../'), // Where we will put our packages
+    baseUrl: path.resolve(__dirname), // Where we will put our packages
     async:   1, // We want to make sure we are using the "modern" loader
     has:     {
         'config-tlmSiblingOfDojo': 0 //for relative path resolution from require() - setting to true breaks it, dojo.js 944

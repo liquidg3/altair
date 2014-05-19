@@ -12,7 +12,7 @@ define(['altair/facades/declare',
     'altair/facades/hitch',
     'altair/facades/all'
 ],
-    function (declare, Deferred, _, hitch) {
+    function (declare, Deferred, _, hitch, all) {
 
         "use strict";
 
@@ -128,12 +128,10 @@ define(['altair/facades/declare',
              */
             addCartridges: function (cartridges) {
 
-                var deferred = new Deferred(),
-                    deferred2 = new Deferred(),
-                    started = [];
-
-                //add all modules
-                var add = hitch(this, function () {
+                var deferred    = new Deferred(),
+                    deferred2   = new Deferred(),
+                    started     = [],
+                    add         = hitch(this, function () {
 
                     var cartridge = cartridges.shift();
 
@@ -170,6 +168,11 @@ define(['altair/facades/declare',
 
             },
 
+            /**
+             * Teardown every cartridge.
+             *
+             * @returns {*}
+             */
             teardown: function () {
 
                 var l = _.map(this._cartridges, function (c) {

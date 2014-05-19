@@ -18,14 +18,10 @@ current working version.
 
 ```js
 define(['altair/facades/declare',
-        'altair/facades/hitch',
         'altair/modules/commandcentral/mixins/_HasCommandersMixin',
-        'altair/facades/when',
         'lodash'
 ], function (declare,
-             hitch,
              _IsCommanderMixin, //mixes in Lifecycle for us
-             when,
              _) {
 
 
@@ -59,14 +55,14 @@ define(['altair/facades/declare',
         execute: function () {
 
             //will run each state in order, each receiving (input) the return value (output) from previous
-            return this.fsm.execute().then(hitch(this, function (returnedFromFinalState) {
+            return this.fsm.execute().then(this.hitch(function (returnedFromFinalState) {
 
                 console.log('this.stateMachineDidEnterExecuteCommand returned', returnedFromFinalState);
 
                 //start the whole thing over again
                 return this.fsm.reset().execute();
 
-            })).otherwise(hitch(this, function (err) {
+            })).otherwise(this.hitch(function (err) {
 
                 //called if any state fails, breaks, or any unhandled exception is thrown
                 console.log('eeerr neerrrr!', err);

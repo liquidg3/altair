@@ -1,5 +1,5 @@
-    {
-    "modules": "*",
+{
+    "modules":       "*",
     "moduleOptions": {
         "altair:CommandCentral": {
             "selectedAdapter": "adapters/Prompt"

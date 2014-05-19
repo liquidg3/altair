@@ -55,11 +55,11 @@ define(['altair/facades/declare',
         /**
          * Call any non-promise event-based method and i'll wrap it in a deferred. I'm assuming the last param to the
          * method i am calling is the callback and the first param to it is an error. The signature of this method is
-         * for visual queues, but it was designed to take as many params as needed for the method you are calling.
+         * for visual queues, but it was designed to take as many params as needed for the function/method you are calling.
          *
-         * @param object
-         * @param method
-         * @param params
+         * @param object optional object scope for method, can also be a function
+         * @param method name of the method you are running as a string unless first argument is a function, then this becomes an argument to that function
+         * @param params each additial argument is passed as an argument to the function/method to be invoked
          *
          */
         promise: function (object, method) {

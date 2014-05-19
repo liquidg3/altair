@@ -257,7 +257,9 @@ define(['altair/facades/declare',
             list = [];
 
             this.modules.forEach(function (module) {
-                list.push(module.teardown());
+                if(module.teardown) {
+                    list.push(module.teardown());
+                }
             });
 
             //make sure auto resolved deferred is not returned by Lifecycle parent

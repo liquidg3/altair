@@ -65,7 +65,9 @@ define(['altair/facades/declare',
 
                 } else {
 
-                    this.all(all).then(hitch(d, 'resolve')).otherwise(hitch(d, 'reject'));
+                    this.all(all).then(function () {
+                        d.resolve(c);
+                    }).otherwise(hitch(d, 'reject'));
                 }
 
             }));

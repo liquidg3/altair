@@ -33,7 +33,7 @@ define(['doh/runner',
 
 
 
-        doh.register('extensions-database', {
+        doh.register('cartridges-database-cursor', {
 
             "test counting on cursor": function (t) {
 
@@ -244,7 +244,7 @@ define(['doh/runner',
                     ]).execute();
 
 
-                }).then(function () {
+                }).then(function (entities) {
 
                     return database.find('test_collection').execute();
 

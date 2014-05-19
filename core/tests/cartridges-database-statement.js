@@ -7,7 +7,7 @@ define(['doh/runner',
               Statement) {
 
 
-        runner.register('cartridges-database-query', {
+        runner.register('cartridges-database-statement', {
 
             "test events in statement and after execute": function (t) {
 

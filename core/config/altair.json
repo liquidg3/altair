@@ -3,9 +3,7 @@
 
         "debug": ".*",
         "paths": {
-            "app": "app",
-            "community": "community",
-            "core": "node_modules/altair.io/core"
+            "core": "core"
         },
 
         "cartridges": [

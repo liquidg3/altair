@@ -32,7 +32,7 @@ define(['doh/runner',
         ];
 
 
-        doh.register('extensions-database', {
+        doh.register('cartridges-database', {
 
             "test connecting to one mongodb database": function (t) {
 
