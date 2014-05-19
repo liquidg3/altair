@@ -157,6 +157,10 @@ define(['altair/facades/declare',
             return value;
         },
 
+        noop: function (value) {
+            return value;
+        },
+
         /**
          * Takes any value and normalizes it against the "many" option.
          *

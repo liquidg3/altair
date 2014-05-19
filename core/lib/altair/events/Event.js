@@ -10,7 +10,8 @@ define(['altair/facades/declare',
         name:       '',
         data:       null,
         target:     null,
-        _results:   null, //whenever an event is emitter, returnd values from callbacks is stored here
+        _results:   null, //whenever an event is emitter, returned values from callbacks is stored here
+        active:     true,
 
         constructor: function (name, data, target) {
             this.name = name;
@@ -42,6 +43,10 @@ define(['altair/facades/declare',
         resultsRaw: function () {
             return this._results;
         },
+
+        preventDefault: function () {
+            this.active = false;
+        }
 
 
     });

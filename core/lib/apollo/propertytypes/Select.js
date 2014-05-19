@@ -1,18 +1,17 @@
 define(['dojo/_base/declare',
-        './_Base'],
+    './_Base'],
 
-    function (declare,
-              _Base) {
+    function (declare, _Base) {
 
 
         "use strict";
 
         return declare([_Base], {
 
-            key: 'select',
+            key:     'select',
             options: {
                 multiOptions: {
-                    type: 'object',
+                    type:    'object',
                     options: {
                         label: 'A key/value pair of options the user can select from.'
                     }
@@ -21,7 +20,12 @@ define(['dojo/_base/declare',
 
             toJsValue: function (value, options, config) {
                 return (value) ? value.toString() : value;
+            },
+
+            toViewValue: function (value, options, config) {
+                return options.multiOptions[value] || value;
             }
+
 
 
         });

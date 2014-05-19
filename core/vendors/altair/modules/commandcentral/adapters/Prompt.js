@@ -3,7 +3,6 @@ define(['altair/facades/declare',
     'altair/facades/__',
     'lodash',
     'altair/facades/when',
-    'altair/facades/partial',
     './_Base',
     'altair/plugins/node!prompt',
     'altair/plugins/node!chalk',
@@ -13,7 +12,6 @@ define(['altair/facades/declare',
              __,
              _,
              when,
-             partial,
              _Base,
              prompt,
              chalk,
@@ -322,6 +320,19 @@ define(['altair/facades/declare',
 
         showProgress: function (message) {
             console.log(chalk.grey(message));
+        },
+
+        /**
+         * Shutdown prompt
+         * @returns {altair.Deferred}
+         */
+        teardown: function () {
+
+            //shut it all down for now i guess
+            this.nexus('Altair').teardown();
+
+            return this.inherited(arguments);
+
         }
 
     });

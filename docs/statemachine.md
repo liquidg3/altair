@@ -153,6 +153,9 @@ define(['altair/facades/declare',
 
             }
 
+            //you know what, kill it
+            e.preventDefault();
+
          },
 
 

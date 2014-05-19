@@ -26,6 +26,7 @@ define(['altair/facades/declare',
 
         state:  null, //the my current state
         states: null, //all our possible states
+        repeat: false, //run forever?
 
         //statics
         _listenerMap: {
@@ -130,6 +131,11 @@ define(['altair/facades/declare',
 
                 });
 
+            //repeat option passthrough
+            if(_.has(options,'repeat')) {
+                this.repeat = options.repeat;
+            }
+
             fire();
 
             return d;
@@ -177,6 +183,7 @@ define(['altair/facades/declare',
             return next;
         },
 
+
         /**
          * Transition to a particular state (which involves emitting all events that are the lifecycle of the state.
          *
@@ -191,7 +198,7 @@ define(['altair/facades/declare',
                 eventData   = data,
                 events      = Object.keys(this._listenerMap),
                 lastResponse,
-                nextState   = this.nextState(state, options && _.has(options, 'repeat') ? options.repeat : false),
+                nextState   = this.nextState(state, (options && _.has(options, 'repeat')) ? options.repeat : this.repeat),
                 fire        = hitch(this, function (i) {
 
                     //are we on the last event?
@@ -210,6 +217,13 @@ define(['altair/facades/declare',
 
                     //emit this event
                     this.emit(events[i], eventData).then(hitch(this, function (e) {
+
+                        //someone stopped the state machine
+                        if(!e.active) {
+                            this.repeat = false;
+                            d.resolve([false, 'SIGABRT']);
+                            return;
+                        }
 
                         var results = e.resultsRaw();
 

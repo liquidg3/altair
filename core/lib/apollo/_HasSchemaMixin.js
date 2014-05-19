@@ -143,7 +143,7 @@ define(['dojo/_base/declare',
 
             var value = this.schema().applyOnProperty((config && config.methods) ? config.methods : ['toJsValue'], name, this.values[name], options, config);
 
-            if( value === null || value === undefined ) {
+            if( value === null || value === undefined && !_.isUndefined(defaultValue)) {
                 value = defaultValue;
 
             }

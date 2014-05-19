@@ -1,8 +1,8 @@
 {
     "name": "altair:Events",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "When you want to introduce new events into Altair, use the _HasEventsMixin",
     "events" : {
-        "register-events" : "Hook into this event using _HasEventsMixin to tell Altiar about your events"
+        "register-events" : "Hook into this event using _HasEventsMixin to tell Altiar about your events (pulled from your package.json)"
     }
 }

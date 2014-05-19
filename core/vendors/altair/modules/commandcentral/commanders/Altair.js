@@ -17,14 +17,12 @@ define(['altair/facades/declare',
         'altair/facades/hitch',
         'altair/facades/mixin',
         '../mixins/_IsCommanderMixin',
-        'altair/facades/when',
         'altair/StateMachine',
         'lodash'
         ], function (declare,
                      hitch,
                      mixin,
                      _IsCommanderMixin,
-                     when,
                      StateMachine,
                      _) {
 
@@ -54,7 +52,7 @@ define(['altair/facades/declare',
          */
         execute: function (options) {
 
-            var def = new this.Deferred(),
+            var dfd = new this.Deferred(),
                 run = hitch(this, function () {
 
                     this.sm.execute({
@@ -84,6 +82,8 @@ define(['altair/facades/declare',
                     }));
                 });
 
+            //make sure make this deferred available to our adapters who may want to bail out
+            this.deferred = dfd;
 
             //try and determine starting state from adapter (which can read input)
             this.activeCommander = this.adapter.initialCommander();
@@ -104,7 +104,7 @@ define(['altair/facades/declare',
 
                     run();
 
-                })).otherwise(hitch(def, 'reject'));
+                })).otherwise(hitch(dfd, 'reject'));
 
             }
             //if no initial arguments were passed, then we will never have an activeCommander at this point, so start
@@ -114,7 +114,7 @@ define(['altair/facades/declare',
             }
 
 
-            return def;
+            return this.inherited(arguments);
 
         },
 
@@ -146,14 +146,35 @@ define(['altair/facades/declare',
                     }
                 });
 
+                multiOptions.exit = 'Quit altair';
+
                 return this.select('choose commander', null, multiOptions).then(hitch(this, function (commander) {
+
+                    //so we handle all flow logic in one place (next then())
+                    if(commander === 'exit'){
+                        return commander;
+                    }
+
                     return this.parent.commander(commanders[commander]);
+
                 }));
 
             })).then(hitch(this, function (commander) {
 
-                this.activeCommander = commander;
-                return { commander: this.activeCommander };
+                if(commander === 'exit') {
+
+                    //kill this event so we aren't passed to the next
+                    e.preventDefault();
+
+                    this.teardown();
+
+                } else {
+
+                    this.activeCommander = commander;
+                    return { commander: this.activeCommander };
+
+                }
+
 
             }));
 
@@ -175,7 +196,7 @@ define(['altair/facades/declare',
                 commands    = commander.options.commands,
                 options     = {},
                 aliases     = {},
-                longLabels  = this.parent.adapter().longLabels;
+                longLabels  = this.adapter.longLabels;
 
             if(!commands) {
                 throw new Error('The commander named ' + commander.name + ' has no commands registered. See altair:CommandCentral/README.md');
@@ -269,6 +290,27 @@ define(['altair/facades/declare',
             }
 
             return d;
+
+        },
+
+        /**
+         * Tear everything down.
+         *
+         * @returns {altair.Deferred}
+         */
+        teardown: function () {
+
+            //teardown our adapter
+            this.adapter.teardown();
+
+            //if we have a deferred, lets resolve it to signal to whomever executed us
+            //that we are all done
+            if(this.deferred) {
+                this.deferred.resolve();
+            }
+
+            return this.inherited(arguments);
+
 
         }
 

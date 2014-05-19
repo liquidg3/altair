@@ -46,6 +46,7 @@
 define(['require',
         'altair/plugins/node!querystring',
         'altair/plugins/node!path',
+        'altair/plugins/node!fs',
         'dojo/_base/lang',
         'altair/Deferred',
         'altair/plugins/node!debug',
@@ -54,6 +55,7 @@ define(['require',
     function (require,
               querystring,
               path,
+              fs,
               lang,
               Deferred,
               debug,
@@ -151,7 +153,12 @@ define(['require',
 
             //@TODO move to fs.readFile and JSON.parse
             try {
-                config = require.nodeRequire(id);
+
+                var results = fs.readFileSync(id);
+                config = JSON.parse(results);
+
+//                config = require.nodeRequire(id);
+
             } catch (e) {
 
                 if(e instanceof SyntaxError) {

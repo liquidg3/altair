@@ -29,7 +29,12 @@ define(['dojo/_base/declare', './_Base'],
 
             toJsValue: function (value, options, config) {
                 return value;
+            },
+
+            toDatabaseValue: function (value) {
+                return value;
             }
+
 
         });
     });

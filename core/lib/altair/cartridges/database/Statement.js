@@ -3,37 +3,30 @@
  */
 
 define(['altair/facades/declare',
-        'altair/facades/mixin',
-        'altair/facades/when',
-        'altair/facades/all',
-        'lodash',
-        'dojo/_base/lang',
-        'altair/events/Emitter',
-        'altair/mixins/_DeferredMixin'
-], function (declare,
-             mixin,
-             when,
-             all,
-             _,
-             lang,
-             Emitter,
-             _DeferredMixin) {
+    'altair/facades/mixin',
+    'altair/facades/when',
+    'altair/facades/all',
+    'lodash',
+    'dojo/_base/lang',
+    'altair/events/Emitter',
+    'altair/mixins/_DeferredMixin'
+], function (declare, mixin, when, all, _, lang, Emitter, _DeferredMixin) {
 
     return declare([Emitter, _DeferredMixin], {
 
-        _currentJoin:   'and',
-        _queryPath:     '', //dot style identifier for setting proper spots in the query
-        _callback:      null,
-        _clauses:       null,
-        constructor: function (callback) {
+        _currentJoin: 'and',
+        _queryPath:   '', //dot style identifier for setting proper spots in the query
+        _callback:    null,
+        _clauses:     null,
+        constructor:  function (callback) {
 
             //we always at least have a where clause (or two)
-            this._clauses   = {
+            this._clauses = {
                 where: {}
             };
 
-            this._callback  = callback;
-            this._thens     = [];
+            this._callback = callback;
+            this._thens = [];
         },
 
         where: function (name, operator, operand) {
@@ -42,30 +35,38 @@ define(['altair/facades/declare',
                 subCondition, // when checking if we are under another predicate
                 _queryPath; //junk
 
-            switch(operator.toLowerCase()) {
-                case '=':
-                case '==':
-                case '===':
-                    condition[name] = operand;
-                    break;
-                case '!==':
-                case '!=':
-                    operator = '!=';
-                case '>':
-                case '<':
-                case '>=':
-                case '<=':
-                case 'like':
-                    condition[name] = {};
-                    condition[name]['$' + operator] = operand;
-                    break;
-                default:
-                    throw new Error('Unknown operator "' + operator + '". Supported include =,==,===,!=,!==>,<,>=,<=,LIKE');
+
+            if (_.isString(name)) {
+
+                switch (operator.toLowerCase()) {
+                    case '=':
+                    case '==':
+                    case '===':
+                        condition[name] = operand;
+                        break;
+                    case '!==':
+                    case '!=':
+                        operator = '!==';
+                    case '>':
+                    case '<':
+                    case '>=':
+                    case '<=':
+                    case 'like':
+                        condition[name] = {};
+                        condition[name]['$' + operator] = operand;
+                        break;
+                    default:
+                        throw new Error('Unknown operator "' + operator + '". Supported include =,==,===,!=,!==>,<,>=,<=,LIKE');
+                }
+            }
+            //they passed a query right through
+            else {
+                condition = name;
             }
 
-            if(this._currentJoin === 'and') {
+            if (this._currentJoin === 'and') {
 
-                if(this._queryPath === '') {
+                if (this._queryPath === '') {
 
                     this._clauses.where = mixin(this._clauses.where, condition);
 
@@ -73,17 +74,17 @@ define(['altair/facades/declare',
                 //if we are deeper in the query, set the value there
                 else {
 
-                    subCondition  = lang.getObject(this._queryPath, true, this._clauses.where);
-                    _queryPath    = this._queryPath;
+                    subCondition = lang.getObject(this._queryPath, true, this._clauses.where);
+                    _queryPath = this._queryPath;
 
                     //this is an "OR" since its an array. so lets add it to the array
-                    if(_.isArray(subCondition)) {
-                        _queryPath       = _queryPath + '.' + (subCondition.length - 1); //we we are in the query more precisely
-                        subCondition     = mixin(subCondition.pop(), condition);
+                    if (_.isArray(subCondition)) {
+                        _queryPath = _queryPath + '.' + (subCondition.length - 1); //we we are in the query more precisely
+                        subCondition = mixin(subCondition.pop(), condition);
                     }
                     //we are already in part of an "AND"
                     else {
-                        subCondition     = mixin(subCondition, condition);
+                        subCondition = mixin(subCondition, condition);
                     }
 
 
@@ -94,7 +95,7 @@ define(['altair/facades/declare',
             //now OR
             else {
 
-                if(!this._queryPath) {
+                if (!this._queryPath) {
 
                     this._clauses.where = {
                         '$OR': [
@@ -110,7 +111,7 @@ define(['altair/facades/declare',
                     subCondition = lang.getObject(this._queryPath, true, this._clauses.where);
 
                     //we are already part of an OR (because we're an array)
-                    if(_.isArray(subCondition)) {
+                    if (_.isArray(subCondition)) {
                         subCondition.push(condition);
                     }
                     //wrap in outer OR
@@ -148,7 +149,7 @@ define(['altair/facades/declare',
 
         clause: function (named) {
 
-            if(_.has(this._clauses, named)) {
+            if (_.has(this._clauses, named)) {
                 return _.cloneDeep(this._clauses[named]);
             } else {
                 return undefined;
@@ -171,11 +172,11 @@ define(['altair/facades/declare',
 
             var clause = this._clauses.set || {};
 
-            if(_.isString(name)) {
+            if (_.isString(name)) {
 
                 clause[name] = value;
 
-            } else if(_.isArray(name)) {
+            } else if (_.isArray(name)) {
 
                 clause = name;
 
@@ -195,6 +196,35 @@ define(['altair/facades/declare',
             return this;
         },
 
+        sortBy: function (field, order) {
+
+            if(!order) {
+                order = 'ASC;'
+            } else {
+                order = order.toUpperCase();
+            }
+
+            this._clauses.sort = {};
+            this._clauses.sort[field] = order;
+
+            return this;
+
+
+        },
+
+        thenBy: function (field, order) {
+            if(!order) {
+                order = 'ASC;'
+            } else {
+                order = order.toUpperCase();
+            }
+
+            this._clauses.sort[field] = order;
+
+            return this;
+
+        },
+
         execute: function () {
 
             return this.emit('will-execute', {
@@ -202,22 +232,22 @@ define(['altair/facades/declare',
                 clauses:   this.clauses()
             }).then(this.hitch(function (e) {
 
-                var results;
+                    var results;
 
-                if(this._callback) {
-                    results = this._callback(this);
-                }
+                    if (this._callback) {
+                        results = this._callback(this);
+                    }
 
-                return when(results);
+                    return when(results);
 
-            })).then(this.hitch(function (results) {
+                })).then(this.hitch(function (results) {
 
-                return this.emit('did-execute', {
-                    results: results,
-                    statement: this
-                });
+                    return this.emit('did-execute', {
+                        results:   results,
+                        statement: this
+                    });
 
-            })).then(function (e) {
+                })).then(function (e) {
                 return e.get('results');
             });
 

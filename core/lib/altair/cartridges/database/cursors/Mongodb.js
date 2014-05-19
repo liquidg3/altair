@@ -36,7 +36,8 @@ define(['altair/facades/declare',
         each: function () {
 
             var d = new this.Deferred(),
-                c = 0;
+                c = 0,
+                all = [];
 
             this._cursor.each(this.hitch(function (err, document) {
 
@@ -44,17 +45,27 @@ define(['altair/facades/declare',
                     d.reject(err);
                 } else if(document) {
 
+                    var dfd = new this.Deferred();
+                    all.push(dfd);
+
                     c = c + 1;
                     document._id = document._id.toString();
 
                     if(this.foundry) {
-                        when(this.foundry(document)).then(hitch(d, 'progress')).otherwise(hitch(d, 'reject'));
+                        when(this.foundry(document)).then(function (entity) {
+
+                            d.progress(entity);
+
+                        }).then(hitch(dfd, 'resolve')).otherwise(hitch(d, 'reject'));
+
                     } else {
+                        dfd.resolve();
                         d.progress(document);
                     }
 
                 } else {
-                    d.resolve(c);
+
+                    this.all(all).then(hitch(d, 'resolve')).otherwise(hitch(d, 'reject'));
                 }
 
             }));

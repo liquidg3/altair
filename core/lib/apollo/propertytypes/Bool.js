@@ -16,8 +16,11 @@ define(['dojo/_base/declare',
          */
         toJsValue: function (value, options, config) {
             return !!value ? true : false;
-        }
+        },
 
+        toViewValue: function (value, options, config) {
+            return (value) ? 'Yes' : 'No';
+        }
 
     });
 });
