@@ -2,27 +2,26 @@
  * Reads package for events described in it
  */
 define(['altair/facades/declare',
-        'altair/facades/hitch',
-        'altair/events/Emitter'
-], function (declare,
-             hitch,
-             Emitter) {
+    'altair/facades/hitch',
+    'altair/events/Emitter'
+], function (declare, hitch, Emitter) {
 
     return declare('altair/modules/events/mixins/_HasEventsMixin', [Emitter], {
 
-            startup: function () {
+        startup: function () {
 
-                if(this.package.events) {
-                    this.on('altair:Events::register-events').then(hitch(this, 'registerEvents'));
-                }
-
-                return this.inherited(arguments);
-            },
-
-            registerEvents: function (e) {
-                return this.package.events;
+            if (this.package.events) {
+                this.on('altair:Events::register-events').then(hitch(this, 'registerEvents'));
             }
+
+            return this.inherited(arguments);
+        },
+
+        registerEvents: function (e) {
+            return this.package.events;
+        }
 
     });
 
 });
+

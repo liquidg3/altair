@@ -19,6 +19,7 @@ define(['altair/facades/declare',
         '../_Base',
         'altair/Deferred',
         'altair/facades/all',
+        'altair/facades/mixin',
         './nexusresolvers/Modules',
         'altair/Lifecycle',
         'altair/plugins/node!path',
@@ -30,6 +31,7 @@ define(['altair/facades/declare',
               _Base,
               Deferred,
               all,
+              mixin,
               ModulesResolver,
               Lifecycle,
               pathUtil,
@@ -69,21 +71,17 @@ define(['altair/facades/declare',
                 this.paths = [];
                 this.deferred = new Deferred();
 
-                this.altair.paths.forEach( hitch( this, function ( path, index ) {
+                var paths = this.altair.paths.map( hitch( this, function ( path, index ) {
 
                     //find all module dirs inside of this path
-                    var base = require.toUrl(pathUtil.join(path, 'vendors', '*', 'modules'));
+                    return require.toUrl(pathUtil.join(path, 'vendors', '*', 'modules'));
 
-                    glob(base).then(this.hitch(function (matches) {
+                }));
 
-                        this.paths = this.paths.concat(matches);
+                glob(paths).then(this.hitch(function (matches) {
 
-                        //are we done?
-                        if(index === this.altair.paths.length - 1) {
-                            this.deferred.resolve(this);
-                        }
-
-                    }));
+                    this.paths = this.paths.concat(matches);
+                    this.deferred.resolve(this);
 
                 }));
 
@@ -119,7 +117,9 @@ define(['altair/facades/declare',
          */
         execute: function () {
 
-            this.deferred = this.buildModules(this.options.modules).then(hitch(this, function (modules) {
+            var modules = this.altair.safeMode ? this.options.safeModeModules : this.options.modules;
+
+            this.deferred = this.buildModules(modules).then(hitch(this, function (modules) {
 
                 this.modules = [];
 
@@ -273,15 +273,16 @@ define(['altair/facades/declare',
          * Build modules by name against our local path settings using the foundry
          *
          * @param modules array of module name, titan:Alfred
+         * @param options for foundry (anything else you want to pass besides modules)
          * @returns {altair.Deferred}
          */
-        buildModules: function (modules) {
+        buildModules: function (modules, options) {
 
-            return this.foundry.build({
+            return this.foundry.build(mixin({
                 eventDelegate: this,
                 paths: this.paths,
                 modules: modules
-            });
+            }, options || {}));
 
         }
 

@@ -1,15 +1,49 @@
 {
     "thelodge": {
-        "path": "commanders/Commander",
-        "label": "The Lodge",
+        "path":        "commanders/Commander",
+        "label":       "The Lodge",
         "description": "Visit the Lodge for all your Altair goodies.",
-        "commands": {
+        "commands":    {
             "search": {
                 "description": "Search all menus available for a specific module, theme, etc",
-                "aliases": ["s", "find "]
+                "aliases":     ["s", "find "],
+                "schema":      {
+                    "properties": {
+                        "keywords": {
+                            "type":    "string",
+                            "options": {
+                                "label": "keywords"
+                            }
+                        }
+                    }
+                }
             },
-            "npm": {
-                "description": "Pull in and update npm dependencies."
+            "npm":    {
+                "description": "Pull in and update npm dependencies.",
+                "schema":      {
+                    "properties": {
+                        "all": {
+                            "type":    "boolean",
+                            "options": {
+                                "label": "run on all modules (including disabled ones)"
+                            }
+                        }
+                    }
+                }
+            },
+
+            "install": {
+                "description": "Install anything you found from a search by name",
+                "schema":      {
+                    "properties": {
+                        "name": {
+                            "type":    "string",
+                            "options": {
+                                "label": "name"
+                            }
+                        }
+                    }
+                }
             }
         }
     }

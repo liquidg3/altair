@@ -51,7 +51,7 @@ define(['altair/facades/declare',
                 this.deferred = new this.Deferred();
 
                 //load npm
-                this.parent.forge('client/Npm').then(this.hitch(function (npm) {
+                this.parent.forge('updaters/Npm').then(this.hitch(function (npm) {
                     this._npm = npm;
                     this.deferred.resolve(this);
                 }));
@@ -64,8 +64,8 @@ define(['altair/facades/declare',
         /**
          * Try and install a module.
          *
-         * @param from the source directory
-         * @param to the destination (should most likely be something like app or community)
+         * @param from the source directory, should have a package.json, Module.js, etc.
+         * @param to the destination (any resolvable path, like 'app' or 'core', defined in your altair.json)
          * @returns {altair.Deferred} - will resolve with array of live modules
          */
         install: function (from, to) {

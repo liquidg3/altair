@@ -3,11 +3,13 @@
  */
 define(['altair/facades/declare',
         'altair/facades/hitch',
-        'dojo/promise/all',
-        'dojo/Deferred'],
+        'altair/facades/all',
+        'lodash',
+        'altair/Deferred'],
 function (declare,
           hitch,
           all,
+          _,
           Deferred) {
 
     return declare(null, {

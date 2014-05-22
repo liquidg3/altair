@@ -40,6 +40,11 @@ define([
         ignoreErrors = ignoreErrors || deferred.ignoreErrors;
         if(func){
             try{
+
+                //if this is a deferredsignaler, pass through error status
+                if(func.hasOwnProperty('__ignoreErrors')) {
+                    func.__ignoreErrors = ignoreErrors;
+                }
                 var newResult = func(result);
                 if(type === PROGRESS){
                     if(typeof newResult !== "undefined"){
@@ -72,9 +77,14 @@ define([
     };
 
     var makeDeferredSignaler = function(deferred, type, ignoreErrors){
-        return function(value){
-            signalDeferred(deferred, type, value, ignoreErrors);
+
+        var signaler = function(value){
+            signalDeferred(deferred, type, value, signaler.__ignoreErrors);
         };
+
+        signaler.__ignoreErrors = ignoreErrors;
+
+        return signaler;
     };
 
     var signalDeferred = function(deferred, type, result, ignoreErrors){
@@ -230,11 +240,13 @@ define([
             // returns: dojo/promise/Promise
             //		Returns the original promise for the deferred.
 
+
             if(!fulfilled){
                 if(strict === false) {
                     this.ignoreErrors = true;
+                    promise.ignoreErrors = true;
                 }
-                if(!this.ignoreErrors && has("config-deferredInstrumentation") && Error.captureStackTrace && !error.__hasBeenLogged){
+                if(!this.ignoreErrors && has("config-deferredInstrumentation") && Error.captureStackTrace){
 //                    error.__hasBeenLogged = true;
 //                    console.error(error.stack || error);
                     Error.captureStackTrace(rejection = {}, reject);
@@ -252,8 +264,6 @@ define([
         this.hasWaiting = function () {
             return waiting.length > 0;
         };
-
-
 
         this.then = promise.then = function(callback, errback, progback){
             // summary:

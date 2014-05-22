@@ -6,6 +6,7 @@ define(['altair/facades/declare',
         '../events/mixins/_HasListenersMixin',
         '../commandcentral/mixins/_HasCommandersMixin',
         './mixins/_HasInstallersMixin',
+        './mixins/_HasMenuMixin',
         'lodash'
 ], function (declare,
              hitch,
@@ -15,9 +16,10 @@ define(['altair/facades/declare',
              _HasListenersMixin,
              _HasCommandersMixin,
              _HasInstallersMixin,
+             _HasMenuMixin,
              _) {
 
-    return declare([_HasEventsMixin, _HasCommandersMixin, _HasInstallersMixin, _HasListenersMixin], {
+    return declare([_HasEventsMixin, _HasCommandersMixin, _HasInstallersMixin, _HasListenersMixin, _HasMenuMixin], {
 
         _installers: null,
 
@@ -56,13 +58,10 @@ define(['altair/facades/declare',
          * @returns {altair.Deferred}
          */
         refreshMenus: function () {
-            return this.emit('register-menus').then(hitch(this, function (e) {
+
+            return this.emit('register-menu').then(hitch(this, function (e) {
                 return e.results();
             }));
-        },
-
-        registerMenus: function () {
-
 
         },
 

@@ -2,22 +2,18 @@
  * Bootstrap Altair instances based on a config
  */
 require(['altair/Altair',
-        'require',
-        'altair/cartridges/Foundry',
-        'altair/facades/mixin',
-        'altair/facades/home',
-        'altair/plugins/node!debug',
-        'altair/plugins/node!path',
-        'altair/plugins/config!core/config/altair.json?env=' + global.env],
+    'require',
+    'altair/cartridges/Foundry',
+    'altair/facades/mixin',
+    'altair/facades/home',
+    'altair/plugins/node!debug',
+    'altair/plugins/node!path',
+    'altair/plugins/node!fs',
+    'altair/plugins/node!module',
+    'lodash',
+    'altair/plugins/config!core/config/altair.json?env=' + global.env],
 
-    function (Altair,
-              require,
-              Foundry,
-              mixin,
-              home,
-              debug,
-              path,
-              config) {
+    function (Altair, require, Foundry, mixin, home, debug, path, fs, Module, _, config) {
 
         /**
          * Simple debug logging
@@ -26,39 +22,75 @@ require(['altair/Altair',
         debug = debug('altair:Altair');
 
         /**
-         * Bring in the packages from the config, this should point to at least app and core. Even though core is not
-         * needed, this array is also used to build our lookup paths in altair. Altair only needs their names since
-         * dojo's define() and require() can map it to their paths.
+         * NPM has zero dependency injection so it's easier to create a central place for altair to manage
+         * all node dependencies. This is where all the dependencies for altair modules/themes/widgets/sites
+         * will be installed.
          */
-        require({
-            paths: config.paths
-        });
+        var homePath = path.join(home(), '.altair'),
+            homeConfigPath = path.join(homePath, 'altair.json'),
+            homePackagePath = path.join(homePath, 'package.json');
 
-        /**
-         * You can override the main config by creating an .altair/ altair.json in you HOMEDIR
-         */
-        var homeConfigPath = path.join(home(),'.altair', 'altair.json');
+        //configure our home install dir
+        process.env['NODE_PATH'] += ':' + path.join(homePath, 'node_modules');
+        Module._initPaths(); // terrible
+
+        //does our run dir exist? move this to better installer
+        try {
+
+            fs.statSync(homePath);
+
+        } catch (e) {
+
+            debug('altair first run, creating', homePath);
+
+            //create home
+            fs.mkdirSync(homePath);
+            fs.writeFileSync(homeConfigPath, JSON.stringify({
+                'default': {
+                    description: 'See https://github.com/liquidg3/altair/blob/master/docs/config.md for help on configuring altair.',
+                    paths:       {
+                        core: 'core',
+                        home: homePath
+                    }
+                }
+            }, null, 4));
+            fs.writeFileSync(homePackagePath, JSON.stringify({
+                name:        'altair-global',
+                description: 'Placeholder altair config to hold dependencies of all installed modules.'
+            }, null, 4));
+
+
+        }
 
         /**
          * Mixin config from app/config/altair.json if there is one
          */
         require([
-            'altair/plugins/config!' + homeConfigPath + '?env' + global.env
+            'altair/plugins/config!' + homeConfigPath + '?env=' + global.env
         ], function (_config) {
 
             var paths = [],
                 altair,
                 foundry;
 
-            if(!_config) {
-                debug('no config found at', homeConfigPath, '. see docs/config.md for instructions.');
-            }
-
             //one was found, mix it in
-            if(_config) {
+            if (_config) {
                 config = mixin(config, _config);
             }
 
+            /**
+             * Bring in the packages from the config, this should point to at least app and core. Even though core is not
+             * needed, this array is also used to build our lookup paths in altair. Altair only needs their names since
+             * dojo's define() and require() can map it to their paths.
+             */
+            require({
+                paths: config.paths
+            });
+
+            //cartridges are given a key in the config so they can be overridden easier.
+            config.cartridges = _.toArray(config.cartridges);
+
+            //paths by name for altair
             Object.keys(config.paths).forEach(function (name) {
                 paths.push(name);
             });
@@ -67,8 +99,12 @@ require(['altair/Altair',
              * Startup the cartridge factory and create the cartridges, then add
              * them to altair.
              */
-            altair      = new Altair({ paths: paths });
-            foundry     = new Foundry(altair);
+            altair = new Altair({ paths: paths, safeMode: global.safe, home: homePath });
+            foundry = new Foundry(altair);
+
+            if (altair.safeMode) {
+                debug('-- starting altair in safe mode --');
+            }
 
             debug('creating cartridge foundry. adding', config.cartridges.length, 'cartridges.');
 

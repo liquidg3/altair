@@ -48,7 +48,7 @@
         ];
 
 
-        //helper to load the extensions cartridge seperately from altair
+        //helper to load the extensions cartridge separately from altair
         var loadExtensions = function (extensions) {
 
             var altair      = new Altair(),

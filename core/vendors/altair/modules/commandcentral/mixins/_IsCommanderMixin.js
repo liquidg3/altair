@@ -99,13 +99,11 @@ define(['altair/facades/declare',
          */
         schemaForCommand: function (named) {
 
-            var properties = this.options.commands[named].schema;
+            var schema = this.options.commands[named].schema;
 
-            if(properties) {
+            if(schema) {
 
-                return this.nexus('cartridges/Apollo').createSchema({
-                    properties: properties
-                });
+                return this.nexus('cartridges/Apollo').createSchema(schema);
 
             }
 
@@ -129,7 +127,7 @@ define(['altair/facades/declare',
 
 
     //mix certain adapter methods into the commander for easy access
-    methods = ['notice', 'writeLine', 'writeError', 'readLine', 'select', 'showProgress', 'hideProgress', 'splash'];
+    methods = ['notice', 'writeLine', 'writeError', 'readLine', 'select', 'showProgress', 'hideProgress', 'splash', 'table'];
     sig     = {};
 
     methods.forEach(function (method) {

@@ -3,7 +3,7 @@ define(['altair/facades/declare',
         'altair/facades/all',
         'altair/facades/hitch',
         'altair/facades/mixin',
-        'altair/plugins/node!underscore',
+        'lodash',
         'altair/plugins/node!lunr'
 ], function (declare,
              when,
@@ -68,8 +68,9 @@ define(['altair/facades/declare',
 
             var id = 1;
 
-            this._docs = []; //our internal store of docs because for some reason the lunr mutates them and makes
-                             //it impossible to retrieve what you put in... i know, right?
+            this._docs = {}; //our internal store of docs because for some reason the lunr mutates them and makes
+                             //it impossible to retrieve exactly what you put in... i know, right? so i keep a local
+                             //copy of all documents in the index so they are unmolested. these are grouped by id
 
             //check each menu
             this._menus.forEach(hitch(this, function (menu) {
@@ -85,9 +86,10 @@ define(['altair/facades/declare',
 
                         _doc.type       = type;
                         _doc.installer  = this._installers[type];
+                        _doc.score      = 1;// default score given when '*' is used as search term
 
                         //add to internal store
-                        this._docs.push(_doc);
+                        this._docs[id] = _doc;
 
                         //add to lunr index
                         this._index.add(_doc);
@@ -105,7 +107,6 @@ define(['altair/facades/declare',
         },
 
         /**
-         *
          * @param term
          * @param type
          * @param skip
@@ -115,11 +116,17 @@ define(['altair/facades/declare',
         search: function (term, type, skip, limit) {
 
             var d       = new this.Deferred(),
-                results = this._index.search(term).map(hitch(this, function (match) {
+                results = term === '*' ? _.toArray(this._docs) : this._index.search(term).map(hitch(this, function (match) {
 
-                return this._docs.filter(function (doc) {
-                    return parseInt(match.ref, 10) === doc.id && (!type || type === doc.type);
-                })[0];
+                var doc = this._docs[match.ref],
+                    copy;
+
+                if(doc) {
+                    copy = _.clone(doc);
+                    copy.score = match.score;
+                }
+
+                return copy;
 
             }));
 

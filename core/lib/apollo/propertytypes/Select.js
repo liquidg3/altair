@@ -10,7 +10,7 @@ define(['dojo/_base/declare',
 
             key:     'select',
             options: {
-                multiOptions: {
+                choices: {
                     type:    'object',
                     options: {
                         label: 'A key/value pair of options the user can select from.'
@@ -23,7 +23,7 @@ define(['dojo/_base/declare',
             },
 
             toViewValue: function (value, options, config) {
-                return options.multiOptions[value] || value;
+                return options.choices[value] || value;
             }
 
 

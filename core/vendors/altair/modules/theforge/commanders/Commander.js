@@ -134,18 +134,18 @@ define(['altair/facades/declare',
 
             var schema = this.inherited(arguments);
 
-            //the newModule command has some multiOptions that need updating (destination dir)
+            //the newModule command has some choices that need updating (destination dir)
             if(schema && named === 'newModule') {
 
                 //get the 'paths' we have set in altair
                 var altair          = this.nexus('Altair'),
-                    multiOptions    = {};
+                    choices    = {};
 
                 altair.paths.forEach(function (path) {
-                    multiOptions[path] = require.toUrl(path);
+                    choices[path] = require.toUrl(path);
                 });
 
-                schema.setOptionFor('dir', 'multiOptions', multiOptions);
+                schema.setOptionFor('dir', 'choices', choices);
 
             }
 

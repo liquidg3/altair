@@ -6,7 +6,8 @@ define(['altair/facades/declare',
     './_Base',
     'altair/plugins/node!prompt',
     'altair/plugins/node!chalk',
-    'altair/plugins/node!yargs'
+    'altair/plugins/node!yargs',
+    'altair/plugins/node!cli-table'
 ], function (declare,
              hitch,
              __,
@@ -15,7 +16,8 @@ define(['altair/facades/declare',
              _Base,
              prompt,
              chalk,
-             yargs) {
+             yargs,
+             Table) {
 
 
     prompt.override = yargs.argv;
@@ -61,7 +63,7 @@ define(['altair/facades/declare',
         },
 
         /**
-         * Write a simple line to the screen
+         * Write a simple line to the screen.
          *
          * @param str
          * @param options
@@ -70,9 +72,15 @@ define(['altair/facades/declare',
 
             if (_.isString(options)) {
 
-                switch (options) {
+                switch (options.toLowerCase()) {
                     case 'error':
                         str = 'error: ' + chalk.white.bgRed(str);
+                        break;
+                    case 'warning':
+                        str = chalk.bold.yellow(str);
+                        break;
+                    case 'h1':
+                        str = chalk.bold(str);
                         break;
                 }
 
@@ -147,7 +155,9 @@ define(['altair/facades/declare',
                 }
             ], hitch(this, function (err, results) {
 
-                if (err) {
+                if(err && err.message === 'canceled') {
+                    def.reject(err, false);
+                } else if (err) {
                     def.reject(err);
                 } else {
                     def.resolve(results[name] || defaultValue);
@@ -159,29 +169,37 @@ define(['altair/facades/declare',
 
         },
 
+        boolean: function (question, defaultValue, options) {
+
+            return this.readLine(question + ' [y/n]', defaultValue, options).then(function (response) {
+                return response === 'y';
+            });
+
+        },
+
         /**
          * Show a select
          *
          * @param question the text that will output before showing all the options
          * @param defaultValue
-         * @param options if a multiOptions key exists
+         * @param options if a choices key exists
          * @returns {altair.Deferred}
          */
         select: function (question, defaultValue, options) {
 
-            var def = new this.Deferred(),
-                _options = _.has(options, 'multiOptions') ? options : { multiOptions: options },
+            var dfd = new this.Deferred(),
+                _options = _.has(options, 'choices') ? options : { choices: options },
                 required = _.has(_options, 'required') ? _options.required : true,
                 aliases = _.has(_options, 'aliases') ? _options.aliases : {},
-                multiOptions = _options.multiOptions,
+                choices = _options.choices,
                 name = (options && _.has(options, 'override')) ? options.override : 'answer';
 
-            if (!multiOptions) {
-                def.reject(new Error('you must supply multiOptions to your select "' + question + '"', 234));
-                return def;
+            if (!choices) {
+                dfd.reject(new Error('you must supply choices to your select "' + question + '"', 234));
+                return dfd;
             }
 
-            var keys = Object.keys(multiOptions),
+            var keys = Object.keys(choices),
                 aliasesReversed = {},
                 go;
 
@@ -202,7 +220,7 @@ define(['altair/facades/declare',
                         line += ' (' + aliases[key].join(', ') + ')';
                     }
 
-                    line += prompt.delimiter + '"' + multiOptions[key] + '"';
+                    line += prompt.delimiter + '"' + choices[key] + '"';
 
                     this.writeLine(line);
                 }));
@@ -217,45 +235,50 @@ define(['altair/facades/declare',
 
                 this.readLine(__('select option'), defaultValue, options).then(hitch(this, function (results) {
 
-                        //was this an alias?
-                        if (aliasesReversed.hasOwnProperty(results)) {
-                            results = aliasesReversed[results];
-                        }
+                    //was this an alias?
+                    if (aliasesReversed.hasOwnProperty(results)) {
+                        results = aliasesReversed[results];
+                    }
 
-                        //did they select a valid option?
-                        if (!results || !(multiOptions.hasOwnProperty(results))) {
+                    //did they select a valid option?
+                    if (!results || !(choices.hasOwnProperty(results))) {
 
-                            //are we going to force them to select an option?
-                            if (!required) {
+                        //are we going to force them to select an option?
+                        if (!required) {
 
-                                def.reject(results, false);
-
-                            } else {
-
-                                //help them out a bit
-                                this.writeLine('Invalid Selection', 'alert');
-                                this.writeLine('Valid options are: ' + keys.join(', '));
-
-                                go();
-
-                            }
+                            dfd.reject(results, false);
 
                         } else {
 
-                            def.resolve(results);
+                            //help them out a bit
+                            this.writeLine('Invalid Selection', 'alert');
+                            this.writeLine('Valid options are: ' + keys.join(', '));
+
+                            go();
 
                         }
 
-                    })).otherwise(hitch(this, function () {
-                        //if the whole thing crashes, try again (bad idea?)
-                        go();
-                    }));
+                    } else {
+
+                        dfd.resolve(results);
+
+                    }
+
+                })).otherwise(function (err) {
+
+                    if(err.message === 'canceled') {
+                        dfd.reject(err, false);
+                    } else {
+                        dfd.reject(err);
+                    }
+
+                }.bind(this));
             });
 
             go();
 
 
-            return def;
+            return dfd;
         },
 
         /**
@@ -332,6 +355,46 @@ define(['altair/facades/declare',
             this.nexus('Altair').teardown();
 
             return this.inherited(arguments);
+
+        },
+
+        /**
+         * Render a table.
+         *
+         * @param options {
+         *  headers: ['array', 'of', 'table', 'headers'],
+         *  rows: [['first col', 'second col'], []],
+         *  colWidths: [233,233]
+         *
+         * }
+         */
+        table: function (options) {
+
+            var _options    = options || {},
+                headers     = options.headers,
+                rows        = options.rows,
+                table,
+                tableOptions= _.clone(_options);
+
+
+            //use headers is if you can because then it can be compatible with table() in other adapters
+            tableOptions.head = headers || tableOptions.head;
+
+            //we pass rows manually
+            delete tableOptions.rows;
+            delete tableOptions.headers;
+
+            table = new Table(tableOptions);
+
+
+            _.each(rows, function (row) {
+
+                table.push(row);
+
+            }, this);
+
+
+            this.writeLine(table.toString());
 
         }
 

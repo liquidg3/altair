@@ -165,6 +165,7 @@ define(['altair/facades/declare',
 
         /**
          * Same as above, but opposite order
+         *
          * @param state
          * @param backToLast
          * @returns {string}
@@ -237,8 +238,8 @@ define(['altair/facades/declare',
 
                                 var _state = lastResponse[0];
 
-                                if(_.indexOf(this.states, _state) === 0) {
-                                    d.reject(__('State "%s" does not exist on this state machine.', _state));
+                                if(_.indexOf(this.states, _state) === -1) {
+                                    d.reject(new Error(__('State "%s" does not exist on this state machine.', _state)));
                                 }
 
                                 nextState       = _state;

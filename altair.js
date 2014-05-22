@@ -14,7 +14,14 @@ var path = require('path'),
     }).options('bootstrap', {
         'default': 'core/bootstrap',
         describe:  'change the bootstrap file used by Altair'
-    }).boolean('help').alias('help', 'h').describe('help', 'display help').boolean('test').describe('test', 'run our unit tests').argv;
+    }).options('safe', {
+        'default': false,
+        describe:  'Boot in safe mode (only core modules, etc.)'
+    }).boolean('help')
+        .alias('help', 'h')
+        .describe('help', 'display help')
+        .boolean('test')
+        .describe('test', 'run our unit tests').argv;
 
 if (argv.help) {
     require('yargs').showHelp();
@@ -76,6 +83,7 @@ if (argv.t || argv.test) {
 
 // Only exists to pass env to the bootstrap script (altair does not access any GLOBALS)
 global.env = argv.env;
+global.safe = argv.safe;
 
 // Now load the Dojo loader
 require("./core/lib/dojo/dojo.js");

@@ -111,6 +111,41 @@ define(['altair/facades/declare',
             return d;
 
 
+        },
+
+        /**
+         * Pass an array of callbacks and they will be fired 1 at a time. All results will be added to an array and
+         * returned to the final promise
+         *
+         * @param callbacks
+         * @returns {altair.Deferred}
+         */
+        series: function (callbacks) {
+
+            var cbs = _.toArray(callbacks),
+                dfd = new this.Deferred(),
+                results = [],
+                next = function () {
+
+                    var callback = cbs.shift();
+
+                    if(!callback) {
+                        dfd.resolve(results);
+                    } else {
+
+                        this.when(callback()).then(function (r) {
+                            results.push(r);
+                            next();
+                        }).otherwise(this.hitch(dfd, 'reject'));
+
+                    }
+
+                }.bind(this);
+
+            next();
+
+            return dfd;
+
         }
 
     });

@@ -135,20 +135,20 @@ define(['altair/facades/declare',
         //select a commander
         onStateMachineDidEnterSelectCommander: function (e) {
 
-            var multiOptions    = {}, //options for the select
-                d               = new this.Deferred();
+            var choices    = {}, //options for the select
+                dfd        = new this.Deferred();
 
-            return this.parent.refreshCommanders().then(hitch(this, function (commanders) {
+            this.parent.refreshCommanders().then(hitch(this, function (commanders) {
 
                 Object.keys(commanders).forEach(function (name) {
                     if (name !== 'altair') {
-                        multiOptions[name]              = commanders[name].options.description;
+                        choices[name]              = commanders[name].options.description;
                     }
                 });
 
-                multiOptions.exit = 'Quit altair';
+                choices.exit = 'Quit altair';
 
-                return this.select('choose commander', null, multiOptions).then(hitch(this, function (commander) {
+                return this.select('choose commander', null, choices).then(hitch(this, function (commander) {
 
                     //so we handle all flow logic in one place (next then())
                     if(commander === 'exit'){
@@ -171,13 +171,24 @@ define(['altair/facades/declare',
                 } else {
 
                     this.activeCommander = commander;
-                    return { commander: this.activeCommander };
+                    dfd.resolve({ commander: this.activeCommander });
 
                 }
 
 
-            }));
+            })).otherwise(function (err) {
 
+                if(err.message === 'canceled') {
+
+                    this.teardown();
+
+                } else {
+                    dfd.reject(err);
+                }
+
+            }.bind(this));
+
+            return dfd;
 
         },
 
@@ -193,6 +204,7 @@ define(['altair/facades/declare',
         onStateMachineDidEnterSelectCommand: function (e) {
 
             var commander   = e.get('commander'),
+                dfd         = new this.Deferred(),
                 commands    = commander.options.commands,
                 options     = {},
                 aliases     = {},
@@ -226,18 +238,30 @@ define(['altair/facades/declare',
 
 
             //show select
-            return this.select('choose command', null, { multiOptions: options, aliases: aliases, id: "command-select"}).then(hitch(this, function (command) {
+            this.select('choose command', null, { choices: options, aliases: aliases, id: "command-select"}).then(hitch(this, function (command) {
 
                 //save active adapter in-case we transition to another state prematurely or out of order
                 this.activeCommand = command;
 
                 //pass command and commander onto next state
-                return {
+                dfd.resolve({
                     commander:  commander,
                     command:    this.activeCommand
-                };
+                });
 
-            }));
+            })).otherwise(function (err) {
+
+                //go back a state if they canceled
+                if(err.message === 'canceled') {
+                    this.activeCommander = null;
+                    dfd.resolve([this.sm.previousState(this.sm.state)]);
+                } else {
+                    dfd.reject(err);
+                }
+
+            }.bind(this));
+
+            return dfd;
 
 
         },

@@ -1,5 +1,6 @@
 {
     "modules":       "*",
+    "safeModeModules":  ["altair:Adapters", "altair:CommandCentral", "altair:Events", "altair:TheForge", "altair:TheLodge"],
     "moduleOptions": {
         "altair:CommandCentral": {
             "selectedAdapter": "adapters/Prompt"

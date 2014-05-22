@@ -4,23 +4,31 @@
     "description": "A list of modules the Altair team recommends.",
     "modules": [
         {
-            "name":       "liquidfire:Jarvis",
-            "description": "Connect to and control devices",
-            "keywords": ["ioe", "iot", "connected", "devices"],
+            "name":       "liquidfire:Dates",
+            "description": "A lot of helpful date related property types and utilities",
+            "keywords": ["liquidfire", "date", "time"],
             "repository": {
                 "type": "git",
-                "url":  "git@github.com/liquidfire/Jarvis"
+                "url":  "git@github.com:liquidg3/liquidfire-dates.git"
+            }
+        },
+        {
+            "name":       "liquidfire:Images",
+            "description": "Useful image rendering things (and image property type)",
+            "keywords": ["png", "jpg", "gif", "gd", "images", "image"],
+            "repository": {
+                "type": "git",
+                "url":  "git@github.com:liquidg3/liquidfire-images.git"
             }
         },
         {
             "name":       "titan:Alfred",
-            "description": "Build yourself an Express powered website wicked fast",
-            "keywords": ["webpage", "web", "express"],
+            "description": "Build yourself an Express powered website wicked fast using a clean MVC architecture",
+            "keywords": ["webpage", "mvc", "web", "express", "mvc", "alfred"],
             "repository": {
                 "type": "git",
-                "url":  "git@github.com/liquidfire/Alfred"
+                "url":  "https://github.com/hemstreet/Titan-Alfred"
             }
         }
     ]
-
 }

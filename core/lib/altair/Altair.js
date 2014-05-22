@@ -10,9 +10,11 @@ define(['altair/facades/declare',
     'altair/Deferred',
     'lodash',
     'altair/facades/hitch',
-    'altair/facades/all'
+    'altair/facades/home',
+    'altair/facades/all',
+    'altair/plugins/node!path'
 ],
-    function (declare, Deferred, _, hitch, all) {
+    function (declare, Deferred, _, hitch, home, all, path) {
 
         "use strict";
 
@@ -21,13 +23,17 @@ define(['altair/facades/declare',
             _cartridges: null,
             env:         'dev',
             paths:       null,
+            safeMode:    false,
+            home:       '',
 
             constructor: function (options) {
 
-                if (options) {
-                    this.paths = options.paths || [];
-                    this.env = options.env || 'dev';
-                }
+                var _options = options || {};
+
+                this.paths = _options.paths || [];
+                this.env = _options.env || 'dev';
+                this.safeMode = _.has(_options, 'safeMode') ? _options.safeMode : false;
+                this.home = _.has(_options, 'home') ? _options.home : path.join(home(), '.altair');
 
                 this._cartridges = {};
             },
@@ -120,28 +126,28 @@ define(['altair/facades/declare',
             },
 
             /**
-             * Add an array of cartridges. Each cartridge will be started up AFTER the one before it. This is to ensure
-             * dependencies are in place before dependants are loaded =)
+             * Add a collection of cartridges. Each cartridge will be started up AFTER the one before it. This is to ensure
+             * dependencies are in place before dependants are loaded.
              *
              * @param cartridges
              * @returns {altair.Deferred}
              */
             addCartridges: function (cartridges) {
 
-                var deferred    = new Deferred(),
-                    deferred2   = new Deferred(),
-                    started     = [],
-                    add         = hitch(this, function () {
+                var deferred = new Deferred(),
+                    deferred2 = new Deferred(),
+                    started = [],
+                    add = hitch(this, function () {
 
-                    var cartridge = cartridges.shift();
+                        var cartridge = cartridges.shift();
 
-                    if (cartridge) {
-                        started.push(cartridge);
-                        this.addCartridge(cartridge, false).then(add).otherwise(hitch(deferred, 'reject'));
-                    } else {
-                        deferred.resolve(this);
-                    }
-                });
+                        if (cartridge) {
+                            started.push(cartridge);
+                            this.addCartridge(cartridge, false).then(add).otherwise(hitch(deferred, 'reject'));
+                        } else {
+                            deferred.resolve(this);
+                        }
+                    });
 
                 add();
 
@@ -176,7 +182,7 @@ define(['altair/facades/declare',
             teardown: function () {
 
                 var l = _.map(this._cartridges, function (c) {
-                     return c.teardown();
+                    return c.teardown();
                 });
 
                 return all(l);

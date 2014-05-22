@@ -9,6 +9,7 @@ people are sharing.
 
 • **menu** - a directory of modules, widgets, themes, or any type of object you could possibly want to share in Altair.
 • **kitchen** - the storage place for menus and the staff
+• **valet** - runs the installers and updaters
 
 ## Creating your own installer
 

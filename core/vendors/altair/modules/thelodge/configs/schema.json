@@ -1,0 +1,12 @@
+{
+    "properties": {
+        "menuUrls": {
+            "type":    "string",
+            "options": {
+                "label":       "Menus Urls",
+                "many":        true,
+                "description": "Urls or paths to menus you want to access."
+            }
+        }
+    }
+}

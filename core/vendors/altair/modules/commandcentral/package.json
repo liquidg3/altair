@@ -8,7 +8,7 @@
         "blessed":  ">=0.0.x",
         "css-parse":">=1.x",
         "figlet":   ">=1.0.x",
-        "path-complete": ">0.1.x"
+        "cli-table":">=1.0.x"
     },
     "altairDependencies": {
         "altair:Adapters": ">=0.1.x",

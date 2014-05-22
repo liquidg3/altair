@@ -57,10 +57,11 @@ define(['altair/facades/declare',
         /**
          * Build modules by looking in paths you pass. The modules that come back will *not* be started up.
          *
-         * @param options - {
-         *      paths:      ['path/to/dir/holding/modules'],
-         *      modules:    ['vendor:ModuleOne','vendor:Module2'], //if missing, all modules will be created
-         *      loadDependencies: true|false //defaults to true
+         * @param _options - {
+         *      paths:              ['path/to/dir/holding/modules'],
+         *      modules:            ['vendor:ModuleOne','vendor:Module2'], //if missing, all modules will be created
+         *      instantiate:        true //if false, returns paths to modules
+         *      loadDependencies:   true
          * }
          *
          * @returns {dojo.Deferred}
@@ -68,24 +69,26 @@ define(['altair/facades/declare',
         build: function (options) {
 
             var deferred        = new Deferred(),
+                _options        = options || {},
+                instantiate     = _.has(_options, 'instantiate') ? _options.instantiate : true,
                 paths;
 
             try {
 
-                if(options.eventDelegate) {
-                    this._eventDelegate = options.eventDelegate;
+                if(_options.eventDelegate) {
+                    this._eventDelegate = _options.eventDelegate;
                 }
 
                 //they want to restrict the modules being created
-                options.modules = (options && options.modules) ? options.modules : '*';
+                _options.modules = (_options && _options.modules) ? _options.modules : '*';
 
-                if(!options.paths || options.paths.length === 0) {
+                if(!_options.paths || _options.paths.length === 0) {
                     deferred.reject(new Error("You must pass an array of paths for the Module Foundry to search and parse."));
                     return deferred;
                 }
 
                 //take every path we have received and glob them for our module pattern
-                paths = options.paths.map(function (_path) {
+                paths = _options.paths.map(function (_path) {
                     return path.join(require.toUrl(_path), '/*/*.js');
                 });
 
@@ -93,11 +96,11 @@ define(['altair/facades/declare',
                 //glob all the dirs
                 deferred = glob( paths ).then( hitch( this, function ( files ) {
 
-                    var _paths = this._filterPaths( files, options.modules );
+                    var _paths = this._filterPaths( files, _options.modules );
 
                     //all modules failed?
-                    if( !_paths || _paths.length === 0 || (options.modules !== '*' && _paths.length !== options.modules.length)) {
-                        throw new Error("Failed to load one or more modules: " + options.modules.join(', ') + ' from paths: ' + paths.join(', '));
+                    if( !_paths || _paths.length === 0 || (_options.modules !== '*' && _paths.length !== _options.modules.length)) {
+                        throw new Error("Failed to load one or more modules: " + _options.modules.join(', ') + ' from paths: ' + paths.join(', '));
                     }
 
                     return this._sortByDependencies(_paths);
@@ -107,6 +110,10 @@ define(['altair/facades/declare',
 
                     if(!sorted) {
                         throw new Error('No modules found to build in Foundry. Checked ' + paths);
+                    } else if(!instantiate) {
+
+                        return sorted;
+                        
                     } else {
 
                         //we have our sorted list, lets build each module

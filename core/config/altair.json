@@ -6,28 +6,30 @@
             "core": "core"
         },
 
-        "cartridges": [
-            {
-                "path": "altair/cartridges/apollo/Apollo",
+        "cartridges": {
+            "apollo":    {
+                "path":    "altair/cartridges/apollo/Apollo",
                 "options": {
                 }
             },
-            {
-                "path": "altair/cartridges/nexus/Nexus",
+            "nexus":     {
+                "path":    "altair/cartridges/nexus/Nexus",
                 "options": {
                 }
             },
-            {
-                "path": "altair/cartridges/database/Database",
+            "database":  {
+                "path":    "altair/cartridges/database/Database",
                 "options": {
                 }
             },
-            {
-                "path": "altair/cartridges/module/Module",
-                "options": { "$ref": "./modules.json" }
+            "module":    {
+                "path":    "altair/cartridges/module/Module",
+                "options": {
+                    "$ref": "./modules.json"
+                }
             },
-            {
-                "path": "altair/cartridges/extension/Extension",
+            "extension": {
+                "path":    "altair/cartridges/extension/Extension",
                 "options": {
                     "extensions": [
                         "altair/cartridges/extension/extensions/Paths",
@@ -42,7 +44,7 @@
                     ]
                 }
             }
-        ]
+        }
 
     },
 

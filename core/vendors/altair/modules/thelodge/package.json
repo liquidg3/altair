@@ -3,7 +3,7 @@
     "version":            "0.0.1",
     "description":        "Visit The Lodge to get all your Altair goodies =)",
     "events": {
-        "register-menus": "Tell me what menus you have available.",
+        "register-menu": "Tell me what any menu you have available.",
         "register-installers": "Installers for remote components."
     },
     "altairDependencies": {
