@@ -42,6 +42,7 @@ define(['altair/facades/declare',
          * We will delegate all events through this deletate
          */
         _eventDelegate: null,
+        _alreadyInstalled: null,
 
         /**
          * @param options
@@ -50,6 +51,7 @@ define(['altair/facades/declare',
 
             var _options = options || {};
 
+            this._alreadyInstalled = [];
             this._eventDelegate = _options.eventDelegate || null;
 
         },
@@ -61,6 +63,7 @@ define(['altair/facades/declare',
          *      paths:              ['path/to/dir/holding/modules'],
          *      modules:            ['vendor:ModuleOne','vendor:Module2'], //if missing, all modules will be created
          *      instantiate:        true //if false, returns paths to modules
+         *      alreadyInstalled:  [array of modules you have already installed (they will be considered when sorting dependencies)],
          *      loadDependencies:   true
          * }
          *
@@ -72,6 +75,10 @@ define(['altair/facades/declare',
                 _options        = options || {},
                 instantiate     = _.has(_options, 'instantiate') ? _options.instantiate : true,
                 paths;
+
+            if(_options.alreadyInstalled) {
+                this._alreadyInstalled = _options.alreadyInstalled;
+            }
 
             try {
 
@@ -219,7 +226,6 @@ define(['altair/facades/declare',
                     }
 
 
-
                     if(config.altairDependencies) {
                         module.dependencies = Object.keys(config.altairDependencies);
                         module.dependencies.forEach(function (dep) {
@@ -244,28 +250,39 @@ define(['altair/facades/declare',
 
                         if(pack.dependencies) {
 
-                            pack.dependencies.forEach(hitch(this, function (name) {
+                            pack.dependencies.forEach(function (name) {
 
-                                var p       = pathsByName[name],
-                                    _pack   = packagesByName[name];
 
-                                if(!p) {
-                                    deferred.reject(pack.name + ' is missing a dependent module named ' + name);
-                                    return;
+                                if(_.indexOf(this._alreadyInstalled, name) === -1) {
+
+                                    var p       = pathsByName[name],
+                                        _pack   = packagesByName[name];
+
+                                    if(!p) {
+                                        deferred.reject(new Error(pack.name + ' is missing a dependent module named ' + name));
+                                        return;
+                                    }
+
+                                    //go through the dependency's dependencies
+                                    sortDependencies(_pack);
+
+                                    if(p) {
+
+                                        //now drop in dependent to list
+                                        if(sorted.indexOf(p) === -1) {
+                                            sorted.push(p);
+                                        }
+
+                                    }
+
                                 }
 
-                                //go through the dependency's dependencies
-                                sortDependencies(_pack);
 
-                                //now drop in dependent to list
-                                if(sorted.indexOf(p) === -1) {
-                                    sorted.push(p);
-                                }
 
-                            }));
+                            }, this);
                         }
 
-                    };
+                    }.bind(this);
 
                 results.forEach(hitch(this, function (pack) {
 
@@ -304,7 +321,7 @@ define(['altair/facades/declare',
         },
 
         /**
-         * The inverse of above
+         * The inverse of above, the default path
          *
          * @param name the name of any module name returned from this.pathToModuleName
          * @returns {string}
@@ -313,7 +330,7 @@ define(['altair/facades/declare',
 
             var parts = name.split(':');
 
-            return path.join(parts[0],'modules', parts[1].toLowerCase());
+            return path.join('vendors', parts[0],'modules', parts[1].toLowerCase());
 
         },
 

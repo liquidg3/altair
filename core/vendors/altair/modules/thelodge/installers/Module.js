@@ -30,8 +30,8 @@ define(['altair/facades/declare',
 
     return declare([_IsInstallerMixin], {
 
-        _npm: null,
-        _tmpDir: '',
+        _valet: null,
+        _tmpDir: '', //where can i work with temporary files?
         _modulesInstalled: null,
         _destination: '', //where we are installing (core, app, local, defined in ./altair/.altair.json)
 
@@ -47,31 +47,16 @@ define(['altair/facades/declare',
             var _options = options || this.options || {};
 
             //start in over
-            this._modulesInstalled = {};
             this._tmpDir        = _options.tmpDir || os.tmpdir();
             this._destination   = _options.destination;
-            this._kitchen       = _options.kitchen;
+            this._valet         = _options.valet;
 
-            if(!this._destination || !this._kitchen) {
+            if(!this._destination || !this._valet) {
                 this.deferred = new this.Deferred();
-                this.deferred.reject(new Error('Installers need a destination and a kitchen!'));
+                this.deferred.reject(new Error('Installers need a destination and a valet!'));
                 return this.inherited(arguments);
             }
 
-            if(_options && _options.npm) {
-                this._npm = _options.npm;
-            } else {
-
-                //do not auto resolve
-                this.deferred = new this.Deferred();
-
-                //load npm
-                this.parent.forge('updaters/Npm').then(this.hitch(function (npm) {
-                    this._npm = npm;
-                    this.deferred.resolve(this);
-                }));
-
-            }
 
             return this.inherited(arguments);
         },
@@ -84,27 +69,128 @@ define(['altair/facades/declare',
          */
         execute: function (name, version) {
 
-            var dfd;
 
-            //start the install
-            this.deferred =  this.install(name, version).then(function (modulePaths) {
+            this.deferred = new this.Deferred();
 
-                console.log(modulePaths);
+            //new modules being installed
+            this._modulesInstalled = {};
 
-            }.bind(this));
+
+            //start by downloading this module and all its dependencies
+            this.download(name, version).then(function (modules) {
+
+
+                this.deferred.progress({
+                    message: 'preparing to move ' + modules.length + ' into place',
+                    menuItem: this._valet.kitchen().menuItemFor(name)
+                });
+
+
+                //resolve and clean out all destination dirs
+                return this.all(_.map(modules, function (module) {
+
+                    var dfd = new this.Deferred(),
+                        cartridge   = this.nexus('cartridges/Module'),
+                        foundry     = cartridge.foundry;
+
+                    module.destination  = require.toUrl(pathUtil.join(this._destination, foundry.moduleNameToPath(module.name)));
+
+                    rimraf(module.destination, function (err) {
+                        dfd.resolve(module);
+                    });
+
+                    return dfd;
+
+
+                }, this));
+
+
+
+            }.bind(this)).then(this.hitch(function (modules) {
+
+
+                //make the destination directories
+                return this.all(_.map(modules, function (module) {
+
+                    return this.promise(mkdirp, module.destination).then(function () {
+                        return module;
+                    });
+
+                }, this));
+
+
+            })).then(this.hitch(function (modules) {
+
+                //copy modules into place
+                return this.all(_.map(modules, function (module) {
+
+                    this.deferred.progress({
+                        message: 'moving ' + module.name + ' to ' + module.destination,
+                        menuItem: this._valet.kitchen().menuItemFor(name)
+                    });
+
+                    return this.promise(ncp.ncp, module.dir, module.destination).then(function () {
+                        return module;
+                    });
+
+                }, this));
+
+
+            })).then(this.hitch(function (modules) {
+
+                this.deferred.progress({
+                    message: 'running npm update',
+                    menuItem: this._valet.kitchen().menuItemFor(name)
+                });
+
+                //npm update on the new stuff
+                return this._valet.npm({
+                    names: _.map(modules, 'name')
+                }).then(function () {
+                    return modules;
+                });
+
+
+            })).then(function (modules) {
+
+                this.deferred.progress({
+                    message: 'building modules',
+                    menuItems: modules,
+                    menuItem: this._valet.kitchen().menuItemFor(name)
+                });
+
+
+                return this.build(_.map(modules, 'name'));
+
+            }.bind(this)).then(function (modules) {
+
+                this.deferred.progress({
+                    message: 'injecting modules',
+                    modules: modules,
+                    menuItem: this._valet.kitchen().menuItemFor(name)
+                });
+
+                return this.inject(modules);
+
+            }.bind(this)).step(this.hitch(this.deferred, 'progress')).otherwise(this.hitch(this.deferred, 'reject'));
 
 
             return this.inherited(arguments);
 
         },
 
-        install: function (name, version) {
+        /**
+         * Download module into tmpDir
+         *
+         * @param name
+         * @param version
+         * @returns {*}
+         */
+        download: function (name, version) {
 
-            var menuItem    = this._kitchen.menuItemFor(name), //this can be called recursively so we need to lookup menu items from the kitchen for each thing to be installed
+            var menuItem    = _.clone(this._valet.kitchen().menuItemFor(name)), //this can be called recursively so we need to lookup menu items from the kitchen for each thing to be installed
                 tmpDir      = pathUtil.join(this._tmpDir, name.replace(':', '-').toLowerCase()),
                 configPath  = pathUtil.join(tmpDir, 'package.json'),
-                cartridge   = this.nexus('cartridges/Module'),
-                foundry     = cartridge.foundry,
                 dfd         = new this.Deferred();
 
             //if we have already installed this guy, don't do it again
@@ -112,8 +198,11 @@ define(['altair/facades/declare',
                 return this.when(this._modulesInstalled[name]);
             }
 
+            //so we can see where this module is sitting for now
+            menuItem.dir = tmpDir;
+
             //track where this module is going (will be used in for the final install)
-            this._modulesInstalled[name] = tmpDir;
+            this._modulesInstalled[name] = menuItem;
 
 
             //create tmp dir for clone
@@ -129,19 +218,30 @@ define(['altair/facades/declare',
 
             }.bind(this)).then(function (vcs) {
 
+
                 dfd.progress({
                     message: 'cloning repository at ' + menuItem.repository.url + ' to ' + tmpDir,
                     menuItem: menuItem,
                     url: menuItem.repository.url
                 });
 
-                var options             = _.clone(menuItem.repository);
+                var options             = _.clone(menuItem.repository),
+                    _dfd                = new this.Deferred();
+
                 options.destination     = tmpDir;
+
                 if(version) {
                     options.version         = version;
                 }
 
-                return vcs.clone(options);
+                //clone the module to be installed
+                vcs.clone(options).then(this.hitch(_dfd, 'resolve'), function (err) {
+
+                    throw new Error('cloning ' + name + ' failed: ' + err.message);
+
+                });
+
+                return _dfd;
 
             }.bind(this)).then(function (path) {
 
@@ -155,7 +255,6 @@ define(['altair/facades/declare',
             }.bind(this)).then(function (package) {
 
                 var loading = {};
-
 
                  if(package.altairDependencies) {
 
@@ -180,13 +279,13 @@ define(['altair/facades/declare',
                          } else {
 
                              //do we have a menu item for it?
-                             dependencyMenuItem = this._kitchen.menuItemFor(name);
+                             dependencyMenuItem = this._valet.kitchen().menuItemFor(name);
 
                              if(!dependencyMenuItem) {
                                  throw new Error('Could not resolve ' + name + '. Make sure you have it loaded in the kitchen at the lodge.');
                              }
 
-                            return this.install(name, version);
+                            return this.download(name, version);
 
 
                          }
@@ -194,25 +293,14 @@ define(['altair/facades/declare',
 
                      }, this));
 
+                     return this.all(loading);
+
                  }
-
-
-                return this.all(loading).then(function () {
-
-                    dfd.progress({
-                        message: 'installing node dependencies',
-                        menuItem: menuItem
-                    });
-
-                    return this._npm.update(package.dependencies);
-
-                });
-
 
             }.bind(this)).then(function () {
 
 
-                return this._modulesInstalled;
+                return dfd.resolve(this._modulesInstalled);
 
 
             }.bind(this)).otherwise(this.hitch(dfd, 'reject'));
@@ -228,6 +316,38 @@ define(['altair/facades/declare',
                 return this.promise(mkdirp, tmpDir || this._tmpDir);
 
             }.bind(this));
+        },
+
+        build: function (moduleNames) {
+
+            var cartridge   = this.nexus('cartridges/Module');
+
+            return cartridge.buildModules(moduleNames);
+
+        },
+
+        inject: function (modules) {
+
+            var cartridge   = this.nexus('cartridges/Module');
+
+            //if it as already running, tear it down and then inject it again
+            return this.all(_.map(modules, function (module) {
+
+                var match  = this.nexus(module.name),
+                    dfd    = module
+
+                if(match) {
+                    match.teardown();
+                }
+
+                return dfd;
+
+            }, this)).then(function () {
+
+                return cartridge.injectModules(modules);
+
+            }.bind(this));
+
         }
 
 

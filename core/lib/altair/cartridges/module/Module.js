@@ -24,6 +24,7 @@ define(['altair/facades/declare',
         'altair/Lifecycle',
         'altair/plugins/node!path',
         './Foundry',
+        'lodash',
         'altair/facades/glob'],
 
     function (declare,
@@ -36,6 +37,7 @@ define(['altair/facades/declare',
               Lifecycle,
               pathUtil,
               Foundry,
+              _,
               glob) {
 
     return declare([_Base], {
@@ -281,7 +283,8 @@ define(['altair/facades/declare',
             return this.foundry.build(mixin({
                 eventDelegate: this,
                 paths: this.paths,
-                modules: modules
+                modules: modules,
+                alreadyInstalled: _.map(this.modules, 'name')
             }, options || {}));
 
         }

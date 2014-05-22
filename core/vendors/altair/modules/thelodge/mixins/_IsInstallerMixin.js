@@ -26,10 +26,6 @@ define(['altair/facades/declare',
             return this.inherited(arguments);
         },
 
-        install: function (from, to) {
-            throw new Error('Your installer must implement install(from, to).');
-        },
-
         /**
          * Install all the node dependencies into altair
          *

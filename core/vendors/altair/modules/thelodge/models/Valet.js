@@ -1,9 +1,11 @@
 define(['altair/facades/declare',
     'altair/Lifecycle',
+    'altair/facades/mixin',
     'altair/plugins/node!path',
     'lodash'
 ], function (declare,
              Lifecycle,
+             mixin,
              pathUtil,
              _) {
 
@@ -53,10 +55,10 @@ define(['altair/facades/declare',
                 allModules = _options.all,
                 cartridge = this.nexus('cartridges/Module'),
                 modules = cartridge.modules,
-                names = '*';
+                names = _options.names || '*';
 
             //if we are not doing all modules, then get the names of the installed ones
-            if (!allModules) {
+            if (!allModules && names === '*') {
 
                 names = _.map(modules, function (module) {
                     return module.name;
@@ -65,9 +67,9 @@ define(['altair/facades/declare',
             }
 
             //get paths to all modules we want (we have to handle npm before they can be loaded anyway)
-            return cartridge.buildModules(names, {
+            return cartridge.buildModules(names, mixin({
                 instantiate: false
-            }).then(function (paths) {
+            }, options)).then(function (paths) {
 
                 //read all the packages
                 var packages = _.map(paths, function (path) {
@@ -80,13 +82,13 @@ define(['altair/facades/declare',
                 return this.all(packages);
 
 
-            }.bind(this).then(function (packages) {
+            }.bind(this)).then(function (packages) {
 
                 var dependencies = _.map(packages, 'dependencies');
 
                 return this._npm.updateMany(dependencies);
 
-            }));
+            }.bind(this));
 
         },
 
@@ -122,7 +124,7 @@ define(['altair/facades/declare',
 
                 dfd = this.parent.createInstaller(menuItem.type, {
                     destination: destination,
-                    kitchen:     this._kitchen
+                    valet:       this
                 }).then(function (installer) {
 
                     return installer.execute(menuItem.name, version);
@@ -137,6 +139,10 @@ define(['altair/facades/declare',
 
             return dfd;
 
+        },
+
+        kitchen: function () {
+            return this._kitchen;
         }
 
 
