@@ -2,25 +2,27 @@ define(['altair/facades/declare',
     'altair/Lifecycle',
     'altair/plugins/node!path',
     'lodash'
-], function (declare, Lifecycle, pathUtil, _) {
+], function (declare,
+             Lifecycle,
+             pathUtil,
+             _) {
 
     return declare([Lifecycle], {
 
         _kitchen: null,
         _npm:     null,
+        _tmpDir: '', //where i temporarily save things during install/update
 
         startup: function (options) {
 
             var _options = options || this.options || {},
                 menus    = _options.menus || this.parent.refreshMenus();
 
-            this.deferred = new this.Deferred();
-
-            this.when(menus).then(function (menus) {
+            this.deferred = this.when(menus).then(function (menus) {
 
                 return this.all({
-                    _npm:     this.forge('../updaters/Npm'),
-                    _kitchen: this.forge('../client/Kitchen', {
+                    _npm:     _options.npm || this.forge('../updaters/Npm'),
+                    _kitchen: _options.kitchen || this.forge('../client/Kitchen', {
                         menus: menus
                     })
                 });
@@ -29,9 +31,10 @@ define(['altair/facades/declare',
 
                 this._npm = deps._npm;
                 this._kitchen = deps._kitchen;
-                this.deferred.resolve(this);
+                return this;
 
-            }.bind(this)).otherwise(this.hitch(this.deferred, 'reject'));
+
+            }.bind(this));
 
 
             return this.inherited(arguments);
@@ -66,14 +69,24 @@ define(['altair/facades/declare',
                 instantiate: false
             }).then(function (paths) {
 
-                var _paths = _.map(paths, function (path) {
-                    return pathUtil.join(path, '..');
+                //read all the packages
+                var packages = _.map(paths, function (path) {
+
+                    var packagePath = pathUtil.join(path, '..', 'package.json');
+                    return this.parseConfig(packagePath);
+
                 }, this);
 
-                return this._npm.updateMany(_paths);
+                return this.all(packages);
 
 
-            }.bind(this));
+            }.bind(this).then(function (packages) {
+
+                var dependencies = _.map(packages, 'dependencies');
+
+                return this._npm.updateMany(dependencies);
+
+            }));
 
         },
 
@@ -86,6 +99,43 @@ define(['altair/facades/declare',
         search: function (keywords, type) {
 
             return this._kitchen.search(keywords, type || 'modules');
+
+        },
+
+        /**
+         * Install something by name
+         *
+         * @param name the name of anything in the menu
+         * @param version the version you want
+         *
+         * @returns {altair.Promise}
+         */
+        install: function (name, destination, version) {
+
+            var menuItem = this._kitchen.menuItemFor(name),
+                vcs,
+                dfd = new this.Deferred();
+
+            if(!menuItem) {
+                dfd.reject(new Error('could not install ' + name + ' because i could not find it.'));
+            } else {
+
+                dfd = this.parent.createInstaller(menuItem.type, {
+                    destination: destination,
+                    kitchen:     this._kitchen
+                }).then(function (installer) {
+
+                    return installer.execute(menuItem.name, version);
+
+                }).then(function (modules) {
+
+                    console.log(modules);
+
+                });
+
+            }
+
+            return dfd;
 
         }
 

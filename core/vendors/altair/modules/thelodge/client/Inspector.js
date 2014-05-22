@@ -15,25 +15,16 @@ define(['altair/facades/declare',
 
     return declare(null, {
 
-        _installers:    null,
-        _menus:         null,
+        _menuItems:     null,
         _index:         null,
         _docs:          null,
 
         constructor: function (options) {
 
-            //we need installers to know what elements in the menu are valid (modules, widgets, etc.)
-            if(!options || !options.installers || !_.isObject(options.installers)) {
-                throw new Error('You must pass your inspector some installers. The keys should be types (modules, widgets) and the value should be an instance of the installer.');
-            }
-
-            //we search the menus for all the good stuff (modules, widgets, etc.)
-            if(!options.menus || !_.isObject(options.menus)) {
-                throw new Error('You must pass your inspector some menus. See altair:TheLodge::configs/menu.json for an example.');
-            }
+            var _options = options || {};
 
             //did someone pass us a search index we can use?
-            if(!options.index) {
+            if(!_options.index) {
 
                 this._index = lunr(function () {
 
@@ -47,15 +38,12 @@ define(['altair/facades/declare',
             }
             //pass through search index
             else {
-                this._index = options.index;
+                this._index = _options.index;
             }
 
-            //pass through important bits
-            this._installers = options.installers;
-            this._menus      = options.menus;
-
-            //prime the index
-            this._primeIndex();
+            if(_options.menuItems) {
+                this.refresh(_options.menuItems);
+            }
 
         },
 
@@ -73,37 +61,32 @@ define(['altair/facades/declare',
                              //copy of all documents in the index so they are unmolested. these are grouped by id
 
             //check each menu
-            this._menus.forEach(hitch(this, function (menu) {
+            this._menuItems.forEach(hitch(this, function (doc) {
 
-                //only index documents that have a matching installer
-                Object.keys(this._installers).forEach(hitch(this, function (type) {
+                var _doc = mixin({ id: id }, doc);
 
-                    var docs = menu[type] || [];
+                _doc.score      = 1;// default score given when '*' is used as search term
 
-                    docs.forEach(hitch(this, function (doc) {
+                //add to internal store for retrieval after search completion
+                this._docs[id] = _doc;
 
-                        var _doc = mixin({ id: id }, doc);
+                //add to lunr index
+                this._index.add(_doc);
 
-                        _doc.type       = type;
-                        _doc.installer  = this._installers[type];
-                        _doc.score      = 1;// default score given when '*' is used as search term
-
-                        //add to internal store
-                        this._docs[id] = _doc;
-
-                        //add to lunr index
-                        this._index.add(_doc);
-
-                        id = id + 1;
-
-                    }));
-
-
-
-                }));
+                id = id + 1;
 
             }));
 
+        },
+
+        /**
+         * Will update the search index (and probably more things to come)
+         *
+         * @returns {*}
+         */
+        refresh: function (menuItems) {
+            this._menuItems = menuItems;
+            return this._primeIndex();
         },
 
         /**

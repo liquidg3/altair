@@ -1,7 +1,7 @@
 define(['altair/facades/declare',
-        'altair/modules/thelodge/vcs/_Base',
+        './_Base',
         'altair/plugins/node!gift',
-        'altair/plugins/node!underscore',
+        'lodash',
         'altair/plugins/node!semver',
         'altair/facades/hitch'
 ], function (declare,
@@ -34,16 +34,11 @@ define(['altair/facades/declare',
 
             } else {
 
-                gift.clone(url, destination, hitch(this, function (err, repo) {
+                d = this.promise(gift.clone.bind(gift), url, destination).then(function (repo) {
 
-                    if(err) {
-                        d.reject(err);
-                    } else {
-                        //make sure we're on the latest version (or the one passed)
-                        this.update(options).then(hitch(d, 'resolve')).otherwise(hitch(d, 'reject'));
-                    }
+                    return this.update(options);
 
-                }));
+                }.bind(this));
 
             }
 
@@ -93,30 +88,31 @@ define(['altair/facades/declare',
 
                 repo = gift(destination);
 
-                //find a tag that matches this version
-                repo.tags(hitch(this, function (err, tags) {
+                //find a version
+                if(version) {
 
-                    var tag = this._firstTagThatMatchesVersion(tags, version);
+                    d = this.promise(repo, 'tags').then(function (tags) {
 
-                    if(!tag) {
-                        if(version) {
-                            d.reject(new Error('Could not find version ' + version));
-                        } else {
-                            d.reject(new Error('You must have at least 1 tag in your repo'));
+                        var tag = this._firstTagThatMatchesVersion(tags, version);
+
+                        if(!tag) {
+                            throw new Error('Could not find version ' + version);
                         }
-                    } else {
-                        repo.checkout(tag.commit.id, hitch(this, function (err, results) {
-                            if(err) {
-                                d.reject(new Error(err));
-                            } else {
-                                d.resolve(repo.path);
-                            }
-                        }));
-                    }
 
-                }));
+                        return this.promise(repo, 'checkout', tag.commit.id);
 
 
+                    }.bind(this));
+
+                }
+                //no version, just master then
+                else {
+
+                    d = this.promise(repo, 'checkout', 'master').then(function () {
+                        return destination;
+                    });
+
+                }
 
             }
 

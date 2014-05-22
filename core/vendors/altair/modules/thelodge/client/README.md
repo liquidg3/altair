@@ -15,4 +15,4 @@ Searches menus for the goods, uses lunr full text search.
 
 ## Valet
 
-The main controller for all client side requests. You should only ever interface with valet.
+The model for all client side interactions. You should only ever interface with valet.

@@ -5,14 +5,15 @@
         "description": "Visit the Lodge for all your Altair goodies.",
         "commands":    {
             "search": {
-                "description": "Search all menus available for a specific module, theme, etc",
+                "description": "Search all available menus for a specific module, theme, etc. Use '*' to see everything.",
                 "aliases":     ["s", "find "],
                 "schema":      {
                     "properties": {
                         "keywords": {
                             "type":    "string",
                             "options": {
-                                "label": "keywords"
+                                "label":    "keywords",
+                                "required": true
                             }
                         }
                     }
@@ -36,10 +37,16 @@
                 "description": "Install anything you found from a search by name",
                 "schema":      {
                     "properties": {
-                        "name": {
+                        "name":        {
                             "type":    "string",
                             "options": {
                                 "label": "name"
+                            }
+                        },
+                        "destination": {
+                            "type":    "select",
+                            "options": {
+                                "label": "install destination"
                             }
                         }
                     }

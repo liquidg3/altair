@@ -13,18 +13,17 @@ define(['altair/facades/declare',
 
     return declare([Lifecycle], {
 
-        menus:      null,
-        chef:       null,
-        inspector:  null,
-        installers: null,
+        _menus:      null,
+        _menuItems:  null, //item cache
+        _chef:       null,
+        _inspector:  null,
+        _installers: null,
+
 
         startup: function (options) {
 
             var _options        = options || this.options || {},
-                list            = [];
-
-            //stop auto resolution
-            this.deferred = new this.Deferred();
+                deps            = {};
 
             //ensure they passed menus
             if(!_options.menus) {
@@ -32,51 +31,44 @@ define(['altair/facades/declare',
                 return this.deferred;
             }
 
-            //without installers, i can't do anything
+            //setup installers
             if(!_options.installers) {
-
-                list.push(this.parent.refreshInstallers().then(hitch(this, function (installers) {
-                    this.installers = installers;
-                })));
-
+                deps.installers = this.parent.refreshInstallers();
             } else {
-                this.installers = _options.installers;
+                deps.installers = _options.installers;
             }
 
-            //setup the chef so he can run and grab the menus if they are remote
+
+            //setup chef (for menu retreival)
             if(!_options.chef) {
-
-                list.push(this.parent.forge('client/Chef').then(hitch(this, function (chef) {
-
-                    this.chef = chef;
-
-                    //setup our menus
-                    this.menus = [];
-
-                    //add menus but wait till they are finished before continuing by returning the deferred
-                    return this.addMenus(_options.menus);
-
-                })));
-
+                deps.chef = this.parent.forge('client/Chef');
             } else {
-                this.chef = _options.chef;
+                deps.chef = _options.installers;
             }
 
-            //wait 'till everything has resolved
-            all(list).then(hitch(this, function () {
+            //inspector (for search)
+            if(!_options.inspector) {
+                deps.inspector = this.parent.forge('client/Inspector');
+            } else {
+                deps.inspector = _options.inspector;
+            }
 
-                //now that the kitchen is setup, lets get our inspector ready (for module search)
-                if(!_options.inspector) {
 
-                    return this.parent.forge('client/Inspector', { installers: this.installers, menus: this.menus }).then(hitch(this, function (inspector) {
-                        this.inspector = inspector;
-                    }));
+            this.deferred = this.all(deps).then(function (deps) {
 
-                } else {
-                    this.inspector = _options.inspector;
-                }
+                this._chef = deps.chef;
+                this._inspector = deps.inspector;
+                this._installers = deps.installers;
 
-            })).then(hitch(this.deferred, 'resolve', this)).otherwise(hitch(this.deferred, 'reject'));
+                //drop in menus
+                return this.addMenus(_options.menus);
+
+            }.bind(this)).then(function () {
+
+                return this;
+
+            }.bind(this));
+
 
             return this.inherited(arguments);
 
@@ -97,7 +89,7 @@ define(['altair/facades/declare',
             menus.forEach(function (menu) {
 
                 if(_.isString(menu)) {
-                    menu = this.chef.fetchMenu(menu);
+                    menu = this._chef.fetchMenu(menu);
                 }
 
                 list.push(when(menu));
@@ -105,21 +97,54 @@ define(['altair/facades/declare',
             });
 
             return all(list).then(hitch(this, function (menus) {
-                this.menus = menus;
+
+                //track individual menu items to pass to the inspector
+                this._menuItems = [];
+
+                //drop in installer to each menu item, starting bo looping through all menus
+                _.each(menus, function (menu) {
+
+                    //each menu item is nested under a type (modules, widgets, etc.) all provided by installers
+                    _.each(this._installers, function (installer, type) {
+
+                        //set installer on each item, which are grouped by type
+                        menu[type] = _.map(menu[type], function (menuItem) {
+
+                            menuItem.type = type;
+
+                            return menuItem;
+
+                        });
+
+                        this._menuItems = this._menuItems.concat(menu[type]);
+
+                    }, this);
+
+                },this);
+
+                //menus
+                this._menus = menus;
+
+                //refresh any inspector that may be working today (for search)
+                if(this._inspector) {
+                    this._inspector.refresh(this._menuItems);
+                }
+
                 return this;
+
             }));
 
         },
 
         /**
-         * Add a singe menu to the kitchen.
+         * Add a singe menu to the kitchen. Make
          *
          * @param menu an object matching schema in ./configs/menu.json or if string assumed to be a remotely
          *             hosted json file that is of the same form
          * @returns {altair.Deferred}
          */
         addMenu: function (menu) {
-            return this.menus([menu]);
+            return this.addMenus([menu]);
         },
 
         /**
@@ -129,7 +154,21 @@ define(['altair/facades/declare',
          * @returns {altair.Deferred}
          */
         search: function (term, type) {
-            return this.inspector.search(term, type || 'modules');
+            return this._inspector.search(term, type || 'modules');
+        },
+
+        /**
+         * Get you a menu item by name.
+         *
+         * @param name
+         * @returns {menuItem}
+         */
+        menuItemFor: function (name) {
+
+            var menuItems = [];
+            return _.find(this._menuItems || [], {name: name});
+
+
         }
 
     });

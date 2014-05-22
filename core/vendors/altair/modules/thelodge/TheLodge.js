@@ -81,24 +81,7 @@ define(['altair/facades/declare',
                 var list = [],
                     installers = e.results();
 
-                installers.forEach(hitch(this, function (installer) {
-
-                    var i       = mixin({}, installer),
-                        path    = i.path;
-
-                    delete i.path;
-
-                    list.push(this.forge(path, i));
-
-
-                }));
-
-                //wait 'till all installers are constructed
-                return all(list);
-
-            })).then(hitch(this, function (installers) {
-
-                //populate local _installers, key is the type (modules, themes, widgets)
+                    //populate local _installers, key is the type (modules, themes, widgets)
                 installers.forEach(hitch(this, function (installer) {
                     this._installers[installer.type] = installer;
                 }));
@@ -106,6 +89,22 @@ define(['altair/facades/declare',
                 return this._installers;
 
             }));
+
+        },
+
+
+        createInstaller: function (type, options) {
+
+            if(!_.has(this._installers, type)) {
+                var dfd = new this.Deferred();
+                dfd.reject(new Error('could not create installer for '+ type));
+                return dfd;
+            }
+
+            var installer = this._installers[type].path,
+                _options = mixin(this._installers[type], options);
+
+            return this.forge(installer, _options);
 
         }
 

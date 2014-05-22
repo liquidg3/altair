@@ -52,46 +52,37 @@ define(['altair/facades/declare',
         },
 
         /**
-         * Update many paths at once
+         * Update many dependency "groups" at once. I really expect dependencies to be an array of objects where
+         * key is the node_module's name and value is the version. I will import them one at a time and see if
+         * there are any conflicts between them.
          *
-         * @param paths
+         * @param dependencies
          * @param options
-         * @returns {altair.Deferred|*}
+         * @returns {altair.Deferred}
          */
-        updateMany: function (paths, options) {
+        updateMany: function (dependencies, options) {
 
             var _options        = options || {},
+                l,
                 mainPackagePath = _options.destination || pathUtil.join(this.nexus('Altair').home, 'package.json');
 
             //passthrough to copy dependencies
             _options.destination = mainPackagePath;
 
-            return this.series(_.map(paths, function (path) {
+            //copy over all dependencies one-at-a-time
+            return this.series(_.map(dependencies, function (d) {
 
-                var json = pathUtil.join(path, 'package.json');
-
-                return function() {
-
-                    return this.parseConfig(json).then(this.hitch(function (package) {
-
-                        //if there are dependencies, copy them over
-                        if(package.dependencies) {
-                            return this.copyDependencies(package.dependencies, _options);
-                        }
-
-
-                    }));
-
-
+                return function () {
+                    return this.copyDependencies(d, _options);
                 }.bind(this);
-
 
             }, this)).then(function () {
 
                 this._npm.prefix = pathUtil.join(mainPackagePath, '..');
+
                 return this.promise(this._npm, 'update');
 
-            }.bind(this));
+                }.bind(this));
 
 
         },
@@ -101,9 +92,10 @@ define(['altair/facades/declare',
          *
          * @param path
          */
-        update: function (path, options) {
-            return this.updateMany([path], options);
+        update: function (name, options) {
+            return this.updateMany([name], options);
         },
+
 
         /**
          * Pass an array of dependencies (pulled from package.json) and i'll copy them to options.destination. I'll do

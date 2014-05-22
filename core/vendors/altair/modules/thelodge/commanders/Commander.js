@@ -77,31 +77,8 @@ define(['altair/facades/declare',
          */
         install: function (options) {
 
-            return this._valet.search(options.name, options.types || 'modules').then(function (results) {
-
-                var match;
-
-                //no matches
-                if(results.length === 0) {
-
-                    this.writeLine('no results found...', 'warning');
-
-                }
-                //only 1 match
-                else if(results.length === 1) {
-
-                    match = results.pop();
-
-                }
-                //more than 1 match, select one.
-                else {
-
-
-
-                }
-
-                return this.when(match);
-
+            return this._valet.install(options.name, options.destination).step(function (step) {
+                this.writeLine(step.message);
             }.bind(this));
 
         },
@@ -118,7 +95,37 @@ define(['altair/facades/declare',
                 this.writeLine(step.message);
             }));
 
+        },
+
+        /**
+         * To override the options for the destination select
+         *
+         * @param named
+         * @returns {*}
+         */
+        schemaForCommand: function (named) {
+
+            var schema = this.inherited(arguments);
+
+            //the newModule command has some choices that need updating (destination dir)
+            if(schema && named === 'install') {
+
+                //get the 'paths' we have set in altair
+                var altair          = this.nexus('Altair'),
+                    choices    = {};
+
+                altair.paths.forEach(function (path) {
+                    choices[path] = require.toUrl(path);
+                });
+
+                schema.setOptionFor('destination', 'choices', choices);
+
+            }
+
+
+            return schema;
         }
+
 
 
 
