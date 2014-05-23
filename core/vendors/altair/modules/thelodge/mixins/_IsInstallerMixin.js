@@ -30,7 +30,7 @@ define(['altair/facades/declare',
          * Install all the node dependencies into altair
          *
          * @param dependencies
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         installNodeDependencies: function (dependencies) {
 

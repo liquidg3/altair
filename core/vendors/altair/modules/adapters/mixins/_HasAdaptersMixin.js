@@ -68,7 +68,7 @@ define(['altair/facades/declare',
          * We only read our configs/adapters.json for now, but @TODO is to decide what should go in that json
          *
          * @param e
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         registerAdapters: function (e) {
             return this.parseConfig('configs/adapters.json');
@@ -120,7 +120,7 @@ define(['altair/facades/declare',
         /**
          * Gets you all adapters registered in the system for your module.
          *
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         adapters: function () {
 

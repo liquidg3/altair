@@ -54,6 +54,7 @@ define(['altair/facades/declare',
 
                     this.table({
                         headers: ['name', 'type', 'description', 'score'],
+                        colWidths: [20, 10, 60, 10],
                         rows: _.map(results, function (row) {
                             return [ row.name, row.type, row.description, row.score];
                         })
@@ -79,6 +80,8 @@ define(['altair/facades/declare',
 
             return this._valet.install(options.name, options.destination).step(function (step) {
                 this.writeLine(step.message);
+            }.bind(this)).then(function (modules) {
+                this.writeLine(modules.length + ' modules installed', 'success');
             }.bind(this));
 
         },
@@ -94,6 +97,34 @@ define(['altair/facades/declare',
             return this._valet.npm(options).step(hitch(this, function (step) {
                 this.writeLine(step.message);
             }));
+
+        },
+
+        /**
+         * Get details about an item in the menu
+         *
+         * @param options
+         */
+        details: function (options) {
+
+            var menuItem = this._valet.kitchen().menuItemFor(options.name);
+
+            if(!menuItem) {
+                this.writeLine('Could not find anything named ' + options.name);
+            } else {
+
+                this.table({
+                    rows: _.filter(_.map(menuItem, function (value, key) {
+                        var r = {};
+                        r[key] = value;
+                        return r;
+                    }), function (row) {
+                        return !_.has(row, 'lower') && !_.has(row, 'repository');
+                    })
+                });
+
+            }
+
 
         },
 

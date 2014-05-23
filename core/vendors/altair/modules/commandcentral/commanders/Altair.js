@@ -304,7 +304,7 @@ define(['altair/facades/declare',
 
             if (schema) {
 
-                //if there is as chema, render a form
+                //if there is a schema, render a form
                 this.form(schema).then(done).otherwise(hitch(d, 'reject'));
 
             }
@@ -320,7 +320,7 @@ define(['altair/facades/declare',
         /**
          * Tear everything down.
          *
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         teardown: function () {
 

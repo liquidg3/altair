@@ -26,7 +26,8 @@
                         "all": {
                             "type":    "boolean",
                             "options": {
-                                "label": "run on all modules (including disabled ones)"
+                                "label":    "run on all modules (including disabled ones)",
+                                "required": true
                             }
                         }
                     }
@@ -40,13 +41,31 @@
                         "name":        {
                             "type":    "string",
                             "options": {
-                                "label": "name"
+                                "label":    "name",
+                                "required": true
                             }
                         },
                         "destination": {
                             "type":    "select",
                             "options": {
-                                "label": "install destination"
+                                "label":    "install destination (see ~/.altair/altair.json)",
+                                "required": true
+                            }
+                        }
+                    }
+                }
+            },
+
+            "details": {
+                "description": "Install anything you found from a search by name",
+                "aliases":     ["info", "deets"],
+                "schema":      {
+                    "properties": {
+                        "name":        {
+                            "type":    "string",
+                            "options": {
+                                "label":    "name",
+                                "required": true
                             }
                         }
                     }

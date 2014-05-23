@@ -34,7 +34,7 @@ define(['altair/facades/declare',
          * Not sure if you have a deferred? wrap it in when and be certain.
          *
          * @param obj
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         when: function (obj) {
             return when(obj);
@@ -118,7 +118,7 @@ define(['altair/facades/declare',
          * returned to the final promise
          *
          * @param callbacks
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         series: function (callbacks) {
 

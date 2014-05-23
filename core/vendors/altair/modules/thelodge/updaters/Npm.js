@@ -24,7 +24,7 @@ define(['altair/facades/declare',
          * Startup npm
          *
          * @param options
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         startup: function (options) {
 
@@ -58,7 +58,7 @@ define(['altair/facades/declare',
          *
          * @param dependencies
          * @param options
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         updateMany: function (dependencies, options) {
 
@@ -103,7 +103,7 @@ define(['altair/facades/declare',
          *
          *
          * @param dependencies - the contents of anythings package.json's dependencies
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         copyDependencies: function (dependencies, options) {
 

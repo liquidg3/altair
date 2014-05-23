@@ -64,7 +64,7 @@ define(['altair/facades/declare',
          * Create a record in you database by a table/collection name
          *
          * @param tableName
-         * @returns {altair.Deferred}
+         * @returns {altair.cartridges.database.Statement}
          */
         create: function (tableName, options) {
 
@@ -78,7 +78,7 @@ define(['altair/facades/declare',
          * Create many records at once!
          *
          * @param tableName
-         * @returns {altair.Deferred}
+         * @returns {altair.cartridges.database.Statement}
          */
         createMany: function (tableName, options) {
 

@@ -65,7 +65,8 @@ define(['altair/facades/declare',
             var module = e.get('module');
 
             if(!module.packagePath) {
-                module.packagePath = 'package.json';
+                //going waaaay out. the cartridge module's foundry has the "official" packageName (package.json)
+                module.packagePath = this.altair.cartridge('module').foundry.packageName;
             }
 
         }

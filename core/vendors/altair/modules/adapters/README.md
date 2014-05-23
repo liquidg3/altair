@@ -84,7 +84,7 @@ which is nice. All the methods below call be called from the module that has the
  * @param default optional if no adapter set, return default
  * @param options optional reserved for future use (probably pass through to adapter)
  * @param config optional reserved for future use
- * @returns {altair.Deferred}
+ * @returns {altair.Promise}
  */
 this.get('selectedAdapter', default, options, config).then(function (adapter) {
     console.dir(adapter);
@@ -98,7 +98,7 @@ this.get('selectedAdapter', default, options, config).then(function (adapter) {
  * @param default optional if no adapter set, you'll get what you pass here back
  * @param options optional reserved for future use (probably pass through to adapter)
  * @param config optional reserved for future use
- * @returns {altair.Deferred}
+ * @returns {altair.Promise}
  */
 this.get('selectedAdapters', default, options, config).then(function (adapters) {
     console.log(adapters);
@@ -130,7 +130,7 @@ var adapter = this.adapter();
  * getting an adapter by name from yourself (you shouldn't need to do this often)
  *
  * @param name path to class relative to your own module
- * @return {altair.Deferred}
+ * @return {altair.Promise}
  */
 this.adapter('adapters/Smtp').then(hitch(this, function (smtp) {
     console.dir(smtp);
@@ -142,7 +142,7 @@ this.adapter('adapters/Smtp').then(hitch(this, function (smtp) {
  * Same as above, but using nexus to resolve to an adapter on a different module
  *
  * @param name full nexus path to adapter
- * @return {altair.Deferred}
+ * @return {altair.Promise}
  */
 this.adapter('altair:PostMaster/adapters/Smtp').then(hitch(this, function (smtp) {
     console.dir(smtp);

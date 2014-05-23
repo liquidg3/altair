@@ -64,7 +64,7 @@ define(['altair/facades/declare',
          * but will allow us to always use the startup().then(... syntax.
          *
          * @param options simply copied to local this.options
-         * @return {altair.Deferred}
+         * @return {altair.Promise}
          */
         startup: function (options) {
 
@@ -90,14 +90,14 @@ define(['altair/facades/declare',
             //tracking
             this._startupDeferred = this.deferred;
 
-            return this.deferred;
+            return this.deferred.promise || this.deferred;
 
         },
 
         /**
          * Do your work in here.
          *
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         execute: function () {
 
@@ -118,14 +118,14 @@ define(['altair/facades/declare',
             //remove the deferred after it's been resolved
             this.deferred.always(this._deferredAutoRemover(this.deferred));
 
-            return this.deferred;
+            return this.deferred.promise || this.deferred;
 
         },
 
         /**
          * Clean up so it's like you never existed.
          *
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         teardown: function () {
 
@@ -137,7 +137,7 @@ define(['altair/facades/declare',
             //remove the deferred after it's been resolved
             this.deferred.always(this._deferredAutoRemover(this.deferred));
 
-            return this.deferred;
+            return this.deferred.promise || this.deferred;
 
         },
 

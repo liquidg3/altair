@@ -109,7 +109,7 @@ define(['altair/facades/declare',
         /**
          * This is shown when the platform boots
          *
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         splash: function () {
 

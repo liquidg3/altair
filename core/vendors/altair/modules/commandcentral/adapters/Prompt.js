@@ -79,6 +79,8 @@ define(['altair/facades/declare',
                     case 'warning':
                         str = chalk.bold.yellow(str);
                         break;
+                    case 'success':
+                        str = chalk.bold.green(str);
                     case 'h1':
                         str = chalk.bold(str);
                         break;
@@ -146,6 +148,7 @@ define(['altair/facades/declare',
                     question = question + ' (' + chalk.italic(defaultValue) + ')';
                 }
 
+
             }
 
             prompt.get([
@@ -161,6 +164,7 @@ define(['altair/facades/declare',
                     def.reject(err);
                 } else {
                     def.resolve(results[name] || defaultValue);
+                    delete prompt.override[name]; // is this a good idea?
                 }
 
             }));
@@ -183,7 +187,7 @@ define(['altair/facades/declare',
          * @param question the text that will output before showing all the options
          * @param defaultValue
          * @param options if a choices key exists
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         select: function (question, defaultValue, options) {
 
@@ -246,7 +250,8 @@ define(['altair/facades/declare',
                         //are we going to force them to select an option?
                         if (!required) {
 
-                            dfd.reject(results, false);
+                            delete prompt.override[name]; // is this a good idea?
+                            dfd.resolve(null, false);
 
                         } else {
 
@@ -260,6 +265,7 @@ define(['altair/facades/declare',
 
                     } else {
 
+                        delete prompt.override[name]; // is this a good idea?
                         dfd.resolve(results);
 
                     }
@@ -347,7 +353,7 @@ define(['altair/facades/declare',
 
         /**
          * Shutdown prompt
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         teardown: function () {
 
@@ -378,7 +384,7 @@ define(['altair/facades/declare',
 
 
             //use headers is if you can because then it can be compatible with table() in other adapters
-            tableOptions.head = headers || tableOptions.head;
+            tableOptions.head = headers || tableOptions.head || {};
 
             //we pass rows manually
             delete tableOptions.rows;
@@ -392,7 +398,6 @@ define(['altair/facades/declare',
                 table.push(row);
 
             }, this);
-
 
             this.writeLine(table.toString());
 

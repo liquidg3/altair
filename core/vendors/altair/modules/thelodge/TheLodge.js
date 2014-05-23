@@ -55,7 +55,7 @@ define(['altair/facades/declare',
          * Refresh all menus registered in the system. Each listener is expected to return an array of menus (see
          * this.registerMenus)
          *
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         refreshMenus: function () {
 
@@ -68,7 +68,7 @@ define(['altair/facades/declare',
         /**
          * Give every module a chance to register special installers they have registered.
          *
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         refreshInstallers: function () {
 

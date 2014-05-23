@@ -47,7 +47,7 @@ define(['altair/facades/declare',
         /**
          * Loops through all started (and optionally not started) modules and runs npm update for all of them.
          *
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         npm: function (options) {
 
@@ -96,7 +96,7 @@ define(['altair/facades/declare',
          * Search the kitchen (and all of its menus) to find a module (or whatevs)
          *
          * @param keywords
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         search: function (keywords, type) {
 
@@ -129,10 +129,6 @@ define(['altair/facades/declare',
 
                     return installer.execute(menuItem.name, version);
 
-                }).then(function (modules) {
-
-                    console.log(modules);
-
                 });
 
             }
@@ -144,8 +140,6 @@ define(['altair/facades/declare',
         kitchen: function () {
             return this._kitchen;
         }
-
-
 
     });
 

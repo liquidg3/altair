@@ -22,7 +22,7 @@ define(['altair/facades/declare',
              fs,
              ncp,
              rimraf,
-             semvr,
+             semver,
              require,
              _,
              _IsInstallerMixin) {
@@ -40,7 +40,7 @@ define(['altair/facades/declare',
          * Startup npm
          *
          * @param options
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         startup: function (options) {
 
@@ -64,8 +64,8 @@ define(['altair/facades/declare',
         /**
          * Run all installer logic on this menu item
          *
-         * @param menuItem
-         * @returns {thelodge.installers thelodge.installers.mixins._IsInstallerMixin}
+         * @param name if string, name of module, if object, assumed to be altairDependences
+         * @returns {altair.Promise}
          */
         execute: function (name, version) {
 
@@ -75,13 +75,19 @@ define(['altair/facades/declare',
             //new modules being installed
             this._modulesInstalled = {};
 
+            //build dependencies block, assume if string
+            var dependencies = _.isObject(name) ? name : false;
+
+            if(!dependencies) {
+                dependencies = {};
+                dependencies[name] = version;
+            }
 
             //start by downloading this module and all its dependencies
-            this.download(name, version).then(function (modules) {
-
+            this.downloadMany(dependencies).then(function (modules) {
 
                 this.deferred.progress({
-                    message: 'preparing to move ' + modules.length + ' into place',
+                    message: 'preparing to move ' + Object.keys(modules).length + ' modules into place',
                     menuItem: this._valet.kitchen().menuItemFor(name)
                 });
 
@@ -159,7 +165,6 @@ define(['altair/facades/declare',
                     menuItem: this._valet.kitchen().menuItemFor(name)
                 });
 
-
                 return this.build(_.map(modules, 'name'));
 
             }.bind(this)).then(function (modules) {
@@ -172,10 +177,36 @@ define(['altair/facades/declare',
 
                 return this.inject(modules);
 
-            }.bind(this)).step(this.hitch(this.deferred, 'progress')).otherwise(this.hitch(this.deferred, 'reject'));
+            }.bind(this))
+            .step(this.hitch(this.deferred, 'progress')) //track progress
+            .then(this.hitch(this.deferred,'resolve')) //resolve when finished
+            .otherwise(this.hitch(this.deferred, 'reject')); //reject on any error
 
 
             return this.inherited(arguments);
+
+        },
+
+        /**
+         * Pass me an object where the values are an object where name is the altair module and value is the version
+         * Matches what is in package.json
+         *
+         * @param altairDependencies
+         * @returns {altair.Promise}
+         */
+        downloadMany: function (altairDependencies) {
+
+            var dfd = new this.Deferred();
+
+            this.series(_.map(altairDependencies, function (version, name) {
+                return function () {
+                    return this.download(name, version).step(this.hitch(dfd, 'progress'));
+                }.bind(this);
+            }.bind(this))).then(function () {
+                dfd.resolve(this._modulesInstalled);
+            }.bind(this));
+
+            return dfd.promise;
 
         },
 
@@ -285,7 +316,12 @@ define(['altair/facades/declare',
                                  throw new Error('Could not resolve ' + name + '. Make sure you have it loaded in the kitchen at the lodge.');
                              }
 
-                            return this.download(name, version);
+                             dfd.progress({
+                                 message: 'installing ' + name,
+                                 menuItem: menuItem
+                             });
+
+                            return this.download(name, version).step(this.hitch(dfd, 'progress'));
 
 
                          }
@@ -305,7 +341,7 @@ define(['altair/facades/declare',
 
             }.bind(this)).otherwise(this.hitch(dfd, 'reject'));
 
-            return dfd;
+            return dfd.promise;
         },
 
 
@@ -349,102 +385,6 @@ define(['altair/facades/declare',
             }.bind(this));
 
         }
-
-
-        /**
-         * Try and install a module.
-         *
-         * @param from the source directory, should have a package.json, Module.js, etc.
-         * @param to the destination (any resolvable path, like 'app' or 'core', defined in your altair.json)
-         * @returns {altair.Deferred} - will resolve with array of live modules
-         */
-//        install: function (from, to) {
-//
-//            //some local vars
-//            var cartridge   = this.nexus('cartridges/Module'), //so we can enable the module after it's copied into place
-//                foundry     = cartridge.foundry, //the module foundry will help us with path resolution and building modules
-//                _from       = require.toUrl(from),
-//                configPath  = path.join(_from, 'package.json'), //path to where the module's package.json should live
-//                destination; //where we will save it after everything is loaded
-//
-//            //step 2 - try and find a package.json for the module to be installed
-//            return this.parseConfig(configPath).then(this.hitch(function (package) {
-//
-//                var list = [];
-//
-//                //save the destination now that we have the package details
-//                destination = require.toUrl(path.join(to, foundry.moduleNameToPath(package.name)));
-//
-//                //deferred.progress();
-//
-//                //step 3 - check for altairDependencies
-//                if(package.altairDependencies) {
-//                    throw new Error('not finished!');
-//                }
-//
-//                //step 4 - drop in npm requirements to our projects main package.json if needed
-//                if(package.dependencies) {
-//
-//                    list.push(this._npm.installDependencies(package.dependencies));
-//
-//                } else {
-//                    list.push(when(package));
-//                }
-//
-//                return all(list).then(function () {
-//                    return package; //make sure next step gets the package
-//                });
-//
-//            })).then(this.hitch(function (package) {
-//
-//                var d = new this.Deferred();
-//
-//                //step 5 - clean out destination (it may not exist, so this could fail, but no biggy)
-//                rimraf(destination, function (err) {
-//                    d.resolve(package);
-//                });
-//
-//                return d;
-//
-//            })).then(this.hitch(function (package) {
-//
-//                return this.promise(mkdirp, destination).then(function () {
-//                    return package;
-//                });
-//
-//            })).then(this.hitch(function (package) {
-//
-//                //step 7 - move module into place at its destination
-//                return this.promise(ncp.ncp, _from, destination).then(function () {
-//                    return package;
-//                });
-//
-//            })).then(this.hitch(function (package) {
-//
-//                //step 8 - pass the module to the foundry for creation
-//                return foundry.build({
-//                    paths:      [to],
-//                    modules:    [package.name]
-//                });
-//
-//            })).then(this.hitch(function (modules) {
-//
-//                //step 9 - inject new modules into altair's runtime via the module cartridge
-//                return cartridge.injectModules(modules);
-//
-//            })).then(this.hitch(function (modules) {
-//
-//                //final step, return the newly activated module
-//                return modules;
-//
-//            })).otherwise(this.hitch(function (err) {
-//                this.log(new Error('Could not install module at ' + from + '. Original error is: ' + err));
-//            }));
-//
-//
-//        }
-
-
 
     });
 

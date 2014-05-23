@@ -7,6 +7,7 @@
             "name":        "liquidfire:Dates",
             "description": "A lot of helpful date related property types (for Apollo) and utilities.",
             "keywords":    ["liquidfire", "date", "time"],
+            "website":      "https://github.com/liquidg3/liquidfire-dates",
             "repository":  {
                 "type": "git",
                 "url":  "git@github.com:liquidg3/liquidfire-dates.git"
@@ -16,6 +17,7 @@
             "name":        "liquidfire:Images",
             "description": "Useful image rendering things (and image property type for Apollo).",
             "keywords":    ["png", "jpg", "gif", "gd", "images", "image"],
+            "website":      "https://github.com/liquidg3/liquidfire-images",
             "repository":  {
                 "type": "git",
                 "url":  "git@github.com:liquidg3/liquidfire-images.git"
@@ -25,6 +27,7 @@
             "name":        "titan:Alfred",
             "description": "Build yourself an Express powered website wicked fast using a clean MVC architecture. Hook into events inside of Altair from your controllers for some fun cross-media fun!",
             "keywords":    ["webpage", "mvc", "web", "express", "mvc", "alfred"],
+            "website":      "https://github.com/hemstreet/Titan-Alfred",
             "repository":  {
                 "type": "git",
                 "url":  "https://github.com/hemstreet/Titan-Alfred"
@@ -34,6 +37,7 @@
             "name":        "liquidfire:Onyx",
             "description": "Simple and clean rendering engine, plus the ability to create 'widgets'. Great fun when used with Alfred to create reusable visual components.",
             "keywords":    ["png", "jpg", "gif", "gd", "images", "image"],
+            "website":      "https://github.com/liquidg3/liquidfire-onyx",
             "repository":  {
                 "type": "git",
                 "url":  "git@github.com:liquidg3/liquidfire-onyx.git"

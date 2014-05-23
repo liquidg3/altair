@@ -34,7 +34,7 @@ define(['altair/facades/declare', //take a look at terms.md
          * you have specified in your package.json as altairDependencies.
          *
          * @param options
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         startup: function (options) {
 
@@ -67,7 +67,7 @@ define(['altair/facades/declare', //take a look at terms.md
          * setup as it can possibly be by this point. execute()s are fired in the same order as startup()s and follow the
          * same deferred pattern. Simply this.deferred = new this.Deferred() just like in startup().
          *
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         execute: function () {
 
@@ -79,7 +79,7 @@ define(['altair/facades/declare', //take a look at terms.md
          * Make sure anything you setup in startup gets torn down here. A module in Altair *must* be able capable of
          * starting up and shutting down while Altair is running and it should not create any artifacts.
          *
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         teardown: function () {
             return this.inherited(arguments);

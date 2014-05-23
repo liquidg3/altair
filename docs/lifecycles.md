@@ -20,7 +20,7 @@ define(['altair/facades/declare'], function (declare) {
          * this.deferred = new this.Deferred in your class) then I will make one and resolve it immediately.
          *
          * @param options optional simply overrides this.options if passed
-         * @return {altair.Deferred}
+         * @return {altair.Promise}
          */
         startup: function (options) {
             ...
@@ -30,7 +30,7 @@ define(['altair/facades/declare'], function (declare) {
         /**
          * Do your work in here.
          *
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         execute: function () {
             ....
@@ -40,7 +40,7 @@ define(['altair/facades/declare'], function (declare) {
         /**
          * Clean up so it's like you never existed.
          *
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         teardown: function () {
             ...

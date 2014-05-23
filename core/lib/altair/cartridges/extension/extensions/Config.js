@@ -42,7 +42,7 @@ define(['altair/facades/declare',
                 /**
                  * Loads you a config by name, relative to the module's dir
                  *
-                 * @returns {altair.Deferred}
+                 * @returns {altair.Promise}
                  */
                 parseConfig: function (named) {
 

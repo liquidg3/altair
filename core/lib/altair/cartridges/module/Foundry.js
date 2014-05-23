@@ -44,6 +44,8 @@ define(['altair/facades/declare',
         _eventDelegate: null,
         _alreadyInstalled: null,
 
+        packageName: 'package.json',
+
         /**
          * @param options
          */
@@ -313,7 +315,7 @@ define(['altair/facades/declare',
         pathToModuleName: function (modulePath) {
 
             //HACK TO BREAK DEPENDENCY ON FOLDER STRUCTURE
-            var p       = path.join(modulePath, '..', 'package.json'),
+            var p       = path.join(modulePath, '..', this.packageName),
                 config  = require.nodeRequire(p);
 
             return config.name;

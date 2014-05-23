@@ -66,28 +66,7 @@ define(['altair/facades/declare',
                 list;
 
             //pass through altair if it was passed or fallback to altair's paths
-            this.paths = _options.paths;
-
-            if(!this.paths && this.altair.paths.length > 0) {
-
-                this.paths = [];
-                this.deferred = new Deferred();
-
-                var paths = this.altair.paths.map( hitch( this, function ( path, index ) {
-
-                    //find all module dirs inside of this path
-                    return require.toUrl(pathUtil.join(path, 'vendors', '*', 'modules'));
-
-                }));
-
-                glob(paths).then(this.hitch(function (matches) {
-
-                    this.paths = this.paths.concat(matches);
-                    this.deferred.resolve(this);
-
-                }));
-
-            }
+            this.paths = _options.paths || [];
 
             /**
              * Was a foundry passed? if not, lets create one
@@ -232,7 +211,7 @@ define(['altair/facades/declare',
                 if(m) {
                     m.execute().then(execute).otherwise(hitch(deferred, 'reject'));
                 } else {
-                    deferred.resolve();
+                    deferred.resolve(modules);
                 }
 
             };
@@ -276,16 +255,30 @@ define(['altair/facades/declare',
          *
          * @param modules array of module name, titan:Alfred
          * @param options for foundry (anything else you want to pass besides modules)
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         buildModules: function (modules, options) {
 
-            return this.foundry.build(mixin({
-                eventDelegate: this,
-                paths: this.paths,
-                modules: modules,
-                alreadyInstalled: _.map(this.modules, 'name')
-            }, options || {}));
+            //mixin altair paths with any custom ones set on the cartridges
+            var paths = this.altair.paths.map(function ( path ) {
+
+                //find all module dirs inside of this path
+                return require.toUrl(pathUtil.join(path, 'vendors', '*', 'modules'));
+
+            }).concat(this.paths);
+
+            return glob(paths).then(this.hitch(function (paths) {
+
+                return this.foundry.build(mixin({
+                    eventDelegate: this,
+                    paths: paths,
+                    modules: modules,
+                    alreadyInstalled: _.map(this.modules, 'name')
+                }, options || {}));
+
+            }));
+
+
 
         }
 

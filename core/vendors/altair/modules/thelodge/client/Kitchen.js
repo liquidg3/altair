@@ -78,7 +78,7 @@ define(['altair/facades/declare',
          * Add new menus to the kitchen. See ./configs/menu.json for example of a valid menu
          *
          * @param menus [] array of menus as objects or urls (string)
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         addMenus: function (menus) {
 
@@ -111,6 +111,7 @@ define(['altair/facades/declare',
                         menu[type] = _.map(menu[type], function (menuItem) {
 
                             menuItem.type = type;
+                            menuItem.lower = menuItem.name.toLowerCase();
 
                             return menuItem;
 
@@ -141,7 +142,7 @@ define(['altair/facades/declare',
          *
          * @param menu an object matching schema in ./configs/menu.json or if string assumed to be a remotely
          *             hosted json file that is of the same form
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         addMenu: function (menu) {
             return this.addMenus([menu]);
@@ -151,7 +152,7 @@ define(['altair/facades/declare',
          * Search every menu and see if there is a match.
          *
          * @param terms
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         search: function (term, type) {
             return this._inspector.search(term, type || 'modules');
@@ -166,7 +167,7 @@ define(['altair/facades/declare',
         menuItemFor: function (name) {
 
             var menuItems = [];
-            return _.find(this._menuItems || [], {name: name});
+            return _.find(this._menuItems || [], {lower: name.toLowerCase()});
 
 
         }

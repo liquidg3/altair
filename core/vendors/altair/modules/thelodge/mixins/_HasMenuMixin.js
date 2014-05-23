@@ -17,7 +17,7 @@ define(['altair/facades/declare',
          * Reads our ./configs/menus.json and lets the for the kitchen
          *
          * @param e
-         * @returns {altair.Deferred}
+         * @returns {altair.Promise}
          */
         registerMenuForTheLodge: function (e) {
             return this.parseConfig('configs/menu.json');

@@ -88,7 +88,7 @@ define(['altair/facades/declare',
              * any previously forged modules.
              *
              * @param ext
-             * @returns {altair.Deferred}
+             * @returns {altair.Promise}
              */
             addExtension: function (ext) {
 
@@ -171,7 +171,7 @@ define(['altair/facades/declare',
              * you are passing is a function, not an instance
              *
              * @param module
-             * @returns {altair.Deferred}
+             * @returns {altair.Promise}
              */
             extend: function (Module, type) {
 
@@ -196,7 +196,7 @@ define(['altair/facades/declare',
             /**
              * Run anything you want on an AMD module after it's been created
              *
-             * @returns {altair.Deferred}
+             * @returns {altair.Promise}
              */
             execute: function (module, type) {
 
@@ -226,7 +226,7 @@ define(['altair/facades/declare',
              * Whenever a module is about to be forged, extend it.
              *
              * @param e
-             * @return {altair.Deferred}
+             * @return {altair.Promise}
              */
             onWillForgeModule: function (e) {
                 return this.extend(e.get('Module'), 'module');
@@ -236,7 +236,7 @@ define(['altair/facades/declare',
              * When a module is done being forged (but is not started up) mixin more
              *
              * @param e
-             * @returns {altair.Deferred}
+             * @returns {altair.Promise}
              */
             onDidForgeModule: function (e) {
                 this._forgedModules.push(e.get('module'));
