@@ -17,7 +17,7 @@
                             "label": "vendor name",
                             "required": true,
                             "pattern": "[a-z]",
-                            "description": "Every module needs to be part of a larger 'Vendor Space.' This keeps module names from conflicting across projects. An example would be 'titan' or 'liquidfire'."
+                            "description": "What is your vendor? Every module needs to be part of a larger 'Vendor Space.' This keeps module names from conflicting across projects. An example would be 'titan' or 'liquidfire'."
                         }
                     },
                     "name": {
@@ -34,7 +34,7 @@
                             "label":    "destination",
                             "required": true,
                             "default":  "app",
-                            "description": "You can store Altair modules anywhere in your system as long as you configure them in your app/config/altair.json"
+                            "description": "You can store Altair modules anywhere in your system as long as you configure them in your ~./altair/altair.json"
                         }
                     }
                 }

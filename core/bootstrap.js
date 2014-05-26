@@ -23,15 +23,15 @@ require(['altair/Altair',
 
         /**
          * NPM has zero dependency injection so it's easier to create a central place for altair to manage
-         * all node dependencies. This is where all the dependencies for altair modules/themes/widgets/sites
-         * will be installed.
+         * all node dependencies than it is to configure npm (at all). This is where all the dependencies
+         * for altair modules/themes/widgets/sites will be installed.
          */
         var homePath = path.join(home(), '.altair'),
             homeConfigPath = path.join(homePath, 'altair.json'),
             homePackagePath = path.join(homePath, 'package.json');
 
         //configure our home install dir
-        process.env['NODE_PATH'] += ':' + path.join(homePath, 'node_modules');
+        process.env['NODE_PATH'] += path.sep + path.join(homePath, 'node_modules');
         Module._initPaths(); // terrible
 
         //does our run dir exist? move this to better installer
@@ -41,7 +41,7 @@ require(['altair/Altair',
 
         } catch (e) {
 
-            debug('altair first run, creating', homePath);
+            debug('altair first run, creating ' + homePath);
 
             //create home
             fs.mkdirSync(homePath);
@@ -54,6 +54,7 @@ require(['altair/Altair',
                     }
                 }
             }, null, 4));
+
             fs.writeFileSync(homePackagePath, JSON.stringify({
                 name:        'altair-global',
                 description: 'Placeholder altair config to hold dependencies of all installed modules.'
@@ -106,7 +107,7 @@ require(['altair/Altair',
                 debug('-- starting altair in safe mode --');
             }
 
-            debug('creating cartridge foundry. adding', config.cartridges.length, 'cartridges.');
+            debug('creating cartridge foundry. adding ' +  config.cartridges.length + 'cartridges.');
 
             foundry.build(config.cartridges).then(function (cartridges) {
 
