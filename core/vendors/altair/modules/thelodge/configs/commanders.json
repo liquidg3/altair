@@ -6,7 +6,7 @@
         "commands":    {
             "search": {
                 "description": "Search all available menus for a specific module, theme, etc. Use '*' to see everything.",
-                "aliases":     ["s", "find "],
+                "aliases":     ["s", "find"],
                 "schema":      {
                     "properties": {
                         "keywords": {
@@ -57,14 +57,37 @@
             },
 
             "details": {
-                "description": "Install anything you found from a search by name",
+                "description": "Get details on anything you found by name",
                 "aliases":     ["info", "deets"],
                 "schema":      {
                     "properties": {
-                        "name":        {
+                        "name": {
                             "type":    "string",
                             "options": {
                                 "label":    "name",
+                                "required": true
+                            }
+                        }
+                    }
+                }
+            },
+
+            "updateFromPackage": {
+                "description": "Update all dependencies in a package by path",
+                "aliases":     ["package"],
+                "schema":      {
+                    "properties": {
+                        "ptah":        {
+                            "type":    "path",
+                            "options": {
+                                "label":    "path",
+                                "required": true
+                            }
+                        },
+                        "destination": {
+                            "type":    "select",
+                            "options": {
+                                "label":    "install destination (see ~/.altair/altair.json)",
                                 "required": true
                             }
                         }

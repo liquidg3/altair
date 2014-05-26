@@ -24,6 +24,26 @@
             }
         },
         {
+            "name":        "liquidfire:Spectre",
+            "description": "Entities are everywhere! this.entity('User').find().where('firstName', '!=', 'taco')",
+            "keywords":    ["entities", "documents", "active record", "database", "web"],
+            "website":      "https://github.com/liquidg3/liquidfire-spectre",
+            "repository":  {
+                "type": "git",
+                "url":  "git@github.com:liquidg3/liquidfire-spectre.git"
+            }
+        },
+        {
+            "name":        "liquidfire:Forms",
+            "description": "Makes rendering forms and handling submissions really easy. Introduces a form widget.",
+            "keywords":    ["forms", "widgets", "post"],
+            "website":      "https://github.com/liquidg3/liquidfire-forms",
+            "repository":  {
+                "type": "git",
+                "url":  "git@github.com:liquidg3/liquidfire-forms.git"
+            }
+        },
+        {
             "name":        "titan:Alfred",
             "description": "Build yourself an Express powered website wicked fast using a clean MVC architecture. Hook into events inside of Altair from your controllers for some fun cross-media fun!",
             "keywords":    ["webpage", "mvc", "web", "express", "mvc", "alfred"],

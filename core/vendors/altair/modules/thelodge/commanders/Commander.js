@@ -20,12 +20,9 @@ define(['altair/facades/declare',
 
             } else {
 
-                this.deferred = new this.Deferred();
-
-                this.parent.forge('models/Valet').then(function (valet) {
+                this.deferred = this.parent.forge('models/Valet').then(function (valet) {
                     this._valet = valet;
-                    this.deferred.resolve(this);
-                }.bind(this)).otherwise(this.hitch(this.deferred, 'reject'));
+                }.bind(this));
 
             }
 
@@ -54,7 +51,7 @@ define(['altair/facades/declare',
 
                     this.table({
                         headers: ['name', 'type', 'description', 'score'],
-                        colWidths: [20, 10, 60, 10],
+                        colWidths: [20, 10, 80, 10],
                         rows: _.map(results, function (row) {
                             return [ row.name, row.type, row.description, row.score];
                         })
@@ -65,7 +62,7 @@ define(['altair/facades/declare',
 
             }.bind(this)).then(function () {
 
-                return ['selectCommand']; //go back to select command
+                return ['selectCommand']; //go back to select command after searching
 
             });
 
@@ -129,6 +126,17 @@ define(['altair/facades/declare',
         },
 
         /**
+         * Updates everything i find in this package.
+         *
+         * @param options
+         */
+        updateFromPackage: function (options) {
+
+              console.log(options);
+
+        },
+
+        /**
          * To override the options for the destination select
          *
          * @param named
@@ -139,7 +147,7 @@ define(['altair/facades/declare',
             var schema = this.inherited(arguments);
 
             //the newModule command has some choices that need updating (destination dir)
-            if(schema && named === 'install') {
+            if(schema && (named === 'install' || named === 'package')) {
 
                 //get the 'paths' we have set in altair
                 var altair          = this.nexus('Altair'),
@@ -156,8 +164,6 @@ define(['altair/facades/declare',
 
             return schema;
         }
-
-
 
 
     });

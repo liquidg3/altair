@@ -115,7 +115,6 @@ define(['altair/facades/declare',
         install: function (name, destination, version) {
 
             var menuItem = this._kitchen.menuItemFor(name),
-                vcs,
                 dfd = new this.Deferred();
 
             if(!menuItem) {
@@ -139,6 +138,51 @@ define(['altair/facades/declare',
 
         kitchen: function () {
             return this._kitchen;
+        },
+
+        /**
+         * Pass me something with both dependencies and altairDependencies and I'll take care of them both
+         *
+         * @param package an object containing dependencies and altairDependencies (more than likely a package.json)
+         * @param destination
+         */
+        resolveDependencies: function (package, destination) {
+
+
+            var dependencies        = package.dependencies,
+                altairDependencies  = package.altairDependencies,
+                callbacks           = [],
+                installNode         = function () {
+                    return this.hitch(this._npm.updateMany(dependencies));
+                }.bind(this),
+                installAltair      = function () {
+                    return function () {
+
+                        //only the modules installer is supported as of now
+                        return this.parent.createInstaller('modules', {
+                            destination: destination,
+                            valet:       this
+                        }).then(function (installer) {
+
+                            return installer.execute(altairDependencies);
+
+                        });
+
+
+                    }.bind(this);
+                }.bind(this);
+
+
+            if(dependencies) {
+                callbacks.push(installNode);
+            }
+
+            if(altairDependencies) {
+                callbacks.push(installAltair);
+            }
+
+            return this.series(callbacks);
+
         }
 
     });
