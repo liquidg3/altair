@@ -31,7 +31,8 @@ require(['altair/Altair',
             homePackagePath = path.join(homePath, 'package.json');
 
         //configure our home install dir
-        process.env['NODE_PATH'] += path.sep + path.join(homePath, 'node_modules');
+        process.env['NODE_PATH'] += ":" + path.join(homePath, 'node_modules');
+     
         Module._initPaths(); // terrible
 
         //does our run dir exist? move this to better installer
@@ -107,7 +108,7 @@ require(['altair/Altair',
                 debug('-- starting altair in safe mode --');
             }
 
-            debug('creating cartridge foundry. adding ' +  config.cartridges.length + 'cartridges.');
+            debug('creating cartridge foundry. adding ' +  config.cartridges.length + ' cartridges.');
 
             foundry.build(config.cartridges).then(function (cartridges) {
 
