@@ -8,6 +8,9 @@
         "type": "git",
         "url":  "git@github.com:liquidg3/altair.git"
     },
+    "bin": {
+        "altair": "./bin/altair.js"
+    },
     "scripts":      {
         "test": "node altair --test"
     },
