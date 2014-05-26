@@ -286,7 +286,7 @@ define(['altair/facades/declare',
         onStateMachineDidEnterExecuteCommand: function (e) {
 
             var commander   = e.get('commander'),
-                command     = e.get('command'),
+                command     = commander.command(e.get('command')),
                 results,
                 schema      = commander.schemaForCommand(command),
                 d           = new this.Deferred(),

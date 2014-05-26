@@ -128,14 +128,14 @@ define(['altair/facades/declare',
         /**
          * Update schema at runtime
          *
-         * @param named
+         * @param command
          */
-        schemaForCommand: function (named) {
+        schemaForCommand: function (command) {
 
             var schema = this.inherited(arguments);
 
             //the newModule command has some choices that need updating (destination dir)
-            if(schema && named === 'newModule') {
+            if(schema && command.callback === 'newModule') {
 
                 //get the 'paths' we have set in altair
                 var altair          = this.nexus('Altair'),

@@ -149,15 +149,15 @@ define(['altair/facades/declare',
         /**
          * To override the options for the destination select
          *
-         * @param named
+         * @param command
          * @returns {*}
          */
-        schemaForCommand: function (named) {
+        schemaForCommand: function (command) {
 
             var schema = this.inherited(arguments);
 
             //the newModule command has some choices that need updating (destination dir)
-            if(schema && (named === 'install' || named === 'package')) {
+            if(schema && (command.callback === 'install' || command.callback === 'updateFromPackage')) {
 
                 //get the 'paths' we have set in altair
                 var altair          = this.nexus('Altair'),

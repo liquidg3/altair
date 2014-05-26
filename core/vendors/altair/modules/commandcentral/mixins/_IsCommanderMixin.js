@@ -100,9 +100,9 @@ define(['altair/facades/declare',
          *
          * @param named
          */
-        schemaForCommand: function (named) {
+        schemaForCommand: function (command) {
 
-            var schema = this.command(named).schema;
+            var schema = this.command(command).schema;
 
             if(schema) {
 
@@ -147,7 +147,7 @@ define(['altair/facades/declare',
             _.each(this.options.commands, function (desc, command) {
 
                 commands[command]           = _.clone(desc);
-                commands[command].command   = command;
+                commands[command].callback  = command;
 
                 //now aliases
                 if(ia) {
@@ -155,7 +155,7 @@ define(['altair/facades/declare',
                     _.each(desc.aliases || [], function (a) {
                         commands[a] = _.clone(desc);
                         commands[a].isAlias = true;
-                        commands[a].command   = command;
+                        commands[a].callback   = command;
                     });
 
                 }
@@ -173,7 +173,15 @@ define(['altair/facades/declare',
          * @returns {*}
          */
         command: function (named) {
-            return this.commands()[named];
+
+            if(_.isString(named)) {
+                return this.commands()[named];
+            } else if(_.has(named, 'callback')) {
+                return named;
+            } else {
+                return null;
+            }
+
         },
 
         /**
@@ -187,7 +195,7 @@ define(['altair/facades/declare',
 
             var c = this.command(named);
 
-            return this[c.command](options);
+            return this[c.callback](options);
 
         }
 
