@@ -10,7 +10,7 @@
             "website":      "https://github.com/liquidg3/liquidfire-dates",
             "repository":  {
                 "type": "git",
-                "url":  "git@github.com:liquidg3/liquidfire-dates.git"
+                "url":  "https://github.com/liquidg3/liquidfire-dates.git"
             }
         },
         {
@@ -20,7 +20,7 @@
             "website":      "https://github.com/liquidg3/liquidfire-images",
             "repository":  {
                 "type": "git",
-                "url":  "git@github.com:liquidg3/liquidfire-images.git"
+                "url":  "https://github.com/liquidg3/liquidfire-images.git"
             }
         },
         {
@@ -30,7 +30,7 @@
             "website":      "https://github.com/liquidg3/liquidfire-spectre",
             "repository":  {
                 "type": "git",
-                "url":  "git@github.com:liquidg3/liquidfire-spectre.git"
+                "url":  "https://github.com/liquidg3/liquidfire-spectre.git"
             }
         },
         {
@@ -40,7 +40,7 @@
             "website":      "https://github.com/liquidg3/liquidfire-forms",
             "repository":  {
                 "type": "git",
-                "url":  "git@github.com:liquidg3/liquidfire-forms.git"
+                "url":  "https://github.com/liquidg3/liquidfire-forms.git"
             }
         },
         {
@@ -50,7 +50,7 @@
             "website":      "https://github.com/liquidg3/liquidfire-apollo",
             "repository":  {
                 "type": "git",
-                "url":  "git@github.com:liquidg3/liquidfire-apollo.git"
+                "url":  "https://github.com/liquidg3/liquidfire-apollo.git"
             }
         },
         {
@@ -70,7 +70,7 @@
             "website":      "https://github.com/liquidg3/liquidfire-onyx",
             "repository":  {
                 "type": "git",
-                "url":  "git@github.com:liquidg3/liquidfire-onyx.git"
+                "url":  "https://github.com/liquidg3/liquidfire-onyx.git"
             }
         }
     ]
