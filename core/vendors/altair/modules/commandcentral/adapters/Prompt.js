@@ -81,6 +81,10 @@ define(['altair/facades/declare',
                         break;
                     case 'success':
                         str = chalk.bold.green(str);
+                        break;
+                    case 'progress':
+                        str = chalk.italic(str);
+                        break;
                     case 'h1':
                         str = chalk.bold(str);
                         break;

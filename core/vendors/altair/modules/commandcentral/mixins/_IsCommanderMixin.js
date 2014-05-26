@@ -74,6 +74,9 @@ define(['altair/facades/declare',
          */
         blur: function () {},
 
+        /**
+         * Haaaalp
+         */
         help: function () {
 
         },
@@ -99,7 +102,7 @@ define(['altair/facades/declare',
          */
         schemaForCommand: function (named) {
 
-            var schema = this.options.commands[named].schema;
+            var schema = this.command(named).schema;
 
             if(schema) {
 
@@ -117,13 +120,83 @@ define(['altair/facades/declare',
          * @returns {boolean}
          */
         hasCommand: function (named) {
-            return _.has(this.options.commands, named);
+            return _.has(this.commands(), named);
+        },
+
+        /**
+         * Description pulled from commanders.json -> description
+         * @returns {string}
+         */
+        description: function () {
+            return this.options.description;
+        },
+
+        /**
+         * Gives you all commands (including aliases) broken out in a helpful way.
+         *
+         * @param includeAliases
+         * @returns {{}}
+         */
+        commands: function (includeAliases) {
+
+            //get aliases
+            var commands = {},
+                ia = _.isBoolean(includeAliases) ? includeAliases : true;
+
+
+            _.each(this.options.commands, function (desc, command) {
+
+                commands[command]           = _.clone(desc);
+                commands[command].command   = command;
+
+                //now aliases
+                if(ia) {
+
+                    _.each(desc.aliases || [], function (a) {
+                        commands[a] = _.clone(desc);
+                        commands[a].isAlias = true;
+                        commands[a].command   = command;
+                    });
+
+                }
+
+            });
+
+            return commands;
+
+        },
+
+        /**
+         * Gets you details about a command by name.
+         *
+         * @param named
+         * @returns {*}
+         */
+        command: function (named) {
+            return this.commands()[named];
+        },
+
+        /**
+         * Execute a command by name (or alias, I don't care none)
+         *
+         * @param named
+         * @param options
+         * @returns {*}
+         */
+        executeCommand: function (named, options) {
+
+            var c = this.command(named);
+
+            return this[c.command](options);
+
         }
 
 
     });
-    var methods;
-    var sig;
+
+    //drop in some delegate methods (passthrough to adapter)
+    var methods,
+        sig;
 
 
     //mix certain adapter methods into the commander for easy access

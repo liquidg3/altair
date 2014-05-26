@@ -44,6 +44,16 @@
             }
         },
         {
+            "name":        "liquidfire:Apollo",
+            "description": "Makes rendering forms and handling submissions really easy. Introduces a form widget.",
+            "keywords":    ["orm", "documents", "entities"],
+            "website":      "https://github.com/liquidg3/liquidfire-apollo",
+            "repository":  {
+                "type": "git",
+                "url":  "git@github.com:liquidg3/liquidfire-apollo.git"
+            }
+        },
+        {
             "name":        "titan:Alfred",
             "description": "Build yourself an Express powered website wicked fast using a clean MVC architecture. Hook into events inside of Altair from your controllers for some fun cross-media fun!",
             "keywords":    ["webpage", "mvc", "web", "express", "mvc", "alfred"],

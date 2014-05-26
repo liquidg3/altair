@@ -69,7 +69,6 @@ define(['altair/facades/declare',
          */
         execute: function (name, version) {
 
-
             this.deferred = new this.Deferred();
 
             //new modules being installed
@@ -88,7 +87,7 @@ define(['altair/facades/declare',
 
                 this.deferred.progress({
                     message: 'preparing to move ' + Object.keys(modules).length + ' modules into place',
-                    menuItem: this._valet.kitchen().menuItemFor(name)
+                    menuItems: modules
                 });
 
 
@@ -132,7 +131,7 @@ define(['altair/facades/declare',
 
                     this.deferred.progress({
                         message: 'moving ' + module.name + ' to ' + module.destination,
-                        menuItem: this._valet.kitchen().menuItemFor(name)
+                        menuItems: modules
                     });
 
                     return this.promise(ncp.ncp, module.dir, module.destination).then(function () {
@@ -146,7 +145,7 @@ define(['altair/facades/declare',
 
                 this.deferred.progress({
                     message: 'running npm update',
-                    menuItem: this._valet.kitchen().menuItemFor(name)
+                    menuItems: modules
                 });
 
                 //npm update on the new stuff
@@ -161,8 +160,7 @@ define(['altair/facades/declare',
 
                 this.deferred.progress({
                     message: 'building modules',
-                    menuItems: modules,
-                    menuItem: this._valet.kitchen().menuItemFor(name)
+                    menuItems: modules
                 });
 
                 return this.build(_.map(modules, 'name'));
@@ -171,8 +169,7 @@ define(['altair/facades/declare',
 
                 this.deferred.progress({
                     message: 'injecting modules',
-                    modules: modules,
-                    menuItem: this._valet.kitchen().menuItemFor(name)
+                    modules: modules
                 });
 
                 return this.inject(modules);
@@ -268,7 +265,7 @@ define(['altair/facades/declare',
                 //clone the module to be installed
                 vcs.clone(options).then(this.hitch(_dfd, 'resolve'), function (err) {
 
-                    throw new Error('cloning ' + name + ' failed: ' + err.message);
+                    dfd.reject(new Error('cloning ' + name + ' failed: ' + err.message));
 
                 });
 
@@ -384,6 +381,10 @@ define(['altair/facades/declare',
 
             }.bind(this));
 
+        },
+
+        installedModules: function () {
+            return this._modulesInstalled;
         }
 
     });

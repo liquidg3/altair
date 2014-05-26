@@ -228,6 +228,28 @@ define(['dojo/_base/declare',
         },
 
         /**
+         * Apply a transformation strategy on many values at once (the keys of values must match a property in the schema)
+         *
+         * @param values
+         * @param optionsByProperty
+         * @param config
+         * @returns {*}
+         */
+        applyOnValues: function (values, optionsByProperty, config) {
+
+            var _obp     = optionsByProperty || {},
+                _config  = config || {};
+
+            _.each(values, function (value, name) {
+                values[name] = this.applyOnProperty(_config.methods || ['toJsValue'], name, value, _obp[name], _config);
+            }, this);
+
+
+            return values;
+
+        },
+
+        /**
          * Tries all the methods passed on the property propertyType, first one wins.
          *
          * Example:

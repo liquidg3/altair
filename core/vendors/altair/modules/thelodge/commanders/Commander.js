@@ -132,7 +132,17 @@ define(['altair/facades/declare',
          */
         updateFromPackage: function (options) {
 
-              console.log(options);
+            return this.parseConfig(options.packagePath).then(function (config) {
+
+                return this._valet.resolveDependencies(config, options.destination);
+
+            }.bind(this)).step(function (step) {
+
+                this.writeLine(step.message, 'progress');
+
+            }.bind(this)).then(function (modules) {
+                this.writeLine('successfully installed installed ' + modules.length + ' modules', 'success');
+            }.bind(this));
 
         },
 

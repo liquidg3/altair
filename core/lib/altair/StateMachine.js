@@ -112,7 +112,7 @@ define(['altair/facades/declare',
             var d               = new Deferred(),
                 state           = options && _.has(options, 'state') ? options.state : this.states[0], //optionally override starting state
                 lastResponse    = [state, {}],
-                fire            = hitch(this, function (i) {
+                fire            = hitch(this, function () {
 
                     if(!lastResponse[0]) {
                         d.resolve(lastResponse[1]);
@@ -195,7 +195,7 @@ define(['altair/facades/declare',
 
             this.state = state;//probably should wait until didEnterState before setting this, yeah?
 
-            var d           = new Deferred(),
+            var dfd         = new Deferred(),
                 eventData   = data,
                 events      = Object.keys(this._listenerMap),
                 lastResponse,
@@ -204,7 +204,7 @@ define(['altair/facades/declare',
 
                     //are we on the last event?
                     if(i === events.length) {
-                        d.resolve([nextState, lastResponse]);
+                        dfd.resolve([nextState, lastResponse]);
                         return;
                     }
 
@@ -222,8 +222,8 @@ define(['altair/facades/declare',
                         //someone stopped the state machine
                         if(!e.active) {
                             this.repeat = false;
-                            d.resolve([false, 'SIGABRT']);
-                            return;
+                            dfd.resolve([false, 'SIGABRT']);
+                            return false;
                         }
 
                         var results = e.resultsRaw();
@@ -239,7 +239,7 @@ define(['altair/facades/declare',
                                 var _state = lastResponse[0];
 
                                 if(_.indexOf(this.states, _state) === -1) {
-                                    d.reject(new Error(__('State "%s" does not exist on this state machine.', _state)));
+                                    dfd.reject(new Error(__('State "%s" does not exist on this state machine.', _state)));
                                 }
 
                                 nextState       = _state;
@@ -254,13 +254,15 @@ define(['altair/facades/declare',
 
                         fire(++i);
 
-                    })).otherwise(hitch(d, 'reject'));
+                    })).otherwise(function (err) {
+                        dfd.reject(err);
+                    });
 
                 });
 
             fire(0);
 
-            return d;
+            return dfd;
 
         }
 

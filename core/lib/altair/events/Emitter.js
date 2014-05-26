@@ -114,69 +114,66 @@ define(['altair/facades/declare',
 
             //build a list of results all listeners...
             var list = [],
-                toRemove = [],
                 _agent;
 
             if(this._listeners[event.name]) {
 
                 _agent = (options && options.agent) ? options.agent : this._eventListenerQueryAgent;
 
-                this._listeners[event.name].forEach(hitch(this, function (listener) {
+                _.each(this._listeners[event.name], hitch(this, function (listener) {
 
                     if(_agent.matches(event, listener.query)) {
 
-                        var def,
-                            results,
-                            hasValue = false;
+                        var dfd,
+                            results;
+
 
                         //if the listener was passed as the callback, or 2nd param, of on()
                         if(listener.callback) {
 
-                            results = listener.callback(event);
-
-                            if(results) {
+                            try {
+                                results = listener.callback(event);
                                 list.push(when(results));
-                                hasValue = true;
+                            } catch(e) {
+                                dfd = new BaseDeferred();
+                                dfd.reject(e);
+                                list.push(dfd);
+                                return false;
                             }
+
 
                         }
 
-                        //the cool cats are using derrrferrrrds
-                        def = new BaseDeferred();
-                        list.push(def);
 
-                        listener.deferred.resolve(event).then(function (i) {
+                        if(listener.deferred.hasWaiting()) {
 
-                            return function (results) {
+                            dfd = new BaseDeferred();
+                            list.push(dfd);
 
-                                results = results[0];
+                            listener.deferred.resolve(event).then(function (i) {
 
-                                if(results !== undefined && (!results.isInstanceOf || !results.isInstanceOf(Event))) {
-                                    when(results).then(function (results) {
+                                return function (results) {
 
-                                        //if we already have a value and this listener did not return anything, remove it
-                                        if(hasValue && !results) {
-                                            toRemove.push(i);
-                                        }
+                                    results = results[0];
 
-                                        def.resolve(results);
+                                    if(results !== undefined && (!results.isInstanceOf || !results.isInstanceOf(Event))) {
+                                        when(results).then(function (results) {
 
-                                    }).otherwise(hitch(def, 'reject'));
-                                } else {
+                                            dfd.resolve(results);
 
-                                    //do not pass this back if we already have at least 1 return value for this event
-                                    if(hasValue) {
-                                        toRemove.push(i);
+                                        }).otherwise(hitch(dfd, 'reject'));
+                                    } else {
+                                        dfd.resolve();
                                     }
-                                    def.resolve();
-                                }
 
-                            };
+                                };
 
-                            //should we stop looping after first error?
-                        }(list.length - 1)).otherwise(function (err) {
-                            def.reject(err);
-                        });
+                                //should we stop looping after first error?
+                            }(list.length - 1)).otherwise(function (err) {
+                                dfd.reject(err);
+                            });
+
+                        }
 
 
 
@@ -187,21 +184,8 @@ define(['altair/facades/declare',
             }
 
             return all(list).then(function (results) {
-
-                var cleaned = [];
-
-                results.forEach(function (value, index) {
-                    if(_.indexOf(toRemove, index) === -1) {
-                        cleaned.push(value);
-                    }
-
-                });
-
-                event.setResults(cleaned);
+                event.setResults(results);
                 return event;
-
-
-
             });
 
         },

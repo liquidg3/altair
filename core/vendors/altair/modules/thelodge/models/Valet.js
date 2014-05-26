@@ -114,8 +114,8 @@ define(['altair/facades/declare',
          */
         install: function (name, destination, version) {
 
-            var menuItem = this._kitchen.menuItemFor(name),
-                dfd = new this.Deferred();
+            var menuItem    = this._kitchen.menuItemFor(name),
+                dfd         = new this.Deferred();
 
             if(!menuItem) {
                 dfd.reject(new Error('could not install ' + name + ' because i could not find it.'));
@@ -143,7 +143,7 @@ define(['altair/facades/declare',
         /**
          * Pass me something with both dependencies and altairDependencies and I'll take care of them both
          *
-         * @param package an object containing dependencies and altairDependencies (more than likely a package.json)
+         * @param package an object containing dependencies and altairDependencies (more than likely a parsed package.json)
          * @param destination
          */
         resolveDependencies: function (package, destination) {
@@ -152,36 +152,39 @@ define(['altair/facades/declare',
             var dependencies        = package.dependencies,
                 altairDependencies  = package.altairDependencies,
                 callbacks           = [],
+                installer,
                 installNode         = function () {
                     return this.hitch(this._npm.updateMany(dependencies));
                 }.bind(this),
                 installAltair      = function () {
-                    return function () {
 
-                        //only the modules installer is supported as of now
-                        return this.parent.createInstaller('modules', {
-                            destination: destination,
-                            valet:       this
-                        }).then(function (installer) {
+                    //only the modules installer is supported as of now
+                    return this.parent.createInstaller('modules', {
+                        destination: destination,
+                        valet:       this
+                    }).then(function (_installer) {
+                        installer = _installer;
+                        return installer.execute(altairDependencies);
 
-                            return installer.execute(altairDependencies);
-
-                        });
+                    });
 
 
-                    }.bind(this);
                 }.bind(this);
 
-
-            if(dependencies) {
-                callbacks.push(installNode);
-            }
 
             if(altairDependencies) {
                 callbacks.push(installAltair);
             }
 
-            return this.series(callbacks);
+
+            //the modules installer will install node dependencies for us, so we only add it if it's not already there
+            if(dependencies && !altairDependencies) {
+                callbacks.push(installNode);
+            }
+
+            return this.series(callbacks).then(function (results) {
+                return results.shift(); //take the first (altairDependencies)
+            });
 
         }
 

@@ -77,10 +77,10 @@
                 "aliases":     ["package"],
                 "schema":      {
                     "properties": {
-                        "ptah":        {
+                        "packagePath":        {
                             "type":    "path",
                             "options": {
-                                "label":    "path",
+                                "label":    "package path",
                                 "required": true
                             }
                         },

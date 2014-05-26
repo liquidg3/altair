@@ -1,7 +1,9 @@
-define(['dojo/_base/declare',
+define(['altair/facades/declare',
+        'altair/plugins/node!path',
         './_Base'],
 
     function (declare,
+              pathUtil,
               _Base) {
 
 
@@ -33,6 +35,18 @@ define(['dojo/_base/declare',
             }
 
             return results;
+        },
+
+
+        fromCliValue: function (value, options, config) {
+
+            var resolved = value;
+
+            if(value[0] !== '/') {
+                resolved = pathUtil.join(process.cwd(), value);
+            }
+
+            return resolved;
         }
 
     });

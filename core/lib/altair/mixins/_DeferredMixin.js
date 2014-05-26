@@ -136,7 +136,7 @@ define(['altair/facades/declare',
                         this.when(callback()).then(function (r) {
                             results.push(r);
                             next();
-                        }).otherwise(this.hitch(dfd, 'reject'));
+                        }).step(this.hitch(dfd, 'progress')).otherwise(this.hitch(dfd, 'reject'));
 
                     }
 

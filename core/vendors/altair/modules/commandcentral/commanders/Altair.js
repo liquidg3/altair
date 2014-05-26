@@ -76,9 +76,6 @@ define(['altair/facades/declare',
                             run();
                         }
 
-
-
-
                     }));
                 });
 
@@ -142,7 +139,7 @@ define(['altair/facades/declare',
 
                 Object.keys(commanders).forEach(function (name) {
                     if (name !== 'altair') {
-                        choices[name]              = commanders[name].options.description;
+                        choices[name]              = commanders[name].description();
                     }
                 });
 
@@ -195,9 +192,11 @@ define(['altair/facades/declare',
         //try and ensure a commander is always passed to selectCommand state
         onStateMachineWillEnterSelectCommand: function (e) {
 
-            return mixin({
+            var output = mixin({
                 commander: this.activeCommander
             },e.data);
+
+            return output;
         },
 
         //select a command (assuming commander is set)
@@ -205,7 +204,7 @@ define(['altair/facades/declare',
 
             var commander   = e.get('commander'),
                 dfd         = new this.Deferred(),
-                commands    = commander.options.commands,
+                commands    = commander.commands(false),
                 options     = {},
                 aliases     = {},
                 longLabels  = this.adapter.longLabels;
@@ -275,7 +274,7 @@ define(['altair/facades/declare',
             },e.data);
 
             if(!output.commander || !output.commander.hasCommand(output.command)) {
-                throw new Error('Could not find command: "' + output.command + '" in commander: "' + e.commander + '"');
+                throw new Error('Could not find command: "' + output.command + '" in commander: "' + output.commander + '"');
             }
 
             return output;
@@ -292,7 +291,13 @@ define(['altair/facades/declare',
                 schema      = commander.schemaForCommand(command),
                 d           = new this.Deferred(),
                 done        = function (values) {
-                    results = commander[command](values);
+
+                    //clean up values using schema if one is supplied
+                    if(schema) {
+                        values = schema.applyOnValues(values, null, { methods: [ "fromCliValue", "toJsValue"]});
+                    }
+
+                    results = commander.executeCommand(command, values);
                     if (results && results.then) {
                         results.then(hitch(d, 'resolve')).otherwise(hitch(d, 'reject'));
                     } else {
