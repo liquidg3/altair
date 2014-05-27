@@ -1,11 +1,13 @@
 # Getting Started
 
 ###step 1
+``` bash
 npm install altair.io -g
+```
 
 ###step 2
 ``` bash
-$ node altair
+$ altair
 ```
 
 ###what's next?
