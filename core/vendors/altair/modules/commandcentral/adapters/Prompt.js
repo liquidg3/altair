@@ -324,7 +324,7 @@ define(['altair/facades/declare',
                         index = index + 1;
 
                         when(this[type](options.label, options.default, options)).then(function (answer) {
-                            values[name] = schema.applyOnProperty(['toJsValue'], name, answer, options);
+                            values[name] = schema.applyOnProperty(['fromCliValue', 'toJsValue'], name, answer, options);
                             next(index);
                         }).otherwise(hitch(d, 'reject'));
 

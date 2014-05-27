@@ -82,7 +82,13 @@ define(['altair/facades/declare',
 
                 return this.promise(this._npm, 'update');
 
-                }.bind(this));
+            }.bind(this)).then(function () {
+
+                this._npm.spinner.stop();
+
+                return true; //what to return?
+
+            }.bind(this));
 
 
         },
