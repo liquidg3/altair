@@ -60,7 +60,7 @@ define(['altair/facades/declare',
                 return tags.pop();
             }
 
-            return _.find(tags, function (tag) {
+            return _.find(tags.reverse(), function (tag) {
                 var tagVersion = tag.name.replace(/[^0-9\.]/, '');
                 return semver.satisfies(tagVersion, version);
             });
