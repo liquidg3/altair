@@ -11,7 +11,7 @@ define(['altair/facades/declare',
 
         _client:      null,
         _db:          null,
-        writeConcern: true,
+        writeConcern: 1,
         _operatorMap: {
             '$>':   '$gt',
             '$!=':  '$ne',
