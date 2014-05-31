@@ -236,6 +236,11 @@ define(['altair/facades/declare',
                 this.writeLine('|')
                     .writeLine('---------------');
 
+                //if there is only 1 choice, it becomes the default
+                if(Object.keys(choices).length === 1) {
+                    defaultValue = Object.keys(choices)[0];
+                }
+
             }
 
 

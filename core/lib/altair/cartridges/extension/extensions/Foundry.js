@@ -138,7 +138,6 @@ define(['altair/facades/declare',
                             d.reject(new Error('Could not create ' + type + ' at ' + path));
                         } else {
 
-
                             require([path], hitch(this, function (Child) {
 
                                 try {

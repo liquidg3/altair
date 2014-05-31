@@ -37,6 +37,10 @@ define(['altair/facades/declare',
                         throw new Error('resolvePath for "' + this.name + '" requires this.dir (dirname of absolute path to class file)');
                     }
 
+                    if(!path) {
+                        throw new Error('you need to pass a path to resolvePath()');
+                    }
+
                     //this is a nexus path
                     if(path.search(':') > 0) {
 

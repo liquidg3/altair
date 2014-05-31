@@ -312,6 +312,13 @@ define([
                         }
 
 
+                    } else {
+
+                        finished = true;
+                        if(newPromise.callback && fulfilled !== REJECTED) {
+                            newPromise.callback(results);
+                        }
+
                     }
 
 

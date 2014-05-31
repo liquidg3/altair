@@ -10,7 +10,7 @@ define(['altair/facades/declare',
         name:  'log',
         extend: function (Module) {
 
-            Module.extend({
+            Module.extendOnce({
                 toString: function () {
                     if(this.name) {
                         return '[object ' + this.name + ']';

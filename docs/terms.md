@@ -32,6 +32,9 @@ Below are terms, definitions, classes, etc. used throughout Altair.
 - Used to handle async operations
 - Example; d = new Deferred(cancelCallback); d.then(callback).otherwise(errCallback); d.resolve(dataPassedToCallbacks);
 
+## Promise
+- Created by the Deferred. Has same functionality as Deferred minus resolve() and progress() so you accident resolve it too far down the chain.
+
 ## Facades
 - Facades are AMD modules that behave like behave like functions
 - Always in a "facades" dir, e.g. altair/facades/declare

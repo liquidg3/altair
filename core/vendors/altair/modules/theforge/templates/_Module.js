@@ -17,16 +17,16 @@
  */
 
 define(['altair/facades/declare', //take a look at terms.md
-        'altair/facades/hitch',
         'altair/Lifecycle',
-        'altair/plugins/node!fs'
+        'altair/plugins/node!fs',
+        'altair/events/Emitter'
 ], function (declare,
-             hitch,
              Lifecycle,
-             fs) {
+             fs,
+             Emitter) {
 
     //by mixing in Lifecycle, we get startup(options), execute(options), and shutdown()
-    return declare([Lifecycle], {
+    return declare([Lifecycle, Emitter], {
 
 
         /**
@@ -39,7 +39,7 @@ define(['altair/facades/declare', //take a look at terms.md
         startup: function (options) {
 
             //use the options that were passed in, or the ones we have by default; avoid mutating options
-            var _options = options || this.options;
+            var _options = options || this.options || {};
 
             this.log('Executing startup() for %(full)s'); //this.log is one of many extensions you have available in Altair
 

@@ -88,7 +88,6 @@ define(['apollo/_HasSchemaMixin', 'dojo/declare'], function (_HasSchemaMixin, de
 
                 //you can also set()
 
-
             }
 
             this.set('restEndpoint', endpoint);
