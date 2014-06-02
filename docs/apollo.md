@@ -42,7 +42,7 @@ define(['altair/facades/declare',
 }
 ```
 
-## Adding a schema to your AMD module
+## Manually adding a schema to your AMD module
 If you are inside a sub component of your module (like and adapter) you can add a schema by doing 1 additional step.
 
 ```js
@@ -56,7 +56,7 @@ define(['altair/facades/declare',
               schema) {
 
      return declare([Lifecycle, _HasSchemaMixin], {
-         schema: schema //set the parsed schema config to this.schema
+         _schema: schema //set the parsed schema config to this.schema
      });
 
 });

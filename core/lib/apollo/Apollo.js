@@ -18,8 +18,13 @@ define(['dojo/_base/declare',
 
         propertyTypes: null,
 
-        constructor: function () {
+        constructor: function (propertyTypes) {
             this.propertyTypes = {};
+
+            if(propertyTypes) {
+                this.addTypes(propertyTypes);
+            }
+
         },
 
         /**

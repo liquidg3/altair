@@ -16,13 +16,101 @@ Apollo has several components:
 - Apollo is where you configure your available field types
 - Schema houses your structure, usually pulled from a .json file so it can be cached =)
 - FieldTypes facilitate data normalization (date, number, string, relationship, etc.) to and from environments
-- Renderers get attached to FieldTypes to allow them to be rendered as web forms (among other things)
 - Validators get attached to FieldTypes to do, you guessed it, validation.
 - _HasSchemaMixin is what actually gives any arbitrary object the ability to have a schema.
+- Schema data is extremely flexible is great for customizing properties for many use cases (forms, REST, etc.)
 
-** Apollo is totally decoupled from Altair **
+** Apollo is totally decoupled from Altair. If you are looking to use schemas in Altair, look [here](../../../docs/apollo.md). **
 
-_HasSchemaMixin
+##Step 1 - create Apollo
+The main Apollo object houses all your property types. It is also responsible for instantiating new Schemas (through the
+createSchema() factory). You will more than likely only have 1 Apollo instance per application.
+
+```js
+
+define(['apollo/Apollo',
+        'apollo/propertytypes/Str',
+        'apollo/propertytypes/Bool',
+        'apollo/propertytypes/Float',
+        'apollo/propertytypes/Int',
+        'apollo/propertytypes/Object',
+        'apollo/propertytypes/Primary',
+        'apollo/propertytypes/Select',
+        'apollo/propertytypes/Path'],
+    function (Apollo,
+              Str,
+              Bool,
+              Float,
+              Int,
+              Object,
+              Primary,
+              Select,
+              Path) {
+
+
+        //Create a new Apollo with all the field types you want to support
+        var apollo = new Apollo([
+            new Str(),
+            new Bool(),
+            new Float(),
+            new Int(),
+            new Object(),
+            new Primary(),
+            new Select(),
+            new Path()
+        ]);
+
+
+
+
+
+    });
+
+});
+```
+
+
+The Schema
+---
+Creating a Schema is
+
+```json
+{
+    "properties": {
+
+        "restEndpoint": {
+            "type": "url",
+            "options": {
+                "required":     true,
+                "label":        "Rest Endpoint",
+                "secure":       true,
+                "default":      "defaultvalue.com",
+                "description":  "Enter in the URL of wherever we're connecting."
+            }
+        },
+
+        "email": {
+            "type": "email",
+            "options": {
+                "required":     true,
+                "label":        "Email"
+            }
+        },
+
+        "password": {
+            "type": "password",
+            "options": {
+                "required":     true,
+                "label":        "Password"
+            }
+        }
+
+    }
+
+}
+```
+
+\_HasSchemaMixin
 ---
 
 The biggest switch that Apollo makes to the usual ORM paradigm is that it that we don't need to instantiate a particular
@@ -30,52 +118,13 @@ model or document class to get all our great functionality. The _HasSchemaMixin 
 schema. This is awesome for many reasons, but lets take a look at an example before letting our imagination run wild.
 
 
-The Schema
----
-By default, you will put this file in ./config/schema.json.
-
-
-    {
-        "properties": {
-
-            "restEndpoint": {
-                "type": "url",
-                "options": {
-                    "required":     true,
-                    "label":        "Rest Endpoint",
-                    "secure":       true,
-                    "default":      "defaultvalue.com",
-                    "description":  "Enter in the URL of wherever we're connecting."
-                }
-            },
-
-            "email": {
-                "type": "email",
-                "options": {
-                    "required":     true,
-                    "label":        "Email"
-                }
-            },
-
-            "password": {
-                "type": "password",
-                "options": {
-                    "required":     true,
-                    "label":        "Password"
-                }
-            }
-
-        }
-
-    }
-
-
 The Module
 ---
 This can be any AMD module.
 
 ``` js
-define(['apollo/_HasSchemaMixin', 'dojo/declare'], function (_HasSchemaMixin, declare) {
+define(['apollo/_HasSchemaMixin', 'dojo/declare'],
+    function (_HasSchemaMixin, declare) {
 
     return declare([_HasSchemaMixin], {
 
@@ -103,10 +152,7 @@ define(['apollo/_HasSchemaMixin', 'dojo/declare'], function (_HasSchemaMixin, de
         }
 
 
-
-
     });
-
 
 });
 ```
