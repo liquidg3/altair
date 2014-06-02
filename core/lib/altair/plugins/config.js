@@ -1,5 +1,5 @@
 /**
- * A pretty slick config loader. You can use it in a few ways. It can load a config by by path, it can accept an "env"
+ * A pretty slim config loader. You can use it in a few ways. It can load a config by by path, it can accept an "env"
  * option that allows you to setup different configs on a per-environment basis. Lastly, it supports $refs. These allow
  * you to keep your configs nice and thin =)
  *
