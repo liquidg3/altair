@@ -109,7 +109,7 @@ define(['altair/facades/declare',
 
 
             if(!this.key) {
-                throw new Error('You must set a key for your property type ( ' + this.key + ' ), something like "text" or "bool" or "email".', 'el');
+                throw new Error('You must set a key for your property type, something like "text" or "bool" or "email".', 'el');
             }
 
             this.options = _options;
@@ -121,17 +121,6 @@ define(['altair/facades/declare',
 
         },
 
-        /**
-         * Make your value database friendly
-         *
-         * @param value
-         * @param options
-         * @param config
-         * @returns {*}
-         */
-        toDatabaseValue: function (value, options, config) {
-            return value;
-        },
 
         /**
          * Will mixin my options into yours. That way you can always get the full set of options

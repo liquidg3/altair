@@ -30,10 +30,10 @@ define(['altair/facades/declare', //take a look at terms.md
 
 
         /**
-         * Startup is called after every module is instantiated, but you still can only rely on module's existing that
+         * Startup is called after every module is instantiated, you can only rely on modules existing that
          * you have specified in your package.json as altairDependencies.
          *
-         * @param options
+         * @param options passed through from altair.json
          * @returns {altair.Promise}
          */
         startup: function (options) {

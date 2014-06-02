@@ -272,7 +272,6 @@ define(['dojo/_base/declare',
                 c,
                 methodName;
 
-
             //normalize options
             options = lang.mixin({}, this.optionsFor(propertyName), options || {});
 
@@ -284,7 +283,7 @@ define(['dojo/_base/declare',
 
                 methodName = methodNames[c];
 
-                if (methodName in propertyType) {
+                if (_.isFunction(propertyType[methodName])) {
 
                     //make sure it's not an array when {{methodName}} is called
                     if (propertyType.makeValuesSingular) {

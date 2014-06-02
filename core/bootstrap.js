@@ -20,6 +20,16 @@ require(['altair/Altair',
          */
         debug.enable(config.debug);
         debug = debug('altair:Altair');
+        require.log = debug;
+
+
+        /**
+         * Let you configure how much error reporting to do.
+         *
+         * @type {number}
+         */
+        Error.stackTraceLimit = config.stackTraceLimit || Infinity;
+
 
         /**
          * NPM has zero dependency injection so it's easier to create a central place for altair to manage
@@ -68,17 +78,17 @@ require(['altair/Altair',
          * Mixin config from app/config/altair.json if there is one
          */
         require([
+            'altair/plugins/config!' + path.join(process.cwd(), 'altair.json') + '?env=' + global.env,
             'altair/plugins/config!' + homeConfigPath + '?env=' + global.env
-        ], function (_config) {
+        ], function (cwdConfig, homeConfig) {
 
             var paths = [],
                 altair,
                 foundry;
 
-            //one was found, mix it in
-            if (_config) {
-                config = mixin(config, _config);
-            }
+            //mixin, right wins
+            config = mixin(config, homeConfig, cwdConfig);
+
 
             /**
              * Bring in the packages from the config, this should point to at least app and core. Even though core is not

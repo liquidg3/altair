@@ -38,7 +38,6 @@ dojoConfig = {
         'config-tlmSiblingOfDojo': 0, //for relative path resolution from require() - setting to true breaks it, dojo.js 944
         'dojo-publish-privates': 1 // for haaalp!
     },
-
     packages: [
         {
             name:     'lodash',

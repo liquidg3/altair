@@ -2,6 +2,7 @@
     "default": {
 
         "debug": ".*",
+        "stackTraceLimit": 30,
         "paths": {
             "core": "core"
         },

@@ -142,7 +142,9 @@ define(['altair/facades/declare',
                     choices    = {};
 
                 altair.paths.forEach(function (path) {
-                    choices[path] = require.toUrl(path);
+                    if(path !== 'core') {
+                        choices[path] = require.toUrl(path);
+                    }
                 });
 
                 schema.setOptionFor('dir', 'choices', choices);

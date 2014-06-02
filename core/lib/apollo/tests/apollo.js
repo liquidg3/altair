@@ -6,16 +6,14 @@ define(['doh/runner',
         'apollo/propertytypes/Str',
         'apollo/propertytypes/Bool',
         'apollo/propertytypes/Float',
-        'apollo/propertytypes/Int',
-        'apollo/propertytypes/Date'],
+        'apollo/propertytypes/Int'],
 
     function (doh,
               Apollo,
               Str,
               Bool,
               Float,
-              Int,
-              Date) {
+              Int) {
 
     /**
      * Dependencies
@@ -24,22 +22,6 @@ define(['doh/runner',
         name: 'my test user schema',
         foo:  'bar',
         properties: {
-
-            dateInserted: {
-                type: 'date',
-                options: {
-                    label: 'Date Inserted',
-                    'default': 'now'
-                }
-            },
-
-            dateUpdated: {
-                type: 'date',
-                options: {
-                    label: 'Date Updated',
-                    'default': 'now'
-                }
-            },
 
             firstName: {
                 type: 'string',
@@ -61,8 +43,7 @@ define(['doh/runner',
         new Str(),
         new Bool(),
         new Float(),
-        new Int(),
-        new Date()
+        new Int()
     ];
 
     doh.register('apollo', [

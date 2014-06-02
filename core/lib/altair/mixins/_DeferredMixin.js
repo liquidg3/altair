@@ -86,7 +86,7 @@ define(['altair/facades/declare',
                 func = object;
                 object = null;
 
-                //shift function off
+                //shift function off the arguments to prep it for apply
                 args.shift();
 
             } else {
@@ -103,10 +103,18 @@ define(['altair/facades/declare',
             }
 
 
-            //push callback
+            //push callback to end of args
             args.push(cb);
 
-            func.apply(object, args);
+            try {
+
+                func.apply(object, args);
+
+            } catch (e) {
+
+                d.reject(e);
+
+            }
 
             return d;
 
