@@ -47,10 +47,10 @@ define(['altair/facades/declare',
             if(!a.name) {
                 a.name = name;
             }
-
-            a.parent    = parent;
-            a.dir       = dir;
-            a._nexus    = nexus;
+            a.name      = a.name || name;
+            a.parent    = a.parent || parent;
+            a.dir       = a.dir || dir;
+            a._nexus    = a._nexus || nexus;
 
             return config.extensions.execute(a, config.type);
 
@@ -157,7 +157,7 @@ define(['altair/facades/declare',
                                 return a;
                             }
 
-                        }))
+                        }));
 
                     }.bind(this)).otherwise(function (err) {
 

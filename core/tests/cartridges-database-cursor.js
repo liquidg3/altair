@@ -32,7 +32,6 @@ define(['doh/runner',
         ];
 
 
-
         doh.register('cartridges-database-cursor', {
 
             "test counting on cursor": function (t) {

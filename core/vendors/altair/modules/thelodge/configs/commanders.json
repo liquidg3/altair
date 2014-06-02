@@ -77,11 +77,12 @@
                 "aliases":     ["package"],
                 "schema":      {
                     "properties": {
-                        "packagePath":        {
+                        "packagePath": {
                             "type":    "path",
                             "options": {
-                                "label":    "package path",
-                                "required": true
+                                "label":       "package location",
+                                "description": "The path to any .json file with an altairDependencies and/or dependencies block.",
+                                "required":    true
                             }
                         },
                         "destination": {
