@@ -67,12 +67,21 @@ define(['altair/facades/declare',
         /**
          * When this Commander is focused
          */
-        focus: function () {},
+        focus: function () {
+            if( this.styles && this.adapter ){
+                this.adapter.addStyles( this.name, this.styles );
+
+            }
+
+        },
 
         /**
          * When blurred (another commander is being focused
          */
-        blur: function () {},
+        blur: function () {
+            this.adapter.removeStyles( this.name );
+
+        },
 
         /**
          * Haaaalp
