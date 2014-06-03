@@ -134,80 +134,80 @@ define(['altair/facades/declare',
                     //path from newly resolved classname
                     path = (parent) ? parent.resolvePath(className + '.js') : this.resolvePath(className + '.js');
 
-                    //require path
-                    dfd = promise(require, [path]).then(function (Child) {
+//                    //require path
+//                    dfd = promise(require, [path]).then(function (Child) {
+//
+//                        var a       = foundry(Child, options, {
+//                            parent:     parent,
+//                            name:       name,
+//                            nexus:      (parent) ? parent._nexus : this._nexus,
+//                            type:       type,
+//                            dir:        pathUtil.join(pathUtil.dirname(path), '/'),
+//                            defaultFoundry: defaultFoundry,
+//                            extensions: this.nexus('cartridges/Extension')
+//                        });
+//
+//                        //extend this object
+//                        return when(a).then(hitch(this, function (a) {
+//
+//                            //startup the module
+//                            if(a.startup && shouldStartup) {
+//                                return a.startup(options)
+//                            } else {
+//                                return a;
+//                            }
+//
+//                        }));
+//
+//                    }.bind(this)).otherwise(function (err) {
+//
+//                        this.log(err);
+//
+//                    }.bind(this));
 
-                        var a       = foundry(Child, options, {
-                            parent:     parent,
-                            name:       name,
-                            nexus:      (parent) ? parent._nexus : this._nexus,
-                            type:       type,
-                            dir:        pathUtil.join(pathUtil.dirname(path), '/'),
-                            defaultFoundry: defaultFoundry,
-                            extensions: this.nexus('cartridges/Extension')
-                        });
+                    //does this file exist? you have to do this with require() because it will error and never call the callback =(
+                    fs.exists(path, hitch(this, function (exists) {
 
-                        //extend this object
-                        return when(a).then(hitch(this, function (a) {
+                        if(!exists) {
+                            dfd.reject(new Error('Could not create ' + type + ' at ' + path));
+                        } else {
 
-                            //startup the module
-                            if(a.startup && shouldStartup) {
-                                return a.startup(options)
-                            } else {
-                                return a;
-                            }
+                            require([path], hitch(this, function (Child) {
 
-                        }));
+                                try {
 
-                    }.bind(this)).otherwise(function (err) {
+                                    var a       = foundry(Child, options, {
+                                        parent:     parent,
+                                        name:       name,
+                                        nexus:      (parent) ? parent._nexus : this._nexus,
+                                        type:       type,
+                                        dir:        pathUtil.join(pathUtil.dirname(path), '/'),
+                                        defaultFoundry: defaultFoundry,
+                                        extensions: this.nexus('cartridges/Extension')
+                                    });
 
-                        this.log(err);
+                                    //extend this object
+                                    when(a).then(hitch(this, function (a) {
 
-                    }.bind(this));
+                                        //startup the module
+                                        if(a.startup && shouldStartup) {
+                                            a.startup(options).then(hitch(dfd, 'resolve')).otherwise(hitch(dfd, 'reject'));
+                                        } else {
+                                            dfd.resolve(a);
+                                        }
 
-//                    //does this file exist?
-//                    fs.exists(path, hitch(this, function (exists) {
-//
-//                        if(!exists) {
-//                            dfd.reject(new Error('Could not create ' + type + ' at ' + path));
-//                        } else {
-//
-//                            require([path], hitch(this, function (Child) {
-//
-//                                try {
-//
-//                                    var a       = foundry(Child, options, {
-//                                        parent:     parent,
-//                                        name:       name,
-//                                        nexus:      (parent) ? parent._nexus : this._nexus,
-//                                        type:       type,
-//                                        dir:        pathUtil.join(pathUtil.dirname(path), '/'),
-//                                        defaultFoundry: defaultFoundry,
-//                                        extensions: this.nexus('cartridges/Extension')
-//                                    });
-//
-//                                    //extend this object
-//                                    when(a).then(hitch(this, function (a) {
-//
-//                                        //startup the module
-//                                        if(a.startup && shouldStartup) {
-//                                            a.startup(options).then(hitch(dfd, 'resolve')).otherwise(hitch(dfd, 'reject'));
-//                                        } else {
-//                                            dfd.resolve(a);
-//                                        }
-//
-//                                    })).otherwise(hitch(dfd, 'reject'));
-//
-//
-//                                } catch(err) {
-//                                    dfd.reject(err);
-//                                }
-//                            }));
-//
-//
-//                        }
-//
-//                    }));
+                                    })).otherwise(hitch(dfd, 'reject'));
+
+
+                                } catch(err) {
+                                    dfd.reject(err);
+                                }
+                            }));
+
+
+                        }
+
+                    }));
 
                     return dfd;
 
