@@ -68,7 +68,7 @@ define(['altair/facades/declare',
          * When this Commander is focused
          */
         focus: function () {
-            if( this.styles && this.adapter() ){
+            if( this.styles && this.adapter ){
                 this.adapter.addStyles( this.name, this.styles );
 
             }
