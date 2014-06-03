@@ -73,7 +73,7 @@ define(['altair/facades/declare',
              */
             execute: function () {
 
-                if(this.get('autostart')) {
+                if(this.adapter() && this.get('autostart')) {
 
                     this.refreshCommanders().then(this.hitch(function (commanders) {
                         this.focus(commanders.altair);

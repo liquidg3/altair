@@ -49,7 +49,7 @@ define(['altair/facades/declare',
          *
          * @returns {*}
          */
-        startup: function () {
+        startup: function ( options ) {
 
             this.on('register-adapters').then(this.hitch('registerAdapters'));
 
@@ -93,7 +93,8 @@ define(['altair/facades/declare',
                     d = this.values.selectedAdapters[0];
 
                 } else {
-                    d.reject(new Error('No ' + this.name + ' adapter selected.'));
+                    d = null;
+
                 }
 
             }
