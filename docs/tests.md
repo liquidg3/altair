@@ -148,7 +148,7 @@ described below.
 to `process.cwd()`, so `tests/{{vendorname}}/modules` will resolve to `/absolute/path/to/your/vendors/modules`.
 
 2 . **Boot the runtime**. Now that your configuration is ready, you can use the boot and config to start Altair. You do that
-by requiring the `core/tests/support/boot` script and your config.
+by requiring the `core/tests/support/boot` script and your newly created `altair/plugins/config!./cartridges` config.
 
 ```js
 define(['altair/test',
@@ -242,3 +242,4 @@ define(['altair/test',
 
     });
 ```
+And that pretty much covers it. You are now ready to build tests for all your everything!
