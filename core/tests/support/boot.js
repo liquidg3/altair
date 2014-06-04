@@ -40,6 +40,7 @@ define(['altair/Deferred',
 
         };
 
+        //same as above but gives you an instance of the altair nexus
         boot.nexus = function (cartridges, altairOptions) {
 
             return boot(cartridges, altairOptions).then(function (altair) {

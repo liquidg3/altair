@@ -20,6 +20,7 @@ define(['altair/facades/declare',
         'altair/Deferred',
         'altair/facades/all',
         'altair/facades/mixin',
+        'altair/facades/hitch',
         './nexusresolvers/Modules',
         'altair/Lifecycle',
         'altair/plugins/node!path',
@@ -33,6 +34,7 @@ define(['altair/facades/declare',
               Deferred,
               all,
               mixin,
+              hitch,
               ModulesResolver,
               Lifecycle,
               pathUtil,
@@ -65,8 +67,8 @@ define(['altair/facades/declare',
             var _options = options || this.options,
                 list;
 
-            //pass through altair if it was passed or fallback to altair's paths
-            this.paths = _options.paths || [];
+            //The paths we will look for modules (altair paths mixed in during buildOne())
+            this.paths = _.map(_options.paths || [], hitch(require, 'toUrl'));
 
             /**
              * Was a foundry passed? if not, lets create one

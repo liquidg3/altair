@@ -45,7 +45,7 @@ function (declare,
          */
         build: function (options) {
 
-            var list            = options.map(hitch(this, 'forgeOne'));
+            var list            = _.map(options, hitch(this, 'forgeOne'));
 
             return all(list);
         },

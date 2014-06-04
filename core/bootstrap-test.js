@@ -11,21 +11,31 @@ require(['altair/TestRunner',
         throw new Error('Could not read core/config/test');
     }
 
+
+    debug.enable(config.debug || ".*");
+    debug = debug('altair:test');
+
     //setup app if local config exists
     if(appConfig) {
 
+        debug('app detected. mixing in configuration');
         extend(config, appConfig.tests);
 
         require({
             paths: {
-                   app: process.cwd()
+                app: process.cwd()
             }
         });
 
     }
 
-    debug.enable(config.debug || ".*");
-    debug = debug('altair:test');
+    //make tests the cwd so "tests" can be used by testers (app is only available when a local altair.json is found).
+    require({
+        paths: {
+            tests: process.cwd()
+        }
+    });
+
 
     var runner = new TestRunner();
 
