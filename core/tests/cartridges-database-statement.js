@@ -1,4 +1,4 @@
-define(['doh/runner',
+define(['altair/test',
     'lodash',
     'altair/cartridges/database/Statement'],
 

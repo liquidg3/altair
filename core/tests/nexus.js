@@ -1,8 +1,8 @@
-define(['doh/runner',
+define(['altair/test',
         'altair/cartridges/nexus/Nexus',
         'dojo/_base/lang',
         'altair/Altair'],
-                            function (doh,
+                            function (test,
                                       Nexus,
                                       lang,
                                       Altair) {
@@ -34,7 +34,7 @@ define(['doh/runner',
 
     };
 
-    doh.register('nexus', [
+    test.register('nexus', [
 
         /**
          * Make sure we can construct a Nexus instance
@@ -44,7 +44,7 @@ define(['doh/runner',
             var altair  = new Altair(),
                 nexus   = new Nexus(altair);
 
-            doh.assertTrue(!!nexus);
+            test.assertTrue(!!nexus);
 
         },
 
@@ -58,7 +58,7 @@ define(['doh/runner',
 
             nexus.set('foo', 'bar');
 
-            doh.assertEqual('bar', nexus.resolve('foo'), 'Basic Nexus set/get failed.');
+            test.assertEqual('bar', nexus.resolve('foo'), 'Basic Nexus set/get failed.');
 
         },
 
@@ -72,7 +72,7 @@ define(['doh/runner',
 
             nexus.addResolver(resolver);
 
-            doh.assertEqual('bar', nexus.resolve('test'), 'Resolver failed to resolve.');
+            test.assertEqual('bar', nexus.resolve('test'), 'Resolver failed to resolve.');
 
         }
     ]);

@@ -1,8 +1,8 @@
-define(['doh/runner',
+define(['altair/test',
         'require',
         'core/tests/support/boot'
 ],
-    function (doh,
+    function (test,
               require,
               boot) {
 
@@ -40,7 +40,7 @@ define(['doh/runner',
             }
         ];
 
-        doh.register('extensions-foundry', {
+        test.register('extensions-foundry', {
 
 
             "test forging mock sub component": function (t) {

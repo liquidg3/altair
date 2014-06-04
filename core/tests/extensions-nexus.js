@@ -2,10 +2,10 @@
  * Allow us to run some nexus tests
  */
 
-define(['doh/runner',
+define(['altair/test',
     'core/tests/support/boot'],
 
-    function (doh,
+    function (test,
               boot) {
 
         var cartridges = [
@@ -39,7 +39,7 @@ define(['doh/runner',
 
 
 
-        doh.register('extensions-nexus', {
+        test.register('extensions-nexus', {
 
             /**
              * Test some nexus 101, get module by name

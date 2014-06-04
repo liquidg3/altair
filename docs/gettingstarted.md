@@ -12,6 +12,7 @@ $ altair
 
 ###what's next?
 
+* create your first [app](app.md)
 * get familiar with the [terms](terms.md)
 * download modules at [the lodge](../core/vendors/altair/modules/thelodge/README.md)
 * build a module at [the forge](firstmodule.md)

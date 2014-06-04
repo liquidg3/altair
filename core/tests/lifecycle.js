@@ -1,8 +1,8 @@
-define(['doh/runner',
+define(['altair/test',
         'altair/Lifecycle',
         'altair/Deferred',
         'altair/plugins/node!fs'],
-    function (doh,
+    function (test,
               Lifecycle,
               Deferred,
               fs) {
@@ -15,7 +15,7 @@ define(['doh/runner',
     };
 
 
-    doh.register('lifecycle', {
+    test.register('lifecycle', {
 
         "test constructing lifecycle": function (t) {
 

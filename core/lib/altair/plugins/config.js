@@ -50,6 +50,7 @@ define(['require',
         'dojo/_base/lang',
         'altair/Deferred',
         'altair/plugins/node!debug',
+        'altair/plugins/node!config-extend',
         'dojo/DeferredList'],
 
     function (require,
@@ -59,6 +60,7 @@ define(['require',
               lang,
               Deferred,
               debug,
+              extend,
               DeferredList) {
 
 
@@ -167,7 +169,7 @@ define(['require',
             if(env) {
 
                 var base = config.default || {};
-                lang.mixin(base, config[env] || {});
+                extend(base, config[env] || {});
 
                 config = base;
 

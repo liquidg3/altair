@@ -232,12 +232,11 @@ define(['altair/facades/declare',
             //track where this module is going (will be used in for the final install)
             this._modulesInstalled[name] = menuItem;
 
-
             //create tmp dir for clone
             this._createTmpDir(tmpDir).then(function () {
 
                 dfd.progress({
-                    message: 'starting install for ' + name,
+                    message: 'starting install for ' + name + '@' + (version) ? version : 'master',
                     menuItem: menuItem,
                     type: menuItem.repository.type
                 });
@@ -297,6 +296,7 @@ define(['altair/facades/declare',
                          var match = this.nexus(name),
                              dependencyMenuItem;
 
+                         //@TODO version match check
                          if(match) {
 
                              dfd.progress({
@@ -314,7 +314,7 @@ define(['altair/facades/declare',
                              }
 
                              dfd.progress({
-                                 message: 'installing ' + name,
+                                 message: 'installing ' + name + '@' + (version) ? version : 'master',
                                  menuItem: menuItem
                              });
 

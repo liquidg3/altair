@@ -2,10 +2,10 @@
  * Allow us to run some nexus tests
  */
 
-define(['doh/runner',
+define(['altair/test',
     'core/tests/support/boot'],
 
-    function (doh,
+    function (test,
               boot) {
 
         var cartridges = [
@@ -32,7 +32,7 @@ define(['doh/runner',
         ];
 
 
-        doh.register('cartridges-database-cursor', {
+        test.register('cartridges-database-cursor', {
 
             "test counting on cursor": function (t) {
 

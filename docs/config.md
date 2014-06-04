@@ -6,18 +6,29 @@ You can configure Altair in 2 ways.
 
 #environments
 Since configs support environments, the top level of your config will be a key for each of those environments (as many
-as you care to support). Each environment inherits from "default."
+as you care to support). Each environment inherits from "default." The merging is done by [node-extend](https://www.npmjs.org/package/config-extend).
 
 ```json
 
 "default": {
     "name": "Default Name",
-    "description": "Some defaults"
+    "description": "Some defaults",
+    "nestedOptions": {
+        "foo": "bar",
+        "hello": "world",
+        "anArray": ["one", "two", "three"]
+    }
 },
 "dev": {
-    "name": "Dev Name"
+    "name": "Dev Name",
+    "nestedOptions": {
+        "foo": "taco"
+    }
 },
 "prod": {
+    "nestedOptions": {
+        "anArray": ["overridden"]
+    }
 }
 ```
 
@@ -29,6 +40,7 @@ this.promise(require, ['altair/plugins/config!path/to/config.json?env=dev']).the
 
     console.log(config.name === 'Dev Name'); //prints true
     console.log(config.description === 'Some defaults'); //prints true
+    console.log(config.nestedOptions.foo === 'taco'); //prints true
 
 });
 
@@ -37,6 +49,7 @@ require(['altair/plugins/config!path/to/config.json?env=prod'], function (config
 
     console.log(config.name === 'Default Name'); //prints true
     console.log(config.description === 'Some defaults'); //prints true
+    console.log(config.nestedOptions.anArray === ['overridden']); //prints true (arrays DO NOT merge)
 
 });
 ```

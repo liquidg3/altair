@@ -1,4 +1,4 @@
-define(['doh/runner',
+define(['altair/test',
         'altair/cartridges/module/Module',
         'altair/cartridges/extension/Extension',
         'altair/cartridges/nexus/Nexus',
@@ -7,7 +7,7 @@ define(['doh/runner',
         'altair/facades/declare',
         'altair/facades/hitch',
         'altair/cartridges/module/Foundry'],
-                            function (doh,
+                            function (test,
                                       ModuleCartridge,
                                       ExtensionCartridge,
                                       NexusCartridge,
@@ -23,21 +23,21 @@ define(['doh/runner',
     var testPaths       = ['core/tests/modules/altair'],
         altairTestPaths = ['core'];
 
-    doh.register('cartridges-modules', {
+    test.register('cartridges-modules', {
 
         "test instantiating module cartridge": function () {
 
             var altair      = new Altair(),
                 cartridge   = new ModuleCartridge(altair);
 
-            doh.assertTrue(!!cartridge, 'Instantiating cartridge failed.');
+            test.assertTrue(!!cartridge, 'Instantiating cartridge failed.');
 
         },
 
         "test creating module cartridge": function () {
 
             var foundry = new Foundry();
-            doh.assertTrue(!!foundry, 'Foundry instantiation failed');
+            test.assertTrue(!!foundry, 'Foundry instantiation failed');
 
         },
 
@@ -119,8 +119,8 @@ define(['doh/runner',
 
             return altair.addCartridge(cartridge).then(function () {
 
-                doh.assertEqual(1, cartridge.modules.length, 'Module creation failed through Altair and the ModuleCartridge');
-                doh.assertEqual('altair:Mock', cartridge.modules[0].name, 'Module name was not set.');
+                test.assertEqual(1, cartridge.modules.length, 'Module creation failed through Altair and the ModuleCartridge');
+                test.assertEqual('altair:Mock', cartridge.modules[0].name, 'Module name was not set.');
 
             });
 
@@ -128,7 +128,7 @@ define(['doh/runner',
 
         "test to make sure the mock2 class can access the mock1/mixin/_MockMixin": function () {
 
-            var deferred    = new doh.Deferred(),
+            var deferred    = new test.Deferred(),
                 altair      = new Altair(),
                 cartridge   = new ModuleCartridge(altair, {
                     paths: testPaths,
@@ -140,7 +140,7 @@ define(['doh/runner',
 
                 var mock2 = cartridge.module('altair:Mock2');
 
-                doh.assertTrue(mock2.mockMixinSuccess, '_MockMixin failed to mixin');
+                test.assertTrue(mock2.mockMixinSuccess, '_MockMixin failed to mixin');
 
             })).otherwise(hitch(deferred, 'reject'));
 

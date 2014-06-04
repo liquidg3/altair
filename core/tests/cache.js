@@ -1,4 +1,4 @@
-define(['doh/runner', 'altair/cartridges/cache/Cache', 'altair/cartridges/cache/plugins/Mock', 'dojo/_base/lang', 'altair/Altair'], function (doh, Cache, Mock, lang, Altair) {
+define(['altair/test', 'altair/cartridges/cache/Cache', 'altair/cartridges/cache/plugins/Mock', 'dojo/_base/lang', 'altair/Altair'], function (test, Cache, Mock, lang, Altair) {
 
     /**
      * Dependencies
@@ -12,7 +12,7 @@ define(['doh/runner', 'altair/cartridges/cache/Cache', 'altair/cartridges/cache/
         }
     };
 
-    doh.register('cache', [
+    test.register('cache', [
 
         /**
          * Make sure we can construct a cache cartridge instance
@@ -22,7 +22,7 @@ define(['doh/runner', 'altair/cartridges/cache/Cache', 'altair/cartridges/cache/
             var altair      = new Altair(),
                 cartridge   = new Cache(altair, {});
 
-            doh.assertTrue(!!cartridge, 'Basic instantiation failed.');
+            test.assertTrue(!!cartridge, 'Basic instantiation failed.');
 
         },
 
@@ -31,14 +31,14 @@ define(['doh/runner', 'altair/cartridges/cache/Cache', 'altair/cartridges/cache/
          */
         function () {
 
-            var deferred    = new doh.Deferred(),
+            var deferred    = new test.Deferred(),
                 altair      = new Altair(),
                 cartridge   = new Cache(altair, {});
 
             cartridge.startup(options).then(deferred.getTestCallback(lang.hitch(this, function () {
 
-                doh.assertEqual('bar', cartridge.plugin.options.foo, 'Cache plugin options not set');
-                doh.assertTrue(cartridge.plugin.startedUp, 'Cache plugin not started');
+                test.assertEqual('bar', cartridge.plugin.options.foo, 'Cache plugin options not set');
+                test.assertTrue(cartridge.plugin.startedUp, 'Cache plugin not started');
 
 
             })));

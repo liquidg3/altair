@@ -1,15 +1,15 @@
-define(['doh/runner',
+define(['altair/test',
         'altair/facades/declare',
         'altair/Deferred',
         'altair/facades/hitch'
     ],
-    function (doh,
+    function (test,
               declare,
               Deferred,
               hitch) {
 
 
-        doh.register('declare', {
+        test.register('declare', {
 
             "test extendOnce": function (t) {
 

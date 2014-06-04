@@ -1,16 +1,16 @@
-define(['doh/runner',
+define(['altair/test',
         'altair/StateMachine',
         'altair/Deferred',
         'altair/facades/hitch'
     ],
-    function (doh,
+    function (test,
               StateMachine,
               Deferred,
               hitch) {
 
         "use strict";
 
-        doh.register('statemachine', {
+        test.register('statemachine', {
 
 
             "test starting state": function (t) {

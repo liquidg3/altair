@@ -3,28 +3,28 @@
  * powerful in practice. It actually makes events fun again!
  *
  */
-define(['doh/runner',
+define(['altair/test',
         'altair/events/Emitter',
         'altair/events/QueryAgent',
         'altair/events/Event',
         'altair/Deferred',
         'altair/facades/hitch'],
 
-    function (doh,
+    function (test,
               Emitter,
               QueryAgent,
               Event,
               Deferred,
               hitch) {
 
-    doh.register('events', [
+    test.register('events', [
 
         /**
          * Make sure we can construct an Emitter instance
          */
         function () {
             var emitter = new Emitter();
-            doh.assertTrue(!!emitter, 'Instantiating emitter failed');
+            test.assertTrue(!!emitter, 'Instantiating emitter failed');
 
         },
 
@@ -35,9 +35,9 @@ define(['doh/runner',
 
             var event = new Event('taco', { foo:'bar' });
 
-            doh.assertTrue(!!event, 'Instantiating event failed');
-            doh.assertEqual('taco', event.name, 'Event name failed to set');
-            doh.assertEqual('bar', event.get('foo'), 'Event data failed to set');
+            test.assertTrue(!!event, 'Instantiating event failed');
+            test.assertEqual('taco', event.name, 'Event name failed to set');
+            test.assertEqual('bar', event.get('foo'), 'Event data failed to set');
 
         },
 
@@ -57,15 +57,15 @@ define(['doh/runner',
                     }
                 });
 
-            doh.assertTrue(agent.matches(event, {
+            test.assertTrue(agent.matches(event, {
                 'foo': 'bar'
             }), 'Basic query agent match failed.');
 
-            doh.assertTrue(agent.matches(event, {
+            test.assertTrue(agent.matches(event, {
                 'cheesy.gordida': 'crunch'
             }), 'Nested object query fail');
 
-            doh.assertTrue(agent.matches(event, {
+            test.assertTrue(agent.matches(event, {
                 'cheesy.crunch.tacos': 'Ay Caramba'
             }), 'Triple Nested object query fail');
 
@@ -94,7 +94,7 @@ define(['doh/runner',
             }), 'Basic query agent match failed.');
 
             // @TODO Implement dot syntax for getters > QueryAgents.js
-//            doh.assertTrue(agent.matches(event, {
+//            test.assertTrue(agent.matches(event, {
 //                'cheesy.gordita': 'crunch'
 //            }), 'Getter double query agent match failed.');
 
@@ -164,7 +164,7 @@ define(['doh/runner',
             var emitter     = new Emitter();
 
             emitter.on('dummy-event-4', { foo: 'bar' }).then(function (e) {
-                doh.assertEqual('dummy-event-4', e.name, 'Event was not created as expected.');
+                test.assertEqual('dummy-event-4', e.name, 'Event was not created as expected.');
             });
 
             return emitter.emit('dummy-event-4', {
@@ -184,7 +184,7 @@ define(['doh/runner',
 
             emitter.on('dummy-event-4', { foo: 'bar' }).then(function (e) {
 
-                doh.assertEqual('dummy-event-4', e.name, 'Event was not created as expected.');
+                test.assertEqual('dummy-event-4', e.name, 'Event was not created as expected.');
 
             });
 
@@ -257,7 +257,7 @@ define(['doh/runner',
 
 
             var emitter     = new Emitter(),
-                deferred    = new doh.Deferred();
+                deferred    = new test.Deferred();
 
             emitter.on('dummy-event-4').then(function (e) {
                 return 1;
@@ -305,7 +305,7 @@ define(['doh/runner',
 
 
             var emitter     = new Emitter(),
-                deferred    = new doh.Deferred();
+                deferred    = new test.Deferred();
 
             emitter.on('dummy-event-4', function (e) {
                 return 'yay';

@@ -1,14 +1,14 @@
-define(['doh/runner',
+define(['altair/test',
     'altair/Deferred',
     'dojo/Deferred',
     'altair/facades/hitch'],
 
-    function (doh,
+    function (test,
               Deferred,
               DojoDeferred,
               hitch) {
 
-        doh.register('deferred', [
+        test.register('deferred', [
 
             /**
              * Ensure that calling then().then(), the 2nd then() waits

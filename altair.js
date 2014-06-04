@@ -68,7 +68,8 @@ dojoConfig = {
     map:      {
         "*": {
             'dojo/_base/declare': 'altair/facades/declare',
-            'dojo/Deferred':      'altair/Deferred'
+            'dojo/Deferred':      'altair/Deferred',
+            'altair/test':        'doh/runner'
         }
 
     },

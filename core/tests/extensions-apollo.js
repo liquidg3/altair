@@ -1,6 +1,6 @@
-define(['doh/runner',
+define(['altair/test',
         'core/tests/support/boot'],
-    function (doh,
+    function (test,
               boot) {
 
         var cartridges = [
@@ -42,7 +42,7 @@ define(['doh/runner',
 
 
 
-        doh.register('extensions-apollo', {
+        test.register('extensions-apollo', {
 
              "test apollo schema on module": function (t) {
 

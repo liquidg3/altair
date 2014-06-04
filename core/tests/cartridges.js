@@ -1,4 +1,4 @@
-define(['doh/runner',
+define(['altair/test',
         'altair/Altair',
         'altair/Deferred',
         'altair/cartridges/Foundry',

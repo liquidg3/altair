@@ -1,4 +1,4 @@
- define(['doh/runner',
+ define(['altair/test',
         'altair/facades/declare',
         'altair/cartridges/extension/Extension',
         'altair/Altair',
@@ -7,7 +7,7 @@
         'altair/Deferred',
         'core/tests/support/boot'
     ],
-    function (doh,
+    function (test,
               declare,
               ExtensionCartridge,
               Altair,
@@ -69,7 +69,7 @@
         };
 
 
-        doh.register('extensions', {
+        test.register('extensions', {
 
             "test paths extension": function (t) {
 
@@ -109,7 +109,7 @@
 
                     var dummy1 = new Dummy1();
 
-                    doh.assertTrue(!!dummy1.parseConfig, 'parseConfig not added to subComponent by Config plugin.');
+                    test.assertTrue(!!dummy1.parseConfig, 'parseConfig not added to subComponent by Config plugin.');
 
                     return dummy1.parseConfig('configs/env?env=dev').then(function (config) {
                         t.is('bar2', config.foo, 'Config loading failed');

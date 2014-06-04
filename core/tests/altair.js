@@ -2,9 +2,9 @@
  * Very simple altair and cartridge tests. Since all Altair does is load cartridges, we really
  * don't need to test much. =)
  */
-define(['doh/runner', 'altair/Altair', 'altair/Deferred'], function (doh, Altair, Deferred) {
+define(['altair/test', 'altair/Altair', 'altair/Deferred'], function (test, Altair, Deferred) {
 
-    doh.register('altair', [
+    test.register('altair', [
         /**
          * Make sure we can construct an Altair instance
          */
@@ -64,7 +64,7 @@ define(['doh/runner', 'altair/Altair', 'altair/Deferred'], function (doh, Altair
          */
         function (t) {
 
-            var deferred = new doh.Deferred();
+            var deferred = new test.Deferred();
 
             require(['altair/plugins/config!core/tests/configs/env.json?env=dev'], deferred.getTestCallback(function (config) {
 
@@ -82,7 +82,7 @@ define(['doh/runner', 'altair/Altair', 'altair/Deferred'], function (doh, Altair
          */
         function (t) {
 
-            var deferred = new doh.Deferred();
+            var deferred = new test.Deferred();
 
             require(['altair/plugins/config!core/tests/configs/ref.json'], function (config) {
 

@@ -1,18 +1,18 @@
-define(['doh/runner',
+define(['altair/test',
         'altair/cartridges/module/Foundry',
         'altair/Altair',
         'altair/events/Emitter',
         'altair/Deferred',
         'altair/facades/hitch'],
 
-    function (doh,
+    function (test,
               Foundry,
               Altair,
               Emitter,
               Deferred,
               hitch) {
 
-    doh.register('cartridges-module-foundry', {
+    test.register('cartridges-module-foundry', {
 
         "test can construct a cache cartridge instance": function (t) {
 

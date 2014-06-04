@@ -3,17 +3,17 @@
  * times and each then() will be fired. Then, the results are collected and returned to anyone who has called
  * resolve().then(function (results) {...})
  */
-define(['doh/runner',
+define(['altair/test',
         'altair/events/Deferred',
         'dojo/Deferred',
         'altair/facades/hitch'],
 
-    function (doh,
+    function (test,
               Deferred,
               DojoDeferred,
               hitch) {
 
-        doh.register('deferred', [
+        test.register('deferred', [
 
             /**
              * Ensure resolve.then() waits for any deferred returned by any previous then(), chaining then(),s using deferreds

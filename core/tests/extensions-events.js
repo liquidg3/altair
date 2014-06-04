@@ -1,19 +1,16 @@
 /**
  * These tests are for the events plugin for the module cartridge. It requires the Nexus and Module cartridges, as well
  * as a bunch of plugins I can't think of off the top of my head. see code below:
- *
- * Note, these tests are not setup 100% for doh, but more to how I *think* they should be setup (with deferred's and
- * promises notifying the pass/fail status of async requests)
  */
 
-define(['doh/runner',
+define(['altair/test',
         'altair/cartridges/Foundry',
         'altair/facades/hitch',
         'altair/Altair',
         'dojo/Deferred',
         'core/tests/support/boot'
     ],
-    function (doh, CartridgeFoundry, hitch, Altair, Deferred, boot) {
+    function (test, CartridgeFoundry, hitch, Altair, Deferred, boot) {
 
 
         var cartridges = [
@@ -41,7 +38,7 @@ define(['doh/runner',
             }
         ];
 
-        doh.register('extensions-events', {
+        test.register('extensions-events', {
 
              "promise based events with nexus resolver": function (t) {
 
