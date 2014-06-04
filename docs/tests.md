@@ -96,7 +96,7 @@ the `core/tests/support/boot` script is here to help.
 
 In order to get Altair booting, you have to do 2 things:
 
-\1. **Create `./tests/cartridges.json`**. This can be anything you want, just remember it for later. Make sure to drop the
+1. **Create `./tests/cartridges.json`**. This can be anything you want, just remember it for later. Make sure to drop the
 following into it (notice the {{placeholders}}):
 
 ```json
@@ -147,7 +147,7 @@ described below.
 - `module.options.paths`: Paths to look for modules. This folder is usually called `modules`. The `tests` path is set
 to `process.cwd()`, so `tests/{{vendorname}}/modules` will resolve to `/absolute/path/to/your/vendors/modules`.
 
-\2. **Boot the runtime**. Now that your configuration is ready, you can use the boot and config to start Altair. You do that
+2. **Boot the runtime**. Now that your configuration is ready, you can use the boot and config to start Altair. You do that
 by requiring the `core/tests/support/boot` script and your config.
 
 ```js
