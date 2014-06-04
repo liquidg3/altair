@@ -71,7 +71,7 @@ what tests to load. The current `altair/TestRunner` only supports a basic glob s
 }
 
 ```
-##Test config API
+###Test config API
 Here is what you can currently pass under the `tests` block of your `altair.json`.
 
 - `debug`: A string passed to [visionmedia/debug](https://github.com/visionmedia/debug) to allow you to better control what is logged.
