@@ -24,6 +24,10 @@ define(['dojo/_base/declare',
 
             toViewValue: function (value, options, config) {
                 return options.choices[value] || value;
+            },
+
+            toDatabaseValue: function (value, options, config) {
+                return this.toJsValue(value, options, config);
             }
 
 

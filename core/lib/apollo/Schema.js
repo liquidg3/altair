@@ -321,7 +321,7 @@ define(['dojo/_base/declare',
             }
 
 
-            throw 'Could not find methods (' + methodNames.join(', ') + ') for property named ' + propertyName + '.';
+            throw 'Could not find methods (' + methodNames.join(', ') + ') for property named "' + propertyName + '" of type "' + type + '".';
 
         },
 

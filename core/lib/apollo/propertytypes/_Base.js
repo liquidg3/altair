@@ -176,6 +176,10 @@ define(['altair/facades/declare',
             }
 
             return value;
+        },
+
+        toDatabaseValue: function (value, options, config) {
+            throw new Error('"' + this.key + '" property type must implement toDatabaseValue.');
         }
 
     });

@@ -115,7 +115,7 @@ require(['altair/Altair',
              * needed, this array is also used to build our lookup paths in altair. Altair only needs their names since
              * dojo's define() and require() can map it to their paths.
              */
-            config.paths.home = home; //always have a home path
+            config.paths.home = homePath; //always have a home path
             require({
                 paths: config.paths
             });

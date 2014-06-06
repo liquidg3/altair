@@ -57,7 +57,7 @@ define(['altair/Deferred',
 
         };
 
-
+        //very basic default configuration of cartridges. not really used for anything but reference.
         boot.cartridges = [
             {
                 path: 'altair/cartridges/nexus/Nexus',

@@ -47,6 +47,10 @@ define(['altair/facades/declare',
             }
 
             return resolved;
+        },
+
+        toDatabaseValue: function (value, options, config) {
+            return this.toJsValue(value, options, config);
         }
 
     });
