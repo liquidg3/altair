@@ -97,7 +97,7 @@ require(['altair/Altair',
 
             } else {
 
-                debug('loading config @ ' + homeConfig);
+                debug('loading config @ ' + homeConfigPath);
                 config = mixin(config, homeConfig);
 
             }
