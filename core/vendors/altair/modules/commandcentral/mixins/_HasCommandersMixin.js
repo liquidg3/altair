@@ -14,6 +14,8 @@ define(['altair/facades/declare',
 
     return declare([Lifecycle, Emitter], {
 
+        _commanderCache: null,
+
         startup: function () {
 
             this.on('altair:CommandCentral::register-commanders').then(this.hitch('registerCommanders'));
@@ -29,7 +31,11 @@ define(['altair/facades/declare',
         */
         registerCommanders: function (e) {
 
-            return this.parseConfig('configs/commanders').then(this.hitch(function (commanders) {
+            if(this._commanderCache) {
+                return this._commanderCache;
+            }
+
+            this._commanderCache = this.parseConfig('configs/commanders').then(this.hitch(function (commanders) {
 
                 var _commanders = {};
 
@@ -56,6 +62,8 @@ define(['altair/facades/declare',
                 return all(_commanders);
 
             }));
+
+            return this._commanderCache;
 
         }
 
