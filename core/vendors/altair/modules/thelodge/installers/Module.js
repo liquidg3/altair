@@ -1,3 +1,4 @@
+//this is my first package manager, so it is not 100% dependency injection ready
 define(['altair/facades/declare',
         'altair/facades/hitch',
         'altair/facades/when',
@@ -33,7 +34,7 @@ define(['altair/facades/declare',
         _valet: null,
         _tmpDir: '', //where can i work with temporary files?
         _modulesInstalled: null,
-        _destination: '', //where we are installing (core, app, local, defined in ./altair/.altair.json)
+        _destination: '', //where we are installing (core, app, local, defined in ./altair/altair.json)
 
 
         /**
@@ -90,7 +91,6 @@ define(['altair/facades/declare',
                     menuItems: modules
                 });
 
-
                 //resolve and clean out all destination dirs
                 return this.all(_.map(modules, function (module) {
 
@@ -108,7 +108,6 @@ define(['altair/facades/declare',
 
 
                 }, this));
-
 
 
             }.bind(this)).then(this.hitch(function (modules) {
@@ -219,7 +218,8 @@ define(['altair/facades/declare',
             var menuItem    = _.clone(this._valet.kitchen().menuItemFor(name)), //this can be called recursively so we need to lookup menu items from the kitchen for each thing to be installed
                 tmpDir      = pathUtil.join(this._tmpDir, name.replace(':', '-').toLowerCase()),
                 configPath  = pathUtil.join(tmpDir, 'package.json'),
-                dfd         = new this.Deferred();
+                dfd         = new this.Deferred(),
+                ver         = version || 'master';
 
             //if we have already installed this guy, don't do it again
             if(this._modulesInstalled[name]) {
@@ -235,8 +235,9 @@ define(['altair/facades/declare',
             //create tmp dir for clone
             this._createTmpDir(tmpDir).then(function () {
 
+
                 dfd.progress({
-                    message: 'starting install for ' + name + '@' + (version) ? version : 'master',
+                    message: 'starting install for ' + name + ' @' + ver,
                     menuItem: menuItem,
                     type: menuItem.repository.type
                 });
@@ -261,8 +262,8 @@ define(['altair/facades/declare',
                     options.version         = version;
                 }
 
-                //clone the module to be installed
-                vcs.clone(options).then(this.hitch(_dfd, 'resolve'), function (err) {
+                //clone the module to be installed, pass progress to main deferred
+                vcs.clone(options).step(this.hitch(dfd, 'progress')).then(this.hitch(_dfd, 'resolve'), function (err) {
 
                     dfd.reject(new Error('cloning ' + name + ' failed: ' + err.message));
 
@@ -313,10 +314,6 @@ define(['altair/facades/declare',
                                  throw new Error('Could not resolve ' + name + '. Make sure you have it loaded in the kitchen at the lodge.');
                              }
 
-                             dfd.progress({
-                                 message: 'installing ' + name + '@' + (version) ? version : 'master',
-                                 menuItem: menuItem
-                             });
 
                             return this.download(name, version).step(this.hitch(dfd, 'progress'));
 

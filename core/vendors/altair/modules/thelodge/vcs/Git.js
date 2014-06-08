@@ -2,14 +2,12 @@ define(['altair/facades/declare',
         './_Base',
         'altair/plugins/node!gift',
         'lodash',
-        'altair/plugins/node!semver',
-        'altair/facades/hitch'
+        'altair/plugins/node!semver'
 ], function (declare,
              _Base,
              gift,
              _,
-             semver,
-             hitch) {
+             semver) {
 
     "use strict";
     return declare([_Base], {
@@ -24,13 +22,12 @@ define(['altair/facades/declare',
 
             var d           = new this.Deferred(),
                 url         = options.url,
-                destination = options.destination,
-                version     = options.version;
+                destination = options.destination;
 
             //something is missing
             if(!url || !destination) {
 
-                d.reject(new Error('You must pass both a url (git@github.com/liquidfire/Jarvis) and a destination (app)'));
+                d.reject(new Error('You must pass both a url (git@github.com/liquidfire/Jarvis) and a destination (app) in order to clone a repository.'));
 
             } else {
 
@@ -55,12 +52,20 @@ define(['altair/facades/declare',
          */
         _firstTagThatMatchesVersion: function(tags, version) {
 
+            var sorted = tags.sort(function (a, b) {
+
+                var a1 = a.name.replace(/[^0-9\.]/, ''),
+                    b1 = b.name.replace(/[^0-9\.]/, '');
+
+                return semver.compare(a1, b1);
+            });
+
             //if no version is passed, use the last one
             if(!version) {
-                return tags.pop();
+                return sorted.pop();
             }
 
-            return _.find(tags.reverse(), function (tag) {
+            return _.find(sorted.reverse(), function (tag) {
                 var tagVersion = tag.name.replace(/[^0-9\.]/, '');
                 return semver.satisfies(tagVersion, version);
             });
@@ -74,7 +79,7 @@ define(['altair/facades/declare',
          */
         update: function (options) {
 
-            var d           = new this.Deferred(),
+            var dfd         = new this.Deferred(),
                 destination = options.destination,
                 version     = options.version,
                 repo;
@@ -82,7 +87,7 @@ define(['altair/facades/declare',
 
             if(!destination) {
 
-                d.reject(new Error('You must pass both a url (git@github.com/liquidfire/Jarvis) and a destination (app)'));
+                dfd.reject(new Error('You must pass both a url (git@github.com/liquidfire/Jarvis) and a destination (app)'));
 
             } else {
 
@@ -91,7 +96,11 @@ define(['altair/facades/declare',
                 //find a version
                 if(version) {
 
-                    d = this.promise(repo, 'tags').then(function (tags) {
+                    dfd.progress({
+                        message: 'Searching tags for version ' + version
+                    });
+
+                    this.promise(repo, 'tags').then(function (tags) {
 
                         var tag = this._firstTagThatMatchesVersion(tags, version);
 
@@ -99,7 +108,11 @@ define(['altair/facades/declare',
                             throw new Error('Could not find version ' + version);
                         }
 
-                        return this.promise(repo, 'checkout', tag.commit.id);
+                        dfd.progress({
+                            message: 'Found tag ' + tag.name + '. Beginning checkout.'
+                        });
+
+                        return this.promise(repo, 'checkout', tag.commit.id).then(this.hitch(dfd, 'resolve')).otherwise(this.hitch(dfd, 'reject'));
 
 
                     }.bind(this));
@@ -108,15 +121,17 @@ define(['altair/facades/declare',
                 //no version, just master then
                 else {
 
-                    d = this.promise(repo, 'checkout', 'master').then(function () {
-                        return destination;
+                    dfd.progress({
+                        message: 'Checking out master.'
                     });
+
+                    this.promise(repo, 'checkout', 'master').then(this.hitch(dfd, 'resolve')).otherwise(this.hitch(dfd, 'reject'));
 
                 }
 
             }
 
-            return d;
+            return dfd;
 
         }
 
