@@ -235,7 +235,6 @@ define(['altair/facades/declare',
             //create tmp dir for clone
             this._createTmpDir(tmpDir).then(function () {
 
-
                 dfd.progress({
                     message: 'starting install for ' + name + ' @' + ver,
                     menuItem: menuItem,

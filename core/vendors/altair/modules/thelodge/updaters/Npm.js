@@ -94,12 +94,12 @@ define(['altair/facades/declare',
         },
 
         /**
-         * NPM update for anything at at the passed path (expects there to be a ./package.json in there)
+         * Pass a block of dependencies { "modulename":"version", "modulename": "version" }
          *
          * @param path
          */
-        update: function (name, options) {
-            return this.updateMany([name], options);
+        update: function (dependencies, options) {
+            return this.updateMany([dependencies], options);
         },
 
 

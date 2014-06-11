@@ -81,7 +81,6 @@ define(['altair/facades/declare',
 
                 return this.all(packages);
 
-
             }.bind(this)).then(function (packages) {
 
                 var dependencies = _.map(packages, 'dependencies');
@@ -154,7 +153,7 @@ define(['altair/facades/declare',
                 callbacks           = [],
                 installer,
                 installNode         = function () {
-                    return this.hitch(this._npm.updateMany(dependencies));
+                    return this._npm.update(dependencies);
                 }.bind(this),
                 installAltair      = function () {
 
@@ -177,8 +176,7 @@ define(['altair/facades/declare',
             }
 
 
-            //the modules installer will install node dependencies for us, so we only add it if it's not already there
-            if(dependencies && !altairDependencies) {
+            if(dependencies) {
                 callbacks.push(installNode);
             }
 
