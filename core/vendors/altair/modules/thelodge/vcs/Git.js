@@ -54,10 +54,11 @@ define(['altair/facades/declare',
 
             var sorted = tags.sort(function (a, b) {
 
-                var a1 = a.name.replace(/[^0-9\.]/, ''),
-                    b1 = b.name.replace(/[^0-9\.]/, '');
+                var a1 = semver.clean(a.name),
+                    b1 = semver.clean(b.name);
 
                 return semver.compare(a1, b1);
+
             });
 
             //if no version is passed, use the last one
@@ -66,7 +67,7 @@ define(['altair/facades/declare',
             }
 
             return _.find(sorted.reverse(), function (tag) {
-                var tagVersion = tag.name.replace(/[^0-9\.]/, '');
+                var tagVersion = semver.clean(tag.name);
                 return semver.satisfies(tagVersion, version);
             });
 

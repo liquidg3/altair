@@ -1,12 +1,8 @@
 //this is my first package manager, so it is not 100% dependency injection ready
 define(['altair/facades/declare',
-        'altair/facades/hitch',
-        'altair/facades/when',
-        'altair/facades/all',
         'altair/plugins/node!path',
         'altair/plugins/node!mkdirp',
         'altair/plugins/node!os',
-        'altair/plugins/node!fs',
         'altair/plugins/node!ncp',
         'altair/plugins/node!rimraf',
         'altair/plugins/node!semver',
@@ -14,13 +10,9 @@ define(['altair/facades/declare',
         'lodash',
         '../mixins/_IsInstallerMixin'
 ], function (declare,
-             hitch,
-             when,
-             all,
              pathUtil,
              mkdirp,
              os,
-             fs,
              ncp,
              rimraf,
              semver,
@@ -48,7 +40,7 @@ define(['altair/facades/declare',
             var _options = options || this.options || {};
 
             //start in over
-            this._tmpDir        = _options.tmpDir || os.tmpdir();
+            this._tmpDir        = _options.tmpDir || (os.tmpdir || os.tmpDir)();
             this._destination   = _options.destination;
             this._valet         = _options.valet;
 
@@ -91,12 +83,37 @@ define(['altair/facades/declare',
                     menuItems: modules
                 });
 
-                //resolve and clean out all destination dirs
+                //resolve and clean out all destination dirs (unless I see that the source has been modified, in that case i'll skip it)
                 return this.all(_.map(modules, function (module) {
 
-                    var dfd = new this.Deferred(),
+                    var dfd         = new this.Deferred(),
                         cartridge   = this.nexus('cartridges/Module'),
-                        foundry     = cartridge.foundry;
+                        foundry     = cartridge.foundry,
+                        match       = this.nexus(module.name);
+
+                    //is this module already installed?
+                    if(match) {
+
+                        //lets make sure this is really an update
+                        if(semver.gt(module.package.version, match.package.version)) {
+
+                            //now make sure the vcs doesn't detect a change
+
+
+                        } else {
+
+                            this.deferred.progress({
+                                level: 'warning',
+                                message: module.name + ' skipped because it is currently installed at the same or newer version. Delete this module and install again.'
+                            });
+
+                        }
+
+
+                    } else {
+
+                    }
+
 
                     module.destination  = require.toUrl(pathUtil.join(this._destination, foundry.moduleNameToPath(module.name)));
 
@@ -105,7 +122,6 @@ define(['altair/facades/declare',
                     });
 
                     return dfd;
-
 
                 }, this));
 
@@ -129,6 +145,7 @@ define(['altair/facades/declare',
                 return this.all(_.map(modules, function (module) {
 
                     this.deferred.progress({
+                        level: 'notice',
                         message: 'moving ' + module.name + ' to ' + module.destination,
                         menuItems: modules
                     });
@@ -143,6 +160,7 @@ define(['altair/facades/declare',
             })).then(this.hitch(function (modules) {
 
                 this.deferred.progress({
+                    level: 'notice',
                     message: 'running npm update',
                     menuItems: modules
                 });
@@ -158,6 +176,7 @@ define(['altair/facades/declare',
             })).then(function (modules) {
 
                 this.deferred.progress({
+                    level: 'notice',
                     message: 'building modules',
                     menuItems: modules
                 });
@@ -167,6 +186,7 @@ define(['altair/facades/declare',
             }.bind(this)).then(function (modules) {
 
                 this.deferred.progress({
+                    level: 'notice',
                     message: 'injecting modules',
                     modules: modules
                 });
@@ -283,6 +303,9 @@ define(['altair/facades/declare',
 
                 var loading = {};
 
+                //drop in the parsed package to the menu item
+                menuItem.package = package;
+
                  if(package.altairDependencies) {
 
                      dfd.progress({
@@ -292,15 +315,13 @@ define(['altair/facades/declare',
 
                      loading.altair = this.all(_.map(package.altairDependencies, function (version, name) {
 
+                         var dependencyMenuItem;
 
-                         var match = this.nexus(name),
-                             dependencyMenuItem;
-
-                         //@TODO version match check
-                         if(match) {
+                         //skip core modules
+                         if(name.search('altair:') === 0) {
 
                              dfd.progress({
-                                 message: 'skipping ' + name + ', already installed',
+                                 message: 'skipping core module dependency: ' + name,
                                  menuItem: menuItem
                              });
 
