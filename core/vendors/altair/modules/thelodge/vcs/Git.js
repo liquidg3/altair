@@ -134,6 +134,22 @@ define(['altair/facades/declare',
 
             return dfd;
 
+        },
+
+        status: function (options) {
+
+            var destination = options.destination,
+                repo;
+
+            if(!destination) {
+                throw new Error('You must pass a "destination" to git.status({}).');
+            }
+
+            repo = gift(destination);
+
+            return this.promise(repo, 'status')
+
+
         }
 
     });

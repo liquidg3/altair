@@ -12,7 +12,12 @@ define(['altair/facades/declare',
 
         update: function (options) {
             throw new Error('You must implement update(options)');
+        },
+
+        status: function (options) {
+            throw new Error('You must implement status(options)');
         }
+
     });
 
 });

@@ -252,6 +252,18 @@ define(['altair/facades/declare',
             return this.inherited(arguments);
         },
 
+        //mixin altair paths with any custom ones set on the cartridges
+        allPaths: function () {
+
+            return this.altair.paths.map(function ( path ) {
+
+                //find all module dirs inside of this path
+                return require.toUrl(pathUtil.join(path, 'vendors', '*', 'modules'));
+
+            }).concat(this.paths);
+
+        },
+
         /**
          * Build modules by name against our local path settings using the foundry
          *
@@ -261,15 +273,8 @@ define(['altair/facades/declare',
          */
         buildModules: function (modules, options) {
 
-            //mixin altair paths with any custom ones set on the cartridges
-            var paths = this.altair.paths.map(function ( path ) {
 
-                //find all module dirs inside of this path
-                return require.toUrl(pathUtil.join(path, 'vendors', '*', 'modules'));
-
-            }).concat(this.paths);
-
-            return glob(paths).then(this.hitch(function (paths) {
+            return glob(this.allPaths()).then(this.hitch(function (paths) {
 
                 return this.foundry.build(mixin({
                     eventDelegate: this,

@@ -153,11 +153,10 @@ define(['require',
                 var results = fs.readFileSync(id);
                 config = JSON.parse(results);
 
-//                config = require.nodeRequire(id);
-
             } catch (e) {
 
                 if(e instanceof SyntaxError) {
+                    debug('error reading ' + id);
                     debug(e);
                 }
 
