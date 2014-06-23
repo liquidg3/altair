@@ -64,7 +64,7 @@ define(['altair/facades/declare',
 
             var _options        = options || {},
                 l,
-                mainPackagePath = _options.destination || pathUtil.join(this.nexus('Altair').home, 'package.json');
+                mainPackagePath = _options.destination || this.nexus('Altair').resolvePath('package.json');
 
             //passthrough to copy dependencies
             _options.destination = mainPackagePath;
@@ -115,7 +115,7 @@ define(['altair/facades/declare',
 
             var results         = new this.Deferred(),
                 _options        = options || {},
-                mainPackagePath = _options.destination || pathUtil.join(this.nexus('Altair').home, 'package.json');
+                mainPackagePath = _options.destination || this.nexus('Altair').resolvePath('package.json');
 
             //we only support dependencies as an object { name: version }
             if(_.isArray(dependencies)) {

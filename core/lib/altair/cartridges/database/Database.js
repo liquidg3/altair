@@ -25,7 +25,7 @@ define(['altair/facades/declare',
             //mix in any adapter types passed (see this.adapterTypes)
             this._connections = [];
 
-            if(_options.connections) {
+            if(_options.connections && !this.altair.safeMode) {
 
                 _.each(_options.connections, function (connection) {
 
@@ -69,7 +69,7 @@ define(['altair/facades/declare',
         create: function (tableName, options) {
 
             return new this.Statement(this.hitch(function (statement, options) {
-                return this.defaultConnection().create(tableName, statement.clause('set'), options);
+                return this.defaultConnectionOrThrow().create(tableName, statement.clause('set'), options);
             }));
 
         },
@@ -83,7 +83,7 @@ define(['altair/facades/declare',
         createMany: function (tableName, options) {
 
             return new this.Statement(this.hitch(function (statement, options) {
-                return this.defaultConnection().createMany(tableName, statement.clause('set'), options);
+                return this.defaultConnectionOrThrow().createMany(tableName, statement.clause('set'), options);
 
             }));
 
@@ -99,7 +99,7 @@ define(['altair/facades/declare',
         'delete': function (tableName) {
 
             return new this.Statement(this.hitch(function (statement, options) {
-                return this.defaultConnection().delete(tableName, statement, options);
+                return this.defaultConnectionOrThrow().delete(tableName, statement, options);
 
             }));
 

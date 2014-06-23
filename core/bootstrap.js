@@ -115,7 +115,10 @@ require(['altair/Altair',
              *
              * @type {string}
              */
-            process.env['NODE_PATH'] += ":" + path.join(app  || homePath, 'node_modules');
+            process.env['NODE_PATH'] += ":" + path.join(homePath, 'node_modules');
+            if(app) { //app (which is cwd if altair.json exists) is a valid lookup spot
+                process.env['NODE_PATH'] += ":" + path.join(app, 'node_modules');
+            }
             Module._initPaths(); // terrible
 
             /**

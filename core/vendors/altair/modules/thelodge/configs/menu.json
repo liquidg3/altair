@@ -24,6 +24,16 @@
             }
         },
         {
+            "name":        "liquidfire:Files",
+            "description": "Greate for file uploadings and moving",
+            "keywords":    ["files", "multipart"],
+            "website":      "https://github.com/liquidg3/liquidfire-files",
+            "repository":  {
+                "type": "git",
+                "url":  "https://github.com/liquidg3/liquidfire-files.git"
+            }
+        },
+        {
             "name":        "liquidfire:Spectre",
             "description": "Entities are everywhere! this.entity('User').find().where('firstName', '!=', 'taco')",
             "keywords":    ["entities", "documents", "active record", "database", "web"],
