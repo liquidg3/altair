@@ -8,6 +8,7 @@ define(['altair/facades/declare',
          './_Base',
          'altair/Deferred',
          'altair/facades/hitch',
+         'altair/facades/when',
          'apollo/_HasSchemaMixin',
          'apollo/Schema'],
 
@@ -15,6 +16,7 @@ define(['altair/facades/declare',
               _Base,
               Deferred,
               hitch,
+              when,
               _HasSchemaMixin,
               Schema) {
 
@@ -67,7 +69,8 @@ define(['altair/facades/declare',
                 Module.extendBefore({
                     startup: function (options, old) {
 
-                        var values = {};
+                        var values = {},
+                            dfd;
 
                         if(options) {
 
@@ -86,18 +89,25 @@ define(['altair/facades/declare',
                             }
 
                             if(values) {
-                                this.mixin(values);
+                                dfd = this.mixin(values);
                             }
                         }
 
                         if(!old) {
-                            old = new Deferred();
-                            old.resolve(this);
-                        } else {
-                            old = old(options);
-                        }
 
-                        return old;
+                            dfd = new Deferred();
+                            dfd.resolve(this);
+
+                            return dfd;
+
+                        } else {
+
+                            return this.when(dfd).then(function () {
+
+                                return old(options);
+
+                            })
+                        }
 
                     }
                 });
@@ -124,14 +134,22 @@ define(['altair/facades/declare',
                     //parse the config, then build the schema
                     module.parseConfig(module.schemaPath).then(hitch(this, function (schemaData) {
 
-                        //use apollo to create the schema
-                        var apollo = this.altair.cartridge('apollo').apollo,
-                            schema = apollo.createSchema(schemaData);
+                        try {
 
-                        //set the schema to the module
-                        module.setSchema(schema);
+                            //use apollo to create the schema
+                            var apollo = this.altair.cartridge('apollo').apollo,
+                                schema = apollo.createSchema(schemaData);
 
-                        this.deferred.resolve(this);
+                            //set the schema to the module
+                            module.setSchema(schema);
+
+                            this.deferred.resolve(this);
+
+                        } catch(err) {
+
+                            this.deferred.reject(err);
+                        }
+
 
                     }), hitch(this, function (err) {
 

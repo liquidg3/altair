@@ -57,7 +57,11 @@ define(['altair/facades/declare',
 
                 //if there is a selected adapter, load it first, then set it to our ourselves, then be done
                 return (this.values.selectedAdapters && typeof this.values.selectedAdapters[0] === 'string') ? this.adapter(this.values.selectedAdapters[0]).then(this.hitch(function (a) {
-                    this.values.selectedAdapters[0] = a;
+
+                    if(a) {
+                        this.values.selectedAdapters[0] = a;
+                    }
+
                     return this;
                 })) : this;
 
@@ -132,7 +136,7 @@ define(['altair/facades/declare',
             }
 
             this.emit('register-adapters', {}, function () {
-                throw "NOT IMPLEMENTED";
+                throw new Error("NOT IMPLEMENTED");
             });
 
             return d;
@@ -155,6 +159,9 @@ define(['altair/facades/declare',
                     label: 'Selected Adapters',
                     many:  true
                 });
+            }
+
+            if(!schema.has('selectedAdapter')) {
 
                 schema.append('selectedAdapter', 'nexus', {
                     label: 'Selected Adapter',

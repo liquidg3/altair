@@ -85,6 +85,7 @@ if (argv.t || argv.test) {
 // Only exists to pass env to the bootstrap script (altair does not access any GLOBALS)
 global.env = argv.env;
 global.safe = argv.safe;
+global.cwd = argv.cwd || process.cwd();
 
 // Now load the Dojo loader
 require("./core/lib/dojo/dojo.js");

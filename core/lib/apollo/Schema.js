@@ -142,7 +142,7 @@ define(['dojo/_base/declare',
                     options = property.options;
 
                 if (!options) {
-                    throw propertyName + " has no options. add it to your schema";
+                    throw new Error(propertyName + " has no options. add it to your schema");
                 }
 
                 //if we are doing a simple (lightweight) get of options
@@ -160,7 +160,7 @@ define(['dojo/_base/declare',
 
             } else {
 
-                throw propertyName + ' does not exist on ' + this.declaredClass;
+                throw new Error(propertyName + ' does not exist on ' + this.declaredClass);
             }
 
             return this._optionsByField[propertyName];

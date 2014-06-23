@@ -114,7 +114,7 @@ define(['altair/facades/declare',
         update: function (tableName) {
 
             return new this.Statement(this.hitch(function (statement, options) {
-                return this.defaultConnection().update(tableName, statement, options);
+                return this.defaultConnectionOrThrow().update(tableName, statement, options);
             }));
 
         },
@@ -122,7 +122,7 @@ define(['altair/facades/declare',
         find: function (tableName) {
 
             return new this.Statement(this.hitch(function (statement, options) {
-                return this.defaultConnection().find(tableName, statement, options);
+                return this.defaultConnectionOrThrow().find(tableName, statement, options);
             }));
 
         },
@@ -130,7 +130,7 @@ define(['altair/facades/declare',
         count: function (tableName) {
 
             return new this.Statement(this.hitch(function (statement, options) {
-                return this.defaultConnection().count(tableName, statement, options);
+                return this.defaultConnectionOrThrow().count(tableName, statement, options);
             }));
 
         },
@@ -138,7 +138,7 @@ define(['altair/facades/declare',
         findOne: function (tableName) {
 
             return new this.Statement(this.hitch(function (statement, options) {
-                return this.defaultConnection().findOne(tableName, statement, options);
+                return this.defaultConnectionOrThrow().findOne(tableName, statement, options);
             }));
 
         },
@@ -167,6 +167,18 @@ define(['altair/facades/declare',
             this.deferred = all(list);
 
             return this.inherited(arguments);
+
+        },
+
+        defaultConnectionOrThrow: function () {
+
+            var d = this.defaultConnection();
+
+            if(d) {
+                return d;
+            } else {
+                throw new Error('No default database connections sent.');
+            }
 
         }
 

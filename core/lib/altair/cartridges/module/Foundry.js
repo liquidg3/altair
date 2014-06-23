@@ -375,6 +375,8 @@ define(['altair/facades/declare',
 
                 })).then(function (e) {
                     deferred.resolve(e.get('module'));
+                }).otherwise(function (err) {
+                    deferred.reject(err);
                 });
 
             }));

@@ -39,6 +39,23 @@ define(['altair/facades/declare',
             },
 
             /**
+             * Resolve a path against my app or home, depending on whether or not app exists
+             * @param p String
+             * @returns {String}
+             */
+            resolvePath: function (p) {
+
+                var resolved = p;
+
+                if(p[0] != path.sep) {
+                    resolved = path.join(require.toUrl(this.paths[this.paths.length - 1]), p);
+                }
+
+                return resolved;
+
+            },
+
+            /**
              * Add an un-started cartridge and I'll add it to the system and start it up. optionally i will execute it.
              *
              * @param cartridge
@@ -187,6 +204,10 @@ define(['altair/facades/declare',
 
                 return all(l);
 
+            },
+
+            toString: function () {
+                return '[object Altair]';
             }
 
         });

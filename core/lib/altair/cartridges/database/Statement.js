@@ -232,22 +232,22 @@ define(['altair/facades/declare',
                 clauses:   this.clauses()
             }).then(this.hitch(function (e) {
 
-                    var results;
+                var results;
 
-                    if (this._callback) {
-                        results = this._callback(this);
-                    }
+                if (this._callback) {
+                    results = this._callback(this);
+                }
 
-                    return when(results);
+                return when(results);
 
-                })).then(this.hitch(function (results) {
+            })).then(this.hitch(function (results) {
 
-                    return this.emit('did-execute', {
-                        results:   results,
-                        statement: this
-                    });
+                return this.emit('did-execute', {
+                    results:   results,
+                    statement: this
+                });
 
-                })).then(function (e) {
+            })).then(function (e) {
                 return e.get('results');
             });
 

@@ -15,7 +15,8 @@ define(['dojo/_base/declare',
          * @param config
          */
         toJsValue: function (value, options, config) {
-            return !!value ? true : false;
+            var coerced = !!value && value !== '0';
+            return coerced;
         },
 
         toViewValue: function (value, options, config) {

@@ -12,6 +12,13 @@ define(['altair/facades/declare',
 
         key: 'path',
         options: {
+             absolute: {
+                  type: 'boolean',
+                  options: {
+                       label: 'Resolve to absolute path',
+                       'default': true
+                  }
+             }
         },
 
 
@@ -25,32 +32,18 @@ define(['altair/facades/declare',
          */
         toJsValue: function (value, options, config) {
 
-            var results;
-
-            //get most common check out of the way
-            if(typeof value === 'string') {
-                results = value;
-            } else if(value) {
-                results = value.toString();
-            }
-
-            return results;
-        },
-
-
-        fromCliValue: function (value, options, config) {
-
             var resolved = value;
 
-            if(value[0] !== '/') {
+            if(value[0] !== '/' && options.absolute) {
                 resolved = pathUtil.join(process.cwd(), value);
             }
 
             return resolved;
+
         },
 
         toDatabaseValue: function (value, options, config) {
-            return this.toJsValue(value, options, config);
+            return value;
         }
 
     });

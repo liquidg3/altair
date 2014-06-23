@@ -23,6 +23,12 @@ require(['altair/Altair',
         debug       = debug('altair:Altair');
         require.log = debug; //overrides the require.log used by dojo to provide much better high level reporting
 
+        /**
+         * Make sure our CWD is set
+         */
+        if(global.cwd != process.cwd()) {
+            process.chdir(cwd);
+        }
 
         /**
          * Lets you configure how much error reporting to do.
@@ -83,6 +89,8 @@ require(['altair/Altair',
                 app,
                 foundry;
 
+            config.paths.home = homePath; //always have a home path
+
             //mixin configs, cwd config wins!
             if(cwdConfig) {
 
@@ -115,7 +123,6 @@ require(['altair/Altair',
              * needed, this array is also used to build our lookup paths in altair. Altair only needs their names since
              * dojo's define() and require() can map it to their paths.
              */
-            config.paths.home = homePath; //always have a home path
             require({
                 paths: config.paths
             });

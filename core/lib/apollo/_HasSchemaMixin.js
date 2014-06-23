@@ -4,10 +4,12 @@
 define(['dojo/_base/declare',
         'lodash',
         'dojo/Deferred',
+        'dojo/promise/all',
         './Schema'
 ], function (declare,
              _,
              Deferred,
+             all,
              Schema) {
 
     function capitalise(string) {
@@ -93,15 +95,37 @@ define(['dojo/_base/declare',
          * @param values
          * @returns {_HasSchemaMixin}
          */
-        mixin: function(values) {
+        mixin: function(values, optionsByField, config) {
+
+            var cleaned = {};
 
             _.each(values, function (value, name) {
                 if(this.has(name)) {
-                    this.set(name, value);
+                    if(config && config.methods) {
+
+                        var options = optionsByField && optionsByField[name] || {};
+
+                        //pass through old value
+                        config.old = this.values[name];
+
+                        //apply methods on value
+                        cleaned[name] = this.schema().applyOnProperty(config.methods, name, value, options, config);
+
+                    } else {
+                        cleaned[name] = value;
+                    }
                 }
             }, this);
 
-            return this;
+            return all(cleaned).then(function (values) {
+
+                _.each(values, function (value, name) {
+                    this.set(name, value);
+                }, this);
+
+                return this;
+
+            }.bind(this));
         },
 
         has: function (name) {
@@ -118,11 +142,11 @@ define(['dojo/_base/declare',
          */
         _set: function (name, value) {
 
-            if( this.values.hasOwnProperty( name ) ) {
+            if( this.schema().has( name ) ) {
                 this.values[name] = value;
 
             } else {
-                throw "No property called '" + name + "' exists on this " + this;
+                throw new Error("No property called '" + name + "' exists on this " + this);
 
             }
 
@@ -130,7 +154,7 @@ define(['dojo/_base/declare',
         },
 
         /**
-         * Last resort getter
+         * Last resort getter. If you override a getter and still want access to the original value in the schema
          *
          * @param name
          * @param defaultValue
@@ -172,10 +196,7 @@ define(['dojo/_base/declare',
                 //only set values on ourselves that do not already exist
                 //this is to ensure that values has a key for every property in the schema
                 if( !( this.values.hasOwnProperty(name) ) ) {
-
-                    this.values[name] = '';//so the .set doesn't give us "property does not exist"
                     this.set(name, schema.optionsFor(name, false).default || null);
-
                 }
 
             }, this);
@@ -198,11 +219,16 @@ define(['dojo/_base/declare',
          */
         getValues: function (optionsByProperty, config) {
 
-            var values = {},
+            var values   = {},
                 _obp     = optionsByProperty || {},
+                _all     = _obp['*'] || {},
                 _config  = config || {};
 
             _.each(this.schema().properties(), function (propConfig, name) {
+
+                if(_obp) {
+                    _obp[name] = _.defaults(_obp[name] || {}, _all);
+                }
 
                 var options = _.defaults(_obp[name] || {}, propConfig.options);
 
