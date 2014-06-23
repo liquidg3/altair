@@ -139,7 +139,7 @@ define(['altair/facades/declare',
                             //now make sure the vcs doesn't detect a change
                             this.deferred.progress({
                                 level: 'notice',
-                                message: module.name + ' already installed with older version, checking for local changes before updating.'
+                                message: module.name + ' already installed at ' + match.dir + ' with older version, checking for local changes before updating.'
                             });
 
                             //get vcs adapter
@@ -153,7 +153,8 @@ define(['altair/facades/declare',
                             }).then(function (results) {
 
                                 if(results && results.files) {
-                                    throw new Error('Install halted because ' + match.name + ' has local changes (I don\'t want to clobber them). Either delete, revert, or commit/push the module at ' + match.dir + '.');
+                                    this.log('files modified:', results);
+                                    throw new Error('Install halted because ' + match.name + ' at has local changes (I don\'t want to clobber them). Either delete, revert, or commit/push the module at ' + match.dir + '.');
                                 }
 
                                 //install new module over old one
@@ -169,7 +170,7 @@ define(['altair/facades/declare',
 
                             this.deferred.progress({
                                 level: 'warning',
-                                message: module.name + ' skipped because it is currently installed at the same or newer version.'
+                                message: module.name + ' skipped because it is currently installed at ' + match.dir + ' with the same or newer version.'
                             });
 
                             dfd.resolve(false);
