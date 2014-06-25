@@ -161,7 +161,8 @@ define(['altair/facades/declare',
 
                 //get the 'paths' we have set in altair
                 var altair          = this.nexus('Altair'),
-                    choices    = {};
+                    defaultValue    = altair.paths.indexOf('app') > -1 ? 'app' : 'home',
+                    choices         = {};
 
                 altair.paths.forEach(function (path) {
                     if(path !== 'core') {
@@ -170,6 +171,7 @@ define(['altair/facades/declare',
                 });
 
                 schema.setOptionFor('destination', 'choices', choices);
+                schema.setOptionFor('destination', 'default', defaultValue);
 
             }
 

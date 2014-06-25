@@ -26,8 +26,8 @@ require(['altair/Altair',
         /**
          * Make sure our CWD is set
          */
-        if(global.cwd != process.cwd()) {
-            process.chdir(cwd);
+        if(global.cwd !== process.cwd()) {
+            process.chdir(global.cwd);
         }
 
         /**
