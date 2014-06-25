@@ -82,6 +82,16 @@
                 "type": "git",
                 "url":  "https://github.com/liquidg3/liquidfire-onyx.git"
             }
+        },
+        {
+            "name":        "liquidfire:Sockets",
+            "description": "Send events through socket connections. Also some automated setup for tital:Alfred.",
+            "keywords":    ["sockjs", "sockets", "socket.io"],
+            "website":      "https://github.com/liquidg3/liquidfire-sockets",
+            "repository":  {
+                "type": "git",
+                "url":  "https://github.com/liquidg3/liquidfire-sockets.git"
+            }
         }
     ]
 }
