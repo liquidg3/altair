@@ -345,6 +345,10 @@ define(['altair/facades/declare',
                 dfd         = new this.Deferred(),
                 ver         = version || 'master';
 
+            if(!menuItem) {
+                throw new Error('Could not find ' + name + ' in any menu in the kitchen at the lodge.');
+            }
+
             //if we have already installed this guy, don't do it again
             if(this._modulesInstalled[name]) {
                 return this.when(this._modulesInstalled[name]);
