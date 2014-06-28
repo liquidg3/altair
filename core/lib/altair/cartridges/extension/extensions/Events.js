@@ -125,6 +125,33 @@ define(['altair/facades/declare',
                     },
 
                     /**
+                     * Remove a listener
+                     *
+                     * @param event
+                     * @param deferred
+                     * @returns {*}
+                     */
+                    removeEventListener: function (event, deferred, config) {
+
+                        //if we are skipping on the nexus resolution call the
+                        //standard emitter's on()
+                        if(config && config.skipNexus) {
+                            return this.inherited(arguments);
+                        }
+
+                        //setup config with skipNexus
+                        if(!config) {
+                            config = {};
+                        }
+
+                        config.skipNexus = true;
+
+
+                        return apply(this, event, 'removeEventListener', [deferred, config]);
+
+                    },
+
+                    /**
                      * So you can emit events through nexus
                      *
                      * @param event

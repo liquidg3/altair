@@ -92,7 +92,7 @@ define(['altair/facades/declare',
          */
         removeEventListener: function (event, deferred) {
             if(this._listeners[event]) {
-                this._listeners[event] = _.filter(function (listener) {
+                this._listeners[event] = _.filter(this._listeners[event], function (listener) {
                     return listener.deferred !== deferred;
                 });
             }
