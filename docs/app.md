@@ -4,7 +4,7 @@ way, launching an app really just comes down to having a configuration file that
 
 ##Forge your app
 ```bash
-$ npm install altar.io -g
+$ npm install altair.io -g
 $ mkdir path/to/app
 $ cd path/to/app
 $ altair forge app
@@ -39,4 +39,5 @@ altair:Altair app detected - loading config @ path/to/app/altair.json +0ms
 Now you are free to play around with your new environment!
 
 ###What's next?
-Why not start by [creating a module](firstmodule.md)?
+* Why not start by [creating a module](firstmodule.md)?
+* How about downloading modules at [the lodge](../core/vendors/altair/modules/thelodge/README.md)
