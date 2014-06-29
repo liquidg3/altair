@@ -1,0 +1,11 @@
+{
+    "connections.disabled": [
+        {
+            "path":    "altair/cartridges/database/adapters/Mongodb",
+            "options": {
+                "alias":            "mongo1",
+                "connectionString": "mongodb://localhost/prod"
+            }
+        }
+    ]
+}

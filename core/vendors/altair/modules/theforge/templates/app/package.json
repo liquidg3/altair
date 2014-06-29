@@ -1,0 +1,7 @@
+{
+    "name":         "MyApp",
+    "description":  "This is a placeholder for a description about your app. To configure Altair, use altair.json",
+    "version": "0.0.1",
+    "dependencies": {},
+    "altairDependencies": {}
+}

@@ -1,0 +1,6 @@
+{
+    "description": "Customize your modules. Read more: https://github.com/liquidg3/altair/blob/master/docs/app.md",
+    "liquidfire:Files.disabled":   {
+        "uploadDir": "../public/uploads"
+    }
+}

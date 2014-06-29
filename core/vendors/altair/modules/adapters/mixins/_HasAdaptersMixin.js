@@ -24,6 +24,7 @@ define(['altair/facades/declare',
         'altair/Lifecycle',
         'altair/events/Emitter',
         'dojo/node!i18n-2',
+        'lodash',
         'apollo/_HasSchemaMixin'],
 
     function (declare,
@@ -31,6 +32,7 @@ define(['altair/facades/declare',
               Lifecycle,
               Emitter,
               i18n,
+              _,
               _HasSchemaMixin) {
 
 
@@ -55,15 +57,24 @@ define(['altair/facades/declare',
 
             return this.inherited(arguments).then(this.hitch(function () {
 
-                //if there is a selected adapter, load it first, then set it to our ourselves, then be done
-                return (this.values.selectedAdapters && typeof this.values.selectedAdapters[0] === 'string') ? this.adapter(this.values.selectedAdapters[0]).then(this.hitch(function (a) {
+                var results = this;
 
-                    if(a) {
-                        this.values.selectedAdapters[0] = a;
-                    }
+                if(this.values.selectedAdapters[0]) {
 
-                    return this;
-                })) : this;
+                    //if there is a selected adapter, load it first, then set it to our ourselves, then be done
+                    results = this.adapter(this.values.selectedAdapters[0]).then(this.hitch(function (a) {
+
+                        if(a) {
+                            this.values.selectedAdapters[0] = a;
+                        }
+
+                        return this;
+                    }));
+
+                }
+
+
+                return results;
 
             }));
         },
@@ -87,7 +98,8 @@ define(['altair/facades/declare',
          */
         adapter: function (named) {
 
-            var d = new this.Deferred();
+            var d = new this.Deferred(),
+                options;
 
             //no name was passed, assuming selectedAdapter (only works *after* startup)
             if(!named) {
@@ -111,7 +123,12 @@ define(['altair/facades/declare',
             //load it from scratch, then cache
             else {
 
-                d = this.forge(named, null, { type: 'adapter' }).then(this.hitch(function (adapter) {
+                if(_.isObject(named) && named.path) {
+                    options = named.options;
+                    named   = named.path;
+                }
+
+                d = this.forge(named, options, { type: 'adapter' }).then(this.hitch(function (adapter) {
                     this._adaptersCache[named] = adapter;
                     return adapter;
                 }));

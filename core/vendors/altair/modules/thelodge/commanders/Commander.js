@@ -91,7 +91,7 @@ define(['altair/facades/declare',
          */
         npm: function (options) {
 
-            return this._valet.npm(options).step(hitch(this, function (step) {
+            return this._valet.npm(options).step(this.hitch(function (step) {
                 this.writeLine(step.message);
             }));
 

@@ -1,40 +1,57 @@
 {
     "forge": {
 
-        "path":         "commanders/Commander",
-        "description":  "Forge new modules!",
-        "label":        "The Forge",
-        "commands": {
+        "path":        "commanders/Commander",
+        "description": "Forge new modules!",
+        "label":       "The Forge",
+        "commands":    {
 
-            "newModule": {
-                "label": "forge new module",
+            "module": {
+                "label":       "forge new module",
                 "description": "You are about to start forging a new module. I'm going to help you get started.",
-                "aliases": ["new", "n"],
-                "schema": {
+                "aliases":     ["new", "n"],
+                "schema":      {
                     "vendor": {
-                        "type": "string",
+                        "type":    "string",
                         "options": {
-                            "label": "vendor name",
-                            "required": true,
-                            "pattern": "[a-z]",
+                            "label":       "vendor name",
+                            "required":    true,
+                            "pattern":     "[a-z]",
                             "description": "What is your vendor? Every module needs to be part of a larger 'Vendor Space.' This keeps module names from conflicting across projects. An example would be 'titan' or 'liquidfire'."
                         }
                     },
-                    "name": {
-                        "type": "string",
+                    "name":   {
+                        "type":    "string",
                         "options": {
-                            "label": "module name",
-                            "pattern": "[a-zA-Z]",
+                            "label":       "module name",
+                            "pattern":     "[a-zA-Z]",
                             "description": "Give your module a classy name. It should be in the form of Alfred or CommandCentral."
                         }
                     },
-                    "dir": {
-                        "type": "select",
+                    "dir":    {
+                        "type":    "select",
                         "options": {
-                            "label":    "destination",
-                            "required": true,
-                            "default":  "app",
+                            "label":       "destination",
+                            "required":    true,
+                            "default":     "app",
                             "description": "You can store Altair modules anywhere in your system as long as you configure them in {{pwd}}/altair.json or ~./altair/altair.json"
+                        }
+                    }
+                }
+
+            },
+
+            "app": {
+                "label":       "forge new app",
+                "description": "An app is a directory that holds a totally customizable and sandbox'ed environment for Altair distributions.",
+                "schema":      {
+                    "destination": {
+                        "type":    "path",
+                        "options": {
+                            "label":       "destination",
+                            "required":    true,
+                            "default":     ".",
+                            "description": "Where would you like your new app forged?"
                         }
                     }
                 }

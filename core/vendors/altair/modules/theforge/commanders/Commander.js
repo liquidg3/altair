@@ -28,101 +28,74 @@ define(['altair/facades/declare',
          *
          * @param values
          */
-        newModule: function (values) {
+        module: function (values) {
 
-            this.writeLine('forging new module..');
+            this.writeLine('forging new module...');
 
-            //setup context
-            var d       = new this.Deferred(),
+            var dfd     = new this.Deferred(),
                 vendor  = values.vendor,
                 name    = str.capitalize(values.name),
                 full    = vendor + ':' + name,
+                foundry = this.nexus('cartridges/Module').foundry,
                 match   = this.nexus(full),
-                destination,
-                files   = {};
+                to,
+                from    = this.parent.resolvePath('templates/module'),
+                context = {
+                    name: name,
+                    vendor: vendor,
+                    full: full
+                };
 
             if(match) {
-                d.reject(new Error('A module named ' + full + ' is already taken!'));
-            } else {
-
-                destination = path.join(require.toUrl(values.dir), 'vendors', vendor.toLowerCase(), 'modules', name.toLowerCase());
-
-
-                files[this.parent.resolvePath('templates/_Module.js')]      = path.join(destination, name + '.js');
-                files[this.parent.resolvePath('templates/_package.json')]   = path.join(destination, 'package.json');
-                files[this.parent.resolvePath('templates/_README.md')]      = path.join(destination, 'README.md');
-
-
-                //create destination directory for our module
-                mkdirp(destination, this.hitch(function (err) {
-
-                    if(err) {
-
-                        d.reject(new Error(err));
-
-                    } else {
-
-                        //track all our templates being created
-                        var list = [];
-
-                        //load the templates and write them
-                        Object.keys(files).forEach(this.hitch(function (template) {
-
-                            var def = new this.Deferred();
-                            list.push(def);
-
-                            //read template
-                            fs.readFile(template, this.hitch(function (err, results) {
-
-                                if(err) {
-                                    def.reject(new Error(err));
-                                } else {
-
-                                    //completed template
-                                    var complete = sprintf(results.toString(), {
-                                        name: name,
-                                        vendor: vendor,
-                                        full: full
-                                    });
-
-                                    //add file name to destination
-                                    var dest = files[template];
-
-                                    //write the file
-                                    fs.writeFile(dest, complete, function (err, results) {
-
-                                        if(err) {
-                                            def.reject(new Error(err));
-                                        } else {
-                                            def.resolve(dest);
-                                        }
-
-                                    });
-
-                                }
-
-                            })); //end read template
-
-                        })); //loop all templates
-
-
-                        //after all templates are done
-                        all(list).then(this.hitch(function (results) {
-
-                            this.writeLine('forging complete, created ' + results.length + ' files.');
-                            d.resolve();
-
-                        })).otherwise(hitch(d, 'reject'));
-
-
-                    }
-
-                }));
-
-
+                throw new Error('A module named ' + full + ' is already taken!');
             }
 
-            return d;
+            to = path.join(require.toUrl(values.dir), foundry.moduleNameToPath(full));
+
+            this.parent.forge('foundry/Copier').then(function (copier) {
+
+                copier.execute(from, to, context).step(function (step) {
+
+                    this.writeLine(step.message);
+
+                }.bind(this)).then(function (results) {
+
+                    this.writeLine('Forge complete.');
+
+                    dfd.resolve(this);
+
+                }.bind(this)).otherwise(this.hitch(dfd, 'reject'));
+
+            }.bind(this));
+
+            return dfd;
+        },
+
+        app: function (values) {
+
+            this.writeLine('forging new app...');
+
+            var from = this.parent.resolvePath('templates/app'),
+                dfd = new this.Deferred();
+
+            this.parent.forge('foundry/Copier').then(function (copier) {
+
+                copier.execute(from, values.destination, {}).step(function (step) {
+
+                    this.writeLine(step.message);
+
+                }.bind(this)).then(function (results) {
+
+                    this.writeLine('Forge complete.');
+
+                    dfd.resolve(this);
+
+                }.bind(this)).otherwise(this.hitch(dfd, 'reject'));
+
+            }.bind(this));
+
+            return dfd;
+
         },
 
         /**
@@ -135,10 +108,11 @@ define(['altair/facades/declare',
             var schema = this.inherited(arguments);
 
             //the newModule command has some choices that need updating (destination dir)
-            if(schema && command.callback === 'newModule') {
+            if(schema && command.callback === 'module') {
 
                 //get the 'paths' we have set in altair
                 var altair          = this.nexus('Altair'),
+                    defaultValue    = altair.paths[altair.paths.length - 1],
                     choices    = {};
 
                 altair.paths.forEach(function (path) {
@@ -148,6 +122,7 @@ define(['altair/facades/declare',
                 });
 
                 schema.setOptionFor('dir', 'choices', choices);
+                schema.setOptionFor('dir', 'defaultValue', defaultValue);
 
             }
 
