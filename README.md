@@ -1,8 +1,7 @@
 #Altair
 
 What if your coffee machine could start brewing your coffee as soon as you left your bedroom first thing in the morning?
-How about having a garage door that opens when your car (and only your car) pulls up to it? What if your fitbit could
-send a signal to your entertainment center whenever you fall asleep, shutting the whole thing down?
+How about having a garage door that opens when your car (and only your car) pulls up to it?
 
 What would you do if you were able to make devices that were never meant to work together do so with elegance and ease?
 
@@ -71,7 +70,7 @@ See it in action:
     /**
      * Altair has 2 ways to set listeners, the "promise based" way is .on(eventName, query).then(...
      */
-    this.on('liquidfire:Jarvis::did-gesture', { 'gesture.type': 'the-force' }).then(hitch(this, function (e) {
+    this.on('liquidfire:Jarvis::did-gesture', { 'gesture.type': 'the-force' }).then(function (e) {
 
         //the device that triggered the gesture
         var device = e.get('device');
@@ -79,7 +78,7 @@ See it in action:
         //cheating =)
         this.nexus('liquidfire:Jarvis').device('living-room-lights').toggle();
 
-    }).otherwise(function (err) {
+    }.bind(this)).otherwise(function (err) {
 
         //the Jarvis module is probably not installed
 
@@ -88,11 +87,11 @@ See it in action:
     /**
      * The normal normal way: on(eventName, callback, query)
      */
-    this.on('liquidfire:Jarvis::did-gesture', hitch(this, function (e) {
+    this.on('liquidfire:Jarvis::did-gesture', function (e) {
 
         ....
 
-    }), { 'gesture.type': 'the-force' });
+    }.bind(this)), { 'gesture.type': 'the-force' });
 
 We have build a simple QueryAgent system that allows us to swap out query engines. Currently we use the kickass
 [underscore-query](https://github.com/davidgtonge/underscore-query) and absolutely love it! But, in Altair tradition,
@@ -135,9 +134,9 @@ Now check out how easy it is to control our imaginary thermostat and maybe some 
         if(target) {
 
             //set the temp in fahrenheit because we're 'merican.
-            thermostat.set('tempF', 85).then(hitch(this, function () {
+            thermostat.set('tempF', 85).then(function () {
                 console.info('Temperature now set');
-            });
+            }.bind(this));
 
         }
         //if we could not parse a target temperature from the command give the user some feedback by pulsing the living
@@ -149,9 +148,9 @@ Now check out how easy it is to control our imaginary thermostat and maybe some 
                 duration:   500,
                 loop:       2,
                 colors:     ['ff0000', 'ffffff']
-            }).execute().then(hitch(this, function () {
+            }).execute().then(function () {
 
-            ));
+            });
 
         }
 

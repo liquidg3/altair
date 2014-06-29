@@ -20,7 +20,7 @@ $ altair forge app --destination path/to/app
 The template app will come with a few files:
 
 - `altair.json`: This is the main config that allows you to customize every aspect of Altair. Because it can grow large, we break it out into sub files.
-- `package.json`: Npm needs this file and it does not appear it'll ever change  (I found 62 instances of "package.json" in npm/lib).
+- `package.json`: Npm needs this file and it does not appear it'll ever change  (I found 62 instances of "package.json" in npm/lib). We have opted to put `altairDependencies` in this file right next to `dependencies` so you can manage them all in one spot.
 - `configs/database.json`: An example config for the Database cartridge. Notice the ".disabled" in the key.
 - `configs/database-dev.json`: Lets you override the database settings while in the dev environment: `$ altair --env dev`
 - `configs/modules.json`: Allows you to pass options to any module during startup.

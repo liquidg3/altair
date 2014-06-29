@@ -1,10 +1,10 @@
 #Configuring Altair
 You can configure Altair in 2 ways.
 
-1. Edit the home config: ~/.altair/altair.json
+1. Edit the home config: `~/.altair/altair.json`
 2. Create an [app](app.md)
 
-#environments
+##Environments
 Since configs support environments, the top level of your config will be a key for each of those environments (as many
 as you care to support). Each environment inherits from `default`. The merging is done by [node-extend](https://www.npmjs.org/package/config-extend).
 
@@ -54,13 +54,11 @@ require(['altair/plugins/config!path/to/config.json?env=prod'], function (config
 });
 ```
 
-##config api
-These options will sit under any particular environment. Using this single config, you can control the entire Altair
-environment as well as each and every cartridge and module that is booted.
+##Config API
+These options will sit under any particular environment (in your `altair.json`). Using this single config, you can control the entire Altair
+environment as well as each and every cartridge and module that is booted. See `~/.altair/altair.json` for populated example.
 
 - `debug`: Passthrough to [visionmedia/debug](https://github.com/visionmedia/debug). Putting liquidfire:* will enable logging for only liquidfire: based modules.
 - `stackTraceLimit`: Set directly to Error.stackTraceLimit. Longer stack traces make debugging easier, but can be big and slow.
 - `paths`: A key/value pair where key is a single word alias (home, dev, core) and the value is a path on your harddrive.
-- `altairDependencies`: Any Altair dependencies your app has. key is name, value is [semver](https://www.npmjs.org/package/semver) compatible version number
-- `dependencies`: Any node dependencies your app has. key is name, value is [semver](https://www.npmjs.org/package/semver) compatible version number
 - `cartridges`: Since Altair is a simple cartridge loader, most your configuring will be done on a per cartridge basis.
