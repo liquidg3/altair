@@ -1,5 +1,9 @@
 {
-    "default": {
+
+    "tests.disabled": {
+        "glob": ["app/vendors/*/modules/*/tests/*.js"]
+    },
+    "default":        {
 
         "cartridges": {
             "database": {
@@ -18,7 +22,7 @@
         }
     },
 
-    "dev":     {
+    "dev": {
         "cartridges": {
             "database": {
                 "options": {

@@ -169,7 +169,7 @@ define(['altair/facades/declare',
                     fs.exists(path, hitch(this, function (exists) {
 
                         if(!exists) {
-                            dfd.reject(new Error('Could not create type:' + type + ' at path:' + path));
+                            dfd.reject(new Error('Could not create type:' + type + ' because I could not find it at:' + path));
                         } else {
 
                             require([path], hitch(this, function (Child) {

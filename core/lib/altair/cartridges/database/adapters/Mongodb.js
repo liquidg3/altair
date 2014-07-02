@@ -169,7 +169,6 @@ define(['altair/facades/declare',
                 _options.skip = clauses.skip;
             }
 
-
             return this.promise(collection, 'find', where || {}, _options).then(function (cursor) {
                 return new MongodbCursor(cursor, statement);
             });

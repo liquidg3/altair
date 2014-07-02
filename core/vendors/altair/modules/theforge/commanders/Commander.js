@@ -71,6 +71,12 @@ define(['altair/facades/declare',
             return dfd;
         },
 
+        /**
+         * Forge a new app
+         *
+         * @param values
+         * @returns {Deferred}
+         */
         app: function (values) {
 
             this.writeLine('forging new app...');

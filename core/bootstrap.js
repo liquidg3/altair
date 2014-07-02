@@ -60,8 +60,8 @@ require(['altair/Altair',
             //create home
             fs.mkdirSync(homePath);
             fs.writeFileSync(homeConfigPath, JSON.stringify({
+                description: 'See https://github.com/liquidg3/altair/blob/master/docs/config.md for help on configuring altair.',
                 'default': {
-                    description: 'See https://github.com/liquidg3/altair/blob/master/docs/config.md for help on configuring altair.',
                     paths:       {
                         core: 'core'
                     }

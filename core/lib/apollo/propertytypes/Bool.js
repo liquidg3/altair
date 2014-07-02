@@ -20,7 +20,7 @@ define(['dojo/_base/declare',
         },
 
         toViewValue: function (value, options, config) {
-            return (value) ? 'Yes' : 'No';
+            return (this.toJsValue(value)) ? 'Yes' : 'No';
         },
 
         toDatabaseValue: function (value, options, config) {
