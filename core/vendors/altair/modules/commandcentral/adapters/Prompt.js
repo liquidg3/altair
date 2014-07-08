@@ -177,7 +177,19 @@ define(['altair/facades/declare',
 
         },
 
+        /**
+         * A simple yes/no would suffice
+         *
+         * @param question
+         * @param defaultValue
+         * @param options
+         * @returns {altair.Promise}
+         */
         boolean: function (question, defaultValue, options) {
+
+            if(defaultValue === true) {
+                defaultValue = 'y';
+            }
 
             return this.readLine(question + ' [y/n]', defaultValue, options).then(function (response) {
                 return response === 'y';

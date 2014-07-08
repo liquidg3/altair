@@ -121,8 +121,11 @@ Remove a remote.
 ### `Repo#remote_fetch(name, callback)`
 `git fetch <name>`
 
-### `Repo#remote_push(name, callback)`
+### `Repo#remote_push(name, [branch, ]callback)`
 `git push <name>`
+
+with branch parameter specified:
+`git push <name> <branch>`
 
 ### `Repo#status(callback)`
 Uses `--porcelain` to parse repository status in a way that is agnostic of system language. The callback receives `(err, status)`. See below for a definition of what `status` is.

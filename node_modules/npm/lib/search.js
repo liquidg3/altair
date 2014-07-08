@@ -4,6 +4,7 @@ module.exports = exports = search
 var npm = require("./npm.js")
   , registry = npm.registry
   , columnify = require('columnify')
+  , mapToRegistry = require("./utils/map-to-registry.js")
 
 search.usage = "npm search [some search terms ...]"
 
@@ -57,10 +58,18 @@ function search (args, silent, staleness, cb) {
 }
 
 function getFilteredData (staleness, args, notArgs, cb) {
-  registry.get( "/-/all", staleness, false
-              , true, function (er, data) {
+  var opts = {
+    timeout : staleness,
+    follow  : true,
+    staleOk : true
+  }
+  mapToRegistry("-/all", npm.config, function (er, uri) {
     if (er) return cb(er)
-    return cb(null, filter(data, args, notArgs))
+
+    registry.get(uri, opts, function (er, data) {
+      if (er) return cb(er)
+      return cb(null, filter(data, args, notArgs))
+    })
   })
 }
 
@@ -115,7 +124,7 @@ function filterWords (data, args, notArgs) {
   for (var i = 0, l = args.length; i < l; i ++) {
     if (!match(words, args[i])) return false
   }
-  for (var i = 0, l = notArgs.length; i < l; i ++) {
+  for (i = 0, l = notArgs.length; i < l; i ++) {
     if (match(words, notArgs[i])) return false
   }
   return true
@@ -218,7 +227,7 @@ function addColorMarker (str, arg, i) {
   var pieces = str.toLowerCase().split(arg.toLowerCase())
     , p = 0
 
-  return pieces.map(function (piece, i) {
+  return pieces.map(function (piece) {
     piece = str.substr(p, piece.length)
     var mark = markStart
              + str.substr(p+piece.length, arg.length)
@@ -239,12 +248,12 @@ function colorize (line) {
 }
 
 function getMaxWidth() {
+  var cols
   try {
     var tty = require("tty")
       , stdout = process.stdout
-      , cols = !tty.isatty(stdout.fd) ? Infinity
-             : process.stdout.getWindowSize()[0]
-      cols = (cols == 0) ? Infinity : cols
+    cols = !tty.isatty(stdout.fd) ? Infinity : process.stdout.getWindowSize()[0]
+    cols = (cols === 0) ? Infinity : cols
   } catch (ex) { cols = Infinity }
   return cols
 }

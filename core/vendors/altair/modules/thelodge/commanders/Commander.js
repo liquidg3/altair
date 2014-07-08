@@ -154,10 +154,11 @@ define(['altair/facades/declare',
          */
         schemaForCommand: function (command) {
 
-            var schema = this.inherited(arguments);
+            var schema = this.inherited(arguments),
+                altair = this.nexus('Altair');
 
             //the newModule command has some choices that need updating (destination dir)
-            if(schema && (command.callback === 'install' || command.callback === 'updateFromPackage')) {
+            if(schema && ['install', 'updateFromPackage'].indexOf(command.callback) > -1) {
 
                 //get the 'paths' we have set in altair
                 var altair          = this.nexus('Altair'),
@@ -174,7 +175,6 @@ define(['altair/facades/declare',
                 schema.setOptionFor('destination', 'default', defaultValue);
 
             }
-
 
             return schema;
         }

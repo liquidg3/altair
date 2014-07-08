@@ -98,6 +98,9 @@ define(['dojo/_base/declare',
          * @returns {this}
          */
         setOptionFor: function (propertyName, optionName, optionValue) {
+            if(!this.has(propertyName)) {
+                throw new Error('No property named ' + propertyName + ' exists on schema ');
+            }
             this._data.properties[propertyName].options[optionName] = optionValue;
             return this;
         },

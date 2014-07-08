@@ -57,7 +57,6 @@ define(['dojo/_base/declare',
             var methodName = toGetter(name);
 
             if( typeof this[methodName] === 'function') {
-
                 return this[methodName](defaultValue, options, config);
             }
 
@@ -202,6 +201,7 @@ define(['dojo/_base/declare',
             }, this);
 
             return this;
+
         },
 
         /**

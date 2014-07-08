@@ -46,18 +46,47 @@ define(['altair/test'],
 ```
 
 ###The assertion api
-The `doh/runner` (`altair/test` is an alias) we are currently using has a very limited number of assertions available.
-This is it for now, we'll hopefully get to add many more as time goes on.
+You can use any assertion library you want. The `doh/runner` (`altair/test` is an alias) we are currently using has a
+very limited number of assertions available:
 
 - `is(expected, actual, message)`: checks if actual == expected with array and object handling
 - `isNot(expected, actual, message)`: Opposite of above
 - `f(actual, hint)`: is actual [falsy](http://www.sitepoint.com/javascript-truthy-falsy/)
 - `t(actual, hint)`: is actual [truthy](http://www.sitepoint.com/javascript-truthy-falsy/)
 
+You can use any assertion library that throws errors. Use the following and include them using `altair/plugins/node!should`.
+Here is a brief list of a few
+
+- [should.js](https://github.com/visionmedia/should.js)
+- [chai](http://chaijs.com)
+- [expect](https://github.com/LearnBoost/expect.js)
+
+###Including 3rd party assertion library
+In this scenario I'm going to use chai.js (chosen randomly).
+
+*Step 1* - drop devDependencies into your module's `package.json`
+```json
+{
+    "name":         "liquidfire:Sockets",
+    "version":      "0.0.2",
+    "description":  "Allows the browser to participate in event dispatching in Altair.",
+    "dependencies": {
+        "sockjs":           ">=0.3.8",
+        "socket.io":        "1.0.6",
+        "socket.io-client": "1.0.6"
+    },
+    "devDependiencs": {
+        "chai":             "*"
+    }
+}
+
+```
+
 
 ##Configure your tests
 You need to tell the Altair [bootstrap-test.js](../core/bootstrap-test.js) and the [altair/TestRunner](../core/lib/altair/TestRunner.js)
-what tests to load. The current `altair/TestRunner` only supports a basic glob search for files to load.
+what tests to load. The current `altair/TestRunner` only supports a basic glob search for files to load. Here is how your
+`altair.json` may look
 
 ```json
 {

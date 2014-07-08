@@ -1,6 +1,6 @@
 {
     "name":         "altair.io",
-    "version":      "0.0.71",
+    "version":      "0.0.73",
     "description":  "A platform to facilitate the building of experiences in the Internet of Everything.",
     "main":         "altair.js",
     "license":      "MIT",
@@ -16,7 +16,7 @@
     },
     "dependencies": {
         "underscore":        ">=1.1.x",
-        "underscore-query":  ">=0.4.x",
+        "underscore-query":  "liquidg3/underscore-query.git",
         "underscore.string": ">=2.3.x",
         "semver":            "2.3.0",
         "yargs":             ">=0.6.x",
@@ -29,7 +29,6 @@
         "css-parse":         ">=1.x",
         "rimraf":            ">=2.2.x",
         "gift":              ">=0.3.x",
-        "semver":            ">=2.2.x",
         "lunr":              ">=0.5.x",
         "npm":               ">=1.4.x",
         "ncp":               ">=0.5.x",

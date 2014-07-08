@@ -1,7 +1,7 @@
 define(['altair/facades/declare',
         'altair/modules/commandcentral/mixins/_IsCommanderMixin',
-        'altair/facades/hitch',
         'require',
+        'lodash',
         'altair/plugins/node!fs',
         'altair/plugins/node!underscore.string',
         'altair/plugins/node!mkdirp',
@@ -11,8 +11,8 @@ define(['altair/facades/declare',
 
 ], function (declare,
              _IsCommanderMixin,
-             hitch,
              require,
+             _,
              fs,
              str,
              mkdirp,
@@ -24,7 +24,7 @@ define(['altair/facades/declare',
 
 
         /**
-         * Forge a new module.
+         * Forge a new module (should move logic out of here)
          *
          * @param values
          */
@@ -56,11 +56,17 @@ define(['altair/facades/declare',
 
                 copier.execute(from, to, context).step(function (step) {
 
-                    this.writeLine(step.message);
+                    this.writeLine(step.message, step.type);
 
                 }.bind(this)).then(function (results) {
 
-                    this.writeLine('Forge complete.');
+                    //rename the Module.js to Name.js
+                    var m = _.where(results, { file: 'Module.js' })[0],
+                        dest    = path.join(m.to, '..', name + '.js');
+
+                    fs.renameSync(m.to, dest);
+
+                    this.writeLine('Forge complete. Renaming Module.js to ' + name + '.js');
 
                     dfd.resolve(this);
 
@@ -88,7 +94,7 @@ define(['altair/facades/declare',
 
                 copier.execute(from, values.destination, {}).step(function (step) {
 
-                    this.writeLine(step.message);
+                    this.writeLine(step.message, step.type || '');
 
                 }.bind(this)).then(function (results) {
 

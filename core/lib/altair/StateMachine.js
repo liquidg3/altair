@@ -100,7 +100,7 @@ define(['altair/facades/declare',
 
         /**
          * Loops through every state, emitting all events along the way. If an event listener returns a deferred, we
-         * wait until it is resolved before continuing. When we resolbvthwve our deferred, we will pass the return value
+         * wait until it is resolved before continuing. When we resolve our deferred, we will pass the return value
          * of the last state we transitionedTo
          *
          * @param options  - repeat: loop back on itself?

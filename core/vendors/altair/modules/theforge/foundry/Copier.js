@@ -1,3 +1,4 @@
+
 define(['altair/facades/declare',
         'altair/Lifecycle',
         'lodash',
@@ -84,25 +85,55 @@ define(['altair/facades/declare',
                     //we read a file, drop in context and write to destination
                     if(content instanceof Buffer) {
 
-
                         var complete = sprintf(content.toString(), context),
                             file     = filenames[i],
-                            dest     = pathUtil.join(to, file);
+                            dest     = pathUtil.join(to, file),
+                            _dfd     = new this.Deferred();
 
                         dfd.progress({
-                            message: 'populating: ' + file + ' and writing to ' + dest
+                            message: 'checking if ' + dest + ' already exists'
                         });
 
-                        return this.promise(fs, 'writeFile', dest, complete).then(function () {
-                            return {
+
+                        this.promise(fs, 'stat', dest).then(function (stats) {
+
+                            dfd.progress({
+                                message: 'file already exists at ' + dest + '. skipping',
+                                type: 'warning'
+                            });
+
+                            _dfd.resolve({
                                 from: pathUtil.join(from, file),
                                 to: dest,
-                                file: file
-                            };
-                        });
+                                file: file,
+                                skipped: true
+                            });
+
+
+                        }.bind(this)).otherwise(function () {
+
+                            dfd.progress({
+                                message: 'no file found at: ' + dest + '. writing contents'
+                            });
+
+                            this.promise(fs, 'writeFile', dest, complete).then(function () {
+                                _dfd.resolve({
+                                    from: pathUtil.join(from, file),
+                                    to: dest,
+                                    file: file
+                                });
+                            }).otherwise(this.hitch(function (err) {
+                                _dfd.reject(err);
+                            })); //maybe permissions error?
+
+
+                        }.bind(this));
+
+                        return _dfd;
+
 
                     }
-                    //it was a dir and handled recursively last step
+                    //it was a dir and handled recursively in the previous step
                     else {
 
                         return content;
@@ -112,7 +143,11 @@ define(['altair/facades/declare',
                 }.bind(this)));
 
 
-            }.bind(this)).then(this.hitch(dfd, 'resolve'));
+            }.bind(this)).then(this.hitch(function (results) {
+
+                dfd.resolve(results);
+
+            }));
 
             return dfd;
 

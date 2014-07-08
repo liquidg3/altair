@@ -64,6 +64,8 @@ define(['altair/facades/declare',
 
             var _options        = options || {},
                 l,
+                devDependencies = _options.dev,
+                invokeNpm       = _.has(_options, 'invokeNpm') ? _options.invokeNpm : true,
                 mainPackagePath = _options.destination || this.nexus('Altair').resolvePath('package.json');
 
             //passthrough to copy dependencies
@@ -78,9 +80,16 @@ define(['altair/facades/declare',
 
             }, this)).then(function () {
 
-                this._npm.prefix = pathUtil.join(mainPackagePath, '..');
+                if(invokeNpm) {
 
-                return this.promise(this._npm, 'update');
+                    this._npm.prefix = pathUtil.join(mainPackagePath, '..');
+                    return this.promise(this._npm, 'update');
+
+                } else {
+
+                    return this;
+
+                }
 
             }.bind(this)).then(function () {
 
@@ -96,7 +105,8 @@ define(['altair/facades/declare',
         /**
          * Pass a block of dependencies { "modulename":"version", "modulename": "version" }
          *
-         * @param path
+         * @param dependencies
+         * @param options { invokeNpm: true, ... }
          */
         update: function (dependencies, options) {
             return this.updateMany([dependencies], options);
@@ -115,6 +125,7 @@ define(['altair/facades/declare',
 
             var results         = new this.Deferred(),
                 _options        = options || {},
+                dependencyBlock = _options && _options.dev === true ? 'devDependencies' : 'dependencies',
                 mainPackagePath = _options.destination || this.nexus('Altair').resolvePath('package.json');
 
             //we only support dependencies as an object { name: version }
@@ -128,8 +139,8 @@ define(['altair/facades/declare',
                     var changesMade = false,
                         results     = mainPackage;
 
-                    if(!mainPackage.dependencies) {
-                        mainPackage.dependencies = {};
+                    if(!mainPackage[dependencyBlock]) {
+                        mainPackage[dependencyBlock] = {};
                     }
 
                     //check to see if there is conflict with mainPackage
@@ -142,8 +153,8 @@ define(['altair/facades/declare',
                             return false;
                         }
                         //it's not already in there
-                        else if(!_.has(mainPackage.dependencies, dep)) {
-                            mainPackage.dependencies[dep] = version;
+                        else if(!_.has(mainPackage[dependencyBlock], dep)) {
+                            mainPackage[dependencyBlock][dep] = version;
                             changesMade = true;
                         }
 

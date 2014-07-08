@@ -144,13 +144,13 @@ define(['altair/facades/declare',
         },
 
         clauses: function () {
-            return _.cloneDeep(this._clauses);
+            return this._clauses;
         },
 
         clause: function (named) {
 
             if (_.has(this._clauses, named)) {
-                return _.cloneDeep(this._clauses[named]);
+                return this._clauses[named];
             } else {
                 return undefined;
             }

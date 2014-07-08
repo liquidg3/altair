@@ -27,7 +27,8 @@
                             "type":    "boolean",
                             "options": {
                                 "label":    "run on all modules (including disabled ones)",
-                                "required": true
+                                "required": true,
+                                "default":  true
                             }
                         }
                     }

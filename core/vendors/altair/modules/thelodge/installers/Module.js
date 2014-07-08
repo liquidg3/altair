@@ -152,7 +152,8 @@ define(['altair/facades/declare',
 
                             }).then(function (results) {
 
-                                if(results && results.files) {
+                                if(results && results.files && _.toArray(results.files).length
+                                    > 0) {
                                     this.log('files modified:', results);
                                     throw new Error('Install halted because ' + match.name + ' at has local changes (I don\'t want to clobber them). Either delete, revert, or commit/push the module at ' + match.dir + '.');
                                 }
@@ -162,7 +163,7 @@ define(['altair/facades/declare',
 
                                 dfd.resolve(module);
 
-                            }).otherwise(this.hitch(dfd, 'reject'));
+                            }.bind(this)).otherwise(this.hitch(dfd, 'reject'));
 
                         }
                         //it is already installed, skip it

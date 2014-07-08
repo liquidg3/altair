@@ -55,7 +55,8 @@ define(['altair/facades/declare',
                 allModules = _options.all,
                 cartridge = this.nexus('cartridges/Module'),
                 modules = cartridge.modules,
-                names = _options.names || '*';
+                names = _options.names || '*',
+                packages;
 
             //if we are not doing all modules, then get the names of the installed ones
             if (!allModules && names === '*') {
@@ -81,13 +82,19 @@ define(['altair/facades/declare',
 
                 return this.all(packages);
 
-            }.bind(this)).then(function (packages) {
+            }.bind(this)).then(function (_packages) {
 
-                var dependencies = _.map(packages, 'dependencies');
+                var dependencies = _.map(packages, 'dependencies'),
+                    devDependencies = _.map(packages, 'devDependencies');
 
-                return this._npm.updateMany(dependencies);
+                return this.series([
+                    function () { this._npm.updateMany(dependencies, { invokeNpm: false });}.bind(this),
+                    function () { this._npm.updateMany(devDependencies, { invokeNpm: true, dev: true });}.bind(this)
+                ]);
 
-            }.bind(this));
+            }.bind(this)).then(function () {
+
+            });
 
         },
 
@@ -162,6 +169,7 @@ define(['altair/facades/declare',
                         destination: destination,
                         valet:       this
                     }).then(function (_installer) {
+
                         installer = _installer;
                         return installer.execute(altairDependencies);
 

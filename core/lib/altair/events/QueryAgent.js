@@ -8,18 +8,19 @@ define(['altair/facades/declare',
         'dojo/node!underscore-query'
 ], function (declare, _, underscoreQuery) {
 
-    var engine = underscoreQuery(_, false)
+    var engine = underscoreQuery(_, false);
 
     return declare(null, {
         engine: engine,
         matches: function (event, query) {
 
-            if(!query || query == {}) {
+            if(!query || query === {}) {
                 return true;
             }
 
+            //do a simple equality check because of object matching not working in our engine
             return this.engine([ event.data ], query, function (obj, key) {
-                if('get' in obj) {
+                if(obj.get) {
                     return obj.get(key);
                 }
                 return obj[key];

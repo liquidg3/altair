@@ -39,7 +39,8 @@ define(['altair/facades/declare',
             },
 
             /**
-             * Resolve a path against my app or home, depending on whether or not app exists
+             * Resolve a path against  the last path in my paths. home by default
+             *
              * @param p String
              * @returns {String}
              */
