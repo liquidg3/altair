@@ -105,11 +105,30 @@ define(['altair/facades/declare',
                 //glob all the dirs
                 deferred = glob( paths ).then( hitch( this, function ( files ) {
 
-                    var _paths = this._filterPaths( files, _options.modules );
+                    var _paths = this._filterPaths( files, _options.modules),
+                        missing = [];
 
                     //all modules failed?
                     if( !_paths || _paths.length === 0 || (_options.modules !== '*' && _paths.length !== _options.modules.length)) {
-                        throw new Error("Failed to load one or more modules: " + _options.modules.join(', ') + ' from paths: ' + paths.join(', '));
+
+                        missing = _.filter(_options.modules, function (name) {
+
+                            var path = this.moduleNameToPath(name),
+                                found = false;
+
+                            _.each(_paths, function (p) {
+                                if(p.indexOf(path) > -1) {
+                                    found = true;
+                                    return false;
+                                }
+                            });
+
+
+                            return !found;
+
+                        }, this);
+
+                        throw new Error("Failed to load one or more modules: " + missing.join(', ') + ' from paths: ' + paths.join(', ') + '. Check for other errors as to why they failed and make sure they are included in modules:[].');
                     }
 
                     return this._sortByDependencies(_paths);

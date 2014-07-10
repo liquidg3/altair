@@ -54,22 +54,21 @@ very limited number of assertions available:
 - `f(actual, hint)`: is actual [falsy](http://www.sitepoint.com/javascript-truthy-falsy/)
 - `t(actual, hint)`: is actual [truthy](http://www.sitepoint.com/javascript-truthy-falsy/)
 
-You can use any assertion library that throws errors. Use the following and include them using `altair/plugins/node!should`.
-Here is a brief list of a few
+###Including 3rd party assertion library
+You don't have to use the very weak doh assertion library, you can use whatever you want. Here are a few:
 
 - [should.js](https://github.com/visionmedia/should.js)
 - [chai](http://chaijs.com)
 - [expect](https://github.com/LearnBoost/expect.js)
 
-###Including 3rd party assertion library
-In this scenario I'm going to use chai.js (chosen randomly).
+In this scenario I'm going to use chai.js (chosen randomly as I am testing them each out to see what I like the best).
 
 *Step 1* - drop devDependencies into your module's `package.json`
 ```json
 {
     "name":         "liquidfire:Sockets",
     "version":      "0.0.2",
-    "description":  "Allows the browser to participate in event dispatching in Altair.",
+    "description":  "Allows the browser to participate in event emitting/listening in Altair.",
     "dependencies": {
         "sockjs":           ">=0.3.8",
         "socket.io":        "1.0.6",
@@ -80,6 +79,32 @@ In this scenario I'm going to use chai.js (chosen randomly).
     }
 }
 
+```
+
+*Step 2* - include your new assertion library
+```js
+define(['altair/test',
+        'altair/plugins/node!chai,
+    function (test,
+              chai) {
+
+        var expect = chai.expect;
+
+        test.register('my-test', {
+
+            "test that the fu is bar": function (t) {
+
+                var fu      = 'bar',
+                    pass    = false;
+
+                expect(fu).to.equal('bar'); //passes
+                expect(fu).to.not.equal('bar'); //fails
+
+            }
+
+        });
+
+    });
 ```
 
 

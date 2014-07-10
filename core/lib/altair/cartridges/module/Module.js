@@ -64,7 +64,7 @@ define(['altair/facades/declare',
          */
         startup: function (options) {
 
-            var _options = options || this.options,
+            var _options = options || this.options || {},
                 list;
 
             //The paths we will look for modules (altair paths mixed in during buildOne())

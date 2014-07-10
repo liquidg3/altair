@@ -2,12 +2,14 @@ define(['altair/facades/declare',
         'altair/facades/hitch',
         'altair/facades/when',
         'altair/facades/all',
+        'altair/facades/series',
         'lodash',
         'altair/Deferred'
 ], function (declare,
              hitch,
              when,
              all,
+             series,
              _,
              Deferred) {
 
@@ -130,29 +132,7 @@ define(['altair/facades/declare',
          */
         series: function (callbacks) {
 
-            var cbs = _.toArray(callbacks),
-                dfd = new this.Deferred(),
-                results = [],
-                next = function () {
-
-                    var callback = cbs.shift();
-
-                    if(!callback) {
-                        dfd.resolve(results);
-                    } else {
-
-                        this.when(callback()).then(function (r) {
-                            results.push(r);
-                            next();
-                        }).step(this.hitch(dfd, 'progress')).otherwise(this.hitch(dfd, 'reject'));
-
-                    }
-
-                }.bind(this);
-
-            next();
-
-            return dfd;
+            return series(callbacks);
 
         }
 

@@ -1,8 +1,9 @@
 {
     "debug": ".*",
     "glob": [
-        "core/vendors/*/modules/*/tests/*.js",
-        "core/tests/*.js",
-        "apollo/tests/*.js"
+        "tests/vendors/liquidfire/modules/sockets/tests/*.js",
+        "skipped.core/vendors/*/modules/*/tests/*.js",
+        "skipped.core/tests/*.js",
+        "skipped.apollo/tests/*.js"
     ]
 }

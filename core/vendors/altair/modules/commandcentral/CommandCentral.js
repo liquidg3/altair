@@ -41,7 +41,7 @@ define(['altair/facades/declare',
                 var _options = options || this.options || {};
 
                 //if there is no selected adapter being passed with startup, try our best to detect which one to use
-                if(!options.selectedAdapter) {
+                if(!_options.selectedAdapter) {
 
                     if(!process.stdin.isTTY || !process.stdout.isTTY) {
                         this.set('selectedAdapter', 'adapters/Prompt');

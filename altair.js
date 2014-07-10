@@ -69,7 +69,7 @@ dojoConfig = {
         "*": {
             'dojo/_base/declare': 'altair/facades/declare',
             'dojo/Deferred':      'altair/Deferred',
-            'altair/test':        'doh/runner'
+            'doh/runner':         'altair/test'
         }
 
     },
