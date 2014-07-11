@@ -102,9 +102,13 @@ define(['altair/facades/declare',
 
                         _.each(this._forgedModules, function (module) {
 
+                            if(!module._ignoreExtensions || module._ignoreExtensions.indexOf(ext.name) === -1) {
+
                                 list.push(when(ext.extend(module.constructor, 'module')).then(this.hitch(function () {
                                     return ext.execute(module, 'module');
                                 })));
+
+                            }
 
                         }, this);
 
@@ -179,7 +183,9 @@ define(['altair/facades/declare',
 
                 _.each(this._extensions, function (extension) {
                     if(extension.canExtend(type)) {
-                        list.push(extension.extend(Module, type));
+                        if(!Module.prototype._ignoreExtensions || Module.prototype._ignoreExtensions.indexOf(extension.name) === -1) {
+                            list.push(extension.extend(Module, type));
+                        }
                     }
                 },this);
 
@@ -194,7 +200,7 @@ define(['altair/facades/declare',
             },
 
             /**
-             * Run anything you want on an AMD module after it's been created
+             * Run anything you want on an AMD module after it's been instantiated
              *
              * @returns {altair.Promise}
              */
@@ -208,7 +214,9 @@ define(['altair/facades/declare',
 
                 _.each(this._extensions, function (extension) {
                     if(extension.canExtend(type)) {
-                        list.push(extension.execute(module, type));
+                        if(!module._ignoreExtensions || module._ignoreExtensions.indexOf(extension.name) === -1) {
+                            list.push(extension.execute(module, type));
+                        }
                     }
                 },this);
 
