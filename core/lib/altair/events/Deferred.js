@@ -264,6 +264,8 @@ define([
                             results = e;
                             if(newPromise.errCallback) {
                                 newPromise.errCallback(e);
+                            } else {
+                                console.log(e);
                             }
                         }
 
