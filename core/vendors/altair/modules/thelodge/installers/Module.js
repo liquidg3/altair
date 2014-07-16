@@ -166,7 +166,7 @@ define(['altair/facades/declare',
                             }.bind(this)).otherwise(this.hitch(dfd, 'reject'));
 
                         }
-                        //it is already installed, skip it
+                        //it is already installed and at the right version, skip it
                         else {
 
                             this.deferred.progress({
@@ -195,7 +195,7 @@ define(['altair/facades/declare',
 
             }.bind(this)).then(function (modules) {
 
-                //clean out modules
+                //clean out array of modules that are being skipped
                 modules = _.without(modules, false);
 
                 //clean out all dirs where we are going to install

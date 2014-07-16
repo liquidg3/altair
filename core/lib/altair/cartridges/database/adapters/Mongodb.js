@@ -189,7 +189,7 @@ define(['altair/facades/declare',
 
         parseStatement: function (statement) {
 
-            var clauses = statement.clauses(),
+            var clauses = _.cloneDeep(statement.clauses()),
                 mapOperators = this.hitch(function (obj) {
 
                     var output = _.isArray(obj) ? [] : {};

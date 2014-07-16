@@ -152,8 +152,8 @@ define(['altair/facades/declare',
                             results.reject(new Error('Package version incompatibility between install and ' + mainPackagePath));
                             return false;
                         }
-                        //it's not already in there
-                        else if(!_.has(mainPackage[dependencyBlock], dep)) {
+                        //it's not already in there (so far, in real world uses, always dropping the dependency into the package.json is the best move... even if it means downgrading)
+                        else if(true || !_.has(mainPackage[dependencyBlock], dep)) {
                             mainPackage[dependencyBlock][dep] = version;
                             changesMade = true;
                         }
