@@ -64,7 +64,10 @@ define(['altair/facades/declare',
                     var m = _.where(results, { file: 'Module.js' })[0],
                         dest    = path.join(m.to, '..', name + '.js');
 
-                    fs.renameSync(m.to, dest);
+                    return this.promise(fs, 'renameSync', m.to, dest);
+
+
+                }.bind(this)).then(function () {
 
                     this.writeLine('Forge complete. Renaming Module.js to ' + name + '.js');
 
@@ -87,26 +90,20 @@ define(['altair/facades/declare',
 
             this.writeLine('forging new app...');
 
-            var from = this.parent.resolvePath('templates/app'),
-                dfd = new this.Deferred();
+            return this.parent.forge('models/App').then(function (app) {
 
-            this.parent.forge('foundry/Copier').then(function (copier) {
-
-                copier.execute(from, values.destination, {}).step(function (step) {
+                return app.forge(values.destination).step(function (step) {
 
                     this.writeLine(step.message, step.type || '');
 
-                }.bind(this)).then(function (results) {
+                }.bind(this)).then(function () {
 
                     this.writeLine('Forge complete.');
 
-                    dfd.resolve(this);
-
-                }.bind(this)).otherwise(this.hitch(dfd, 'reject'));
+                }.bind(this));
 
             }.bind(this));
 
-            return dfd;
 
         },
 
@@ -125,7 +122,7 @@ define(['altair/facades/declare',
                 //get the 'paths' we have set in altair
                 var altair          = this.nexus('Altair'),
                     defaultValue    = altair.paths[altair.paths.length - 1],
-                    choices    = {};
+                    choices         = {};
 
                 altair.paths.forEach(function (path) {
                     if(path !== 'core') {

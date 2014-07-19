@@ -63,7 +63,6 @@ define(['altair/facades/declare',
     return declare([_Base], {
 
         name: 'foundry',
-
         startup: function () {
 
             if(!this.cartridge.hasExtension('paths')) {
@@ -86,6 +85,7 @@ define(['altair/facades/declare',
             //mixin our extensions
             Module.extendOnce({
 
+                _fileExistsCache: {},
                 forge: function (className, options, config) {
 
                     config = config || {};
@@ -93,6 +93,7 @@ define(['altair/facades/declare',
                     var dfd           = new Deferred(),
                         parent        = _.has(config, 'parent') ? config.parent : this.parent || this,
                         path,
+                        exists,
                         parts,
                         name          = _.has(config, 'name') ? config.name : null,
                         foundry       = _.has(config, 'foundry') ? config.foundry : defaultFoundry,
@@ -132,41 +133,22 @@ define(['altair/facades/declare',
                     }
 
                     //path from newly resolved classname
-                    path = (parent) ? parent.resolvePath(className + '.js') : this.resolvePath(className + '.js');
+                    path = parent ? parent.resolvePath(className + '.js') : this.resolvePath(className + '.js');
 
-//                    //require path
-//                    dfd = promise(require, [path]).then(function (Child) {
-//
-//                        var a       = foundry(Child, options, {
-//                            parent:     parent,
-//                            name:       name,
-//                            nexus:      (parent) ? parent._nexus : this._nexus,
-//                            type:       type,
-//                            dir:        pathUtil.join(pathUtil.dirname(path), '/'),
-//                            defaultFoundry: defaultFoundry,
-//                            extensions: this.nexus('cartridges/Extension')
-//                        });
-//
-//                        //extend this object
-//                        return when(a).then(hitch(this, function (a) {
-//
-//                            //startup the module
-//                            if(a.startup && shouldStartup) {
-//                                return a.startup(options)
-//                            } else {
-//                                return a;
-//                            }
-//
-//                        }));
-//
-//                    }.bind(this)).otherwise(function (err) {
-//
-//                        this.log(err);
-//
-//                    }.bind(this));
+                    //if the file exists, immediately call the callback with true
+                    if(this._fileExistsCache[path]) {
+                        exists = function (path, cb) {cb(true);};
+                    }
+                    //otherwise use the actual fs.exists method
+                    else {
+                        exists = fs.exists.bind(fs);
+                    }
+
 
                     //does this file exist? you have to do this with require() because it will error and never call the callback =(
-                    fs.exists(path, hitch(this, function (exists) {
+                    exists(path, hitch(this, function (exists) {
+
+                        this._fileExistsCache[path] = exists;
 
                         if(!exists) {
                             dfd.reject(new Error('Could not create type:' + type + ' because I could not find it at:' + path));

@@ -133,19 +133,26 @@ define(['altair/facades/declare',
         onStateMachineDidEnterSelectCommander: function (e) {
 
             var choices    = {}, //options for the select
+                aliases    = {},
                 dfd        = new this.Deferred();
 
             this.parent.refreshCommanders().then(hitch(this, function (commanders) {
 
                 Object.keys(commanders).forEach(function (name) {
+
                     if (name !== 'altair') {
                         choices[name]              = commanders[name].description();
+                        if(commanders[name].options.aliases) {
+                           aliases[name] = commanders[name].options.aliases;
+                        }
+
                     }
+
                 });
 
                 choices.exit = 'Quit altair';
 
-                return this.select('choose commander', null, choices).then(hitch(this, function (commander) {
+                return this.select('choose commander', null, { choices: choices, aliases: aliases }).then(hitch(this, function (commander) {
 
                     //so we handle all flow logic in one place (next then())
                     if(commander === 'exit'){

@@ -2,6 +2,7 @@
     "thelodge": {
         "path":        "commanders/Commander",
         "label":       "The Lodge",
+        "aliases":      ["lodge", "l"],
         "description": "Visit the Lodge for all your Altair goodies.",
         "commands":    {
             "search": {

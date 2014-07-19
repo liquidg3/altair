@@ -37,7 +37,8 @@
  *
  */
 define(['altair/facades/declare',
-        './mixins/_DeferredMixin'],
+        './mixins/_DeferredMixin',
+        'lodash'],
             function (declare,
                       _DeferredMixin) {
 
@@ -69,7 +70,7 @@ define(['altair/facades/declare',
         startup: function (options) {
 
             if(options) {
-                this.options = options;
+                this.options = _.clone(options);
             }
 
             if(!this.deferred) {

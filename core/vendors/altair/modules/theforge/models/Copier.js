@@ -61,7 +61,7 @@ define(['altair/facades/declare',
                                 message: file + ' is a dir, diving in.'
                             });
 
-                            return this.execute(path, pathUtil.join(to, file), context);
+                            return this.execute(path, pathUtil.join(to, file), context).step(dfd.progress.bind(dfd));
 
                         } else {
 
@@ -85,7 +85,7 @@ define(['altair/facades/declare',
                     //we read a file, drop in context and write to destination
                     if(content instanceof Buffer) {
 
-                        var complete = sprintf(content.toString(), context),
+                        var complete = context && Object.keys(context).length > 0 ? sprintf(content.toString(), context) : content,
                             file     = filenames[i],
                             dest     = pathUtil.join(to, file),
                             _dfd     = new this.Deferred();
@@ -113,7 +113,7 @@ define(['altair/facades/declare',
                         }.bind(this)).otherwise(function () {
 
                             dfd.progress({
-                                message: 'no file found at: ' + dest + '. writing contents'
+                                message: 'no file found at: ' + dest + '. creating & writing contents'
                             });
 
                             this.promise(fs, 'writeFile', dest, complete).then(function () {

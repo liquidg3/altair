@@ -95,14 +95,16 @@ define(['altair/facades/declare',
 
                         if(!old) {
 
-                            dfd = new Deferred();
-                            dfd.resolve(this);
+                            if(!dfd) {
+                                dfd = new Deferred();
+                                dfd.resolve(this);
+                            }
 
-                            return dfd;
+                            return when(dfd);
 
                         } else {
 
-                            return this.when(dfd).then(function () {
+                            return when(dfd).then(function () {
 
                                 return old(options);
 
