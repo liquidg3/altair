@@ -2,12 +2,16 @@ define(['altair/facades/declare',
         './_Base',
         'altair/plugins/node!gift',
         'lodash',
-        'altair/plugins/node!semver'
+        'altair/plugins/node!semver',
+        'altair/plugins/node!rimraf',
+        'altair/plugins/node!path'
 ], function (declare,
              _Base,
              gift,
              _,
-             semver) {
+             semver,
+             rimraf,
+             pathUtil) {
 
     "use strict";
     return declare([_Base], {
@@ -83,6 +87,7 @@ define(['altair/facades/declare',
             var dfd         = new this.Deferred(),
                 destination = options.destination,
                 version     = options.version,
+                clean       = options.clean,
                 repo;
 
 
@@ -132,7 +137,20 @@ define(['altair/facades/declare',
 
             }
 
+            if(clean) {
+
+                return dfd.then(this.hitch('clean', destination))
+
+            }
+
             return dfd;
+
+        },
+
+        clean: function (path) {
+
+            var dir = pathUtil.join(path, '.git');
+            return this.promise(rimraf, dir);
 
         },
 

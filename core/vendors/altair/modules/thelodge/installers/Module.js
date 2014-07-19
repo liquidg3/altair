@@ -385,6 +385,7 @@ define(['altair/facades/declare',
                     _dfd                = new this.Deferred();
 
                 options.destination     = tmpDir;
+                options.clean           = true; //so .git folders are removed
 
                 if(version) {
                     options.version         = version;
