@@ -18,15 +18,17 @@
 
 define(['altair/facades/declare', //take a look at terms.md
         'altair/Lifecycle',
+        'altair/mixins/_AssertMixin',
         'altair/plugins/node!fs',
         'altair/events/Emitter'
 ], function (declare,
              Lifecycle,
+             _AssertMixin,
              fs,
              Emitter) {
 
     //by mixing in Lifecycle, we get startup(options), execute(options), and shutdown()
-    return declare([Lifecycle, Emitter], {
+    return declare([Lifecycle, Emitter, _AssertMixin], {
 
 
         /**
@@ -72,6 +74,21 @@ define(['altair/facades/declare', //take a look at terms.md
         execute: function () {
 
             return this.inherited(arguments);
+
+        },
+
+        /**
+         * Because javascript is such a flexible language, it can be easy to make mistakes that would otherwise be
+         * impossible in compiled languages. To make live easier for everyone, you should take advantage of the
+         * _Assert mixin's API for validating function parameters.
+         *
+         * @param arg1
+         * @param arg2
+         */
+        myCustomFunction: function (arg1, arg2) {
+
+            this.assertString(arg1, 'You must pass a string');
+            this.assert(!!arg2, 'You must pass both arguments');
 
         },
 

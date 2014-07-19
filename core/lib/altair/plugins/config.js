@@ -51,7 +51,7 @@ define(['require',
         'altair/Deferred',
         'altair/plugins/node!debug',
         'altair/plugins/node!config-extend',
-        'dojo/DeferredList'],
+        'altair/facades/all'],
 
     function (require,
               querystring,
@@ -61,7 +61,7 @@ define(['require',
               Deferred,
               debug,
               extend,
-              DeferredList) {
+              all) {
 
 
         debug.enable('altair:config');
@@ -69,58 +69,60 @@ define(['require',
 
         var parseRefs = function (config, baseUrl) {
 
-            var deferred = new Deferred(),
-                list     = [];
-
             /**
              * Traverse the structure of the config and build a key path
              * @param o
              * @param func
              */
-            function traverse(o,func, path) {
-                var i;
+            function traverse(o, func, path) {
+
+                var i,
+                    dfds = [];
 
                 for ( i in o ) {
-                    func.apply(this,[i,o[i], path || i]);
+
+                    dfds.push(func.apply(this,[i,o[i], path || i]));
 
                     if (o[i] !== null && typeof(o[i]) === "object") {
+
                         var _path = (path) ? path + '.' + i : i;
-                        //going on step down in the object tree!!
                         traverse(o[i],func, _path);
+
                     }
                 }
+
+                return all(dfds);
             }
 
-            traverse(config, function (key, value, fullPath) {
+            function resolve(key, value, fullPath) {
+
+                var dfd;
 
                 if(key == '$ref') {
 
-                    var path = value.replace('./', baseUrl + '/'),
-                        def  = new Deferred();
+                    var path = value.replace('./', baseUrl + '/');
 
-                    list.push(def);
+                    dfd = new Deferred();
 
                     require(['altair/plugins/config!' + path], function (_config) {
 
                         lang.setObject(fullPath, _config, config)
 
-                        def.resolve();
+                        traverse(_config, resolve, fullPath).then(function () {
+                           dfd.resolve();
+                        });
 
                     });
 
                 }
 
+                return dfd;
+
+            }
+
+            return traverse(config, resolve).then(function () {
+                return config;
             });
-
-            var deferredList = new DeferredList(list);
-
-
-            deferredList.then(function () {
-                deferred.resolve(config);
-            });
-
-
-            return deferred;
 
         };
 
@@ -165,20 +167,24 @@ define(['require',
             }
 
 
-            if(env) {
 
-                var base = config.default || {};
-                extend(base, config[env] || {});
-
-                config = base;
-
-            }
 
             //Pull out the base path to this file for the ref parser (it makes ./ work)
             var basePath = id.split('/').slice(0, -1).join('/');
 
             parseRefs(config, basePath).then(lang.hitch(this, function (config) {
+
+                if(env) {
+
+                    var base = config.default || {};
+                    extend(base, config[env] || {});
+
+                    config = base;
+
+                }
+
                 load(config);
+
             }));
 
 

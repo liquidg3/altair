@@ -97,6 +97,10 @@
                         }
                     }
                 }
+            },
+
+            "update": {
+                "description": "Update your current app's dependencies."
             }
         }
     }

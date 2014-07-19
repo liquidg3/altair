@@ -138,11 +138,34 @@ define(['altair/facades/declare',
 
             }.bind(this)).step(function (step) {
 
-                this.writeLine(step.message, 'progress');
+                this.writeLine(step.message, step.type || 'progress');
 
             }.bind(this)).then(function (modules) {
+
                 this.writeLine('successfully installed installed ' + modules.length + ' modules', 'success');
+
             }.bind(this));
+
+        },
+
+        update: function (options) {
+
+            var altair = this.nexus('Altair');
+
+            if(altair.paths.indexOf('app') > -1) {
+
+                return this.updateFromPackage({
+                    packagePath: altair.resolvePath('package.json'),
+                    destination: 'app'
+                });
+
+            } else {
+
+                this.writeLine('cannot run update. no app present.');
+
+            }
+
+            return this.this
 
         },
 

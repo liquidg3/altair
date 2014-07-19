@@ -50,7 +50,7 @@ define(['altair/facades/declare',
                 throw new Error('A module named ' + full + ' is already taken!');
             }
 
-            to = path.join(require.toUrl(values.dir), foundry.moduleNameToPath(full));
+            to = path.join(require.toUrl(values.destination), foundry.moduleNameToPath(full));
 
             this.parent.forge('foundry/Copier').then(function (copier) {
 

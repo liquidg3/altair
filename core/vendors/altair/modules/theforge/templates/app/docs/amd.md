@@ -7,7 +7,7 @@ define(['altair/facades/declare',
         'altair/mixins/_AssertMixin'
 ], function (declare,
              _DeferredMixin,
-             _AssertMixin) {
+             _Assert) {
 
     return declare([_DeferredMixin, _AssertMixin], {
 

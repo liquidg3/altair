@@ -28,7 +28,7 @@
                             "description": "Give your module a classy name. It should be in the form of Alfred or CommandCentral."
                         }
                     },
-                    "dir":    {
+                    "destination":    {
                         "type":    "select",
                         "options": {
                             "label":       "destination",
@@ -52,6 +52,14 @@
                             "required":    true,
                             "default":     ".",
                             "description": "Where would you like your new app forged?"
+                        }
+                    },
+                    "name":   {
+                        "type":    "string",
+                        "options": {
+                            "label":       "app name",
+                            "pattern":     "[a-zA-Z]",
+                            "description": "Give your app a classy name. It should be in the form of MyApp or myapp."
                         }
                     }
                 }

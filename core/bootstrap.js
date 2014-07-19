@@ -82,7 +82,7 @@ require(['altair/Altair',
         require([
             'altair/plugins/config!' + appConfigPath + '?env=' + global.env,
             'altair/plugins/config!' + homeConfigPath + '?env=' + global.env
-        ], function (cwdConfig, homeConfig) {
+        ], function (appConfig, homeConfig) {
 
             var paths = [],
                 altair,
@@ -92,12 +92,12 @@ require(['altair/Altair',
             config.paths.home = homePath; //always have a home path
 
             //mixin configs, cwd config wins!
-            if(cwdConfig) {
+            if(appConfig) {
 
                 //if the cwdConfig exists, it is our new "home" folder and everything will run/install from there
                 debug('app detected - loading config @ ' + appConfigPath);
 
-                extend(config, cwdConfig);
+                extend(config, appConfig);
 
                 //our new home (also make sure it's in the paths)
                 app = process.cwd();

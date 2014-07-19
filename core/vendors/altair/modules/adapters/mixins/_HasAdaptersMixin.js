@@ -21,6 +21,7 @@
  */
 define(['altair/facades/declare',
         'altair/facades/mixin',
+        'altair/mixins/_AssertMixin',
         'altair/Lifecycle',
         'altair/events/Emitter',
         'dojo/node!i18n-2',
@@ -29,6 +30,7 @@ define(['altair/facades/declare',
 
     function (declare,
               mixin,
+              _AssertMixin,
               Lifecycle,
               Emitter,
               i18n,
@@ -36,7 +38,7 @@ define(['altair/facades/declare',
               _HasSchemaMixin) {
 
 
-    return declare([Lifecycle, Emitter, _HasSchemaMixin], {
+    return declare([Lifecycle, Emitter, _HasSchemaMixin, _AssertMixin], {
 
         _adaptersConfig:    null,   //cache for our adapter's config
         _adaptersCache:     null,   //stores adapters for retrieval later
@@ -127,6 +129,8 @@ define(['altair/facades/declare',
                     options = named.options;
                     named   = named.path;
                 }
+
+                this.assertString(named, 'Adapter names must be strings.');
 
                 d = this.forge(named, options, { type: 'adapter' }).then(this.hitch(function (adapter) {
                     this._adaptersCache[named] = adapter;

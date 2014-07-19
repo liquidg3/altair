@@ -91,8 +91,8 @@ define(['altair/facades/declare',
                     function () { this._npm.updateMany(devDependencies, { invokeNpm: true, dev: true });}.bind(this)
                 ]);
 
-            }.bind(this)).then(function () {
-
+            }.bind(this)).then(function (results) {
+//                console.log(results);
             });
 
         },
@@ -172,7 +172,13 @@ define(['altair/facades/declare',
                         installer = _installer;
                         return installer.execute(altairDependencies);
 
-                    });
+                    }).then(function (modules) {
+
+                        return this.npm({ all: true }).then(function () {
+                            return modules;
+                        });
+
+                    }.bind(this));
 
 
                 }.bind(this);
@@ -180,10 +186,7 @@ define(['altair/facades/declare',
 
             if(altairDependencies) {
                 callbacks.push(installAltair);
-            }
-
-
-            if(dependencies) {
+            } else if(dependencies) {
                 callbacks.push(installNode);
             }
 
