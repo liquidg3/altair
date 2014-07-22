@@ -22,6 +22,19 @@ define(['altair/facades/declare',
     return declare([_HasEventsMixin, _HasCommandersMixin, _HasInstallersMixin, _HasListenersMixin, _HasMenuMixin], {
 
         _installers: null,
+        _menus: null, //any menus set during startup
+        startup: function (options) {
+
+            var _options = options || this.options || {};
+
+            if(_options.menus) {
+                this._menus = _options.menus;
+            } else {
+                this._menus = [];
+            }
+
+            return this.inherited(arguments);
+        },
 
         /**
          * Choose a version control strategy (look inside vcs for an available strategies)
@@ -60,7 +73,7 @@ define(['altair/facades/declare',
         refreshMenus: function () {
 
             return this.emit('register-menu').then(hitch(this, function (e) {
-                return e.results();
+                return [].concat(this._menus, e.results());
             }));
 
         },

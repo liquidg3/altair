@@ -71,6 +71,7 @@ define(['altair/facades/declare',
 
             //build dependencies block, assume if string
             var dependencies = _.isObject(name) ? name : false,
+                cleanedDependencies = {},
                 modules;
 
             if(!dependencies) {
@@ -78,8 +79,15 @@ define(['altair/facades/declare',
                 dependencies[name] = version;
             }
 
+            //filter out any Altair modules
+            _.each(dependencies, function (v, k) {
+                if(k.search('altair:') === -1) {
+                    cleanedDependencies[k] = v;
+                }
+            });
+
             //start by downloading this module and all its dependencies
-            this.downloadMany(dependencies).then(function (_modules) {
+            this.downloadMany(cleanedDependencies).then(function (_modules) {
 
                 modules = _modules;
 
@@ -365,7 +373,7 @@ define(['altair/facades/declare',
             this._createTmpDir(tmpDir).then(function () {
 
                 dfd.progress({
-                    message: 'starting install for ' + name + ' @' + ver,
+                    message: 'starting dowload of ' + name + ' @' + ver,
                     menuItem: menuItem,
                     type: menuItem.repository.type
                 });

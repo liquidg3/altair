@@ -24,7 +24,9 @@ define(['lodash',
                         when(callback()).then(function (r) {
                             results.push(r);
                             next();
-                        }).step(hitch(dfd, 'progress')).otherwise(hitch(dfd, 'reject'));
+                        }).step(hitch(dfd, 'progress')).otherwise(function (err) {
+                            hitch(dfd, 'reject')(err);
+                        });
 
                     }
 

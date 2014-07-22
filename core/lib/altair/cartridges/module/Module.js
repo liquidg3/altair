@@ -137,7 +137,7 @@ define(['altair/facades/declare',
          * Inject modules into the Altair runtime
          *
          * @param modules
-         * @returns {dojo.Deferred}
+         * @returns {altair.Deferred}
          */
         injectModules: function (modules) {
 
@@ -211,7 +211,11 @@ define(['altair/facades/declare',
                 var m = started.shift();
 
                 if(m) {
-                    m.execute().then(execute).otherwise(hitch(deferred, 'reject'));
+                    try {
+                        m.execute().then(execute).otherwise(hitch(deferred, 'reject'));
+                    } catch (e) {
+                        deferred.reject(e);
+                    }
                 } else {
                     deferred.resolve(modules);
                 }

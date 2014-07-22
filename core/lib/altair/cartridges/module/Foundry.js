@@ -131,7 +131,7 @@ define(['altair/facades/declare',
                         throw new Error("Failed to load one or more modules: " + missing.join(', ') + ' from paths: ' + paths.join(', ') + '. Check for other errors as to why they failed and make sure they are included in modules:[].');
                     }
 
-                    return this._sortByDependencies(_paths);
+                    return this._sortByDependencies(_paths, options);
 
 
                 })).then(hitch(this, function (sorted) {
@@ -212,11 +212,13 @@ define(['altair/facades/declare',
          * @param paths
          * @private
          */
-        _sortByDependencies: function (paths) {
+        _sortByDependencies: function (paths, options) {
 
             var list                    = [],
                 pathsByName             = {},
                 packagesByName          = {},
+                _options                = options || {},
+                skipMissingDependencies = _.has(_options, 'skipMissingDependencies') ? _options.skipMissingDependencies: false,
                 deferred                = new Deferred(),
                 def;
 
@@ -279,15 +281,13 @@ define(['altair/facades/declare',
                                     var p       = pathsByName[name],
                                         _pack   = packagesByName[name];
 
-                                    if(!p) {
+                                    if(!p && !skipMissingDependencies) {
                                         deferred.reject(new Error(pack.name + ' is missing a dependent module named ' + name));
                                         return;
-                                    }
+                                    } else if (p) {
 
-                                    //go through the dependency's dependencies
-                                    sortDependencies(_pack);
-
-                                    if(p) {
+                                        //go through the dependency's dependencies
+                                        sortDependencies(_pack);
 
                                         //now drop in dependent to list
                                         if(sorted.indexOf(p) === -1) {

@@ -43,6 +43,95 @@ define(['altair/facades/declare',
 
         },
 
+        /**
+         * Loops through all started (and optionanlly not started) modules and installs all altair dependencies
+         */
+        update: function (options) {
+
+            var _options = options || {},
+                allModules = _.has(_options, 'all') ? _options.all : true,
+                cartridge = this.nexus('cartridges/Module'),
+                modules = cartridge.modules,
+                dfd     = new this.Deferred(),
+                names = _options.names || '*';
+
+            if(this.nexus('Altair').paths.indexOf('app') === -1) {
+                throw new Error('You can only run update on an app.');
+            }
+
+            //if we are not doing all modules, then get the names of the installed ones
+            if (!allModules && names === '*') {
+
+                names = _.map(modules, function (module) {
+                    return module.name;
+                });
+
+            }
+
+            //get paths to all modules we want (we have to handle npm before they can be loaded anyway)
+            cartridge.buildModules(names, mixin({
+                instantiate: false,
+                skipMissingDependencies: true
+            }, options)).then(function (paths) {
+
+                dfd.progress({
+                    message: 'found ' + paths.length + ' modules. checking for updates',
+                    type: 'notice'
+                });
+
+                //read all the packages
+                var packages = _.map(paths, function (path) {
+
+                    var packagePath = pathUtil.join(path, '..', 'package.json');
+                    return this.parseConfig(packagePath);
+
+                }, this);
+
+                return this.all(packages);
+
+            }.bind(this)).then(function (_packages) {
+
+                var installers = _.compact(_.map(_packages, function (p) {
+
+                    if(p) {
+
+                        return function () {
+
+                            dfd.progress({
+                                message: 'checking for updates on ' + p.name,
+                                type: 'notice'
+                            });
+
+                            return this.resolveDependencies(p, 'app', { invokeNpm: false }).step(this.hitch(dfd, 'progress'));
+
+                        }.bind(this);
+
+                    }
+
+                }, this));
+
+                return this.series(installers);
+
+            }.bind(this)).then(function (results) {
+
+                dfd.progress({
+                    message: 'starting npm',
+                    type: 'notice'
+                });
+
+                return this.npm({ all: true });
+
+
+            }.bind(this)).then(function () {
+
+                dfd.resolve();
+
+            }).otherwise(this.hitch(dfd, 'reject'));
+
+            return dfd;
+
+
+        },
 
         /**
          * Loops through all started (and optionally not started) modules and runs npm update for all of them.
@@ -52,6 +141,7 @@ define(['altair/facades/declare',
         npm: function (options) {
 
             var _options = options || {},
+                invokeNpm = _.has(_options, 'invokeNpm') ? _options.invokeNpm : true,
                 allModules = _options.all,
                 cartridge = this.nexus('cartridges/Module'),
                 modules = cartridge.modules,
@@ -68,14 +158,18 @@ define(['altair/facades/declare',
 
             //get paths to all modules we want (we have to handle npm before they can be loaded anyway)
             return cartridge.buildModules(names, mixin({
-                instantiate: false
+                instantiate: false,
+                skipMissingDependencies: true
             }, options)).then(function (paths) {
 
                 //read all the packages
                 var packages = _.map(paths, function (path) {
 
-                    var packagePath = pathUtil.join(path, '..', 'package.json');
-                    return this.parseConfig(packagePath);
+                    //no core modules (really bad check)
+                    if(path.search('core/vendors/altair') === -1) {
+                        var packagePath = pathUtil.join(path, '..', 'package.json');
+                        return this.parseConfig(packagePath);
+                    }
 
                 }, this);
 
@@ -83,17 +177,19 @@ define(['altair/facades/declare',
 
             }.bind(this)).then(function (_packages) {
 
-                var dependencies = _.map(_packages, 'dependencies'),
-                    devDependencies = _.map(_packages, 'devDependencies');
+                var dependencies = _.filter(_.map(_packages, 'dependencies')),
+                    devDependencies = _.filter(_.map(_packages, 'devDependencies')),
+                    series = [];
 
-                return this.series([
-                    function () { this._npm.updateMany(dependencies, { invokeNpm: false });}.bind(this),
-                    function () { this._npm.updateMany(devDependencies, { invokeNpm: true, dev: true });}.bind(this)
-                ]);
+                if(devDependencies.length > 0) {
+                    series.push(this.hitch(this._npm, 'updateMany', devDependencies, { invokeNpm: false }));
+                }
 
-            }.bind(this)).then(function (results) {
-//                console.log(results);
-            });
+                series.push(this.hitch(this._npm, 'updateMany', dependencies, { invokeNpm: invokeNpm }));
+
+                return this.series(series);
+
+            }.bind(this));
 
         },
 
@@ -151,15 +247,15 @@ define(['altair/facades/declare',
          * @param package an object containing dependencies and altairDependencies (more than likely a parsed package.json)
          * @param destination
          */
-        resolveDependencies: function (package, destination) {
-
+        resolveDependencies: function (package, destination, options) {
 
             var dependencies        = package.dependencies,
                 altairDependencies  = package.altairDependencies,
                 callbacks           = [],
                 installer,
+                dfd                 = new this.Deferred(),
                 installNode         = function () {
-                    return this._npm.update(dependencies);
+                    return this._npm.update(dependencies, options);
                 }.bind(this),
                 installAltair      = function () {
 
@@ -172,9 +268,9 @@ define(['altair/facades/declare',
                         installer = _installer;
                         return installer.execute(altairDependencies);
 
-                    }).then(function (modules) {
+                    }.bind(this)).then(function (modules) {
 
-                        return this.npm({ all: true }).then(function () {
+                        return this.npm(_.merge({ all: true }, options)).then(function () {
                             return modules;
                         });
 
@@ -190,9 +286,14 @@ define(['altair/facades/declare',
                 callbacks.push(installNode);
             }
 
-            return this.series(callbacks).then(function (results) {
-                return results.shift(); //take the first (altairDependencies)
-            });
+            this.series(callbacks).then(function (results) {
+                dfd.resolve(results.shift()); //take the first (altairDependencies)
+            }).step(this.hitch(dfd, 'progress'))
+              .otherwise(this.hitch(function (err) {
+                dfd.reject(err);
+            }));
+
+            return dfd;
 
         }
 

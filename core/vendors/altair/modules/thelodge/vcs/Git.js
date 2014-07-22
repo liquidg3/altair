@@ -100,7 +100,7 @@ define(['altair/facades/declare',
                 repo = gift(destination);
 
                 //find a version
-                if(version) {
+                if(version && version !== '*') {
 
                     dfd.progress({
                         message: 'Searching tags for version ' + version

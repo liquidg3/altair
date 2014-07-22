@@ -121,7 +121,12 @@ define(['altair/facades/declare',
                         config.skipNexus = true;
 
 
-                        return apply(this, event, 'on', [callback, query, config]);
+                        try {
+                            return apply(this, event, 'on', [callback, query, config]);
+                        } catch (e) {
+                            console.log(e);
+                            return null;
+                        }
                     },
 
                     /**

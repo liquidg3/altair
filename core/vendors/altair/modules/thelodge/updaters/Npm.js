@@ -95,8 +95,6 @@ define(['altair/facades/declare',
 
                 this._npm.spinner.stop();
 
-                return true; //what to return?
-
             }.bind(this));
 
 
@@ -116,7 +114,6 @@ define(['altair/facades/declare',
         /**
          * Pass an array of dependencies (pulled from package.json) and i'll copy them to options.destination. I'll do
          * some semvr checking as well.
-         *
          *
          * @param dependencies - the contents of anythings package.json's dependencies
          * @returns {altair.Promise}

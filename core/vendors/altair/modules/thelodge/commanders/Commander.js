@@ -148,20 +148,28 @@ define(['altair/facades/declare',
 
         },
 
+        /**
+         * Update all of altair
+         * @param options
+         * @returns {*}
+         */
         update: function (options) {
 
             var altair = this.nexus('Altair');
 
             if(altair.paths.indexOf('app') > -1) {
 
-                return this.updateFromPackage({
-                    packagePath: altair.resolvePath('package.json'),
+                return this._valet.update({
                     destination: 'app'
-                });
+                }).step(function (step) {
+
+                    this.writeLine(step.message, step.type || 'progress');
+
+                }.bind(this))
 
             } else {
 
-                this.writeLine('cannot run update. no app present.');
+                this.writeLine('cannot run update. no app present.', 'error');
 
             }
 

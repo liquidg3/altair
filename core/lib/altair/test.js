@@ -1427,7 +1427,7 @@ define("altair/test", ["dojo/_base/lang"], function(lang){
             ret.always(function(){
                 clearTimeout(timer);
                 timer = null;
-                retEnd();
+                setTimeout(retEnd, 50);
 
             });
 
@@ -1536,7 +1536,9 @@ define("altair/test", ["dojo/_base/lang"], function(lang){
 
 
 
-            dfd.always(done);
+            dfd.always(function () {
+                setTimeout(done, 50);
+            });
 
 
             return dfd;

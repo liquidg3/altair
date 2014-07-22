@@ -64,14 +64,16 @@ define(['altair/test', 'altair/Altair', 'altair/Deferred'], function (test, Alta
          */
         function (t) {
 
-            var deferred = new test.Deferred();
+            var deferred = new Deferred();
 
-            require(['altair/plugins/config!core/tests/configs/env.json?env=dev'], deferred.getTestCallback(function (config) {
+            require(['altair/plugins/config!core/tests/configs/env.json?env=dev'], function (config) {
 
                 t.is('bar2', config.foo, 'Config inheritance did not work.');
                 t.is('world', config.hello, 'Config inheritance did not work.');
 
-            }));
+                deferred.resolve();
+
+            });
 
             return deferred;
 
