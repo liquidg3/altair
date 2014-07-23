@@ -34,7 +34,7 @@
                             "label":       "destination",
                             "required":    true,
                             "default":     "app",
-                            "description": "You can store Altair modules anywhere in your system as long as you configure them in {{pwd}}/altair.json or ~./altair/altair.json"
+                            "description": "home is where all modules are installed for the current user (you)."
                         }
                     }
                 }

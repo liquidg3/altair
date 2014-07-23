@@ -28,6 +28,8 @@ define(['altair/facades/declare', //take a look at terms.md
              Emitter) {
 
     //by mixing in Lifecycle, we get startup(options), execute(options), and shutdown()
+    //by mixing in Emitter we get on() and emit()
+    //by mixing in _AssertMixin we get this.assert() and other related methods
     return declare([Lifecycle, Emitter, _AssertMixin], {
 
 

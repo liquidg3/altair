@@ -9,8 +9,12 @@ define([
     "dojo/_base/lang",
     "dojo/errors/CancelError",
     "dojo/promise/Promise",
+    'altair/plugins/node!debug',
     "dojo/has!config-deferredInstrumentation?dojo/promise/instrumentation"
-], function(has, lang, CancelError, Promise, instrumentation){
+], function(has, lang, CancelError, Promise, debug, instrumentation){
+
+    debug.enable('altair:Deferred');
+    debug = debug('altair:Deferred');
 
     // module:
     //		dojo/Deferred
@@ -63,6 +67,7 @@ define([
                     signalDeferred(deferred, RESOLVED, newResult, ignoreErrors);
                 }
             }catch(error){
+                debug(error);
                 signalDeferred(deferred, REJECTED, error, ignoreErrors);
             }
         }else{

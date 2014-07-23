@@ -52,7 +52,7 @@ define(['altair/facades/declare',
 
             to = path.join(require.toUrl(values.destination), foundry.moduleNameToPath(full));
 
-            this.parent.forge('foundry/Copier').then(function (copier) {
+            this.parent.forge('models/Copier').then(function (copier) {
 
                 copier.execute(from, to, context).step(function (step) {
 
@@ -64,12 +64,14 @@ define(['altair/facades/declare',
                     var m = _.where(results, { file: 'Module.js' })[0],
                         dest    = path.join(m.to, '..', name + '.js');
 
-                    return this.promise(fs, 'renameSync', m.to, dest);
+                    this.writeLine('Forge complete. Renaming Module.js to ' + name + '.js');
+
+                    return this.promise(fs, 'rename', m.to, dest);
 
 
                 }.bind(this)).then(function () {
 
-                    this.writeLine('Forge complete. Renaming Module.js to ' + name + '.js');
+                    this.writeLine('Your module is ready for you at ' + to);
 
                     dfd.resolve(this);
 
@@ -130,8 +132,8 @@ define(['altair/facades/declare',
                     }
                 });
 
-                schema.setOptionFor('dir', 'choices', choices);
-                schema.setOptionFor('dir', 'defaultValue', defaultValue);
+                schema.setOptionFor('destination', 'choices', choices);
+                schema.setOptionFor('destination', 'defaultValue', defaultValue);
 
             }
 
