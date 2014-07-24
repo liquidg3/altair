@@ -14,7 +14,7 @@ read the important bits **below**.
 
 ##Value Proposition
 
-Altair was build with the vision of creating what we've coined as, "experiences of everything." This is more than just
+Altair was built with the vision of creating what we've coined as, "experiences of everything." This is more than just
 connecting to devices: it's orchestrating complex interactions between those devices in such a way as to blend the technology
 so beautifully into our lives that we don't even know that it's there. Not only that, but we should quickly begin to question
 how we ever lived without it.
@@ -42,7 +42,7 @@ in for the first time. But, the reward will be more powerful, more extensible, a
 **Difference 1**: We chose [AMD](http://addyosmani.com/writing-modular-js). As far as implementation, we chose
 [dojo's very powerful AMD implementation](http://dojotoolkit.org/documentation/tutorials/1.9/modules/) because its declare implementation conforms to the
 [C3 Method Resolution Order.](http://www.python.org/download/releases/2.3/mro/) and if you're a python fan, you'll appreciate that.
-**Difference 2**: We take a [promise](http://www.html5rocks.com/en/tutorials/es6/promises/) based to async operations. Any comparison
+**Difference 2**: We take a [promise](http://www.html5rocks.com/en/tutorials/es6/promises/) based approach to async operations. Any comparison
 of callback and promise based code shows the true elegance of promises.
 
 1. **One should focus on the problem they are trying to solve and forget all else.** We are trying to solve the problem

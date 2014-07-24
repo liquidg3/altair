@@ -1,5 +1,4 @@
-Apollo
-===
+#Apollo
 
 Apollo is a lightweight ORM written in JS for dojo/amd. Apollo is different than other ORM's in that it is intended to be used
 without a database (though it can be used with one) and is not attached to any document or model system. Also, unlike
@@ -11,7 +10,7 @@ Schemas in Apollo are powerful creatures. Because they contain (through various 
 to normalize and validate data, they work great for things besides generic objects. Using a schema to validate a rest
 endpoint and to normalize the incoming data is a great way to ensure your data is consistent and valid.
 
-Apollo has several components:
+##Apollo has several components:
 
 - Apollo is where you configure your available field types
 - Schema houses your structure, usually pulled from a .json file so it can be cached =)
@@ -59,10 +58,6 @@ define(['apollo/Apollo',
             new Select(),
             new Path()
         ]);
-
-
-
-
 
     });
 
@@ -145,7 +140,7 @@ define(['apollo/_HasSchemaMixin', 'dojo/declare'],
             this.isValid('restEndpoint')
 
             //perhaps check if we are valid
-            this.valid();
+            this.validate();
 
 
 

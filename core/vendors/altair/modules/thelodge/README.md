@@ -11,6 +11,9 @@ people are sharing.
 - **kitchen**: the storage place for menus and the staff
 - **valet**: runs the installers and updaters
 
+## Usage
+You
+
 ## Creating your own installer
 
 Out of the gate Altair comes with 1 installer; altair:TheLodge/installers/Module
