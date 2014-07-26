@@ -101,7 +101,12 @@
 
             "update": {
                 "description": "Update your current app's dependencies."
+            },
+
+            "status": {
+                "description": "Status on all your modules."
             }
+
         }
     }
 }

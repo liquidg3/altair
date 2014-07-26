@@ -68,11 +68,18 @@ define(['altair/facades/declare',
 
             }
 
-            //get paths to all modules we want (we have to handle npm before they can be loaded anyway)
-            cartridge.buildModules(names, mixin({
-                instantiate: false,
-                skipMissingDependencies: true
-            }, options)).then(function (paths) {
+            this.parent.parseConfig(this.nexus('Altair').resolvePath('package')).then(function (thePackage) {
+
+                return this.fetchDependencies(thePackage, 'app', { invokeNpm: false }).step(this.hitch(dfd, 'progress'));
+
+            }.bind(this)).then(function () {
+
+                return cartridge.buildModules(names, mixin({
+                    instantiate: false,
+                    skipMissingDependencies: true
+                }, options));
+
+            }).then(function (paths) {
 
                 dfd.progress({
                     message: 'found ' + paths.length + ' modules. checking for updates',
@@ -102,7 +109,7 @@ define(['altair/facades/declare',
                                 type: 'notice'
                             });
 
-                            return this.resolveDependencies(p, 'app', { invokeNpm: false }).step(this.hitch(dfd, 'progress'));
+                            return this.fetchDependencies(p, 'app', { invokeNpm: false }).step(this.hitch(dfd, 'progress'));
 
                         }.bind(this);
 
@@ -244,13 +251,14 @@ define(['altair/facades/declare',
         /**
          * Pass me something with both dependencies and altairDependencies and I'll take care of them both
          *
-         * @param package an object containing dependencies and altairDependencies (more than likely a parsed package.json)
-         * @param destination
+         * @param thePackage an object containing dependencies and altairDependencies (more than likely a parsed package.json)
+         * @param destination something like app/home/dev
+         * @param options customize everything
          */
-        resolveDependencies: function (package, destination, options) {
+        fetchDependencies: function (thePackage, destination, options) {
 
-            var dependencies        = package.dependencies,
-                altairDependencies  = package.altairDependencies,
+            var dependencies        = thePackage.dependencies,
+                altairDependencies  = thePackage.altairDependencies,
                 callbacks           = [],
                 installer,
                 dfd                 = new this.Deferred(),

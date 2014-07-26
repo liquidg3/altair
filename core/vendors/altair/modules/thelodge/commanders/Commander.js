@@ -134,7 +134,7 @@ define(['altair/facades/declare',
 
             return this.parseConfig(options.packagePath).then(function (config) {
 
-                return this._valet.resolveDependencies(config, options.destination);
+                return this._valet.fetchDependencies(config, options.destination);
 
             }.bind(this)).step(function (step) {
 
@@ -208,6 +208,28 @@ define(['altair/facades/declare',
             }
 
             return schema;
+        },
+
+        status: function () {
+
+            var modules = this.nexus('cartridges/Module'),
+                headers = ['name', 'on', 'version', 'location'],
+                rows = [],
+                colWidths = [20, 5, 10, 0],
+                last = colWidths.length - 1;
+
+            _.each(modules.modulesByName, function (module, name) {
+                rows.push([name, 'Y', module.package.version, module.dir]);
+                colWidths[last] = Math.max(colWidths[last], module.dir.length);
+            });
+
+            this.table({
+                rows: rows,
+                headers: headers,
+                colWidths: colWidths
+            })
+
+
         }
 
 

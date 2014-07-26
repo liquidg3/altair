@@ -94,7 +94,7 @@ define(['altair/facades/declare',
 
             return this.parent.forge('models/App').then(function (app) {
 
-                return app.forge(values.destination).step(function (step) {
+                return app.forge(values.destination, values).step(function (step) {
 
                     this.writeLine(step.message, step.type || '');
 
