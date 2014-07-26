@@ -21,10 +21,10 @@ startup: function () {
     };
 
     //load dependencies
-    this.deferred = this.all(l).then(this.hitch(function (l) {
+    this.deferred = this.all(l).then(this.hitch(function (dependencies) {
 
-        //mixin everything we have loaded
-        declare.safeMixin(this, l);
+        //mixin everything we have loaded to ourselves (will become properties)
+        declare.safeMixin(this, dependencies);
 
         return this;
 
@@ -34,5 +34,4 @@ startup: function () {
 
 },
 ```
-
-Every one of those
+Every one of those calls is potentially asynchronous and all will run in parallel.

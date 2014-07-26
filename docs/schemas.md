@@ -127,3 +127,27 @@ _.each(module.get('foo', []), function (value) {
 var values = module.getValues();
 
 console.log(values); //will print out everything in the schema
+
+
+## Manually adding a schema to your AMD module (not Altair module)
+If you are inside a sub component of your module (like an adapter) you can add a schema by doing 2 additional steps.
+First you manually include your schema using the `altair/plugins/config!`, then you assign it to the `_schema` property
+of your class.
+
+```js
+define(['altair/facades/declare',
+         'altair/Lifecycle',
+         'apollo/_HasSchemaMixin',
+         'altair/plugins/config!./schema.json' //bring in your schema manually
+], function (declare,
+              Lifecycle,
+              _HasSchemaMixin,
+              schema) {
+
+     return declare([Lifecycle, _HasSchemaMixin], {
+         _schema: schema //set the parsed schema config to this.schema
+     });
+
+});
+```
+You can find more information about Apollo in the [docs](../core/lib/apollo/README.md).

@@ -1,10 +1,19 @@
 {
     "properties": {
-        "autostart":       {
+        "autostart": {
             "type":    "boolean",
             "options": {
                 "default": true,
-                "label": "Autostart"
+                "label":   "Autostart"
+            }
+        },
+
+        "mainCommander": {
+            "type":    "string",
+            "options": {
+                "label":       "Main Commander",
+                "default":     "altair",
+                "description": "The commander that will be auto run during module execution."
             }
         }
     }

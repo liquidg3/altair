@@ -76,8 +76,10 @@ define(['altair/facades/declare',
                 if(this.adapter() && this.get('autostart')) {
 
                     this.refreshCommanders().then(this.hitch(function (commanders) {
-                        this.focus(commanders.altair);
-                        commanders.altair.execute();
+                        this.assert(commanders[this.get('mainCommander')], 'You must pass a valid main commander.');
+                        var c = commanders[this.get('mainCommander')];
+                        this.focus(c);
+                        c.execute();
                     })).otherwise(this.log);
 
                 }
