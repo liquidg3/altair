@@ -85,7 +85,7 @@ define(['altair/facades/declare',
          * onStateMachineDidExit{{StateName}}
          */
          //We have entered firstRun, our first state
-         onStateMachineDidEnterFirstRun: function ($e) {
+         onStateMachineDidEnterFirstRun: function (e) {
 
             this.writeLine('Welcome Friend!');
 
@@ -94,7 +94,7 @@ define(['altair/facades/declare',
 
          },
 
-         onStateMachineDidEnterSelectCommand: function ($e) {
+         onStateMachineDidEnterSelectCommand: function (e) {
 
             var foo = e.get('foo'); //i get this because the previous state returned it (it may not be here if we jumped to this state)
 

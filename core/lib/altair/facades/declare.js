@@ -1,4 +1,4 @@
-define(["dojo/_base/kernel", "dojo/has", "dojo/_base/lang"], function(dojo, has, lang){
+define(["dojo/_base/kernel", "dojo/has", "dojo/_base/lang", 'lodash'], function(dojo, has, lang, _){
     // module:
     //		dojo/_base/declare
 
@@ -880,6 +880,21 @@ define(["dojo/_base/kernel", "dojo/has", "dojo/_base/lang"], function(dojo, has,
             proto.declaredClass = className;
             lang.setObject(className, ctor);
         }
+
+        //drop in getters/setters
+        _.each(bases, function (base) {
+
+            Object.getOwnPropertyNames(base.prototype).forEach(function (prop) {
+
+                var d = Object.getOwnPropertyDescriptor(base.prototype, prop);
+
+                if(d.get || d.set) {
+                    Object.defineProperty(proto, prop, d);
+                }
+
+            });
+
+        });
 
         // build chains and add them to the prototype
         if(chains){

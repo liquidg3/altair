@@ -28,10 +28,6 @@ define(['altair/facades/declare',
             return this;
         },
 
-        wait: function (timeout) {
-
-        },
-
         setResults: function (results) {
             this._results = results;
         },
