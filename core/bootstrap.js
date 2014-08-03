@@ -14,13 +14,13 @@ require(['altair/Altair',
     'lodash',
     'altair/plugins/config!core/config/altair.json?env=' + global.env],
 
-    function (Altair, require, Foundry, mixin, home, debug, path, fs, Module, extend, _, config) {
+    function (Altair, require, Foundry, mixin, home, debugUtil, path, fs, Module, extend, _, config) {
 
         /**
          * Simple debug logging
          */
-        debug.enable(config.debug);
-        debug       = debug('altair:Altair');
+        debugUtil.enable(config.debug);
+        debug       = debugUtil('altair:Altair');
         require.log = debug; //overrides the require.log used by dojo to provide much better high level reporting
 
         /**
@@ -109,6 +109,11 @@ require(['altair/Altair',
                 config = mixin(config, homeConfig);
 
             }
+
+            //set debug config again
+            debugUtil.names = [];
+            debugUtil.skips = [];
+            debugUtil.enable(config.debug);
 
             /**
              * Make sure npm can look at our current app directory, fallback to home. But NEVER both.

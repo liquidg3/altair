@@ -7,7 +7,7 @@ define(['altair/test',
 
 
         var ClassOne = declare(null, {
-
+            _name: 'classOne'
         });
 
         Object.defineProperty(ClassOne.prototype, 'customGetter', {
@@ -20,7 +20,18 @@ define(['altair/test',
             }
         });
 
+        Object.defineProperty(ClassOne.prototype, 'name', {
+            get: function () {
+                return this._name;
+            },
+
+            set: function (value) {
+                this._name = value;
+            }
+        });
+
         var ClassTwo = declare([ClassOne, _AssertMixin], {
+            _name: 'classTwo',
             newMethod: function () {}
         });
 
@@ -32,6 +43,7 @@ define(['altair/test',
                 var instanceOne = new ClassOne();
 
                 t.is('bar', instanceOne.customGetter, 'getter failed');
+                t.is('classOne', instanceOne.name, 'getter failed');
 
                 instanceOne.customGetter = 'bar';
 
@@ -45,6 +57,7 @@ define(['altair/test',
                 var instanceTwo = new ClassTwo();
 
                 t.is('bar', instanceTwo.customGetter, 'getter failed');
+                t.is('classTwo', instanceTwo.name, 'getter failed');
 
                 instanceTwo.customGetter = 'bar';
 
