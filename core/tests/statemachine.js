@@ -32,15 +32,18 @@ define(['altair/test',
                     },
                     onStateMachineDidExitStart: function () {
 
+                    },
+                    onStateMachineDidEnterHyphenState: function () {
+
                     }
                 },  sm    = new StateMachine({
                         state: 'start',
-                        states: ['start', 'end']
+                        states: ['start', 'end', 'hyphen-state']
                     }),
                     listeners = sm.attachListeners(delegate);
 
 
-                t.is(listeners.length, 2, 'listeners not all set');
+                t.is(listeners.length, 3, 'listeners not all set');
 
 
             },

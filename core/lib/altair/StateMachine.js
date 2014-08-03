@@ -95,7 +95,9 @@ define(['altair/facades/declare',
          * @private
          */
         _stateAndEventNameToCallbackName: function (state, eventName) {
-            return sprintf(this._listenerMap[eventName], _.capitalize(state));
+            return sprintf(this._listenerMap[eventName], _.capitalize(state.replace(/-([a-z])/g, function (m, w) {
+                return w.toUpperCase();
+            })));
         },
 
         /**
