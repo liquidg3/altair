@@ -2,14 +2,16 @@
  * Base class for all extensions
  */
 define(['altair/facades/declare',
+        'altair/mixins/_AssertMixin',
         'altair/Lifecycle',
         'lodash'],
 
     function (declare,
+              _AssertMixin,
               Lifecycle,
               lodash) {
 
-    return declare([Lifecycle], {
+    return declare([Lifecycle, _AssertMixin], {
 
         cartridge:      null,
         altair:         null,

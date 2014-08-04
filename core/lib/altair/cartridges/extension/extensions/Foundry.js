@@ -80,7 +80,8 @@ define(['altair/facades/declare',
         extend: function (Module) {
 
             //save hitched promise function for later
-            var promise = this.hitch('promise');
+            var promise = this.hitch('promise'),
+                extension = this;
 
             //mixin our extensions
             Module.extendOnce({
@@ -91,7 +92,7 @@ define(['altair/facades/declare',
                     config = config || {};
 
                     var dfd           = new Deferred(),
-                        parent        = _.has(config, 'parent') ? config.parent : this.parent || this,
+                        parent        = this.parent || this,
                         path,
                         exists,
                         parts,
@@ -158,10 +159,11 @@ define(['altair/facades/declare',
 
                                 try {
 
-                                    var a       = foundry(Child, options, {
-                                        parent:     parent,
+                                    var p           =  _.has(config, 'parent') ? config.parent : parent,
+                                        a           = foundry(Child, options, {
+                                        parent:     p,
                                         name:       name,
-                                        nexus:      (parent) ? parent._nexus : this._nexus,
+                                        nexus:      (p) ? p._nexus : this._nexus,
                                         type:       type,
                                         dir:        pathUtil.join(pathUtil.dirname(path), '/'),
                                         defaultFoundry: defaultFoundry,
@@ -173,7 +175,13 @@ define(['altair/facades/declare',
 
                                         //startup the module
                                         if(a.startup && shouldStartup) {
-                                            a.startup(options).then(hitch(dfd, 'resolve')).otherwise(hitch(dfd, 'reject'));
+
+                                            var _dfd = a.startup(options);
+
+                                            extension.assert(_dfd && _dfd.then, 'startup() in ' + name + ' does not return a deferred.')
+
+                                            _dfd.then(hitch(dfd, 'resolve')).otherwise(hitch(dfd, 'reject'));
+
                                         } else {
                                             dfd.resolve(a);
                                         }
