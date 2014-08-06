@@ -125,6 +125,10 @@ define(['altair/facades/declare',
                         lastResponse = response;
                         fire();
                     }).otherwise(hitch(this, function (err) {
+
+                        this.log('state machine error in state: ' + state);
+                        this.log(err);
+
                         d.reject({
                             error: err,
                             state: state
