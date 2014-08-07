@@ -104,13 +104,16 @@ define(['altair/facades/declare',
 
                     //are we pointing to a relative directiory?
                     if(className[0] === '.') {
-                        className = pathUtil.join(this.dir, className).replace(parent.dir, '');
+//                        className = pathUtil.join(this.dir, className).replace(parent.dir, '');
                     }
                     //it's a full nexus path
                     else if(className.search(':') > 0) {
+
                         parts       = className.split('/');
                         parent      = this.nexus(parts[0]);
                         className   = className.replace(parts[0] + '/', '');
+
+                        return parent.forge(className, options, config);
                     }
 
                     //detect name
@@ -126,7 +129,9 @@ define(['altair/facades/declare',
                         //the path is relative to parent, lets try and resolve it
                         //this is safe to change, just make sure to test alfred and controllers
                         if(name.search(/\.\./) > -1) {
-                            name = parent.name.split(':')[0] + ':' + pathUtil.join(parent.name.split(':')[1], '..', name);
+                            name = pathUtil.join(this.dir, name).replace(parent.dir, '');
+//                            name = parent.name.split(':')[0] + ':' + pathUtil.join(parent.name.split(':')[1], '..', name);
+                            name = this.parent.name + '/' + name;
                         } else {
                             name = (name[0] === '/') ? name : parent.name + '/' + name; //keep absolute path?
                         }
@@ -134,7 +139,8 @@ define(['altair/facades/declare',
                     }
 
                     //path from newly resolved classname
-                    path = parent ? parent.resolvePath(className + '.js') : this.resolvePath(className + '.js');
+//                    path = parent ? parent.resolvePath(className + '.js') : this.resolvePath(className + '.js'); //why did i ever do this?
+                    path = this.resolvePath(className + '.js');
 
                     //if the file exists, immediately call the callback with true
                     if(this._fileExistsCache[path]) {
