@@ -8,7 +8,8 @@ define(['altair/facades/declare',
         'altair/Deferred',
         'altair/facades/__',
         'altair/facades/sprintf',
-        'lodash'
+        'lodash',
+        'altair/plugins/node!debug'
         ],
     function (declare,
               hitch,
@@ -17,7 +18,10 @@ define(['altair/facades/declare',
               Deferred,
               __,
               sprintf,
-              _) {
+              _,
+              debug) {
+
+    debug = debug('altair/StateMachine');
 
 
     "use strict";
@@ -126,8 +130,8 @@ define(['altair/facades/declare',
                         fire();
                     }).otherwise(hitch(this, function (err) {
 
-                        console.log('state machine error in state: ' + state);
-                        console.log(err);
+                        debug('state machine error in state: ' + state);
+                        debug(err);
 
                         d.reject({
                             error: err,

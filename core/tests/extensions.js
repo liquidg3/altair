@@ -33,7 +33,7 @@
                 path: 'altair/cartridges/module/Module',
                 options: {
                     paths: ['core/tests/modules/altair'],
-                    modules: ['altair:Mock', 'altair:Mock2']
+                    modules: ['altair:Mock', 'altair:Mock2', 'altair:MockIgnoreExtensions']
                 }
             },
             {
@@ -132,6 +132,18 @@
                     t.is(m2.foo(), 'bar1', 'mock extension did not add foo()');
 
 
+
+                });
+
+            },
+
+            "extensions can be disabled": function (t) {
+
+                return boot.nexus(cartridges).then(function (nexus) {
+
+                    var m4 = nexus('altair:MockIgnoreExtensions');
+
+                    t.f(m4.foo, 'This should not exist');
 
                 });
 

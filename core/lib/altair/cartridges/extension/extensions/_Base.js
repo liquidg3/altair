@@ -43,8 +43,17 @@ define(['altair/facades/declare',
          * @param type string type, can be things like module, widget, webController, subComponent
          * @returns {boolean}
          */
-        canExtend: function (type) {
-            return this._handles === '*' || type === this._handles ||  _.indexOf(this._handles, type) > -1;
+        canExtend: function (object, type) {
+
+
+            if((object.prototype && object.prototype._ignoreExtensions === '*') || object._ignoreExtensions === '*') {
+                return false;
+            }
+
+            var ignore = object._ignoreExtensions || (object.prototype && object.prototype._ignoreExtensions) || false;
+
+            return ((!ignore || ignore.indexOf(this.name) === -1)) && (this._handles === '*' || type === this._handles ||  _.indexOf(this._handles, type) > -1);
+
         }
 
     });

@@ -98,21 +98,19 @@ define(['altair/facades/declare',
 
                     this._extensions.push(ext);
 
-                    if(ext.canExtend('module')) {
 
-                        _.each(this._forgedModules, function (module) {
+                    _.each(this._forgedModules, function (module) {
 
-                            if(!module._ignoreExtensions || module._ignoreExtensions.indexOf(ext.name) === -1) {
+                        if(ext.canExtend(module, 'module')) {
 
-                                list.push(when(ext.extend(module.constructor, 'module')).then(this.hitch(function () {
-                                    return ext.execute(module, 'module');
-                                })));
+                            list.push(when(ext.extend(module.constructor, 'module')).then(this.hitch(function () {
+                                return ext.execute(module, 'module');
+                            })));
 
-                            }
 
-                        }, this);
+                        }
+                    }, this);
 
-                    }
 
                     return all(list).then(function () {
                         return ext;
@@ -136,7 +134,7 @@ define(['altair/facades/declare',
                     list.push(this.addExtension(ext));
                 }, this);
 
-                return all(list);;
+                return all(list);
 
             },
 
@@ -181,11 +179,13 @@ define(['altair/facades/declare',
 
                 var list = [];
 
+                if(Module.prototype._ignoreExtensions === '*') {
+                    return Module;
+                }
+
                 _.each(this._extensions, function (extension) {
-                    if(extension.canExtend(type)) {
-                        if(!Module.prototype._ignoreExtensions || Module.prototype._ignoreExtensions.indexOf(extension.name) === -1) {
-                            list.push(extension.extend(Module, type));
-                        }
+                    if(extension.canExtend(Module, type)) {
+                        list.push(extension.extend(Module, type));
                     }
                 },this);
 
@@ -206,17 +206,15 @@ define(['altair/facades/declare',
              */
             execute: function (module, type) {
 
-                if(!module) {
+                if(!module || module._ignoreExtensions === '*') {
                     return this.inherited(arguments);
                 }
 
                 var list = [];
 
                 _.each(this._extensions, function (extension) {
-                    if(extension.canExtend(type)) {
-                        if(!module._ignoreExtensions || module._ignoreExtensions.indexOf(extension.name) === -1) {
-                            list.push(extension.execute(module, type));
-                        }
+                    if(extension.canExtend(module, type)) {
+                        list.push(extension.execute(module, type));
                     }
                 },this);
 

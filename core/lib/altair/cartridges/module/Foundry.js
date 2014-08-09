@@ -109,7 +109,7 @@ define(['altair/facades/declare',
                         missing = [];
 
                     //all modules failed?
-                    if( !_paths || _paths.length === 0 || (_options.modules !== '*' && _paths.length !== _options.modules.length)) {
+                    if( !_paths || _paths.length === 0 || (_options.modules !== '*' && _paths.length < _options.modules.length)) {
 
                         missing = _.filter(_options.modules, function (name) {
 
@@ -128,7 +128,7 @@ define(['altair/facades/declare',
 
                         }, this);
 
-                        throw new Error("Failed to load one or more modules: " + missing.join(', ') + ' from paths: ' + paths.join(', ') + '. Check for other errors as to why they failed and make sure they are included in modules:[].');
+                        throw new Error("Failed to load " + missing.length + " modules: " + missing.join(', ') + ' from paths: ' + paths.join(', ') + '. Check for other errors as to why they failed and make sure they are included in modules:[].');
                     }
 
                     return this._sortByDependencies(_paths, options);
@@ -232,6 +232,11 @@ define(['altair/facades/declare',
                         path: _path,
                         dependencies: null
                     };
+
+                //already exists
+                if(pathsByName[name]) {
+                    throw new Error(name + ' exists in 2 places. ' + pathsByName[name] + ' AND ' + _path);
+                }
 
                 packagesByName[name] = module;
                 pathsByName[name] = _path;

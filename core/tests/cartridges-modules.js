@@ -68,7 +68,7 @@ define(['altair/test',
             }).then(function () {
                 throw new Error("SHOULD NEVER BE CALLED");
             }).otherwise(function (err) {
-                t.t(err.message.search('Failed to load one or more modules: altair:NeverFound') > -1, err.message);
+                t.t(err.message.search('Failed to load') > -1, err.message);
                 d.resolve();
             });
 

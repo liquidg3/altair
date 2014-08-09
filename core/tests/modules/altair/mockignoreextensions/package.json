@@ -1,0 +1,7 @@
+{
+    "name": "altair:MockIgnoreExtensions",
+    "version": "0.0.1",
+    "description": "Making sure extensions are ignored entirely",
+    "altairDependencies": {
+    }
+}
