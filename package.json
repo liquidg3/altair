@@ -1,6 +1,6 @@
 {
     "name":         "altair.io",
-    "version":      "0.0.95",
+    "version":      "0.0.96",
     "description":  "A platform to facilitate the building of experiences in the Internet of Everything.",
     "main":         "altair.js",
     "license":      "MIT",
