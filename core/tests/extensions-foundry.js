@@ -43,6 +43,36 @@ define(['altair/test',
         test.register('extensions-foundry', {
 
 
+            "test forging mock sub component using full nexus id sync": function (t) {
+
+                return boot.nexus(cartridges).then(function (nexus) {
+
+                    var m       = nexus('altair:Mock'),
+                        test    = m.forgeSync('altair:Mock/test/Component'),
+                        dir     = require.toUrl('core/tests/modules/altair/mock/test/');
+
+                    t.is('altair:Mock/test/Component', test.name);
+                    t.is(dir, test.dir);
+                    t.is(m, test.parent, 'parent failed to be assigned');
+                });
+
+            },
+
+            "test forging mock sub component sync": function (t) {
+
+                return boot.nexus(cartridges).then(function (nexus) {
+
+                    var m       = nexus('altair:Mock'),
+                        test    = m.forgeSync('test/Component'),
+                        dir     = require.toUrl('core/tests/modules/altair/mock/test/');
+
+                    t.is('altair:Mock/test/Component', test.name);
+                    t.is(dir, test.dir);
+                    t.is(m, test.parent, 'parent failed to be assigned');
+                });
+
+            },
+
             "test forging mock sub component": function (t) {
 
                 return boot.nexus(cartridges).then(function (nexus) {

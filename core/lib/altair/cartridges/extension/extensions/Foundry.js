@@ -58,6 +58,30 @@ define(['altair/facades/declare',
 
 
 
+    },
+    defaultFoundrySync = function (Class, options, config) {
+
+        var a       = new Class(options),
+            parent  = config.parent,
+            dir     = config.dir,
+            nexus   = config.nexus,
+            name    = config.name || '__unnamed';
+
+        //setup basics if they are missing
+        if(!a.name) {
+            a.name = name;
+        }
+        a.name      = a.name || name;
+        a.parent    = a.parent || parent;
+        a.dir       = a.dir || dir;
+        a._nexus    = a._nexus || nexus;
+
+        return a;
+
+    },
+    cachedExists = function (path, cb) { cb(true);},
+    cachedRequire = function (paths, cb, parent) {
+        cb(parent._classCache[paths[0]]);
     };
 
     return declare([_Base], {
@@ -87,6 +111,76 @@ define(['altair/facades/declare',
             Module.extendOnce({
 
                 _fileExistsCache: {},
+                _classCache: {},
+                forgeSync: function (className, options, config) {
+
+                    var parent        = this.parent || this,
+                        path,
+                        parts,
+                        name          = _.has(config, 'name') ? config.name : null,
+                        foundry       = _.has(config, 'foundry') ? config.foundry : defaultFoundrySync,
+                        shouldStartup = _.has(config, 'startup') ? config.startup : true,
+                        Class,
+                        instanceParent = _.has(config, 'parent') ? config.parent : parent,
+                        instance,
+                        type          = _.has(config, 'type') ? config.type : 'subComponent';
+
+                    if (className.search(':') > 0) {
+
+                        parts       = className.split('/');
+                        parent      = this.nexus(parts[0]);
+                        className   = className.replace(parts[0] + '/', '');
+
+                        return parent.forgeSync(className, options, config);
+                    }
+
+                    if(!name) {
+
+                        if(!parent) {
+                            throw new Error('Could not resolve parent for ' + className + ' in Foundry extension. Parent is required if you do not pass a name.');
+                        }
+
+                        name = className;
+
+                        //the path is relative to parent, lets try and resolve it
+                        //this is safe to change, just make sure to test alfred and controllers
+                        if(name.search(/\.\./) > -1) {
+                            name = pathUtil.join(this.dir, name).replace(parent.dir, '');
+                            name = this.parent.name + '/' + name;
+                        } else {
+                            name = (name[0] === '/') ? name : parent.name + '/' + name; //keep absolute path?
+                        }
+
+                    }
+
+                    //path from newly resolved classname
+                    path = this.resolvePath(className + '.js');
+
+                    if( this._classCache[path] ) {
+                        Class = this._classCache[path];
+                    } else {
+                        require([path], function (C) {
+                            Class = C;
+                        });
+                    }
+
+                    instance = foundry(Class, options, {
+                        parent:         instanceParent,
+                        name:           name,
+                        nexus:          instanceParent ? instanceParent._nexus : this._nexus,
+                        type:           type,
+                        dir:            pathUtil.join(pathUtil.dirname(path), '/'),
+                        defaultFoundry: defaultFoundry
+                    });
+
+                    if(instance.startup && shouldStartup) {
+                        instance.startup();
+                    }
+
+
+                    return instance;
+
+                },
                 forge: function (className, options, config) {
 
                     config = config || {};
@@ -96,6 +190,7 @@ define(['altair/facades/declare',
                         path,
                         exists,
                         parts,
+                        _require,
                         name          = _.has(config, 'name') ? config.name : null,
                         foundry       = _.has(config, 'foundry') ? config.foundry : defaultFoundry,
                         shouldStartup = _.has(config, 'startup') ? config.startup : true,
@@ -139,20 +234,21 @@ define(['altair/facades/declare',
                     }
 
                     //path from newly resolved classname
-//                    path = parent ? parent.resolvePath(className + '.js') : this.resolvePath(className + '.js'); //why did i ever do this?
                     path = this.resolvePath(className + '.js');
 
                     //if the file exists, immediately call the callback with true
                     if(this._fileExistsCache[path]) {
-                        exists = function (path, cb) {cb(true);};
+                        exists = cachedExists;
+                        _require = cachedRequire;
+
                     }
                     //otherwise use the actual fs.exists method
                     else {
                         exists = fs.exists.bind(fs);
+                        _require = require;
                     }
 
-
-                    //does this file exist? you have to do this with require() because it will error and never call the callback =(
+                    //does this file exist? you have to do this with require() because it will error and never resolve the deferred (done differently in forgeSync
                     exists(path, hitch(this, function (exists) {
 
                         this._fileExistsCache[path] = exists;
@@ -161,44 +257,53 @@ define(['altair/facades/declare',
                             dfd.reject(new Error('Could not create ' + type + ' because I could not find it at:' + path));
                         } else {
 
-                            require([path], hitch(this, function (Child) {
+                            _require([path], hitch(this, function (Child) {
 
                                 try {
 
-                                    var p           =  _.has(config, 'parent') ? config.parent : parent,
-                                        a           = foundry(Child, options, {
-                                        parent:     p,
-                                        name:       name,
-                                        nexus:      (p) ? p._nexus : this._nexus,
-                                        type:       type,
-                                        dir:        pathUtil.join(pathUtil.dirname(path), '/'),
+                                    //cache this child
+                                    this._classCache[path] = Child;
+
+                                    var p               =  _.has(config, 'parent') ? config.parent : parent,
+                                        done            = hitch(this, function (a) {
+
+                                            //startup the module
+                                            if(a.startup && shouldStartup) {
+
+                                                var _dfd = a.startup(options);
+
+                                                extension.assert(_dfd && _dfd.then, 'startup() in ' + name + ' does not return a deferred.');
+
+                                                _dfd.then(hitch(dfd, 'resolve')).otherwise(hitch(dfd, 'reject'));
+
+                                            } else {
+                                                dfd.resolve(a);
+                                            }
+
+                                        }),
+                                        a               = foundry(Child, options, {
+                                        parent:         p,
+                                        name:           name,
+                                        nexus:          p ? p._nexus : this._nexus,
+                                        type:           type,
+                                        dir:            pathUtil.join(pathUtil.dirname(path), '/'),
                                         defaultFoundry: defaultFoundry,
-                                        extensions: this.nexus('cartridges/Extension')
+                                        extensions:     this.nexus('cartridges/Extension')
                                     });
 
                                     //extend this object
-                                    when(a).then(hitch(this, function (a) {
-
-                                        //startup the module
-                                        if(a.startup && shouldStartup) {
-
-                                            var _dfd = a.startup(options);
-
-                                            extension.assert(_dfd && _dfd.then, 'startup() in ' + name + ' does not return a deferred.')
-
-                                            _dfd.then(hitch(dfd, 'resolve')).otherwise(hitch(dfd, 'reject'));
-
-                                        } else {
-                                            dfd.resolve(a);
-                                        }
-
-                                    })).otherwise(hitch(dfd, 'reject'));
+                                    if(a.then) {
+                                        when(a).then(done).otherwise(hitch(dfd, 'reject'));
+                                    } else {
+                                        done(a);
+                                    }
 
 
                                 } catch(err) {
                                     dfd.reject(err);
                                 }
-                            }));
+
+                            }), this);
 
 
                         }

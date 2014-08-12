@@ -177,10 +177,11 @@ define(['altair/facades/declare',
              */
             extend: function (Module, type) {
 
-                var list = [];
+                var list = [],
+                    dfd;
 
                 if(Module.prototype._ignoreExtensions === '*') {
-                    return Module;
+                    return when(Module);
                 }
 
                 _.each(this._extensions, function (extension) {
@@ -190,7 +191,7 @@ define(['altair/facades/declare',
                 },this);
 
                 if(list.length == 0) {
-                    return Module;
+                    return when(Module);
                 }
 
                 return all(list).then(function() {
@@ -207,7 +208,7 @@ define(['altair/facades/declare',
             execute: function (module, type) {
 
                 if(!module || module._ignoreExtensions === '*') {
-                    return this.inherited(arguments);
+                    return when(module);
                 }
 
                 var list = [];
