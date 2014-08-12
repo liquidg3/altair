@@ -35,8 +35,11 @@ define(['altair/facades/declare',
     //instantiation callback for every foundry call, assums everything is a subcomponent
     var defaultFoundry = function (Class, options, config) {
 
-        config.extensions.extend(Class, config.type);
+        var shouldExtend = !Class._ignoreExtensions || Class._ignoreExtensions !== '*';
 
+        if(shouldExtend) {
+            config.extensions.extend(Class, config.type);
+        }
 
         var a       = new Class(options),
             parent  = config.parent,
@@ -53,31 +56,13 @@ define(['altair/facades/declare',
         a.dir       = a.dir || dir;
         a._nexus    = a._nexus || nexus;
 
-        config.extensions.execute(a, config.type);
-
-
-        return a;
-
-
-    },
-    defaultFoundrySync = function (Class, options, config) {
-
-        var a       = new Class(options),
-            parent  = config.parent,
-            dir     = config.dir,
-            nexus   = config.nexus,
-            name    = config.name || '__unnamed';
-
-        //setup basics if they are missing
-        if(!a.name) {
-            a.name = name;
+        if(shouldExtend) {
+            config.extensions.execute(a, config.type);
         }
-        a.name      = a.name || name;
-        a.parent    = a.parent || parent;
-        a.dir       = a.dir || dir;
-        a._nexus    = a._nexus || nexus;
+
 
         return a;
+
 
     },
     cachedExists = function (path, cb) { cb(true);},
@@ -119,7 +104,7 @@ define(['altair/facades/declare',
                         path,
                         parts,
                         name          = _.has(config, 'name') ? config.name : null,
-                        foundry       = _.has(config, 'foundry') ? config.foundry : defaultFoundrySync,
+                        foundry       = _.has(config, 'foundry') ? config.foundry : defaultFoundry,
                         shouldStartup = _.has(config, 'startup') ? config.startup : true,
                         Class,
                         instanceParent = _.has(config, 'parent') ? config.parent : parent,
@@ -171,11 +156,12 @@ define(['altair/facades/declare',
                         nexus:          instanceParent ? instanceParent._nexus : this._nexus,
                         type:           type,
                         dir:            pathUtil.join(pathUtil.dirname(path), '/'),
-                        defaultFoundry: defaultFoundry
+                        defaultFoundry: defaultFoundry,
+                        extensions:     this.nexus('cartridges/Extension')
                     });
 
                     if(instance.startup && shouldStartup) {
-                        instance.startup();
+                        instance.startup(options);
                     }
 
 
@@ -292,7 +278,6 @@ define(['altair/facades/declare',
                                         extensions:     this.nexus('cartridges/Extension')
                                     });
 
-                                    //extend this object
                                     if(a.then) {
                                         when(a).then(done).otherwise(hitch(dfd, 'reject'));
                                     } else {

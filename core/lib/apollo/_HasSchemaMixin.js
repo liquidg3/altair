@@ -100,6 +100,7 @@ define(['dojo/_base/declare',
 
             _.each(values, function (value, name) {
                 if(this.has(name)) {
+
                     if(config && config.methods) {
 
                         var options = optionsByField && optionsByField[name] || {};
@@ -116,15 +117,28 @@ define(['dojo/_base/declare',
                 }
             }, this);
 
-            return all(cleaned).then(function (values) {
+            if(config && config.methods) {
 
-                _.each(values, function (value, name) {
+                return all(cleaned).then(function (values) {
+
+                    _.each(values, function (value, name) {
+                        this.set(name, value);
+                    }, this);
+
+                    return this;
+
+                }.bind(this));
+
+            } else {
+
+                _.each(cleaned, function (value, name) {
                     this.set(name, value);
                 }, this);
 
                 return this;
 
-            }.bind(this));
+            }
+
         },
 
         has: function (name) {
