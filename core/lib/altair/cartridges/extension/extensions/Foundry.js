@@ -35,27 +35,28 @@ define(['altair/facades/declare',
     //instantiation callback for every foundry call, assums everything is a subcomponent
     var defaultFoundry = function (Class, options, config) {
 
-        return config.extensions.extend(Class, config.type).then(function (Class) {
+        config.extensions.extend(Class, config.type);
 
-            var a       = new Class(options),
-                parent  = config.parent,
-                dir     = config.dir,
-                nexus   = config.nexus,
-                name    = config.name || '__unnamed';
 
-            //setup basics if they are missing
-            if(!a.name) {
-                a.name = name;
-            }
-            a.name      = a.name || name;
-            a.parent    = a.parent || parent;
-            a.dir       = a.dir || dir;
-            a._nexus    = a._nexus || nexus;
+        var a       = new Class(options),
+            parent  = config.parent,
+            dir     = config.dir,
+            nexus   = config.nexus,
+            name    = config.name || '__unnamed';
 
-            return config.extensions.execute(a, config.type);
+        //setup basics if they are missing
+        if(!a.name) {
+            a.name = name;
+        }
+        a.name      = a.name || name;
+        a.parent    = a.parent || parent;
+        a.dir       = a.dir || dir;
+        a._nexus    = a._nexus || nexus;
 
-        });
+        config.extensions.execute(a, config.type);
 
+
+        return a;
 
 
     },

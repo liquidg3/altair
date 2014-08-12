@@ -12,9 +12,10 @@ define(['altair/facades/declare',
     'altair/facades/hitch',
     'altair/facades/home',
     'altair/facades/all',
+    'altair/facades/when',
     'altair/plugins/node!path'
 ],
-    function (declare, Deferred, _, hitch, home, all, path) {
+    function (declare, Deferred, _, hitch, home, all, when, path) {
 
         "use strict";
 
@@ -175,7 +176,7 @@ define(['altair/facades/declare',
                     var cartridge = started.shift();
 
                     if (cartridge) {
-                        cartridge.execute().then(execute).otherwise(function (err) {
+                        when(cartridge.execute()).then(execute).otherwise(function (err) {
                             deferred2.reject(err);
                         });
                     } else {

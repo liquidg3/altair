@@ -1,8 +1,8 @@
 {
     "debug": ".*",
     "glob": [
-        "disabled-core/vendors/*/modules/*/tests/*.js",
-        "core/tests/extensions-foundry.js",
-        "disabled-apollo/tests/*.js"
+        "core/vendors/*/modules/*/tests/*.js",
+        "core/tests/*.js",
+        "apollo/tests/*.js"
     ]
 }
