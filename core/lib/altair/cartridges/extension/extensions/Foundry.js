@@ -100,6 +100,8 @@ define(['altair/facades/declare',
                 _classCache: {},
                 forgeSync: function (className, options, config) {
 
+                    config = config || {};
+
                     var parent        = this.parent || this,
                         path,
                         parts,

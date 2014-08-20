@@ -4,14 +4,16 @@ define(['altair/facades/declare',
         'lodash',
         'altair/plugins/node!semver',
         'altair/plugins/node!rimraf',
-        'altair/plugins/node!path'
+        'altair/plugins/node!path',
+        'altair/plugins/node!fs'
 ], function (declare,
              _Base,
              gift,
              _,
              semver,
              rimraf,
-             pathUtil) {
+             pathUtil,
+             fs) {
 
     "use strict";
     return declare([_Base], {
@@ -154,18 +156,31 @@ define(['altair/facades/declare',
 
         },
 
+
         status: function (options) {
 
             var destination = options.destination,
+                dfd = new this.Deferred(),
                 repo;
 
             if(!destination) {
                 throw new Error('You must pass a "destination" to git.status({}).');
             }
 
-            repo = gift(destination);
+            //is there git folder
+            this.promise(fs, 'stat', pathUtil.join(destination, '.git')).then(function () {
 
-            return this.promise(repo, 'status')
+                repo = gift(destination);
+
+                return this.promise(repo, 'status');
+
+            }).otherwise(function () {
+
+                dfd.resolve(null);
+
+            });
+
+            return dfd;
 
 
         }
