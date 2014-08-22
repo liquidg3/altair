@@ -180,6 +180,34 @@ define(['altair/facades/declare',
 
         toDatabaseValue: function (value, options, config) {
             throw new Error('"' + this.key + '" property type must implement toDatabaseValue.');
+        },
+
+        validate: function (value, options, config) {
+
+            var errors = [],
+                label = options.label || 'value',
+                re,
+                matches;
+
+            if (options.required && (value === null || value === undefined)) {
+
+                errors.push(
+                    label + ' is required.'
+                );
+
+            }
+
+            if (options.pattern && value) {
+
+                re = new RegExp(options.pattern);
+
+                if (!re.test(value)) {
+                   errors.push(label + ' is invalid.')
+                }
+            }
+
+            return errors.length > 0 ? errors : true;
+
         }
 
     });

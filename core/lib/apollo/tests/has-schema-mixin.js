@@ -2,58 +2,54 @@
  * Apollo Tests - need more thought/time here ** moving too fast =) **
  */
 define(['doh/runner',
-        'apollo/Schema',
-        'apollo/tests/mock/Entity',
-        'apollo/propertytypes/Str',
-        'apollo/propertytypes/Bool'],
+    'apollo/Schema',
+    'apollo/tests/mock/Entity',
+    'apollo/propertytypes/Str',
+    'apollo/propertytypes/Bool'],
 
-    function (doh,
-              Schema,
-              Entity,
-              Str,
-              Bool) {
+    function (doh, Schema, Entity, Str, Bool) {
 
         /**
          * Dependencies
          */
         var schemaLiteral = {
-            name: 'my test user schema',
-            foo:  'bar',
-            properties: {
+                name:       'my test user schema',
+                foo:        'bar',
+                properties: {
 
-                firstName: {
-                    type: 'string',
-                    options: {
-                        'label': 'First Name'
-                    }
-                },
+                    firstName: {
+                        type:    'string',
+                        options: {
+                            'label':    'First Name',
+                            'required': true
+                        }
+                    },
 
-                isVerified: {
-                    type: 'boolean',
-                    options: {
-                        'label': 'Is Verified'
+                    isVerified: {
+                        type:    'boolean',
+                        options: {
+                            'label': 'Is Verified'
+                        }
                     }
+
                 }
-
-            }
-        },
-        fieldTypes = [
-            new Str(),
-            new Bool()
-        ];
+            },
+            fieldTypes = [
+                new Str(),
+                new Bool()
+            ];
 
 
-
-        doh.register('apollo-has-schema-mixin', [
+        doh.register('apollo-has-schema-mixin', {
 
 
             /**
              * Test basic getters/setters
              */
-            function () {
+            "test basic getters, setters": function () {
 
                 var schema = new Schema(schemaLiteral, fieldTypes),
-                    mock   = new Entity(schema);
+                    mock = new Entity(schema);
 
 
                 mock.set('firstName', 'taylor')
@@ -65,7 +61,7 @@ define(['doh/runner',
             }
 
 
-        ]);
+        });
 
 
     });

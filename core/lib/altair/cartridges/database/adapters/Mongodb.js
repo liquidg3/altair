@@ -97,7 +97,7 @@ define(['altair/facades/declare',
 
             delete values._id; //no updating id
 
-            return this.promise(collection, 'update', where, { '$set': clauses.set}, options || { w: this.writeConcern }).then(function (results) {
+            return this.promise(collection, 'update', where, { '$set': clauses.set }, options || { w: this.writeConcern }).then(function (results) {
                 return results[0];
             });
 
@@ -198,7 +198,7 @@ define(['altair/facades/declare',
 
                         var _key = this._operatorMap[key] || key;
 
-                        if (_.isObject(value)) {
+                        if (_.isObjectLiteral(value)) {
                             output[_key] = mapOperators(value);
                         } else {
 

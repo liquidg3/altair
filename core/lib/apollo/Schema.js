@@ -18,9 +18,11 @@
  */
 define(['dojo/_base/declare',
         'dojo/_base/lang',
+        'dojo/Deferred',
+        'dojo/promise/all',
         'lodash'
 
-], function (declare, lang, _) {
+], function (declare, lang, Deferred, all, _) {
 
     "use strict";
 
@@ -257,23 +259,24 @@ define(['dojo/_base/declare',
          *
          * Example:
          *
-         *  schema.applyOnProperty(['toSolrValue', 'toStringValue'], 'firstName', 'Taylo®™', { maxLength: 35 }
+         *  schema.applyOnProperty(['toSolrValue', 'toStringValue'], 'firstName', 'Taylo®™', { maxLength: 35 });
          *
          * @param named
          * @returns {*}
          */
         applyOnProperty: function (methodNames, propertyName, value, options, config) {
 
-            //by convention, these are null and will not be casted
-            if (value === null || value === undefined) {
-                return null;
-            }
-
             var property = this._data.properties[propertyName],
                 type = property.type,
+                _config = config || {},
                 propertyType = this.propertyType(type),
                 c,
                 methodName;
+
+            //by convention, these are null and will not be casted
+            if ((value === null || value === undefined) && _config.ignoreNull !== false) {
+                return null;
+            }
 
             //normalize options
             options = lang.mixin({}, this.optionsFor(propertyName), options || {});
@@ -318,11 +321,8 @@ define(['dojo/_base/declare',
                         return propertyType[methodName](value, options, config);
 
                     }
-
-
                 }
             }
-
 
             throw 'Could not find methods (' + methodNames.join(', ') + ') for property named "' + propertyName + '" of type "' + type + '".';
 
@@ -352,6 +352,92 @@ define(['dojo/_base/declare',
          */
         toString: function () {
             return '[object Schema]';
+        },
+
+        /**
+         * Validates all the values passed against our properties. Missing fields are also validaded with a value of null.
+         *
+         * schema().validate().then(... passs ...).otherwise(function (errs) {
+         *      console.log('you have', errs.length, 'errors'); //outputs 'you have 6 errors'
+         *      console.log('more details', errs.byProperty); //outputs `{ firstName: [...all errors...], email: [...all errors...] }
+         * });
+         *
+         * If no error occured, it will not be include in errs.byProperty.
+         *
+         * @param values the keys should match properties on this schema
+         * @param options { throwOnFirst: false, skipMissing: false } //should i return all errors, or just throw a new Error on first? - should i skip fields you did not pass?
+         * @returns {*|Promise}
+         */
+        validate: function (values, options) {
+
+            var everything  = {},
+                errors      = [],
+                errorsByProp = {},
+                _options    = options || {},
+                dfd         = new Deferred(),
+                skipMissing  = _.has(_options, 'skipMissing') ? _options.skipMissing : false,
+                _values     = values || {};
+
+            //call validate on all properties
+            _.each(this.properties(), function (prop, key) {
+
+                //mantain keys for all validate() calls
+                if(!skipMissing || _.has(values, key)) {
+                    everything[key] = this.applyOnProperty(['validate'], key, _values[key] || null, {}, { ignoreNull: false });
+                }
+
+            }, this);
+
+
+            //when all are done validating, check results for arrays (a result of true is pass, an array is fail)
+            all(everything).then(function (results) {
+
+                _.each(results, function (result, key) {
+
+                    //anything with many: true will be
+                    var many = this.optionFor(key, 'many'),
+                        manyResults = many ? result : [result];
+
+
+                    _.each(manyResults, function (result) {
+
+                        //if the result of validate() is not true, it's an array of errors
+                        if(result !== true) {
+
+                            if(!_.isArray(result)) {
+                                throw new Error('validate() for property type ' +  this.typeFor(key) + ' must return `true` or an array.');
+                            }
+
+                            if(_options.throwOnFirst) {
+                                throw new Error(result[0]);
+                            }
+
+                            errors = errors.concat(result);
+                            if (!errorsByProp[key]) {
+                                errorsByProp[key] = [];
+                            }
+                            errorsByProp[key] = errorsByProp[key].concat(result);
+                        }
+
+                    });
+
+                }, this);
+
+                if( errors.length > 0 ) {
+                    errors.byProperty = errorsByProp;
+                    dfd.reject(errors);
+                    return;
+                }
+
+                dfd.resolve(true);
+
+
+            }.bind(this)).otherwise(function (err) {
+                dfd.reject(err);
+            });
+
+            return dfd;
+
         }
 
     });

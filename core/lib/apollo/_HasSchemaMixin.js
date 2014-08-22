@@ -270,14 +270,17 @@ define(['dojo/_base/declare',
          *
          * @returns {dojo.Deferred}
          */
-        validate: function () {
+        validate: function (options) {
 
-            var dfd = new Deferred();
+            var schema = this.schema();
 
+            if(!schema) {
+                throw new Error('You can only validate objects that have a schema.');
+            }
 
-            dfd.resolve(this);
-
-            return dfd;
+            return schema.validate(this.values, options).then(function () {
+                return this;
+            }.bind(this));
 
         }
 

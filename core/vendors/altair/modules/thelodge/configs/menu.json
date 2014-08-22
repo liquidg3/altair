@@ -86,7 +86,7 @@
 
         {
             "name":        "liquidfire:Curium",
-            "description": "Apple ViewController flavored rendering framework for openvg and the RaspberryPi",
+            "description": "Apple ViewController flavored rendering framework for openvg and the RaspberryPi. Used to build ",
             "keywords":    ["openvg", "raspberrypi"],
             "website":      "https://github.com/liquidg3/liquidfire-curium",
             "repository":  {
