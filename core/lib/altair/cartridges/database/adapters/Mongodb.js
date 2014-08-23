@@ -61,26 +61,26 @@ define(['altair/facades/declare',
                 options:          _options
             }).then(this.hitch(function (e) {
 
-                //connect to the database (but make a callback based handle into a promise based one)
-                //use the values from the event in case changes have been made
-                return this.promise(this._client, 'connect', e.get('connectionString'), e.get('options'));
+                    //connect to the database (but make a callback based handle into a promise based one)
+                    //use the values from the event in case changes have been made
+                    return this.promise(this._client, 'connect', e.get('connectionString'), e.get('options'));
 
-            })).then(this.hitch(function (db) {
+                })).then(this.hitch(function (db) {
 
-                //save the connection locally
-                this._db = db;
+                    //save the connection locally
+                    this._db = db;
 
-                //let everyone know we just connected and give them a chance to fiddle with things
-                return this._cartridge.emit('did-connect-to-database', {
-                    adapter: this
-                });
+                    //let everyone know we just connected and give them a chance to fiddle with things
+                    return this._cartridge.emit('did-connect-to-database', {
+                        adapter: this
+                    });
 
-            })).then(this.hitch(function () {
+                })).then(this.hitch(function () {
 
-                //finally, always end with 'this' for startup()
-                return this;
+                    //finally, always end with 'this' for startup()
+                    return this;
 
-            }));
+                }));
 
 
             return this.inherited(arguments);
@@ -204,7 +204,11 @@ define(['altair/facades/declare',
 
                             //mongo id?
                             if (_key === '_id') {
-                                value = new ObjectId(value);
+                                try {
+                                    value = new ObjectId(value);
+                                } catch (e) {
+                                    //someone sent me an id that is not a proper mongo one (but that is ok)
+                                }
                             }
 
                             output[_key] = value;

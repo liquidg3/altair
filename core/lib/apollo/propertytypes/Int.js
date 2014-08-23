@@ -16,12 +16,14 @@ define(['dojo/_base/declare',
 
                 var _value = value;
 
-                //if a value was provided, but it's a string
-                if(_value && !_.isNumber(_value)) {
-                    _value = parseInt(_value, 10);
+                _value = parseInt(_value, 10);
+
+                if (_value === NaN) {
+                    _value = null;
                 }
 
                 return _value;
+
             },
 
             toDatabaseValue: function (value, options, config) {

@@ -44,6 +44,18 @@ define(['dojo/_base/declare',
 
         toDatabaseValue: function (value, options, config) {
             return this.toJsValue(value, options, config);
+        },
+
+        fromHttpRequestValue: function (value, options, config) {
+
+            if (value === '1' || value === 'true') {
+                value = true;
+            } else if (value === '0' || value === 'false') {
+                value = false;
+            }
+
+            return this.toJsValue(value, options, config);
+
         }
 
     });
