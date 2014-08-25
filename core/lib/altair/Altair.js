@@ -67,7 +67,12 @@ define(['altair/facades/declare',
 
                 var resolved = p;
 
-                if(p[0] != path.sep) {
+                //if it starts with ./, then assume it's from the current working directory
+                if (p[0] === '.') {
+                    resolved = path.join(process.cwd(), p);
+                }
+                //relative paths (no /) all look from app or home
+                else if(p[0] != path.sep) {
                     resolved = path.join(require.toUrl(this.paths[this.paths.length - 1]), p);
                 }
 
