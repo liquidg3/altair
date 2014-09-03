@@ -19,11 +19,11 @@ define(['dojo/_base/declare',
          * @returns {*}
          */
         toJsValue: function (value, options, config) {
-            return value;
+            return value && value !== '' ? value : null;
         },
 
         toDatabaseValue: function (value, options, config) {
-            return value;
+            return value && value !== '' ? value : null;
         }
 
     });
