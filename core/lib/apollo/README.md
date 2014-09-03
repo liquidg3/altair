@@ -19,7 +19,7 @@ endpoint and to normalize the incoming data is a great way to ensure your data i
 - _HasSchemaMixin is what actually gives any arbitrary object the ability to have a schema.
 - Schema data is extremely flexible is great for customizing properties for many use cases (forms, REST, etc.)
 
-** Apollo is totally decoupled from Altair. If you are looking to use schemas in Altair, look [here](../../../docs/apollo.md). **
+** Apollo is totally decoupled from Altair. If you are looking to use schemas in Altair, look [here](../../../docs/schemas.md). **
 
 ##Step 1 - create Apollo
 The main Apollo object houses all your property types. It is also responsible for instantiating new Schemas (through the

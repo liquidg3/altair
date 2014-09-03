@@ -9,25 +9,26 @@ Since configs support environments, the top level of your config will be a key f
 as you care to support). Each environment inherits from `default`. The merging is done by [node-extend](https://www.npmjs.org/package/config-extend).
 
 ```json
-
-"default": {
-    "name": "Default Name",
-    "description": "Some defaults",
-    "nestedOptions": {
-        "foo": "bar",
-        "hello": "world",
-        "anArray": ["one", "two", "three"]
-    }
-},
-"dev": {
-    "name": "Dev Name",
-    "nestedOptions": {
-        "foo": "taco"
-    }
-},
-"prod": {
-    "nestedOptions": {
-        "anArray": ["overridden"]
+{
+    "default": {
+        "name": "Default Name",
+        "description": "Some defaults",
+        "nestedOptions": {
+            "foo": "bar",
+            "hello": "world",
+            "anArray": ["one", "two", "three"]
+        }
+    },
+    "dev": {
+        "name": "Dev Name",
+        "nestedOptions": {
+            "foo": "taco"
+        }
+    },
+    "prod": {
+        "nestedOptions": {
+            "anArray": ["overridden"]
+        }
     }
 }
 ```
