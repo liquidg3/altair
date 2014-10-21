@@ -17,9 +17,7 @@ define(['dojo/_base/declare',
                 //if a value was provided, but it's a string
                 if(_value && !_.isNumber(_value)) {
                     _value = parseFloat(_value);
-                } else if(_value) {
-
-                } else {
+                } else if(!_.isNumber(_value)) {
                     _value = null;
                 }
 
