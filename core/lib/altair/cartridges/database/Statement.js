@@ -199,7 +199,7 @@ define(['altair/facades/declare',
         sortBy: function (field, order) {
 
             if(!order) {
-                order = 'ASC;'
+                order = 'ASC';
             } else {
                 order = order.toUpperCase();
             }
@@ -213,8 +213,9 @@ define(['altair/facades/declare',
         },
 
         thenBy: function (field, order) {
+
             if(!order) {
-                order = 'ASC;'
+                order = 'ASC';
             } else {
                 order = order.toUpperCase();
             }
