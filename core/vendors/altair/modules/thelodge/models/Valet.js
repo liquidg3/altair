@@ -260,6 +260,7 @@ define(['altair/facades/declare',
             var dependencies        = thePackage.dependencies,
                 altairDependencies  = thePackage.altairDependencies,
                 callbacks           = [],
+                invokeNpm           = _.has(options || {}, 'invokeNpm') ? options.invokeNpm : true,
                 installer,
                 dfd                 = new this.Deferred(),
                 installNode         = function () {
@@ -278,9 +279,14 @@ define(['altair/facades/declare',
 
                     }.bind(this)).then(function (modules) {
 
-                        return this.npm(_.merge({ all: true }, options)).then(function () {
+                        if(invokeNpm) {
+
+                            return this.npm(_.merge({ all: true }, options)).then(function () {
+                                return modules;
+                            });
+                        } else {
                             return modules;
-                        });
+                        }
 
                     }.bind(this));
 
@@ -290,7 +296,7 @@ define(['altair/facades/declare',
 
             if(altairDependencies) {
                 callbacks.push(installAltair);
-            } else if(dependencies) {
+            } else if(dependencies && invokeNpm) {
                 callbacks.push(installNode);
             }
 

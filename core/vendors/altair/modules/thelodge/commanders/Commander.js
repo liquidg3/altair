@@ -93,7 +93,9 @@ define(['altair/facades/declare',
 
             return this._valet.npm(options).step(this.hitch(function (step) {
                 this.writeLine(step.message, step.type);
-            }));
+            })).then(function (results) {
+                return this;
+            });
 
         },
 
