@@ -124,7 +124,7 @@ Now check out how easy it is to control our imaginary thermostat and maybe some 
     ....
 
     /**
-     * When someone says a verbal command, this callback will be triggered is our module.
+     * When someone says a verbal command, this callback will be triggered in our module.
      */
     onDidYellAtThermostat: function (e) {
 

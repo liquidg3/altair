@@ -273,7 +273,7 @@ define(['dojo/_base/declare',
                 c,
                 methodName;
 
-            //by convention, these are null and will not be casted
+            //by convention, these are null and will not be transformed
             if ((value === null || value === undefined) && _config.ignoreNull !== false) {
                 return null;
             }
@@ -309,7 +309,11 @@ define(['dojo/_base/declare',
                         var finalValue = [];
 
                         value.forEach(function (_value) {
-                            finalValue.push(propertyType[methodName](_value, options, config));
+                            if ((_value === null || _value === undefined) && _config.ignoreNull !== false) {
+                                //skip because null
+                            } else {
+                                finalValue.push(propertyType[methodName](_value, options, config));
+                            }
                         });
 
                         return wasArray ? finalValue : finalValue[0];
