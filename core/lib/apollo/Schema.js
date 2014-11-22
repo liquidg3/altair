@@ -316,7 +316,7 @@ define(['dojo/_base/declare',
                             }
                         });
 
-                        return wasArray ? finalValue : finalValue[0];
+                        return wasArray && finalValue.length > 0 ? finalValue : finalValue[0] || null;
 
                     }
                     //we want the raw value passed to method name
