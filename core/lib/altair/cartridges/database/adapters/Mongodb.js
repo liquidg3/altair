@@ -198,8 +198,10 @@ define(['altair/facades/declare',
 
                         var _key = this._operatorMap[key] || key;
 
-                        if (_.isObjectLiteral(value)) {
+                        if (_.isObjectLiteral(value) || _.isArray(value)) {
+
                             output[_key] = mapOperators(value);
+
                         } else {
 
                             //mongo id?

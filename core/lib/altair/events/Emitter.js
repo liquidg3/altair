@@ -133,47 +133,45 @@ define(['altair/facades/declare',
                         //if the listener was passed as the callback, or 2nd param, of on()
                         if(listener.callback) {
 
-                            try {
-                                results = listener.callback(event);
-                                list.push(when(results));
-                            } catch(e) {
-                                dfd = new BaseDeferred();
-                                dfd.reject(e);
-                                list.push(dfd);
-                                return false;
-                            }
-
+                            results = hitch(listener, 'callback', event);
+                            list.push(results);
 
                         }
 
-
                         if(listener.deferred.hasWaiting()) {
 
-                            dfd = new BaseDeferred();
-                            list.push(dfd);
 
-                            listener.deferred.resolve(event).then(function (i) {
+                            list.push(function (listener, event) {
 
-                                return function (results) {
+                                return function () {
 
-                                    results = results[0];
+                                    var dfd = new BaseDeferred()
 
-                                    if(results !== undefined && (!results.isInstanceOf || !results.isInstanceOf(Event))) {
-                                        when(results).then(function (results) {
+                                    listener.deferred.resolve(event).then(function (results) {
 
-                                            dfd.resolve(results);
+                                        results = results[0];
 
-                                        }).otherwise(hitch(dfd, 'reject'));
-                                    } else {
+                                        if(results !== undefined && (!results.isInstanceOf || !results.isInstanceOf(Event))) {
+
+                                            return when(results).then(hitch(dfd, 'resolve')).otherwise(hitch(dfd, 'reject'));
+
+                                        }
+
                                         dfd.resolve();
-                                    }
+
+                                    }).otherwise(function (err) {
+
+                                        dfd.reject(err);
+
+                                    });
+
+                                    return dfd;
 
                                 };
 
-                                //should we stop looping after first error?
-                            }(list.length - 1)).otherwise(function (err) {
-                                dfd.reject(err);
-                            });
+
+                            }(listener, event));
+
 
                         }
 
@@ -185,7 +183,7 @@ define(['altair/facades/declare',
 
             }
 
-            return all(list).then(function (results) {
+            return series(list).then(function (results) {
                 event.setResults(results);
                 return event;
             });

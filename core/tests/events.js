@@ -375,8 +375,8 @@ define(['altair/test',
                 var d = new Deferred();
 
                 setTimeout(function () {
-                    d.resolve('stay');
                     e.set('pass', true);
+                    d.resolve('stay');
                 }, 10);
 
                 return d;
@@ -384,7 +384,10 @@ define(['altair/test',
             });
 
             emitter.on('dummy-event-4').then(function (e) {
+
+                t.is(e.get('pass'), true);
                 return 'hey';
+
             });
 
 
