@@ -10,6 +10,7 @@ define(['altair/facades/declare',
         './QueryAgent',
         'dojo/promise/all',
         'altair/facades/when',
+        'altair/facades/series',
         'lodash'
 ], function (declare,
              Event,
@@ -19,6 +20,7 @@ define(['altair/facades/declare',
              QueryAgent,
              all,
              when,
+             series,
              _) {
 
 

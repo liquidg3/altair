@@ -16,8 +16,11 @@ define(['altair/facades/declare',
         },
 
         assertArray: function (value, message) {
-
             return this.assert(_.isArray(value), message);
+        },
+
+        assertNumeric: function (value, message) {
+            return this.assert(_.isNumeric(value), message);
         },
 
         assertFail: function (message) {

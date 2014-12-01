@@ -361,6 +361,42 @@ define(['altair/test',
 
             });
 
+        },
+
+        /**
+         * Test that 2nd listeners waits for the first
+         */
+        function (t) {
+
+            var emitter     = new Emitter();
+
+            emitter.on('dummy-event-4', function (e) {
+
+                var d = new Deferred();
+
+                setTimeout(function () {
+                    d.resolve('stay');
+                    e.set('pass', true);
+                }, 10);
+
+                return d;
+
+            });
+
+            emitter.on('dummy-event-4').then(function (e) {
+                return 'hey';
+            });
+
+
+            return emitter.emit('dummy-event-4').then(function (e) {
+
+                var results = e.results();
+
+                t.is(results[0], 'stay');
+                t.is(results[1], 'hey');
+
+            });
+
         }
 
     ]);
