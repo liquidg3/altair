@@ -125,8 +125,8 @@ define(['altair/facades/declare',
 
                 return this.emit('register-commanders').then(this.hitch(function (e) {
 
-                      var commanders  = {},
-                        results     = e.results();
+                      var commanders    = {},
+                        results         = e.results();
 
                     //loop through the results of every listener and flatten them into single object
                     _.each(results, function (_commanders) {

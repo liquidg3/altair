@@ -26,7 +26,6 @@ define(['altair/facades/declare',
             };
 
             this._callback = callback;
-            this._thens = [];
         },
 
         where: function (name, operator, operand) {
@@ -191,8 +190,10 @@ define(['altair/facades/declare',
 
         },
 
-        then: function (callback) {
-            this._thens.push(callback);
+        then: function (callback, error, progress) {
+            this.on('did-execute').then(function (e) {
+                callback(e.get('results'));
+            }, error, progress);
             return this;
         },
 

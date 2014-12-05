@@ -81,9 +81,9 @@ define(['altair/facades/declare',
             var resolver = new CartridgeResolver(this);
             this.addResolver(resolver);
 
-            //create and add the property type
+            //create and add the nexus property type
             var apolloCartridge = this.resolve('cartridges/Apollo');
-            if(apolloCartridge) {
+            if (apolloCartridge) {
 
                 var type = new NexusElementType({}, this);
                 apolloCartridge.apollo.addType(type);

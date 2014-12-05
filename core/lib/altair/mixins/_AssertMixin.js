@@ -20,7 +20,7 @@ define(['altair/facades/declare',
         },
 
         assertNumeric: function (value, message) {
-            return this.assert(_.isNumeric(value), message);
+            return this.assert(!_.isNaN(value) && _.isNumber(parseInt(value, 10)), message);
         },
 
         assertFail: function (message) {

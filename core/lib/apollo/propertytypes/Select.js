@@ -15,11 +15,25 @@ define(['dojo/_base/declare',
                     options: {
                         label: 'A key/value pair of options the user can select from.'
                     }
+                },
+                saveAsInt: {
+                    type: 'boolean',
+                    options: {
+                        label: 'Save as Integer',
+                        description: 'I will save as a string by default.',
+                        'default': false
+                    }
                 }
             },
 
             toJsValue: function (value, options, config) {
-                return (value) ? value.toString() : value;
+
+                if (value && options.saveAsInt) {
+                    return parseInt(value, 10);
+                } else if (value) {
+                    return value.toString();
+                }
+                return value;
             },
 
             toViewValue: function (value, options, config) {
