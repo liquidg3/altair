@@ -16,9 +16,10 @@ define(['altair/facades/declare',
         _array:     null,
         _statement: null,
         _index:     0,
-        constructor: function (array, statement) {
+        constructor: function (array, statement, total) {
             this._array         = array;
             this._statement     = statement;
+            this._total         = total;
         },
 
         next: function () {
@@ -48,7 +49,7 @@ define(['altair/facades/declare',
 
                     d.resolve();
 
-                }.bind();
+                }.bind(this);
 
 
             setTimeout(run, 0);
@@ -70,7 +71,7 @@ define(['altair/facades/declare',
         },
 
         total: function () {
-            return this._array.length;
+            return this._total || this._array.length;
         },
 
         statement: function () {

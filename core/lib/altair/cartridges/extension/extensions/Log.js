@@ -27,7 +27,9 @@ define(['altair/facades/declare',
         execute: function (module) {
 
             declare.safeMixin(module, {
-                log: debug(module.name)
+                log:    debug(module.name),
+                warn:   debug(module.name + '::WARN'),
+                err:    debug(module.name + '::ERR'),
             });
 
 

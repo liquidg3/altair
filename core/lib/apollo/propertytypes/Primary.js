@@ -24,6 +24,12 @@ define(['dojo/_base/declare',
 
         toDatabaseValue: function (value, options, config) {
             return value && value !== '' ? value : null;
+        },
+
+        toHttpResponseValue: function (value) {
+
+            return value.toString();
+
         }
 
     });

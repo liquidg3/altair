@@ -103,6 +103,27 @@
                 "type": "git",
                 "url":  "https://github.com/liquidg3/liquidfire-sockets.git"
             }
+        },
+        {
+            "name":        "liquidfire:AngularJS",
+            "description": "Works with Alfred to bring you angular fun",
+            "keywords":    ["js", "angular"],
+            "website":      "https://github.com/liquidg3/liquidfire-angularjs",
+            "repository":  {
+                "type": "git",
+                "url":  "https://github.com/liquidg3/liquidfire-angularjs.git"
+            }
+        },
+
+        {
+            "name":        "liquidfire:Shopify",
+            "description": "Connect to Shopify and do great things!",
+            "keywords":    ["shopify", "commerce"],
+            "website":      "https://github.com/liquidg3/liquidfire-shopify",
+            "repository":  {
+                "type": "git",
+                "url":  "https://github.com/liquidg3/liquidfire-shopify.git"
+            }
         }
     ]
 }

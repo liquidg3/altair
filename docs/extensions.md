@@ -10,7 +10,8 @@ Below are some extensions that come with Altair and the methods they mixin to th
 Allows you to create instance of classes by their nexus path. Everything created through the Foundry extension is
 extended through the Extension system.
 
- - **foundry(pathOrNexusId[, options, shouldAutoStart])**: loads, instantiates, and optionally calls startup() on any AMD module. @returns {Altair.Promise}.
+ - **forge(pathOrNexusId[, options, config])**: loads, instantiates, and optionally calls startup() on any AMD module. @returns {Altair.Promise}.
+ - **forgeSync(pathOrNexusId[, options, config])**: exactly like forge(), but returns the instantiated object.
 
 **Examples**
 ```js
@@ -39,6 +40,12 @@ this.forge('titan:Alfred::path/to/Class').then(function (obj) {
     this.log(err);
 
 }.bind(this));
+
+//forging syncronously
+var obj = this.forgSync('liquidfire:Alfred::path/to/Class', {
+    foo: 'bar'
+});
+
 ```
 
 ### Config
@@ -74,7 +81,28 @@ myFunctionDoingSomething: function () {
 This is currently a simple wapper for [visionmedia/debug](https://github.com/visionmedia/debug);
 
  - **log(anything[,anything[,...]])** Logs anything to the console. You should always use this and never console.log directly.
+ - **warn(anything[,anything[,...]])** Logs anything to the console with ::WARN.
+ - **err(anything[,anything[,...]])** Logs anything to the console with ::ERR.
+ 
+ 
+ ```js
+ 
+ startup: function (options) {
+ 
+ 
+    var _options = options || {};
+    
+    if (!_options.recommendedOption) {
+    
+        this.warn('you should put the recommended option');
+    
+    }
+    
+    
+    return this.inherited(arguments);
+ 
+ }
+ 
+ 
+ ```
 
-### Apollo
-
-Coming soon

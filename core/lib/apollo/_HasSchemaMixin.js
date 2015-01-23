@@ -178,6 +178,10 @@ define(['dojo/_base/declare',
          */
         _get: function (name, defaultValue, options, config) {
 
+            if (!_.has(this.values, name)) {
+                throw new Error('No property ' + name + ' found on ' + this);
+            }
+
             var value = this.schema().applyOnProperty((config && config.methods) ? config.methods : ['toJsValue'], name, this.values[name], options, config);
 
             if( value === null || value === undefined && !_.isUndefined(defaultValue)) {

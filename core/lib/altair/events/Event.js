@@ -40,7 +40,14 @@ define(['altair/facades/declare',
             return this._results;
         },
 
+        /**
+         * @deprecated use stopPropagation
+         */
         preventDefault: function () {
+            this.active = false;
+        },
+
+        stopPropagation: function () {
             this.active = false;
         }
 

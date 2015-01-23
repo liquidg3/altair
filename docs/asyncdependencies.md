@@ -21,14 +21,14 @@ startup: function () {
     };
 
     //load dependencies
-    this.deferred = this.all(l).then(this.hitch(function (dependencies) {
+    this.deferred = this.all(l).then(function (dependencies) {
 
         //mixin everything we have loaded to ourselves (will become properties)
         declare.safeMixin(this, dependencies);
 
         return this;
 
-    }));
+    }.bind(this));
 
     return this.inherited(arguments);
 

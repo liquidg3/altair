@@ -149,7 +149,7 @@ define(['altair/facades/declare',
          * @param alias
          */
         connection: function (alias) {
-            return _.find(this._connections, { alias: alias });
+            return alias ? _.find(this._connections, { alias: alias }) : this.defaultConnection();
         },
 
         defaultConnection: function () {
@@ -177,7 +177,7 @@ define(['altair/facades/declare',
             if(d) {
                 return d;
             } else {
-                throw new Error('No default database connections sent.');
+                throw new Error('No database connection sent.');
             }
 
         }

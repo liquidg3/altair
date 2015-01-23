@@ -233,6 +233,15 @@ define(['dojo/_base/declare',
         },
 
         /**
+         * All property types
+         *
+         * @returns {*}
+         */
+        propertyTypes: function () {
+            return this._propertyTypes;
+        },
+
+        /**
          * Apply a transformation strategy on many values at once (the keys of values must match a property in the schema)
          *
          * @param values
@@ -265,6 +274,10 @@ define(['dojo/_base/declare',
          * @returns {*}
          */
         applyOnProperty: function (methodNames, propertyName, value, options, config) {
+
+            if (!this._data.properties[propertyName]) {
+                throw new Error('Property "' + propertyName + '" not found on ' + this + '.');
+            }
 
             var property = this._data.properties[propertyName],
                 type = property.type,
@@ -316,7 +329,7 @@ define(['dojo/_base/declare',
                             }
                         });
 
-                        return wasArray && finalValue.length > 0 ? finalValue : finalValue[0] || null;
+                        return wasArray && finalValue.length > 0 ? finalValue : finalValue.length > 0 ? finalValue[0] : null;
 
                     }
                     //we want the raw value passed to method name

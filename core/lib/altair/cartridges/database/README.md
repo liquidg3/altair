@@ -5,52 +5,26 @@ adapter and implement all the methods inside of `./adapters/_Base`.
 ##Configuring connections
 Setting up your database connection is pretty easy, first make sure you understand the basics of building an [app](../../../../../docs/app.md).
 
-###Set `options` for the `database` cartridge in `altair.json`
-In this example we'll setup a `default` connection, then override it for `production`. It really just amounts to
-creating a database connection and configuring it through `options`.
+###Set `options` for the `database` cartridge in `modules.json` and `modules-dev.json`
+
 ```json
 {
-    "default": {
-        "cartridges": {
-            "database": {
-                "options": {
-                    "connections": [
-                        {
-                            "path":    "altair/cartridges/database/adapters/Mongodb",
-                            "options": {
-                                "alias":            "mongo1",
-                                "connectionString": "mongodb://localhost/my_database_dev"
-                            }
-                        }
-                    ]
-                }
+    "connections": [
+        {
+            "path":    "altair/cartridges/database/adapters/Mongodb",
+            "options": {
+                "alias":            "mongo1",
+                "connectionString": "mongodb://localhost/my_database_prod"
+            }
+        },
+        {
+            "path":    "altair/cartridges/database/adapters/Mongodb",
+            "options": {
+                "alias":            "mongo2",
+                "connectionString": "mongodb://localhost/my_database_dev"
             }
         }
-    }
-    "production": {
-        "cartridges": {
-            "database": {
-                "options": {
-                    "connections": [
-                        {
-                            "path":    "altair/cartridges/database/adapters/Mongodb",
-                            "options": {
-                                "alias":            "mongo1",
-                                "connectionString": "mongodb://localhost/my_database_prod"
-                            }
-                        },
-                        {
-                            "path":    "altair/cartridges/database/adapters/Mongodb",
-                            "options": {
-                                "alias":            "mongo2",
-                                "connectionString": "mongodb://localhost/my_database_dev"
-                            }
-                        }
-                    ]
-                }
-            }
-        }
-    }
+    ]
 }
 ```
 There is currently only 1 database adapter (Mongodb), but adding new ones is as simple is creating an AMD module and
@@ -61,5 +35,35 @@ Now that the `database` cartridge is configure, you can run queries and create/u
 
 ```js
 
+//get database cartridge instance
+var db = this.nexus('cartidges/Database');
+
+
+//Create a record
+db.create('test_collection').set({
+    foo: 'bar',
+    firstName: 'tay',
+    lastName: 'ro'
+}).execute().then(function (record) {
+
+    console.log(record);
+
+}).otherwise(function (err) {
+    console.log(err);
+});
+
+
+//Create many records
+var promise = db.createMany('test_collection')
+                .set([ {object: one}, {object: two} ])
+                .execute();
+
+//Read
+var p = db.findOne('test_collection').where('firstName', '===', 'tay).execute()
+
+
+
+//Update
+//Delete
 
 ``
