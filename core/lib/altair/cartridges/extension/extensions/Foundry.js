@@ -111,6 +111,7 @@ define(['altair/facades/declare',
                         Class,
                         instanceParent = _.has(config, 'parent') ? config.parent : parent,
                         instance,
+                        passedClassName = className,
                         type          = _.has(config, 'type') ? config.type : 'subComponent';
 
                     if (className.search(':') > 0) {
@@ -118,6 +119,10 @@ define(['altair/facades/declare',
                         parts       = className.split('/');
                         parent      = this.nexus(parts[0]);
                         className   = className.replace(parts[0] + '/', '');
+
+                        if (!parent)  {
+                            throw new Error('Could not forgeSync ' + passedClassName + ' because I could not find ' + parts[0]);
+                        }
 
                         return parent.forgeSync(className, options, config);
                     }

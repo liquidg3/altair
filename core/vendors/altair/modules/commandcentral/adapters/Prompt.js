@@ -113,8 +113,8 @@ define(['altair/facades/declare',
                 d.resolve(undefined);
             }
 
-
             return d;
+
         },
 
         //if we can autoload the current command, return it here

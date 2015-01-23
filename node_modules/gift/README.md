@@ -1,4 +1,4 @@
-# Gift [![Build Status](https://secure.travis-ci.org/notatestuser/gift.png?branch=master)](http://travis-ci.org/notatestuser/gift) [![Dependency Status](https://david-dm.org/notatestuser/gift.png)](https://david-dm.org/notatestuser/gift) [![devDependency Status](https://david-dm.org/notatestuser/gift/dev-status.png)](https://david-dm.org/notatestuser/gift#info=devDependencies)
+# Gift [![Build Status](https://secure.travis-ci.org/notatestuser/gift.svg?branch=master)](http://travis-ci.org/notatestuser/gift) [![Dependency Status](https://david-dm.org/notatestuser/gift.svg)](https://david-dm.org/notatestuser/gift) [![devDependency Status](https://david-dm.org/notatestuser/gift/dev-status.svg)](https://david-dm.org/notatestuser/gift#info=devDependencies)
 
 A simple Node.js wrapper for the Git CLI. The API is based on
 [Grit](https://github.com/mojombo/grit)
@@ -118,17 +118,28 @@ Equivalent to `git remote add <name> <url>`.
 ### `Repo#remote_remove(name, callback)`
 Remove a remote.
 
+### `Repo#remote_add_url(name, url, callback)`
+Equivalent to `git remote set-url --add <name> <url>`.
+
+### `Repo#remote_set_url(name, url, callback)`
+Equivalent to `git remote set-url <name> <url>`.
+
+### `Repo#remote_delete_url(name, url, callback)`
+Equivalent to `git remote set-url --delete <name> <url>`.
+
 ### `Repo#remote_fetch(name, callback)`
 `git fetch <name>`
 
-### `Repo#remote_push(name, [branch, ]callback)`
+### `Repo#remote_push(name, [branch,] callback)`
 `git push <name>`
 
 with branch parameter specified:
 `git push <name> <branch>`
 
-### `Repo#status(callback)`
-Uses `--porcelain` to parse repository status in a way that is agnostic of system language. The callback receives `(err, status)`. See below for a definition of what `status` is.
+### `Repo#status([options, ]callback)`
+Uses `--porcelain` to parse repository status in a way that is agnostic of system language.
+`options` is a string of any other options you'd like to pass to the status command.  For example, the `-u` option will list each file in an untracked directory rather than simply listing the directory itself.
+ The callback receives `(err, status)`. See below for a definition of what `status` is.
 
 ### `Repo#config(callback)`
 `git config` parsed as a simple, one-level object. The callback receives `(err, config)`.

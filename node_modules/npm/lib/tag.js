@@ -6,10 +6,10 @@ tag.usage = "npm tag <project>@<version> [<tag>]"
 tag.completion = require("./unpublish.js").completion
 
 var npm = require("./npm.js")
-  , registry = npm.registry
   , mapToRegistry = require("./utils/map-to-registry.js")
   , npa = require("npm-package-arg")
   , semver = require("semver")
+  , log = require("npmlog")
 
 function tag (args, cb) {
   var thing = npa(args.shift() || "")
@@ -26,9 +26,16 @@ function tag (args, cb) {
     return cb(er)
   }
 
-  mapToRegistry(project, npm.config, function (er, uri) {
+  log.warn("tag", "This command is deprecated. Use `npm dist-tag` instead.")
+
+  mapToRegistry(project, npm.config, function (er, uri, auth) {
     if (er) return cb(er)
 
-    registry.tag(uri, version, t, cb)
+    var params = {
+      version : version,
+      tag     : t,
+      auth    : auth
+    }
+    npm.registry.tag(uri, params, cb)
   })
 }

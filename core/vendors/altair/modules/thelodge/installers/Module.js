@@ -52,7 +52,6 @@ define(['altair/facades/declare',
                 return this.inherited(arguments);
             }
 
-
             return this.inherited(arguments);
         },
 
@@ -308,7 +307,7 @@ define(['altair/facades/declare',
 
             }.bind(this))
             .step(this.hitch(this.deferred, 'progress')) //track progress
-            .then(this.hitch(this.deferred,'resolve')) //resolve when finished
+            .then(this.hitch(this.deferred,'resolve', this)) //resolve when finished
             .otherwise(this.hitch(this.deferred, 'reject')); //reject on any error
 
 
