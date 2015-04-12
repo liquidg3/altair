@@ -11,10 +11,12 @@
  */
 define(['altair/facades/declare',
         'altair/plugins/node!path',
+        'lodash',
         './_Base'],
 
     function (declare,
               nodePath,
+              _,
               _Base) {
 
     return declare([_Base], {
@@ -37,7 +39,7 @@ define(['altair/facades/declare',
                         throw new Error('resolvePath for "' + this.name + '" requires this.dir (dirname of absolute path to class file)');
                     }
 
-                    if(!path) {
+                    if(!_.isString(path)) {
                         throw new Error('you need to pass a path to resolvePath()');
                     }
 

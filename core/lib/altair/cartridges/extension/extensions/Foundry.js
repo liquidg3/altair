@@ -38,6 +38,9 @@ define(['altair/facades/declare',
         var shouldExtend = !Class._ignoreExtensions || Class._ignoreExtensions !== '*';
 
         if(shouldExtend) {
+            if (!config.extensions) {
+                throw new Error('Error extending class.');
+            }
             config.extensions.extend(Class, config.type);
         }
 
@@ -121,7 +124,7 @@ define(['altair/facades/declare',
                         className   = className.replace(parts[0] + '/', '');
 
                         if (!parent)  {
-                            throw new Error('Could not forgeSync ' + passedClassName + ' because I could not find ' + parts[0]);
+                            throw new Error(this + ' could not forgeSync ' + passedClassName + ' because I could not find ' + parts[0]);
                         }
 
                         return parent.forgeSync(className, options, config);
@@ -145,6 +148,8 @@ define(['altair/facades/declare',
                         }
 
                     }
+                    //cleanup name if necessary
+                    name = name.replace('/./', '/');
 
                     //path from newly resolved classname
                     path = this.resolvePath(className + '.js');
@@ -157,19 +162,27 @@ define(['altair/facades/declare',
                         });
                     }
 
-                    instance = foundry(Class, options, {
-                        parent:         instanceParent,
-                        name:           name,
-                        nexus:          instanceParent ? instanceParent._nexus : this._nexus,
-                        type:           type,
-                        dir:            pathUtil.join(pathUtil.dirname(path), '/'),
-                        defaultFoundry: defaultFoundry,
-                        extensions:     this.nexus('cartridges/Extension')
-                    });
+                    try {
 
-                    if(instance.startup && shouldStartup) {
-                        instance.startup(options);
+                        instance = foundry(Class, options, {
+                            parent:         instanceParent,
+                            name:           name,
+                            nexus:          instanceParent ? instanceParent._nexus : this._nexus,
+                            type:           type,
+                            dir:            pathUtil.join(pathUtil.dirname(path), '/'),
+                            defaultFoundry: defaultFoundry,
+                            extensions:     this.nexus('cartridges/Extension')
+                        });
+
+                        if(instance.startup && shouldStartup) {
+                            instance.startup(options);
+                        }
+
+
+                    } catch (e) {
+                        throw new Error('Could not forge ' + path + '. Make sure you have no syntax errors and all your requires are valid.');
                     }
+
 
 
                     return instance;
@@ -226,6 +239,9 @@ define(['altair/facades/declare',
                         }
 
                     }
+
+                    //cleanup name if necessary
+                    name = name.replace('/./', '/');
 
                     //path from newly resolved classname
                     path = this.resolvePath(className + '.js');

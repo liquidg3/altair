@@ -148,10 +148,10 @@ define(['altair/facades/declare',
 
         find: function (collectionName, statement, options) {
 
-            var clauses = this.parseStatement(statement),
-                collection = this._db.collection(collectionName),
-                where = clauses.where,
-                _options = options || {};
+            var clauses     = this.parseStatement(statement),
+                collection  = this._db.collection(collectionName),
+                where       = clauses.where,
+                _options    = options || {};
 
             //apply limit clause
             if (_.has(clauses, 'limit')) {

@@ -14,7 +14,6 @@ define(['altair/facades/declare',
     return declare([_Base], {
 
         _cursor: null,
-        _statement: null,
         constructor: function (mongoCursor, statement) {
             this._cursor = mongoCursor;
             this._statement = statement;
@@ -80,6 +79,7 @@ define(['altair/facades/declare',
         },
 
         toArray: function() {
+
             return this.promise(this._cursor, 'toArray').then(this.hitch(function (documents) {
 
                 if(this.foundry) {
@@ -102,6 +102,7 @@ define(['altair/facades/declare',
                 }
 
             }));
+
         },
 
         count: function () {

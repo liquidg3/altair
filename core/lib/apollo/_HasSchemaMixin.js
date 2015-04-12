@@ -213,7 +213,8 @@ define(['dojo/_base/declare',
                 //only set values on ourselves that do not already exist
                 //this is to ensure that values has a key for every property in the schema
                 if( !( this.values.hasOwnProperty(name) ) ) {
-                    this.set(name, schema.optionsFor(name, false).default || null);
+                    var defaultValue = schema.optionsFor(name, false).default;
+                    this.set(name, defaultValue);
                 }
 
             }, this);

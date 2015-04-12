@@ -14,9 +14,9 @@ define(['altair/facades/declare',
     return declare([_Base], {
 
         _array:     null,
-        _statement: null,
         _index:     0,
-        constructor: function (array, statement, total) {
+        _callback:  null, //called when the end of results are reached to see if there are more
+        constructor: function (array, statement, total, cb) {
             this._array         = array;
             this._statement     = statement;
             this._total         = total;
@@ -47,7 +47,32 @@ define(['altair/facades/declare',
                         d.progress(row);
                     });
 
-                    d.resolve();
+
+                    //now see if there are more results in the _callback
+                    if (this._callback) {
+
+                        this.when(this._callback(this)).then(function (cursor) {
+
+                            if (cursor) {
+
+                                this._array     = cursor._array;
+                                this._statement = cursor._statement;
+                                this._total     = cursor._total;
+
+                                run();
+
+                            } else {
+                                d.resolve();
+                            }
+
+
+                        }.bind(this)).otherwise(d.reject.bind(d));
+
+                    } else {
+
+                        d.resolve();
+
+                    }
 
                 }.bind(this);
 

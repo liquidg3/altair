@@ -1,7 +1,9 @@
 define(['dojo/_base/declare',
+        'lodash',
         './_Base'],
 
     function (declare,
+              _,
               _Base) {
 
 
@@ -9,6 +11,21 @@ define(['dojo/_base/declare',
     return declare([_Base], {
 
         key: 'primary',
+        options:            {
+            type: {
+                type:    'select',
+                options: {
+                    label:       'Type',
+                    'default': 'string',
+                    choices: {
+                        string:     'String',
+                        integer:    'Integer'
+                    }
+                }
+            }
+
+        },
+
 
         /**
          * You shall always get back a string honoring your options.
@@ -19,16 +36,25 @@ define(['dojo/_base/declare',
          * @returns {*}
          */
         toJsValue: function (value, options, config) {
-            return value && value !== '' ? value : null;
+
+            var v = value && value !== '' ? value : null;
+
+            if (v && options.type === 'string') {
+                v = _(v).toString();
+            } else if (v && options.type === 'integer') {
+                v = parseInt(v);
+            }
+
+            return v;
         },
 
         toDatabaseValue: function (value, options, config) {
-            return value && value !== '' ? value : null;
+            return this.toJsValue(value, options, config);
         },
 
-        toHttpResponseValue: function (value) {
+        toHttpResponseValue: function (value, options, config) {
 
-            return value.toString();
+            return this.toJsValue(value, options, config);
 
         }
 

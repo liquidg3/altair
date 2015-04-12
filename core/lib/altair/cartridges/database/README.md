@@ -66,4 +66,14 @@ var p = db.findOne('test_collection').where('firstName', '===', 'tay).execute()
 //Update
 //Delete
 
-``
+//iterating over results
+db.findOne('test_collection').where('firstName', '===', 'tay).execute().then(function (results) {
+
+    return results.each().step(function (doc) {
+
+        console.log(doc);
+
+    });
+
+});
+```

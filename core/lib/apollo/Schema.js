@@ -176,6 +176,10 @@ define(['dojo/_base/declare',
             return this._data[named];
         },
 
+        get: function (named) {
+            return this._data[named];
+        },
+
         data: function () {
             return this._data;
         },

@@ -277,7 +277,6 @@ define(['altair/facades/declare',
          */
         buildModules: function (modules, options) {
 
-
             return glob(this.allPaths()).then(this.hitch(function (paths) {
 
                 return this.foundry.build(mixin({

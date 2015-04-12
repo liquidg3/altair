@@ -77,7 +77,13 @@ define(['altair/facades/declare',
                     }
                 };
 
-                this.deferred = glob(_options.glob.map(hitch(require, 'toUrl')), _options.globOptions).then(hitch(this, function (files) {
+                this.deferred = glob(_options.glob.map(function (p) {
+                    if (p[0] === '.') {
+                        return path.join(process.cwd(), p);
+                    } else {
+                        return require.toUrl(p);
+                    }
+                }), _options.globOptions).then(hitch(this, function (files) {
 
                     list.concat(files.map(hitch(this, 'includeTest')));
                     return all(list);

@@ -18,11 +18,33 @@ define(['altair/facades/declare',
         Deferred:       Deferred,
 
         /**
-         * Returns a function bound using hitch rules to ourselves
+         * Returns a function bound using dojo.hitch rules to ourselves.
+         * var a = 'foo',
+         *     anotherObject = new Something();
+         *
+         * this.on('some-event').then(this.hitch('someMethod'));
+         * this.on('some-event').then(this.hitch('someMethod2', a));
+         *
+         * //binding do other objects works too
+         * this.on('some-event').then(this.hitch(anotherObject, 'someMethod'));
+         * this.on('some-event').then(this.hitch(anotherObject, 'someMethod2', a));
+         *
+         * ...
+         *
+         * someMethod: function (e) {
+         * },
+         *
+         * someMethod2: function (a, e) {
+         * }
+         *
+         *
+         *
+         * ...
          *
          * @returns {function}
          */
         hitch: function () {
+
             var args = Array.prototype.slice.call(arguments, 0);
 
             if(_.isString(args[0]) || _.isFunction(args[0])) {
@@ -33,7 +55,7 @@ define(['altair/facades/declare',
         },
 
         /**
-         * Not sure if you have a deferred? wrap it in when and be certain.
+         * Not sure if you have a promise? wrap it in when and be certain.
          *
          * @param obj
          * @returns {altair.Promise}
@@ -43,7 +65,7 @@ define(['altair/facades/declare',
         },
 
         /**
-         * Have array of deferreds or an object whose values could be deferreds? Pass it to all and I'll wait until they
+         * Have array of promises or an object whose values could be promises? Pass it to all and I'll wait until they
          * all resolve.
          *
          * @param list
@@ -76,7 +98,7 @@ define(['altair/facades/declare',
                     //this ternary is to handle someone wrapping a require(). all other cases, first arg is expected to be error
 
                     if(err) {
-                        d.reject(new Error(err), false); // we will not log promise failures here because they aften are not serious (fs.stat'ing for a file)
+                        d.reject(_.isString(err) ? new Error(err) : err, false); // we will not log promise failures here because they aften are not serious (fs.stat'ing for a file)
                     } else {
                         d.resolve(args.length <= 1 ? args.pop() : args);
                     }

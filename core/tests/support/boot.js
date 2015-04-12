@@ -4,17 +4,30 @@
 define(['altair/Deferred',
         'altair/facades/hitch',
         'altair/cartridges/Foundry',
+        'altair/plugins/node!module',
+        'altair/plugins/node!path',
         'altair/Altair'],
     function (Deferred,
               hitch,
               Foundry,
+              Module,
+              path,
               Altair) {
+
+        var initedPaths = false;
 
         var boot = function (cartridges, altairOptions) {
 
             var deferred,
                 altair,
                 foundry;
+
+            //app testing help
+            if (!initedPaths && altairOptions && altairOptions.paths && altairOptions.paths.indexOf('app') > -1) {
+                process.env['NODE_PATH'] += ":" + path.join(process.cwd(), 'node_modules');
+                Module._initPaths();
+                initedPaths = true;
+            }
 
             try {
 
@@ -74,7 +87,7 @@ define(['altair/Deferred',
             {
                 path: 'altair/cartridges/module/Module',
                 options: {
-                    paths: ['core/tests/modules/vendors', 'core/vendors'],
+                    paths: ['core/tests/modules/vendors/modules', 'core/vendors/modules'],
                     modules: ['altair:MockWithEvents', 'altair:MockWithEvents2', 'altair:Events']
                 }
             }

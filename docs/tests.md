@@ -19,6 +19,8 @@ tests.
 
 *Assume that `./` is the path to a module, e.g. `core/vendors/altair/modules/commandcentral`.*
 
+*If you are testing your app, assume that `./` is `/path/to/app/`.*
+
 ##Create your first test
 Take this placeholder and drop it into `./tests/my-test.js`
 
@@ -63,7 +65,7 @@ You don't have to use the very weak doh assertion library, you can use whatever 
 
 In this scenario I'm going to use chai.js (chosen randomly as I am testing them each out to see what I like the best).
 
-*Step 1* - drop devDependencies into your module's `package.json`
+*Step 1* - drop devDependencies into your module's or app's `package.json`
 ```json
 {
     "name":         "liquidfire:Sockets",
@@ -119,12 +121,14 @@ what tests to load. The current `altair/TestRunner` only supports a basic glob s
     "description":  "This is crazy pants!",
     "tests": {
         "debug": ".*",
-        "glob": ["app/vendors/*/modules/*/tests/*.js"]
+        "glob": ["./vendors/*/modules/*/tests/*.js"]
     },
     "default":      {}
 }
 
 ```
+*Note* - if you are building tests for your `App`, add `./tests/*.js` to `glob`.
+
 ###Test config API
 Here is what you can currently pass under the `tests` block of your `altair.json`.
 
@@ -297,3 +301,85 @@ define(['altair/test',
     });
 ```
 And that pretty much covers it. You are now ready to build tests for all your everything!
+
+## Testing your (web)app
+You built an app (or web app) using `altair forge app` or `altair alfred forge` and you want to test some controllers, maybe some
+routes, etc.
+
+###Step 1. create test file
+Create `tests.json` inside of `/path/to/your/app/tests/` and put the following into it.
+
+```json
+
+var env = 'dev'; //set to 'test' to use custom configurations
+
+define(['altair/test',
+        'core/tests/support/boot',
+        'altair/plugins/node!config-extend',
+        'altair/plugins/config!core/config/altair.json?env=' + env,
+        'altair/plugins/config!../altair.json?env=' + env],
+    function (test,
+              boot,
+              extend,
+              altairConfig,
+              config) {
+
+        //mixin the configs
+        config = extend(altairConfig, config);
+
+        //setup AMD environment like an app
+        require({
+            paths: {
+                app: process.cwd()
+            }
+        });
+
+        //setup paths
+        config.paths = ['core', 'app'];
+        
+        //make sure command central does not start
+        config.cartridges.module.options.moduleOptions['altair:CommandCentral'].autostart =  false;
+        
+        //OPTIONAL: make sure alfred uses the mock strategy
+        //config.cartridges.module.options.moduleOptions['titan:Alfred'].site.strategy = 'mock';
+        
+        //OPTIONAL: disable sockets (or use mock socket)
+        //config.cartridges.module.options.moduleOptions['liquidfire:Sockets'].sockets = {}
+        //config.cartridges.module.options.moduleOptions['liquidfire:Sockets'].sockets[0].name = 'mock'
+
+
+        /**
+         * Register tests
+         */
+        test.register('appointment-tests', {
+
+            "test instantiating scheduler": function (t) {
+
+                return boot.nexus(config.cartridges, config).then(function (nexus) {
+
+                    //the name of your Alfred app is {{vendorName}}:*
+                    var app = nexus('spruce:*'),
+                        route = app.server.appConfig.routes['/'],
+                        altair = nexus('Altair');
+
+                    t.is(route.controller.name, 'spruce:*/controllers/Index', 'the wrong controller came back');
+
+                    //your app
+                    console.log(app);
+                    
+                    //shutdown altair
+                    return altair.teardown();
+
+
+                });
+
+
+            }
+
+        });
+
+    });
+```
+
+now you have your fulling booted altair runtime ready for you. Anything you can do in your app, you can do here in the test.
+
