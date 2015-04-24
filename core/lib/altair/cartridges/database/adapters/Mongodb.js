@@ -19,7 +19,9 @@ define(['altair/facades/declare',
             '$<':   '$lt',
             '$>=':  '$gte',
             '$<=':  '$lte',
-            '$OR':  '$or'
+            '$OR':  '$or',
+            '$in':  '$in',
+            '$nin': '$nin'
         },
 
         _sortMap: {

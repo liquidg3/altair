@@ -51,11 +51,12 @@ define(['altair/facades/declare',
                     case '>=':
                     case '<=':
                     case 'like':
+                    case 'in':
                         condition[name] = {};
                         condition[name]['$' + operator] = operand;
                         break;
                     default:
-                        throw new Error('Unknown operator "' + operator + '". Supported include =,==,===,!=,!==>,<,>=,<=,LIKE');
+                        throw new Error('Unknown operator "' + operator + '". Supported include =,==,===,!=,!==>,<,>=,<=,LIKE,in');
                 }
             }
             //they passed a query right through
