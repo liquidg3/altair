@@ -101,6 +101,10 @@ define(['altair/facades/declare',
 
         statement: function () {
             return this._statement;
+        },
+
+        setTotal: function (total) {
+            this._total = total;
         }
 
 

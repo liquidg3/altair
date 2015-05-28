@@ -1,8 +1,10 @@
 define(['dojo/_base/declare',
-        './_Base'],
+        './_Base',
+        'lodash'],
 
     function (declare,
-              _Base) {
+              _Base,
+              _) {
 
 
 
@@ -41,7 +43,7 @@ define(['dojo/_base/declare',
             } else if(options.maxLength > -1) {
                 results = value.toString().substr(0, options.maxLength);
 
-            } else if(value) {
+            } else if(!_.isNull(value) && !_.isUndefined(value)) {
                 results = value.toString();
             } else {
                 results = null;

@@ -6,24 +6,28 @@ define(['altair/Deferred',
         'altair/cartridges/Foundry',
         'altair/plugins/node!module',
         'altair/plugins/node!path',
+        'lodash',
         'altair/Altair'],
     function (Deferred,
               hitch,
               Foundry,
               Module,
               path,
+              _,
               Altair) {
 
         var initedPaths = false;
 
-        var boot = function (cartridges, altairOptions) {
+        var boot = function (altairCartridges, altairOptions) {
 
             var deferred,
                 altair,
+                cartridges = _.cloneDeep(altairCartridges),
+                options = _.cloneDeep(altairOptions),
                 foundry;
 
             //app testing help
-            if (!initedPaths && altairOptions && altairOptions.paths && altairOptions.paths.indexOf('app') > -1) {
+            if (!initedPaths && options && options.paths && options.paths.indexOf('app') > -1) {
                 process.env['NODE_PATH'] += ":" + path.join(process.cwd(), 'node_modules');
                 Module._initPaths();
                 initedPaths = true;
@@ -31,7 +35,7 @@ define(['altair/Deferred',
 
             try {
 
-                altair      = new Altair(altairOptions || {});
+                altair      = new Altair(options || {});
                 foundry     = new Foundry(altair);
 
                 deferred    = foundry.build(cartridges || boot.cartridges).then(function (cartridges) {
