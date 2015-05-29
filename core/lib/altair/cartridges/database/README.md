@@ -59,11 +59,18 @@ var promise = db.createMany('test_collection')
                 .execute();
 
 //Read
-var p = db.findOne('test_collection').where('firstName', '===', 'tay).execute()
+var promise = db.findOne('test_collection').where('firstName', '===', 'tay).execute()
 
 
 
 //Update
+var promise = db.update('test_collection').where('group', '===', 'foo').set('group', 'bar').execute();
+var promise = db.update('test_collection').where('group', '===', 'foo').set({
+    group: 'bar',
+    happy:  true
+}).execute();
+
+
 //Delete
 
 //iterating over results
