@@ -69,11 +69,19 @@ Your module now depends on altair:Adapters so we should tell Altair.
 }
 ```
 
-## Step 6 - Set selected adapter
-The easiest way to do this is to add the following to your app/config/altair.json
+## Step 6 - Add field to schema
+In your module's directory, add `./configs/schema.json` and put `selectedAdapter` like this in it.
+
+```json
+
+COMMING SOON
+```
+
+## Step 7 - Set selected adapter
+The easiest way to do this is to add the following to your app/config/modules.json
 ***COMING SOON**
 
-## Step 7 - Use your adapter
+## Step 8 - Use your adapter
 The _HasAdaptersMixin depends on Apollo for its schema support. This means you'll be using get/set like you're used to,
 which is nice. All the methods below call be called from the module that has the mixin.
 

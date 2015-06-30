@@ -1,9 +1,11 @@
 define(['altair/facades/declare',
         './_Base',
-        'altair/plugins/node!debug'],
+        'altair/plugins/node!debug',
+        'lodash'],
     function (declare,
               _Base,
-              debug) {
+              debug,
+              _) {
 
     return declare([_Base], {
 
@@ -26,11 +28,37 @@ define(['altair/facades/declare',
 
         execute: function (module) {
 
-            declare.safeMixin(module, {
-                log:    debug(module.name),
-                warn:   debug(module.name + '::WARN'),
-                err:    debug(module.name + '::ERR'),
+            var logs = {},
+                callbacks = {
+                    log:    debug(module.name),
+                    warn:   debug(module.name + '::WARN'),
+                    err:    debug(module.name + '::ERR'),
+                };
+
+
+            _.each(callbacks, function (cb, key) {
+
+                var altair;
+
+                logs[key] = function () {
+
+                    if (this.nexus) {
+
+                        altair = altair || this.nexus('Altair');
+
+                        altair.emit('did-' + key, {
+                            aurgments: arguments
+                        });
+                    }
+
+                    callbacks[key].apply(this, arguments);
+
+                };
+
             });
+
+
+            declare.safeMixin(module, logs);
 
 
         }

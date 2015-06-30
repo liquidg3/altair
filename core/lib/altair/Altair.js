@@ -13,9 +13,10 @@ define(['altair/facades/declare',
     'altair/facades/home',
     'altair/facades/all',
     'altair/facades/when',
-    'altair/plugins/node!path'
+    'altair/plugins/node!path',
+    'altair/events/Emitter'
 ],
-    function (declare, Deferred, _, hitch, home, all, when, path) {
+    function (declare, Deferred, _, hitch, home, all, when, path, Emitter) {
 
         //helper for us elsewhere *find better place*
         _.isObjectLiteral = function (_obj) {
@@ -37,7 +38,7 @@ define(['altair/facades/declare',
 
         "use strict";
 
-        return declare(null, {
+        return declare([Emitter], {
 
             _cartridges: null,
             env:         'dev',
