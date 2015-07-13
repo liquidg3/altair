@@ -228,7 +228,7 @@ define(['altair/facades/declare',
 
         },
 
-        execute: function () {
+        execute: function (options) {
 
             return this.emit('will-execute', {
                 statement: this,
@@ -238,7 +238,7 @@ define(['altair/facades/declare',
                 var results;
 
                 if (this._callback) {
-                    results = this._callback(this);
+                    results = this._callback(this, options);
                 }
 
                 return when(results);

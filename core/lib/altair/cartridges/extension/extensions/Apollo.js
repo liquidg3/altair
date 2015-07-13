@@ -8,6 +8,7 @@ define(['altair/facades/declare',
          './_Base',
          'altair/Deferred',
          'altair/facades/hitch',
+         'altair/facades/mixin',
          'altair/facades/when',
          'apollo/_HasSchemaMixin',
          'apollo/Schema'],
@@ -16,6 +17,7 @@ define(['altair/facades/declare',
               _Base,
               Deferred,
               hitch,
+              mixin,
               when,
               _HasSchemaMixin,
               Schema) {
@@ -106,9 +108,11 @@ define(['altair/facades/declare',
 
                             return when(dfd).then(function () {
 
-                                return old(options);
+                                var _options = mixin(options || {}, this.values || {})
 
-                            })
+                                return old(_options);
+
+                            }.bind(this))
                         }
 
                     }
