@@ -35,7 +35,6 @@ define(['altair/facades/declare',
                     err:    debug(module.name + '::ERR'),
                 };
 
-
             _.each(callbacks, function (cb, key) {
 
                 var altair;
@@ -47,7 +46,10 @@ define(['altair/facades/declare',
                         altair = altair || this.nexus('Altair');
 
                         altair.emit('did-' + key, {
-                            aurgments: arguments
+                            level: key,
+                            parent: this,
+                            date: new Date(),
+                            arguments: Array.prototype.slice.call(arguments)
                         });
                     }
 

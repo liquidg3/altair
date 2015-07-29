@@ -124,6 +124,16 @@
                 "type": "git",
                 "url":  "https://github.com/liquidg3/liquidfire-shopify.git"
             }
+        },
+        {
+            "name":        "liquidfire:Errors",
+            "description": "Get notified when thnigs happen in Altair.",
+            "keywords":    ["error", "log"],
+            "website":      "https://github.com/liquidg3/liquidfire-errors",
+            "repository":  {
+                "type": "git",
+                "url":  "https://github.com/liquidg3/liquidfire-errors.git"
+            }
         }
     ]
 }

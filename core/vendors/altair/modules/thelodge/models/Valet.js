@@ -23,8 +23,8 @@ define(['altair/facades/declare',
             this.deferred = this.when(menus).then(function (menus) {
 
                 return this.all({
-                    _npm:     _options.npm || this.forge('../updaters/Npm'),
-                    _kitchen: _options.kitchen || this.forge('../client/Kitchen', {
+                    _npm:     _options.npm || this.parent.forge('updaters/Npm'),
+                    _kitchen: _options.kitchen || this.parent.forge('client/Kitchen', {
                         menus: menus
                     })
                 });

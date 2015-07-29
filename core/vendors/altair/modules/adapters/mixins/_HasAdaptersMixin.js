@@ -45,7 +45,7 @@ define(['altair/facades/declare',
 
         constructor: function () {
 
-            this._adaptersCache = [];
+            this._adaptersCache = {};
         },
 
         /**
@@ -57,29 +57,26 @@ define(['altair/facades/declare',
 
             this.on('register-adapters').then(this.hitch('registerAdapters'));
 
-            return this.inherited(arguments).then(this.hitch(function () {
+            //boot all adapters
+            var _options = options || this.options || {};
 
-                var results = this;
+            if (_options.selectedAdapter) {
+                _options.selectedAdapters = [_options.selectedAdapter];
+                delete _options.selectedAdapter;
+            }
 
-                if(this.values.selectedAdapters[0]) {
+            this.deferred = this.all(_.map(options.selectedAdapters, function (adapter) {
 
-                    //if there is a selected adapter, load it first, then set it to our ourselves, then be done
-                    results = this.adapter(this.values.selectedAdapters[0]).then(this.hitch(function (a) {
+                return this.adapter(adapter);
 
-                        if(a) {
-                            this.values.selectedAdapters[0] = a;
-                        }
+            }.bind(this))).then(function (adapters) {
 
-                        return this;
+                return this;
 
-                    }));
+            }.bind(this));
 
-                }
+            return this.inherited(arguments);
 
-
-                return results;
-
-            }));
         },
 
         /**
@@ -104,15 +101,21 @@ define(['altair/facades/declare',
             var d = new this.Deferred(),
                 options;
 
-            //no name was passed, assuming selectedAdapter (only works *after* startup)
+            if(_.isObject(named) && named.path) {
+                options = named.options;
+                named   = named.path;
+            }
+
+            //no name was passed, assuming first selectedAdapter (only works *after* it has been explicitly called)
             if(!named) {
 
-                if(this.values.selectedAdapters && this.values.selectedAdapters[0]) {
+                if(Object.keys(this._adaptersCache).length > 0) {
 
-                    d = this.values.selectedAdapters[0];
+                    named = Object.keys(this._adaptersCache)[0];
 
                 } else {
-                    d = null;
+
+                    named = this.values.selectedAdapters && this.values.selectedAdapters[0];
 
                 }
 
@@ -120,27 +123,23 @@ define(['altair/facades/declare',
             //it has been cached
             else if(this._adaptersCache.hasOwnProperty(named)) {
 
-                d.resolve(this._adaptersCache[named]);
+                return this._adaptersCache[named]
 
             }
-            //load it from scratch, then cache
-            else {
 
-                if(_.isObject(named) && named.path) {
-                    options = named.options;
-                    named   = named.path;
-                }
+            //load the adapter
+            if (named && !this._adaptersCache[named]) {
 
                 this.assertString(named, 'Adapter names must be strings.');
 
-                d = this.forge(named, options, { type: 'adapter' }).then(this.hitch(function (adapter) {
+                this._adaptersCache[named] = this.forge(named, options, { type: 'adapter' }).then(this.hitch(function (adapter) {
                     this._adaptersCache[named] = adapter;
                     return adapter;
                 }));
 
             }
 
-            return d;
+            return this._adaptersCache[named];
 
         },
 
@@ -150,19 +149,7 @@ define(['altair/facades/declare',
          * @returns {altair.Promise}
          */
         adapters: function () {
-
-            var d = new this.Deferred();
-
-            if(this._adaptersCache) {
-                d.resolve(this._adaptersCache);
-            }
-
-            this.emit('register-adapters', {}, function () {
-                throw new Error("NOT IMPLEMENTED");
-            });
-
-            return d;
-
+            return _.values(this._adaptersCache);
         },
 
         /**
@@ -203,7 +190,8 @@ define(['altair/facades/declare',
          * @returns {_HasSchemaMixin}
          */
         setSelectedAdapter: function (adapter) {
-           return this.set('selectedAdapters', [adapter]);
+            adapter = adapter ? [adapter] : adapter;
+            return this.set('selectedAdapters', adapter);
         },
 
         /**

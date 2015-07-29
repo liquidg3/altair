@@ -69,7 +69,7 @@ Your module now depends on altair:Adapters so we should tell Altair.
 }
 ```
 
-## Step 6 - Add field to schema
+## Step 6 - Add field to schema (optional)
 In your module's directory, add `./configs/schema.json` and put `selectedAdapter` like this in it.
 
 ```json
@@ -77,9 +77,43 @@ In your module's directory, add `./configs/schema.json` and put `selectedAdapter
 COMMING SOON
 ```
 
-## Step 7 - Set selected adapter
+## Step 7 - Set selected adapter(s)
 The easiest way to do this is to add the following to your app/config/modules.json
-***COMING SOON**
+{
+    "liquidfire:Errors": {
+        "selectedAdapter": {
+           "path": "./adapters/Email",
+           "options": {
+               "option1": "",
+               "option2": ""
+           }
+       }
+    }
+
+}
+
+If you want many adapters you can do the following.
+{
+    "liquidfire:Errors": {
+        "selectedAdapter": [
+            {
+               "path": "./adapters/Email",
+               "options": {
+                   "option1": "",
+                   "option2": ""
+               }
+            },
+            {
+               "path": "liquidfire:Errors/adapters/Sms",
+               "options": {
+                   "option1": "",
+                   "option2": ""
+               }
+            }
+        ]
+    }
+
+}
 
 ## Step 8 - Use your adapter
 The _HasAdaptersMixin depends on Apollo for its schema support. This means you'll be using get/set like you're used to,

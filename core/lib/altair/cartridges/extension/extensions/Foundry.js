@@ -205,9 +205,14 @@ define(['altair/facades/declare',
                         type          = _.has(config, 'type') ? config.type : 'subComponent';
 
 
-                    //are we pointing to a relative directiory?
+                    //is the path relative? if slow, make it relative to pwd
                     if(className[0] === '.') {
-//                        className = pathUtil.join(this.dir, className).replace(parent.dir, '');
+                        className   = pathUtil.join(process.cwd(), className);
+                        parts       = className.split('/');
+                        while (parts.length > 2) {
+                            parts.shift();
+                        }
+                        name        = parts.join('/');
                     }
                     //it's a full nexus path
                     else if(className.search(':') > 0) {
@@ -233,7 +238,6 @@ define(['altair/facades/declare',
                         //this is safe to change, just make sure to test alfred and controllers
                         if(name.search(/\.\./) > -1) {
                             name = pathUtil.join(this.dir, name).replace(parent.dir, '');
-//                            name = parent.name.split(':')[0] + ':' + pathUtil.join(parent.name.split(':')[1], '..', name);
                             name = this.parent.name + '/' + name;
                         } else {
                             name = (name[0] === '/') ? name : parent.name + '/' + name; //keep absolute path?

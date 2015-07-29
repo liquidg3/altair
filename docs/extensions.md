@@ -15,6 +15,7 @@ extended through the Extension system.
 
 **Examples**
 ```js
+//this is relative to your current file
 this.forge('path/to/Class').then(function (obj) {
 
     console.dir(obj);
@@ -30,6 +31,9 @@ this.forge('path/to/Class').then(function (obj) {
     this.log(err);
 }.bind(this));
 
+//if you are in a subcomponent and need a class on your parent module, DO NOT USE: this.forge('../path/to/class')
+this.parent.forg('path/to/Class');
+
 //using nexus path (vendor:Module)
 this.forge('titan:Alfred::path/to/Class').then(function (obj) {
 
@@ -40,6 +44,13 @@ this.forge('titan:Alfred::path/to/Class').then(function (obj) {
     this.log(err);
 
 }.bind(this));
+
+//forge relative to process.cwd()
+this.forge('./adapters/Email')
+this.forge('../adapters/Sms')
+
+//forge relative to current module
+this.forge('adapters/Email')
 
 //forging syncronously
 var obj = this.forgSync('liquidfire:Alfred::path/to/Class', {
