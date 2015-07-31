@@ -244,6 +244,7 @@ define(['altair/facades/declare',
                             lastResponse = results.pop();
 
                             //if lastResponse is in the form of [ nextState, { event: data } ]
+                            //if so, halt the state machine and jump to that step immediately
                             if(_.isArray(lastResponse)) {
 
                                 var _state = lastResponse[0];
@@ -255,6 +256,9 @@ define(['altair/facades/declare',
                                 nextState       = _state;
                                 eventData       = lastResponse[1];
                                 lastResponse    = lastResponse[1];
+
+                                dfd.resolve([nextState, lastResponse]);
+                                return;
 
                             } else if(_.isObject(lastResponse)) {
                                 eventData = lastResponse;

@@ -19,10 +19,12 @@ current working version.
 ```js
 define(['altair/facades/declare',
         'altair/modules/commandcentral/mixins/_HasCommandersMixin',
-        'lodash'
+        'lodash',
+        'altair/StateMachine'
 ], function (declare,
              _IsCommanderMixin, //mixes in Lifecycle for us
-             _) {
+             _,
+             StateMachine) {
 
 
     return declare([_IsCommanderMixin], {
@@ -70,7 +72,7 @@ define(['altair/facades/declare',
             }));
 
             //OR i can completely control state management by jumping to states manually
-            return this.fsm.transitionToState('selectcommand', { foo: 'bar' }).then(function (results) {
+            return this.fsm.transitionTo('selectcommand', { foo: 'bar' }).then(function (results) {
                 console.log(results); //[ "nextState", { state: data } ]
             });
 
@@ -88,6 +90,10 @@ define(['altair/facades/declare',
          onStateMachineDidEnterFirstRun: function (e) {
 
             this.writeLine('Welcome Friend!');
+
+            //if i wanted to, i could send the machine into a different state
+            //return ['selectCommand'] or return ['selectCommand', { data }];
+            
 
             //state machine expects listeners to return ['nextState', { any: data, you: want }];
             return { foo: 'bar' }; //this data becomes available in the event for the next command
