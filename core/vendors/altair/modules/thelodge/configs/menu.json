@@ -35,7 +35,7 @@
         },
         {
             "name":        "liquidfire:Spectre",
-            "description": "Entities are everywhere! this.entity('User').find().where('firstName', '!=', 'taco')",
+            "description": "Entities are everywhere! this.entity('User').find().where('firstName', '!=', 'taco').execute()",
             "keywords":    ["entities", "documents", "active record", "database", "web"],
             "website":      "https://github.com/liquidg3/liquidfire-spectre",
             "repository":  {
@@ -86,7 +86,7 @@
 
         {
             "name":        "liquidfire:Curium",
-            "description": "Apple ViewController flavored rendering framework for openvg and the RaspberryPi. Used to build ",
+            "description": "Apple ViewController flavored rendering framework for openvg and the RaspberryPi.",
             "keywords":    ["openvg", "raspberrypi"],
             "website":      "https://github.com/liquidg3/liquidfire-curium",
             "repository":  {

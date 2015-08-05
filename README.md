@@ -1,5 +1,44 @@
 #Altair
 
+##ALTAIR HAS BEEN HIJACKED
+Ok, that's not entirly true. While the vision for Altair remains (bulding "experiences of everything"), we have taken a slight
+detour. Myself (liquidg3) and my wife have started a new company. This has become my highest priority and while it has pulled
+ me away from some of the things I wanted to build, the good news is that we've been using Altair to power a bunch of our systems.
+
+We have built a [connected sign](https://instagram.com/p/4TAV6Okkxi), a [connected shoe display](https://instagram.com/p/4nDmfXkkwt/),
+started a [prototype wearable](https://instagram.com/p/5oA_arEkz5/), an [sms booking system](http://spruce.me/blogs/technology/38980996-building-an-sms-receptionist-with-the-help-of-twilio-and-a-finite-state-machine),
+and [a bunch of other cool stuff](https://instagram.com/sprucemen/).
+
+You can follow the real world usage of Altair from our [site](http://spruce.me) and our [**Tech in Retail** blog](http://spruce.me/blogs/technology).
+
+Altair is healthy and progressing nicely, but because it's being used now to run our company, the features that get added are
+directly coupled to the value they provide us. That means for as cool as it would be to have Altair power a quadracopter, it's
+probably not gonig to happen.
+
+Additional bonus; the platform is extremely stable. Because we rely on it for appointment booking, profile building, and financial
+reporting (among other things), we have spent extra time hardening the base. I'm proud to say that extra time has paid off. The 
+platform itself has not had any issues in months (more than I can say for some of the new modules I've created).
+
+Here are a list of modules that currently exist:
+
+1. liquidfire:Dates - Gives you a 'date' property for the [Apollo ORM](https://github.com/liquidg3/altair/tree/master/core/lib/apollo) as well as other helpful date features (brings in [momentjs](http://momentjs.com) as well)
+2. liquidfire:Images - Easy thumbnail generation as well as an 'image' property for Apollo
+3. liquidfire:Files - Makes uploading files a breeze. Adds a 'file' property to Apollo
+4. liquidfire:Spectre - An entity system; this.entity('User').find().where('firstName', '!=', 'taco').execute() 
+5. liquidfire:Forms - Makes form rendering easy through titan:Alfred
+6. liquidfire:Apollo - Couples Apollo with Altair
+7. titan:Alfred - The ultimate web server. Uses Express3 for the moment. 
+8. liquidfire:Onyx - Poweful view rendering (best used with titan:Alfred).
+9. liquidfire:Curium - A fun test for building an openvg powered game from your RaspberryPi. Uses an Apple style ViewController paradigm
+10. liquidfire:Sockets - Easy startup socket servers or connect to other socket servers
+11. liquidfire:AngularJS - Helps integrate [AngularJs](https://angularjs.org) into Altair (used with titan:Alfred)
+12. liquidfire:Shopify - Create your own (Shopify)[http://shopify.com] store with ease!
+13. liquidfire:Errors - Adapter based modules for sending yourself error logs, text messages, or whatever you want to keep yourself in the loop
+
+
+
+##Original Readme
+
 What if your coffee machine could start brewing your coffee as soon as you left your bedroom first thing in the morning?
 How about having a garage door that opens when your car (and only your car) pulls up to it?
 
@@ -7,7 +46,7 @@ What would you do if you were able to make devices that were never meant to work
 
 Welcome to the IoE. Before you get started, you should read this whole thing. It's worth it and we'll keep it short!
 
-#Altair is currently unstable and in active development.
+#Altair is in active development.
 
 View the [Getting Started Guide](https://github.com/liquidg3/altair/blob/master/docs/gettingstarted.md) if you've already
 read the important bits **below**.
