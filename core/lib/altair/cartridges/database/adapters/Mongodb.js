@@ -238,6 +238,14 @@ define(['altair/facades/declare',
 
         },
 
+        db: function () {
+            return this._db;
+        },
+
+        client: function () {
+            return this._client;
+        },
+
         teardown: function () {
             return this.promise(this._db, 'close');
         }

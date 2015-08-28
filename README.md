@@ -1,6 +1,7 @@
 #Altair
 
 ##ALTAIR HAS BEEN HIJACKED
+
 Ok, that's not entirly true. While the vision for Altair remains (bulding "experiences of everything"), we have taken a slight
 detour. Myself (liquidg3) and my wife have started a new company. This has become my highest priority and while it has pulled
  me away from some of the things I wanted to build, the good news is that we've been using Altair to power a bunch of our systems.
@@ -32,7 +33,7 @@ Here are a list of modules that currently exist:
 9. liquidfire:Curium - A fun test for building an openvg powered game from your RaspberryPi. Uses an Apple style ViewController paradigm
 10. liquidfire:Sockets - Easy startup socket servers or connect to other socket servers
 11. liquidfire:AngularJS - Helps integrate [AngularJs](https://angularjs.org) into Altair (used with titan:Alfred)
-12. liquidfire:Shopify - Create your own (Shopify)[http://shopify.com] store with ease!
+12. liquidfire:Shopify - Create your own [Shopify](http://shopify.com) store with ease!
 13. liquidfire:Errors - Adapter based modules for sending yourself error logs, text messages, or whatever you want to keep yourself in the loop
 
 

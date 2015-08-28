@@ -41,7 +41,7 @@ define(['altair/facades/declare',
 
                 logs[key] = function () {
 
-                    var nexus = this.nexus || this.parent && this.parent.nexus;
+                    var nexus = this.nexus && this.nexus.bind(this) || this.parent && this.parent.nexus.bind(this.parent);
 
                     if (nexus) {
 

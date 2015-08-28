@@ -181,7 +181,7 @@ define(['altair/facades/declare',
 
                     } catch (err) {
                         if (this.err) { this.err(err); }
-                        throw new Error('Could not forge ' + path + '. Make sure you have no syntax errors and all your requires are valid.');
+                        throw new Error('Could not forge ' + path + '. Make sure you have no syntax errors and all your requires are valid. Check previous log for more details.');
                     }
 
 

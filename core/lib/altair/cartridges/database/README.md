@@ -72,6 +72,12 @@ var promise = db.update('test_collection').where('group', '===', 'foo').set({
 
 
 //Delete
+var promise= db.delete('test_collection').where(...).execute()
+
+//count
+db.count('test_collection').where(...).then(function (count) {
+    console.log(count);
+});
 
 //iterating over results
 db.findOne('test_collection').where('firstName', '===', 'tay).execute().then(function (results) {
