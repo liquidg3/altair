@@ -91,6 +91,9 @@ require(['altair/Altair',
 
             config.paths.home = homePath; //always have a home path
 
+            //inform us about our environment
+            debug('current environment is "' + global.env + '".');
+
             //mixin configs, cwd config wins!
             if(appConfig) {
 
