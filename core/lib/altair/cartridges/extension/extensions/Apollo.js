@@ -91,30 +91,21 @@ define(['altair/facades/declare',
                             }
 
                             if(values) {
-                                dfd = this.mixin(values);
+                                this.mixin(values);
                             }
                         }
 
-                        if(!old) {
+                        if (old) {
 
-                            if(!dfd) {
-                                dfd = new Deferred();
-                                dfd.resolve(this);
-                            }
+                            var _options = mixin(options || {}, this.values || {})
 
-                            return when(dfd);
+                            return old(_options);
 
                         } else {
 
-                            return when(dfd).then(function () {
+                            return this;
 
-                                var _options = mixin(options || {}, this.values || {})
-
-                                return old(_options);
-
-                            }.bind(this))
                         }
-
                     }
                 });
 
