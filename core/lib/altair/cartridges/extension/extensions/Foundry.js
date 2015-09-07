@@ -175,7 +175,7 @@ define(['altair/facades/declare',
                         });
 
                         if(instance.startup && shouldStartup) {
-                            instance.startup(options);
+                            instance = instance.startup(options); //always return this (or a promise) from startup();
                         }
 
 
