@@ -287,9 +287,7 @@ define(['altair/facades/declare',
 
                                                 var _dfd = a.startup(options);
 
-                                                extension.assert(_dfd && _dfd.then, 'startup() in ' + name + ' does not return a deferred.');
-
-                                                _dfd.then(hitch(dfd, 'resolve')).otherwise(hitch(dfd, 'reject'));
+                                                when(_dfd).then(hitch(dfd, 'resolve')).otherwise(hitch(dfd, 'reject'));
 
                                             } else {
                                                 dfd.resolve(a);
