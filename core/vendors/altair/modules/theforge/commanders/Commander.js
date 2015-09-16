@@ -3,7 +3,6 @@ define(['altair/facades/declare',
         'require',
         'lodash',
         'altair/plugins/node!fs',
-        'altair/plugins/node!underscore.string',
         'altair/plugins/node!mkdirp',
         'altair/plugins/node!path',
         'altair/facades/sprintf',
@@ -14,11 +13,14 @@ define(['altair/facades/declare',
              require,
              _,
              fs,
-             str,
              mkdirp,
              path,
              sprintf,
              all) {
+
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
 
     return declare([_IsCommanderMixin], {
 
@@ -34,7 +36,7 @@ define(['altair/facades/declare',
 
             var dfd     = new this.Deferred(),
                 vendor  = values.vendor,
-                name    = str.capitalize(values.name),
+                name    = capitalizeFirstLetter(values.name),
                 full    = vendor + ':' + name,
                 foundry = this.nexus('cartridges/Module').foundry,
                 match   = this.nexus(full),
