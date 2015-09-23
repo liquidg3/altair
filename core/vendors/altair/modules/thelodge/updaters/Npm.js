@@ -91,10 +91,6 @@ define(['altair/facades/declare',
 
                 }
 
-            }.bind(this)).then(function () {
-
-                this._npm.spinner.stop();
-
             }.bind(this));
 
 
