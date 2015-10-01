@@ -36,7 +36,7 @@ Now that the `database` cartridge is configure, you can run queries and create/u
 ```js
 
 //get database cartridge instance
-var db = this.nexus('cartidges/Database');
+var db = this.nexus('cartridges/Database');
 
 
 //Create a record
@@ -72,7 +72,7 @@ var promise = db.update('test_collection').where('group', '===', 'foo').set({
 
 
 //Delete
-var promise= db.delete('test_collection').where(...).execute()
+var promise = db.delete('test_collection').where(...).execute()
 
 //count
 db.count('test_collection').where(...).then(function (count) {
@@ -89,4 +89,17 @@ db.findOne('test_collection').where('firstName', '===', 'tay).execute().then(fun
     });
 
 });
+
+
+//Getting to the raw mongodb adapter (or whichever adapter you may be using)
+var connection = db.defaultConnection(); //a "connection" is an adapter for a data store
+//var connection = db.connection('mongo1'); //if you have multiple connections and want a specific one
+
+//get the original mongodb module
+var mongo = connection.client();
+var database = connection.db(); //gets the mongodb instance with current database as the context
+ 
+//use the normal mongo api
+database.collection('users').update(...);
+
 ```

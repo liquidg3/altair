@@ -56,7 +56,19 @@ define(['dojo/_base/declare',
 
             return this.toJsValue(value, options, config);
 
+        },
+
+        /**
+         * Need to allow people to pass through whatever they may need (eg. mongoId)
+         * @param value
+         * @param options
+         * @param config
+         * @returns {*}
+         */
+        toDatabaseQueryValue: function (value, options, config) {
+            return value;
         }
+
 
     });
 

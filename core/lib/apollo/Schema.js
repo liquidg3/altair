@@ -301,7 +301,7 @@ define(['dojo/_base/declare',
             //normalize for many
             value = propertyType.normalizeMany(value, options, config);
 
-
+            //invoke first method we find
             for (c = 0; c < methodNames.length; c++) {
 
                 methodName = methodNames[c];
