@@ -6,8 +6,6 @@ define(['dojo/_base/declare',
               _Base,
               _) {
 
-
-
         return declare([_Base], {
 
             key: 'integer',
@@ -18,7 +16,7 @@ define(['dojo/_base/declare',
 
                 _value = parseInt(_value, 10);
 
-                if (_value === NaN) {
+                if (!_.isNumber(_value) || _.isNaN(_value)) {
                     _value = null;
                 }
 
