@@ -109,6 +109,10 @@ define(['altair/facades/declare',
 
             var collection = this._db.collection(collectionName);
 
+            if (document._id && _.isString(document._id)) {
+                document._id = new ObjectId(document._id);
+            }
+
             return this.promise(collection, 'insert', [document], options || { w: this.writeConcern }).then(function (results) {
                 return results.pop();
             });
