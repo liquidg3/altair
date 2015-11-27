@@ -1,6 +1,6 @@
 {
     "name":         "altair.io",
-    "version":      "0.4.4",
+    "version":      "0.4.10",
     "description":  "A platform to facilitate the building of experiences in the Internet of Everything.",
     "main":         "altair.js",
     "license":      "MIT",
@@ -35,6 +35,7 @@
         "debug":             ">=0.8.x",
         "cli-table":         "0.3.0",
         "config-extend":     "0.0.6",
-        "mongodb":           "1.4.7"
+        "mongodb":           ">=2.0.x",
+        "es6-promise":      "git+ssh://git@github.com:liquidg3/es6-promise.git"
     }
 }

@@ -14,11 +14,7 @@ You can follow the real world usage of Altair from our [site](http://spruce.me) 
 
 Altair is healthy and progressing nicely, but because it's being used now to run our company, the features that get added are
 directly coupled to the value they provide us. That means for as cool as it would be to have Altair power a quadracopter, it's
-probably not gonig to happen.
-
-Additional bonus; the platform is extremely stable. Because we rely on it for appointment booking, profile building, and financial
-reporting (among other things), we have spent extra time hardening the base. I'm proud to say that extra time has paid off. The 
-platform itself has not had any issues in months (more than I can say for some of the new modules I've created).
+probably not going to happen.
 
 Here are a list of modules that currently exist:
 

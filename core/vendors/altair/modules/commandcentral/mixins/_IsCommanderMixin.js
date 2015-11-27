@@ -217,7 +217,7 @@ define(['altair/facades/declare',
 
 
     //mix certain adapter methods into the commander for easy access
-    methods = ['notice', 'writeLine', 'writeError', 'readLine', 'select', 'showProgress', 'hideProgress', 'splash', 'table'];
+    methods = ['notice', 'writeLine', 'writeError', 'readLine', 'select', 'showProgress', 'hideProgress', 'splash', 'table', 'confirm'];
     sig     = {};
 
     methods.forEach(function (method) {

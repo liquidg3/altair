@@ -3,14 +3,14 @@
  */
 
 define(['altair/facades/declare',
-    'altair/facades/mixin',
+    'altair/plugins/node!config-extend',
     'altair/facades/when',
     'altair/facades/all',
     'lodash',
     'dojo/_base/lang',
     'altair/events/Emitter',
     'altair/mixins/_DeferredMixin'
-], function (declare, mixin, when, all, _, lang, Emitter, _DeferredMixin) {
+], function (declare, extend, when, all, _, lang, Emitter, _DeferredMixin) {
 
     return declare([Emitter, _DeferredMixin], {
 
@@ -68,7 +68,7 @@ define(['altair/facades/declare',
 
                 if (this._queryPath === '') {
 
-                    this._clauses.where = mixin(this._clauses.where, condition);
+                    this._clauses.where = extend(this._clauses.where, condition);
 
                 }
                 //if we are deeper in the query, set the value there
@@ -79,16 +79,16 @@ define(['altair/facades/declare',
 
                     //this is an "OR" since its an array. so lets add it to the array
                     if (_.isArray(subCondition)) {
-                        _queryPath = _queryPath + '.' + (subCondition.length - 1); //we we are in the query more precisely
-                        subCondition = mixin(subCondition.pop(), condition);
+                        _queryPath      = _queryPath + '.' + (subCondition.length - 1); //we we are in the query more precisely
+                        subCondition    = extend(subCondition.pop(), condition);
                     }
                     //we are already in part of an "AND"
                     else {
-                        subCondition = mixin(subCondition, condition);
+                        subCondition = extend(subCondition, condition);
                     }
 
-
                     lang.setObject(_queryPath, subCondition, this._clauses.where);
+
                 }
 
             }
@@ -182,7 +182,7 @@ define(['altair/facades/declare',
 
             } else {
 
-                clause = mixin(clause, name);
+                clause = extend(clause, name);
             }
 
             this._clauses.set = clause;

@@ -177,6 +177,10 @@ define(['altair/facades/declare',
 
         },
 
+        confirm: function (question, defaultValue, options) {
+            return this.boolean(question, defaultValue, options);
+        },
+
         /**
          * A simple yes/no would suffice
          *

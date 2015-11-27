@@ -1,9 +1,10 @@
 define(['altair/facades/declare',
     './_Base',
     'altair/plugins/node!mongodb',
+    'altair/plugins/node!es6-promise',
     'lodash',
     '../cursors/Mongodb'
-], function (declare, _Base, mongodb, _, MongodbCursor) {
+], function (declare, _Base, mongodb, ES6Promise, _, MongodbCursor) {
 
     var ObjectId = mongodb.ObjectID;
 
@@ -55,6 +56,9 @@ define(['altair/facades/declare',
             //create a new client
             this._client = new mongodb.MongoClient();
 
+            //promise library
+            _options.promiseLibrary = ES6Promise.Promise;
+
             //let the world know through our cartridge that we are about to connect to the database, give them a chance
             //to make any last minute changes (even in an async way), then continue
             this.deferred = this._cartridge.emit('will-connect-to-database', {
@@ -99,9 +103,8 @@ define(['altair/facades/declare',
             delete values._id; //no updating id
 
             return this.promise(collection, 'update', where, { '$set': clauses.set }, options || { w: this.writeConcern }).then(function (results) {
-                return results[0];
+                return results.ops ? results.ops[0] : values;
             });
-
 
         },
 
@@ -110,11 +113,16 @@ define(['altair/facades/declare',
             var collection = this._db.collection(collectionName);
 
             if (document._id && _.isString(document._id)) {
-                document._id = new ObjectId(document._id);
+                try {
+                   document._id = new ObjectId(document._id);
+                } catch (e) {
+                    //someone sent me an id that is not a proper mongo one (but that is ok)
+                }
             }
 
             return this.promise(collection, 'insert', [document], options || { w: this.writeConcern }).then(function (results) {
-                return results.pop();
+                var doc = results.ops[0];
+                return doc;
             });
 
         },
@@ -124,7 +132,7 @@ define(['altair/facades/declare',
             var collection = this._db.collection(collectionName);
 
             return this.promise(collection, 'insert', documents, options || { w: this.writeConcern }).then(function (results) {
-                return results;
+                return results.ops;
             });
 
 
