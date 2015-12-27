@@ -96,6 +96,26 @@ define(['altair/facades/declare',
         },
 
         /**
+         * Mixin your async dependencies, for use during sartingy
+         *
+         * @param dependencies
+         * @returns {*}
+         */
+        mixin: function (dependencies) {
+
+            this.deferred = this.all(dependencies).then(function (deps) {
+
+                declare.safeMixin(this, deps);
+
+                return this;
+
+            }.bind(this));
+
+            return this.deferred;
+
+        },
+
+        /**
          * Do your work in here.
          *
          * @returns {altair.Promise}

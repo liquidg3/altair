@@ -24,7 +24,7 @@ define(['altair/facades/declare'], function (declare) {
          */
         startup: function (options) {
             ...
-            return this.deferred;
+            return this.deferred.promise;
         },
 
         /**
@@ -34,7 +34,7 @@ define(['altair/facades/declare'], function (declare) {
          */
         execute: function () {
             ....
-            return this.deferred;
+            return this.deferred.promise;
         },
 
         /**
@@ -44,7 +44,7 @@ define(['altair/facades/declare'], function (declare) {
          */
         teardown: function () {
             ...
-            return this.deferred;
+            return this.deferred.promise;
         }
     });
 });
@@ -84,6 +84,45 @@ define(['altair/facades/declare',
                     this.deferred.resolve();
 
                 }), 500);
+
+                return this.inherited(arguments);
+
+            }
+
+
+        });
+
+});
+```
+
+## Mixing in many async dependencies with `mixin()`
+
+If you have a bunch of async libraries you need to load during starup, use `mixin`.
+
+```js
+define(['altair/facades/declare',
+        'altair/facades/hitch',
+        'altair/Lifecycle'],
+
+    function (declare,
+              Lifecycle,
+              hitch) {
+
+        return declare([Lifecycle], {
+
+
+            users:      null,
+            profiles:   null,
+            
+            
+            startup: function (options) {
+
+
+                this.mixin({
+                    users: this.entity('User'),
+                    profiles: this.entity('Profile')
+                });
+                
 
                 return this.inherited(arguments);
 
