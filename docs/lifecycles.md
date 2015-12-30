@@ -110,17 +110,17 @@ define(['altair/facades/declare',
 
         return declare([Lifecycle], {
 
-
-            users:      null,
-            profiles:   null,
+            //I prefer to prefix my dependencies with an underscore to "mark" them private
+            _users:      null,
+            _profiles:   null,
             
             
             startup: function (options) {
 
 
                 this.mixin({
-                    users: this.entity('User'),
-                    profiles: this.entity('Profile')
+                    _users: this.entity('User'),
+                    _profiles: this.entity('Profile')
                 });
                 
 
