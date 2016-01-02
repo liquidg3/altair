@@ -1,6 +1,6 @@
 {
     "name":         "altair.io",
-    "version":      "0.4.12",
+    "version":      "0.4.13",
     "description":  "A platform to facilitate the building of experiences in the Internet of Everything.",
     "main":         "altair.js",
     "license":      "MIT",
@@ -30,7 +30,7 @@
         "rimraf":            ">=2.2.x",
         "gift":              ">=0.3.x",
         "lunr":              ">=0.5.x",
-        "npm":               ">=1.4.x",
+        "npm":               ">=3.5.x",
         "ncp":               ">=1.0.x",
         "debug":             ">=0.8.x",
         "cli-table":         "0.3.0",

@@ -46,17 +46,20 @@ define(['altair/facades/declare',
                     case '!==':
                     case '!=':
                         operator = '!==';
+                    case 'not':
+                        operator = _.isArray(operand) ? 'nin' : '!==';
                     case '>':
                     case '<':
                     case '>=':
                     case '<=':
                     case 'like':
                     case 'in':
+                    case 'nin':
                         condition[name] = {};
                         condition[name]['$' + operator] = operand;
                         break;
                     default:
-                        throw new Error('Unknown operator "' + operator + '". Supported include =,==,===,!=,!==>,<,>=,<=,LIKE,in');
+                        throw new Error('Unknown operator "' + operator + '". Supported include =,==,===,!=,!==>,<,>=,<=,LIKE,in,nin');
                 }
             }
             //they passed a query right through
