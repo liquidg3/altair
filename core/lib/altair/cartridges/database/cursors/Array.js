@@ -20,6 +20,7 @@ define(['altair/facades/declare',
             this._array         = array;
             this._statement     = statement;
             this._total         = total;
+            this._callback      = cb;
         },
 
         next: function () {
