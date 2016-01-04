@@ -101,7 +101,7 @@ define(['altair/facades/declare',
          * @param dependencies
          * @returns {*}
          */
-        mixin: function (dependencies) {
+        mixinDependencies: function (dependencies) {
 
             this.deferred = this.all(dependencies).then(function (deps) {
 

@@ -118,7 +118,7 @@ define(['altair/facades/declare',
             startup: function (options) {
 
 
-                this.mixin({
+                this.mixinDependencies({
                     _users: this.entity('User'),
                     _profiles: this.entity('Profile')
                 });
