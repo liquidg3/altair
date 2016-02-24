@@ -98,11 +98,12 @@ define(['altair/facades/declare',
             var clauses     = this.parseStatement(statement),
                 collection  = this._db.collection(collectionName),
                 where       = clauses.where,
-                values      = clauses.set;
+                values      = clauses.set,
+                method      = values._id ? 'updateOne' : 'updateMany';
 
             delete values._id; //no updating id
 
-            return this.promise(collection, 'update', where, { '$set': clauses.set }, options || { w: this.writeConcern }).then(function (results) {
+            return this.promise(collection, method, where, { '$set': clauses.set }, options || { w: this.writeConcern }).then(function (results) {
                 return results.ops ? results.ops[0] : values;
             });
 
