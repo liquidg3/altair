@@ -31,14 +31,6 @@ require(['altair/Altair',
         }
 
         /**
-         * Lets you configure how much error reporting to do.
-         *
-         * @type {number}
-         */
-        Error.stackTraceLimit = config.stackTraceLimit || Infinity;
-
-
-        /**
          * NPM has zero dependency injection so it's easier to create a central place for altair to manage
          * all node dependencies than it is to configure npm (at all). This is where all the dependencies
          * for altair modules/themes/widgets/sites will be installed.
@@ -112,6 +104,14 @@ require(['altair/Altair',
                 config = mixin(config, homeConfig);
 
             }
+
+            /**
+             * Lets you configure how much error reporting to do.
+             *
+             * @type {number}
+             */
+            Error.stackTraceLimit = config.stackTraceLimit || Infinity;
+
 
             //set debug config again
             debugUtil.names = [];
