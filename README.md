@@ -21,7 +21,7 @@ Here are a list of modules that currently exist:
 1. liquidfire:Dates - Gives you a 'date' property for the [Apollo ORM](https://github.com/liquidg3/altair/tree/master/core/lib/apollo) as well as other helpful date features (brings in [momentjs](http://momentjs.com) as well)
 2. liquidfire:Images - Easy thumbnail generation as well as an 'image' property for Apollo
 3. liquidfire:Files - Makes uploading files a breeze. Adds a 'file' property to Apollo
-4. liquidfire:Spectre - An entity system; this.entity('User').find().where('firstName', '!=', 'taco').execute() 
+4. liquidfire:Spectre - An entity system; this.store('User').find().where('firstName', '!=', 'taco').execute() 
 5. liquidfire:Forms - Makes form rendering easy through titan:Alfred
 6. liquidfire:Apollo - Couples Apollo with Altair
 7. titan:Alfred - The ultimate web server. Uses Express3 for the moment. 

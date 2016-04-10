@@ -50,6 +50,7 @@ define(['altair/facades/declare',
                         altair.emit('did-' + key, {
                             level: key,
                             parent: this,
+                            debug: callbacks[key],
                             date: new Date(),
                             arguments: Array.prototype.slice.call(arguments)
                         });

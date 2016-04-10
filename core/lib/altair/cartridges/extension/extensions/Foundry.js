@@ -219,7 +219,13 @@ define(['altair/facades/declare',
 
                         parts       = className.split('/');
                         parent      = this.nexus(parts[0]);
+
+                        if (!parent) {
+                            throw new Error('Could not forge ' + className + ' because I could not find ' + parts[0]);
+                        }
+
                         className   = className.replace(parts[0] + '/', '');
+
 
                         return parent.forge(className, options, config);
                     }

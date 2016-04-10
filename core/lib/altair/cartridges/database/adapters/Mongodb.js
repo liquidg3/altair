@@ -204,22 +204,23 @@ define(['altair/facades/declare',
         parseStatement: function (statement) {
 
             var clauses = _.cloneDeep(statement.clauses()),
-                mapOperators = this.hitch(function (obj) {
+                mapOperators = this.hitch(function (obj, path) {
 
                     var output = _.isArray(obj) ? [] : {};
 
                     _.each(obj, function (value, key) {
 
-                        var _key = this._operatorMap[key] || key;
+                        var _key = this._operatorMap[key] || key,
+                            _path = path ? path + '.' + _key : _key;
 
                         if (_.isObjectLiteral(value) || _.isArray(value)) {
 
-                            output[_key] = mapOperators(value);
+                            output[_key] = mapOperators(value, _path);
 
                         } else {
 
                             //mongo id?
-                            if (_key === '_id') {
+                            if (_path.split('.').indexOf('_id') > -1) {
                                 try {
                                     value = new ObjectId(value);
                                 } catch (e) {

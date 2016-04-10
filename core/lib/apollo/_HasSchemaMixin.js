@@ -2,10 +2,10 @@
  * Apollo _HasSchemaMixin -> give any object you want a schema, it's powerful and stuff =)
  */
 define(['dojo/_base/declare',
-        'lodash',
-        'dojo/Deferred',
-        'dojo/promise/all',
-        './Schema'
+    'lodash',
+    'dojo/Deferred',
+    'dojo/promise/all',
+    './Schema'
 ], function (declare,
              _,
              Deferred,
@@ -27,8 +27,8 @@ define(['dojo/_base/declare',
 
     var _HasSchemaMixin = declare(null, {
 
-        _schema:    null,
-        values:     null,
+        _schema: null,
+        values: null,
 
         /**
          * Pass a schema if ya'nt
@@ -37,7 +37,7 @@ define(['dojo/_base/declare',
          */
         constructor: function (schema) {
 
-            if(schema && schema.isInstanceOf && schema.isInstanceOf(Schema)) {
+            if (schema && schema.isInstanceOf && schema.isInstanceOf(Schema)) {
                 this.setSchema(schema);
             }
 
@@ -56,7 +56,7 @@ define(['dojo/_base/declare',
 
             var methodName = toGetter(name);
 
-            if( typeof this[methodName] === 'function') {
+            if (typeof this[methodName] === 'function') {
                 return this[methodName](defaultValue, options, config);
             }
 
@@ -76,7 +76,7 @@ define(['dojo/_base/declare',
             var methodName = toSetter(name),
                 results;
 
-            if( typeof this[methodName] === 'function') {
+            if (typeof this[methodName] === 'function') {
 
                 results = this[methodName](value);
 
@@ -94,14 +94,14 @@ define(['dojo/_base/declare',
          * @param values
          * @returns {_HasSchemaMixin}
          */
-        mixin: function(values, optionsByField, config) {
+        mixin: function (values, optionsByField, config) {
 
             var cleaned = {};
 
             _.each(values, function (value, name) {
-                if(this.has(name)) {
+                if (this.has(name)) {
 
-                    if(config && config.methods) {
+                    if (config && config.methods) {
 
                         var options = optionsByField && optionsByField[name] || {};
 
@@ -117,7 +117,7 @@ define(['dojo/_base/declare',
                 }
             }, this);
 
-            if(config && config.methods) {
+            if (config && config.methods) {
 
                 return all(cleaned).then(function (values) {
 
@@ -155,7 +155,7 @@ define(['dojo/_base/declare',
          */
         _set: function (name, value) {
 
-            if( this.schema().has( name ) ) {
+            if (this.schema().has(name)) {
                 this.values[name] = value;
 
             } else {
@@ -184,7 +184,7 @@ define(['dojo/_base/declare',
 
             var value = this.schema().applyOnProperty((config && config.methods) ? config.methods : ['toJsValue'], name, this.values[name], options, config);
 
-            if( value === null || value === undefined && !_.isUndefined(defaultValue)) {
+            if (value === null || value === undefined && !_.isUndefined(defaultValue)) {
                 value = defaultValue;
 
             }
@@ -200,19 +200,19 @@ define(['dojo/_base/declare',
          */
         setSchema: function (schema) {
 
-            this._schema    = schema;
+            this._schema = schema;
 
-            if(!this.values) {
+            if (!this.values) {
                 this.values = {};
             }
 
-            var properties    = schema.properties();
+            var properties = schema.properties();
 
             _.each(properties, function (value, name) {
 
                 //only set values on ourselves that do not already exist
                 //this is to ensure that values has a key for every property in the schema
-                if( !( this.values.hasOwnProperty(name) ) ) {
+                if (!( this.values.hasOwnProperty(name) )) {
                     var defaultValue = schema.optionsFor(name, false).default;
                     this.set(name, defaultValue);
                 }
@@ -238,14 +238,14 @@ define(['dojo/_base/declare',
          */
         getValues: function (optionsByProperty, config) {
 
-            var values   = {},
-                _obp     = optionsByProperty || {},
-                _all     = _obp['*'] || {},
-                _config  = config || {};
+            var values = {},
+                _obp = optionsByProperty || {},
+                _all = _obp['*'] || {},
+                _config = config || {};
 
             _.each(this.schema().properties(), function (propConfig, name) {
 
-                if(_obp) {
+                if (_obp) {
                     _obp[name] = _.defaults(_obp[name] || {}, _all);
                 }
 
@@ -279,7 +279,7 @@ define(['dojo/_base/declare',
 
             var schema = this.schema();
 
-            if(!schema) {
+            if (!schema) {
                 throw new Error('You can only validate objects that have a schema.');
             }
 
