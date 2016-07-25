@@ -148,7 +148,7 @@ define(['altair/facades/declare',
 
             if(!e.get('commander')) {
 
-                e.set('commander', this->activeCommander);
+                e.set('commander', this.activeCommander);
 
             } else {
                 this.activeCommander = e.get('commander');

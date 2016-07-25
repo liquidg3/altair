@@ -41,7 +41,7 @@ define(['altair/facades/declare',
 
         constructor: function (options) {
 
-            this.state  = options && _.has(options, 'state') ? options.state : null; //starting state is optional
+            this.state  = options && _.has(options, 'state') ? options.state : this.state; //starting state is optional
             this.states = options.states;
 
             if(options && _.has(options, 'delegate')) {
