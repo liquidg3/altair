@@ -16,14 +16,6 @@ define(['dojo/_base/declare',
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
-    function toGetter(named) {
-        return 'get' + capitalise(named);
-    }
-
-    function toSetter(named) {
-        return 'set' + capitalise(named);
-    }
-
 
     var _HasSchemaMixin = declare(null, {
 
@@ -43,6 +35,15 @@ define(['dojo/_base/declare',
 
         },
 
+
+        toGetter(named) {
+            return 'get' + capitalise(named);
+        },
+
+        toSetter(named) {
+            return 'set' + capitalise(named);
+        },
+
         /**
          * Will try and call an method to override this getter (getFieldName).
          *
@@ -54,7 +55,7 @@ define(['dojo/_base/declare',
          */
         get: function (name, defaultValue, options, config) {
 
-            var methodName = toGetter(name);
+            var methodName = this.toGetter(name);
 
             if (typeof this[methodName] === 'function') {
                 return this[methodName](defaultValue, options, config);
@@ -73,7 +74,7 @@ define(['dojo/_base/declare',
          */
         set: function (name, value) {
 
-            var methodName = toSetter(name),
+            var methodName = this.toSetter(name),
                 results;
 
             if (typeof this[methodName] === 'function') {
